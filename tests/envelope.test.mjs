@@ -103,15 +103,24 @@ test('an empty pool selects nothing instead of inventing a model', () => {
 })
 test('each tier orders its pool differently, so deep is not balanced again', async () => {
   const { selectForTier, TIER_COST_FACTORS } = await import('../src/select.js')
-  const { MODEL_INFO } = await import('../src/model-info.js')
   const { DEFAULT_ROUTES } = await import('../src/decision.js')
-  const candidates = Object.entries(MODEL_INFO).map(([id, info]) => ({ tier: 'auto', provider: 'bailian-tokenplan', model: id, info, configured: true }))
+  // Synthetic pool: one model only `deep` admits (strong, slow, dear) and one only
+  // `balanced` admits (adequate, cheap). Live data made this assertion drift with
+  // every refresh, which is not what the test is about.
+  const dims = (value) => ({ overall: value, coding: value, reasoning: value, math: value, knowledge: value, agentic: value, longContext: value, vision: value, speed: value })
+  const evidence = { overall: 2, coding: 2, reasoning: 2, math: 2, knowledge: 2, agentic: 2, longContext: 1, vision: 1, speed: 1 }
+  const candidate = (model, quality, price, latency) => ({
+    tier: 'auto', provider: 'p', model, configured: true,
+    info: { label: model, quality, scores: dims(quality), evidence, price: { input: price, output: price }, latency, contextWindow: 400000, modalities: ['text'], toolCalling: true },
+  })
+  const candidates = [candidate('deep-strong', 88, 40, 'slow'), candidate('balanced-mid', 72, 3, 'balanced')]
   const base = { vision: false, tools: true, latencyCritical: false }
   const mid = selectForTier({ ...base, shape: 'debug', depth: 3.2, breadth: 1.4, risk: 1.5 }, candidates, DEFAULT_ROUTES, { costWeight: 0.35, defaultRoute: 'balanced' })
   const hard = selectForTier({ ...base, shape: 'refactor', depth: 3.7, breadth: 3.6, risk: 3.3 }, candidates, DEFAULT_ROUTES, { costWeight: 0.35, defaultRoute: 'balanced' })
   assert.equal(mid.tier, 'balanced')
   assert.equal(hard.tier, 'deep')
-  assert.notEqual(hard.selected.model, mid.selected.model, 'a hard task must not resolve to the same model as a mid one')
+  assert.equal(mid.selected.model, 'balanced-mid')
+  assert.equal(hard.selected.model, 'deep-strong')
   assert.ok(hard.selected.quality > mid.selected.quality, `deep ${hard.selected.quality} must beat balanced ${mid.selected.quality}`)
   assert.ok(TIER_COST_FACTORS.fast > 1 && TIER_COST_FACTORS.deep < 1)
 })
