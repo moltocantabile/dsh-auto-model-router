@@ -353,7 +353,8 @@ export function apply(ctx, input) {
   /** Models the provider advertises, enriched with the routing knowledge base. */
   async function providerModels(provider) {
     const cached = catalogs.get(provider)
-    if (cached !== undefined && Date.now() - cached.at < (cached.error === undefined ? CATALOG_TTL_MS : CATALOG_ERROR_TTL_MS)) {
+    const cachedTtl = cached?.empty === true || cached?.error !== undefined ? CATALOG_ERROR_TTL_MS : CATALOG_TTL_MS
+    if (cached !== undefined && Date.now() - cached.at < cachedTtl) {
       if (cached.error !== undefined) {
         // A failed refresh must not erase a provider that worked before: dropping
         // it silently shrank the whole board to whichever provider answered last.
@@ -395,7 +396,17 @@ export function apply(ctx, input) {
           info,
         }
       }))
-      catalogs.set(provider, { at: Date.now(), models })
+      // An empty list from a provider that answered with models before is a
+      // transient state (adapters re-registering after a reload), not a fact. Keep
+      // the known list and retry on the short TTL instead of publishing a board
+      // built from nothing.
+      const previousModels = Array.isArray(cached?.models) ? cached.models : null
+      if (models.length === 0 && previousModels !== null && previousModels.length > 0) {
+        catalogs.set(provider, { at: Date.now(), models: previousModels, empty: true })
+        catalogStatus.set(provider, { at: Date.now(), models: previousModels.length, error: 'empty answer', stale: true })
+        return previousModels
+      }
+      catalogs.set(provider, { at: Date.now(), models, ...(models.length === 0 ? { empty: true } : {}) })
       catalogStatus.set(provider, { at: Date.now(), models: models.length, error: null, stale: false })
       return models
     } catch (error) {
@@ -438,6 +449,8 @@ export function apply(ctx, input) {
   /** Newest tier assignment, so status and the config page can show it without
    * walking the catalog again. */
   let boardCache = null
+  /** Pool the cached board was built from, reused when a refresh looks broken. */
+  let lastPool = []
   const lastBoard = () => boardCache
 
   /**
@@ -449,11 +462,27 @@ export function apply(ctx, input) {
    */
   async function assignedTiers() {
     const pool = await candidatePool()
+    // A pool that collapsed — to nothing, or to a handful of route anchors — is a
+    // catalog problem, not a routing decision. Keep the last good board so a
+    // transient empty answer cannot shrink every tier to one provider.
+    const previousSize = lastPool.length
+    if (boardCache !== null && previousSize >= 8 && pool.length < Math.floor(previousSize / 2)) {
+      ctx.logger.warn(`[model-router] catalog returned ${pool.length} candidates (had ${previousSize}); keeping the previous tier board`)
+      const kept = lastPool.filter((candidate) => TIER_IDS.includes(boardCache.tierOf[candidate.key ?? candidate.model]))
+      return {
+        pool: lastPool,
+        assigned: boardCache,
+        membership: membershipOf(boardCache),
+        candidates: kept,
+        byModel: new Map(lastPool.map((candidate) => [candidate.model, candidate])),
+      }
+    }
     const assigned = assignTiers(pool, routes, config.tiers)
     const membership = membershipOf(assigned)
     const byModel = new Map(pool.map((candidate) => [candidate.model, candidate]))
     const candidates = pool.filter((candidate) => TIER_IDS.includes(assigned.tierOf[candidate.key ?? candidate.model]))
     boardCache = assigned
+    lastPool = pool
     return { pool, assigned, membership, candidates, byModel }
   }
 

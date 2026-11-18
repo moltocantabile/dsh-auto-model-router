@@ -109,3 +109,12 @@ test('a configure without a defaultRoute keeps the running one', () => {
     'the previous default is preferred over the first route id',
   )
 })
+
+test('an empty catalog answer never shrinks the board', () => {
+  const source = read('index.js')
+  // The transient-empty case: adapters re-register after a reload and list every
+  // provider as empty, which once collapsed the board to the tokenplan routes.
+  assert.ok(source.includes('empty answer'), 'an empty list is treated as a failed refresh')
+  assert.ok(source.includes('keeping the previous tier board'), 'a collapsed pool keeps the previous board')
+  assert.ok(source.includes('lastPool'), 'the pool behind the board is retained for that fallback')
+})
