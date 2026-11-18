@@ -119,15 +119,18 @@ window.__ModuleLoader__.load({
 .amr-capsule { position:relative; display:inline-flex; align-items:center; gap:6px; max-width:100%; padding:3px 10px; border-radius:999px; border:.5px solid var(--dsw-alias-border-l3); background:var(--dsw-alias-settings-card-fill); color:var(--dsw-alias-label-primary); font:inherit; font-size:12px; line-height:18px; cursor:grab; user-select:none; }
 .amr-capsule:hover { border-color:var(--dsw-alias-brand-primary); }
 .amr-capsule[data-dragging="true"] { opacity:.4; }
-.amr-capsule[data-off="true"] { opacity:.55; text-decoration:line-through; cursor:pointer; }
-.amr-capsule[data-measured="false"] { border-style:dotted; opacity:.75; }
+.amr-capsule[data-off="true"] { cursor:pointer; }
+.amr-capsule[data-measured="false"] { border-style:dotted; }
 .amr-capsule[data-measured="false"] .amr-capsuleProvider { font-style:italic; }
-.amr-capsule[data-dominated="true"] { opacity:.5; }
+.amr-capsule[data-dominated="true"] { border-style:dashed; }
 .amr-capsule[data-overridden="true"] { border-style:dashed; }
 .amr-capsuleName { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-variant-numeric:tabular-nums; }
 .amr-capsuleDot { width:6px; height:6px; border-radius:50%; flex:none; background:var(--dsw-alias-brand-primary); }
 .amr-capsuleProvider { color:var(--dsw-alias-label-tertiary); }
 .amr-capsuleRank { color:var(--dsw-alias-label-tertiary); font-size:11px; font-variant-numeric:tabular-nums; }
+.amr-capsuleBadge { font-size:10px; line-height:14px; padding:0 4px; border-radius:var(--dsw-radius-sm); border:.5px solid var(--dsw-alias-border-l3); color:var(--dsw-alias-label-tertiary); }
+.amr-capsuleBadge[data-tone="warn"] { color:var(--dsw-alias-state-warn-primary); }
+.amr-capsuleBadge[data-tone="error"] { color:var(--dsw-alias-state-error-primary); }
 .amr-capsule[data-tone="0"] { border-color:var(--dsw-alias-brand-primary); }
 .amr-capsule[data-tone="0"] .amr-capsuleDot { background:var(--dsw-alias-brand-primary); }
 .amr-capsule[data-tone="1"] { border-color:var(--dsw-alias-state-success-primary); }
@@ -236,6 +239,10 @@ window.__ModuleLoader__.load({
         filterActive: 'Showing {provider} only.',
         unmeasuredHint: '{count} advertised models are not routable: nobody measured their quality, so they cannot be ranked.',
         tierUnmeasured: 'unmeasured',
+        badgeOff: 'off',
+        badgeSuperseded: 'superseded',
+        badgeProvisional: 'provisional',
+        badgeUncalibrated: '{count} uncal.',
         rankComposite: 'composite {value}',
         rankPosition: 'rank #{rank}',
         rankUsage: 'usage {pct}th pct',
@@ -401,6 +408,10 @@ window.__ModuleLoader__.load({
         filterActive: '仅显示 {provider}。',
         unmeasuredHint: '另有 {count} 个模型未被路由：没有任何质量测量，无法排序。',
         tierUnmeasured: '未测量',
+        badgeOff: '停用',
+        badgeSuperseded: '已被超越',
+        badgeProvisional: '临时',
+        badgeUncalibrated: '{count} 项未校准',
         rankComposite: '综合分 {value}',
         rankPosition: '排名 #{rank}',
         rankUsage: '使用度 {pct} 百分位',
@@ -1012,7 +1023,13 @@ window.__ModuleLoader__.load({
             h('span', { className: 'amr-capsuleProvider' }, `${providerOf[key] ?? 'unknown'}/`),
             model,
           ),
-          handAssigned && h(Chip, { tone: 'warn' }, t('handAssigned')),
+          // State is a badge, not a faded card: a faded parent also faded the
+          // hover card, which made superseded models unreadable.
+          off && h('span', { className: 'amr-capsuleBadge', 'data-tone': 'warn' }, t('badgeOff')),
+          dominatedBy.has(key) && h('span', { className: 'amr-capsuleBadge', 'data-tone': 'warn' }, t('badgeSuperseded')),
+          metaOf(key).status === 'provisional' && h('span', { className: 'amr-capsuleBadge' }, t('badgeProvisional')),
+          (metaOf(key).uncalibrated ?? 0) > 0 && h('span', { className: 'amr-capsuleBadge', 'data-tone': 'error' }, t('badgeUncalibrated').replace('{count}', String(metaOf(key).uncalibrated))),
+          handAssigned && h('span', { className: 'amr-capsuleBadge', 'data-tone': 'warn' }, t('handAssigned')),
           open &&
             h(
               'div',

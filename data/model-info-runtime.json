@@ -87,6 +87,11 @@
         "evaluated": "2026-10-17",
         "board": "https://rank.opencompass.org.cn/leaderboard/llm"
       },
+      "epoch": {
+        "eci": 159.4,
+        "date": "2026-10-17",
+        "board": "https://epoch.ai/eci"
+      },
       "llmLeaderboard": {
         "ttftSeconds": 1.317,
         "tokensPerSecond": 1075.3,
@@ -117,6 +122,24 @@
           "critpt-v2-hard": 27.5,
           "mmmu-pro": 79.7
         },
+        "rawScores": {
+          "aa-briefcase": 1415.98,
+          "omniscience-accuracy": 0.3893333333333333,
+          "omniscience-non-hallucination": 0.38755458515283847,
+          "automationbench-aa": 0.6849296525816153,
+          "terminal-bench-science": 0.104761904761905,
+          "frontiercode-2-0": 0.168437878787879,
+          "hle-diamond": 0.208,
+          "gdp-pdf": 0.142,
+          "terminalbench-4-0": 0.287878787878788,
+          "critpt-v2-hard": 0.275,
+          "mmmu-pro": 0.797109826589595
+        },
+        "contextTokens": 1000000,
+        "reasoning": true,
+        "openWeights": true,
+        "cacheHitPrice": 0.006,
+        "creator": "DeepSeek",
         "source": "https://artificialanalysis.ai/leaderboards/models"
       }
     },
@@ -130,34 +153,34 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 1,
-      "tokens": 69740904760259,
+      "tokens": 69825430138208,
       "share": 0.2419,
       "percentile": 100
     },
     "ranking": {
       "status": "measured",
-      "composite": 63.1,
-      "low": 45.7,
-      "rank": 16,
+      "composite": 60.2,
+      "low": 44.3,
+      "rank": 15,
       "dims": {
         "coding": {
           "value": 44.8,
           "evidence": 4
         },
         "reasoning": {
-          "value": 67.7,
-          "evidence": 5
+          "value": 57.6,
+          "evidence": 7
         },
         "math": {
           "value": 80.1,
           "evidence": 2
         },
         "knowledge": {
-          "value": 68.6,
+          "value": 68.5,
           "evidence": 6
         },
         "agentic": {
-          "value": 63.1,
+          "value": 61.6,
           "evidence": 6
         },
         "longContext": {
@@ -173,8 +196,8 @@
           "evidence": 2
         },
         "overall": {
-          "value": 63.1,
-          "evidence": 23
+          "value": 60.2,
+          "evidence": 25
         }
       }
     }
@@ -268,6 +291,11 @@
       "rolling alias: always the newest V4.1 Flash build"
     ],
     "crossChecks": {
+      "epoch": {
+        "eci": 157,
+        "date": "2026-09-09",
+        "board": "https://epoch.ai/eci"
+      },
       "llmLeaderboard": {
         "ttftSeconds": 0.94,
         "tokensPerSecond": 830,
@@ -286,39 +314,39 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 3,
-      "tokens": 17914109069859,
+      "tokens": 17937445707030,
       "share": 0.0621,
       "percentile": 97.8
     },
     "ranking": {
       "status": "measured",
-      "composite": 46.4,
-      "low": 32.9,
-      "rank": 53,
+      "composite": 44.4,
+      "low": 32.8,
+      "rank": 52,
       "dims": {
         "coding": {
           "value": 43.3,
           "evidence": 4
         },
         "reasoning": {
-          "value": 49.3,
-          "evidence": 4
+          "value": 46.6,
+          "evidence": 6
         },
         "math": {
           "value": 67.1,
           "evidence": 3
         },
         "knowledge": {
-          "value": 54.8,
+          "value": 54.6,
           "evidence": 4
         },
         "agentic": {
-          "value": 24.6,
-          "evidence": 2
+          "value": 18.4,
+          "evidence": 3
         },
         "longContext": {
-          "value": 84,
-          "evidence": 1
+          "value": 69.7,
+          "evidence": 2
         },
         "vision": {
           "value": 77,
@@ -329,8 +357,8 @@
           "evidence": 1
         },
         "overall": {
-          "value": 46.4,
-          "evidence": 17
+          "value": 44.4,
+          "evidence": 20
         }
       }
     }
@@ -408,6 +436,13 @@
     "distinguishing": [
       "cheapest DeepSeek build if a workload is frozen to it"
     ],
+    "crossChecks": {
+      "epoch": {
+        "eci": 154.4,
+        "date": "2026-07-31",
+        "board": "https://epoch.ai/eci"
+      }
+    },
     "sources": [
       "https://api-docs.deepseek.com/quick_start/pricing",
       "https://benchgecko.ai/model/deepseek-v4-flash-0731"
@@ -418,23 +453,23 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 15,
-      "tokens": 3436880920735,
+      "tokens": 3440847445677,
       "share": 0.0119,
       "percentile": 84.8
     },
     "ranking": {
       "status": "measured",
-      "composite": 56.7,
-      "low": 44.6,
-      "rank": 18,
+      "composite": 51,
+      "low": 39.3,
+      "rank": 35,
       "dims": {
         "coding": {
           "value": 40.9,
           "evidence": 2
         },
         "reasoning": {
-          "value": 64.3,
-          "evidence": 2
+          "value": 46.1,
+          "evidence": 4
         },
         "math": {
           "value": 64.3,
@@ -445,16 +480,16 @@
           "evidence": 2
         },
         "longContext": {
-          "value": 100,
-          "evidence": 0
+          "value": 49.1,
+          "evidence": 1
         },
         "vision": {
           "value": 0,
           "evidence": 0
         },
         "overall": {
-          "value": 56.7,
-          "evidence": 9
+          "value": 51,
+          "evidence": 11
         }
       }
     }
@@ -515,6 +550,11 @@
       "resolves to the V4 flash family for old configs"
     ],
     "crossChecks": {
+      "epoch": {
+        "eci": 146.8,
+        "date": "2026-04-24",
+        "board": "https://epoch.ai/eci"
+      },
       "llmLeaderboard": {
         "ttftSeconds": null,
         "tokensPerSecond": null,
@@ -545,6 +585,28 @@
           "gpqa-diamond": 91.3,
           "tau3-banking": 41
         },
+        "rawScores": {
+          "aa-briefcase": 1418.08,
+          "automationbench-aa": 0.4747087040091967,
+          "hle-diamond": 0.211,
+          "gdp-pdf": 0.12,
+          "terminalbench-4-0": 0.121212121212121,
+          "enterprise-ops-gym-aa": 0.4709042076991943,
+          "gdpval-aa-normalized": 1554.95,
+          "mmmu-pro": 0.747976878612717,
+          "humanitys-last-exam": 0.344763670064875,
+          "artificial-analysis-long-context-reasoning": 0.813333333333333,
+          "scicode": 0.496527777777778,
+          "critpt": 0.108571428571429,
+          "terminalbench-2-1": 0.741573033707865,
+          "gpqa-diamond": 0.913131313131313,
+          "tau3-banking": 0.410309278350515
+        },
+        "contextTokens": 1000000,
+        "reasoning": true,
+        "openWeights": false,
+        "cacheHitPrice": 0.014,
+        "creator": "DeepSeek",
         "source": "https://artificialanalysis.ai/leaderboards/models"
       }
     },
@@ -555,14 +617,14 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 23,
-      "tokens": 2264648514944,
+      "tokens": 2267131189611,
       "share": 0.0079,
       "percentile": 82.6
     },
     "ranking": {
       "status": "measured",
-      "composite": 68.4,
-      "low": 51.7,
+      "composite": 66.7,
+      "low": 50,
       "rank": 7,
       "dims": {
         "coding": {
@@ -570,11 +632,11 @@
           "evidence": 1
         },
         "reasoning": {
-          "value": 64.8,
+          "value": 59.2,
           "evidence": 2
         },
         "knowledge": {
-          "value": 70.8,
+          "value": 70.6,
           "evidence": 2
         },
         "agentic": {
@@ -594,7 +656,7 @@
           "evidence": 1
         },
         "overall": {
-          "value": 68.4,
+          "value": 66.7,
           "evidence": 9
         }
       }
@@ -696,6 +758,11 @@
         "evaluated": "2026-08-13",
         "board": "https://rank.opencompass.org.cn/leaderboard/llm"
       },
+      "epoch": {
+        "eci": 156,
+        "date": "2026-08-13",
+        "board": "https://epoch.ai/eci"
+      },
       "llmLeaderboard": {
         "ttftSeconds": 1.894,
         "tokensPerSecond": 305,
@@ -725,6 +792,28 @@
           "artificial-analysis-long-context-reasoning": 50.7,
           "scicode": 39.9
         },
+        "rawScores": {
+          "aa-briefcase": 928.29,
+          "omniscience-accuracy": 0.386,
+          "omniscience-non-hallucination": 0.06080347448425627,
+          "automationbench-aa": 0.3490865332353694,
+          "terminal-bench-science": 0,
+          "frontiercode-2-0": 0.103058585858586,
+          "hle-diamond": 0.072,
+          "gdp-pdf": 0.036,
+          "terminalbench-4-0": 0.0151515151515152,
+          "critpt-v2-hard": 0.085,
+          "gdpval-aa-normalized": 1065.08,
+          "humanitys-last-exam": 0.105653382761817,
+          "artificial-analysis-long-context-reasoning": 0.506666666666667,
+          "scicode": 0.399305555555556,
+          "critpt": 0
+        },
+        "contextTokens": 1000000,
+        "reasoning": false,
+        "openWeights": true,
+        "cacheHitPrice": 0.044,
+        "creator": "DeepSeek",
         "source": "https://artificialanalysis.ai/leaderboards/models"
       }
     },
@@ -738,23 +827,23 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 42,
-      "tokens": 823070094705,
+      "tokens": 824204542298,
       "share": 0.0029,
       "percentile": 69.6
     },
     "ranking": {
       "status": "measured",
-      "composite": 53.6,
-      "low": 44.4,
-      "rank": 20,
+      "composite": 51.5,
+      "low": 44,
+      "rank": 17,
       "dims": {
         "coding": {
           "value": 44.2,
           "evidence": 5
         },
         "reasoning": {
-          "value": 56.4,
-          "evidence": 5
+          "value": 48.6,
+          "evidence": 7
         },
         "math": {
           "value": 65.3,
@@ -765,12 +854,12 @@
           "evidence": 7
         },
         "agentic": {
-          "value": 49.9,
+          "value": 49.3,
           "evidence": 4
         },
         "longContext": {
-          "value": 50.7,
-          "evidence": 1
+          "value": 52.1,
+          "evidence": 2
         },
         "vision": {
           "value": 0,
@@ -781,8 +870,8 @@
           "evidence": 2
         },
         "overall": {
-          "value": 53.6,
-          "evidence": 24
+          "value": 51.5,
+          "evidence": 26
         }
       }
     }
@@ -881,6 +970,13 @@
     "distinguishing": [
       "reasoning 78.6 with no output-token penalty tier"
     ],
+    "crossChecks": {
+      "epoch": {
+        "eci": 150.2,
+        "date": "2026-04-24",
+        "board": "https://epoch.ai/eci"
+      }
+    },
     "sources": [
       "https://help.aliyun.com/zh/model-studio/deepseek-v4-pro",
       "https://benchgecko.ai/model/deepseek-v4-pro"
@@ -889,47 +985,47 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 49,
-      "tokens": 627678629735,
+      "tokens": 628588368833,
       "share": 0.0022,
       "percentile": 65.2
     },
     "ranking": {
       "status": "measured",
-      "composite": 58.6,
-      "low": 38.1,
-      "rank": 44,
+      "composite": 54.9,
+      "low": 34.4,
+      "rank": 49,
       "dims": {
         "coding": {
           "value": 60.8,
           "evidence": 6
         },
         "reasoning": {
-          "value": 54.1,
-          "evidence": 4
+          "value": 39.9,
+          "evidence": 6
         },
         "math": {
           "value": 57.1,
           "evidence": 4
         },
         "knowledge": {
-          "value": 66.2,
-          "evidence": 4
+          "value": 65.4,
+          "evidence": 5
         },
         "agentic": {
           "value": 56.7,
           "evidence": 1
         },
         "longContext": {
-          "value": 80.3,
-          "evidence": 1
+          "value": 64.4,
+          "evidence": 2
         },
         "vision": {
           "value": 0,
           "evidence": 0
         },
         "overall": {
-          "value": 58.6,
-          "evidence": 19
+          "value": 54.9,
+          "evidence": 22
         }
       }
     }
@@ -1034,6 +1130,33 @@
           "gpqa-diamond": 92.3,
           "tau3-banking": 45.4
         },
+        "rawScores": {
+          "aa-briefcase": 1571.51,
+          "omniscience-accuracy": 0.23533333333333334,
+          "omniscience-non-hallucination": 0.532258064516129,
+          "automationbench-aa": 0.559083218951688,
+          "terminal-bench-science": 0.0714285714285714,
+          "frontiercode-2-0": 0.271362121212121,
+          "hle-diamond": 0.163,
+          "gdp-pdf": 0.156,
+          "terminalbench-4-0": 0.252525252525253,
+          "critpt-v2-hard": 0.245,
+          "gdpval-aa-normalized": 1636.77,
+          "mlcr-aa": 0.205555555555556,
+          "mmmu-pro": 0.786127167630058,
+          "humanitys-last-exam": 0.380444856348471,
+          "artificial-analysis-long-context-reasoning": 0.796666666666667,
+          "scicode": 0.505787037037037,
+          "critpt": 0.111428571428571,
+          "terminalbench-2-1": 0.861423220973783,
+          "gpqa-diamond": 0.923232323232323,
+          "tau3-banking": 0.45360824742268
+        },
+        "contextTokens": 256000,
+        "reasoning": true,
+        "openWeights": true,
+        "cacheHitPrice": 0.016,
+        "creator": "Alibaba",
         "source": "https://artificialanalysis.ai/leaderboards/models"
       }
     },
@@ -1047,14 +1170,14 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 201,
-      "tokens": 15271586888,
+      "tokens": 15278260345,
       "share": 0.0001,
       "percentile": 21.7
     },
     "ranking": {
       "status": "measured",
-      "composite": 60.3,
-      "low": 41,
+      "composite": 58.5,
+      "low": 39.2,
       "rank": 36,
       "dims": {
         "coding": {
@@ -1062,7 +1185,7 @@
           "evidence": 3
         },
         "reasoning": {
-          "value": 58.8,
+          "value": 53,
           "evidence": 4
         },
         "knowledge": {
@@ -1070,7 +1193,7 @@
           "evidence": 5
         },
         "agentic": {
-          "value": 63.4,
+          "value": 62.9,
           "evidence": 5
         },
         "longContext": {
@@ -1086,7 +1209,7 @@
           "evidence": 1
         },
         "overall": {
-          "value": 60.3,
+          "value": 58.5,
           "evidence": 17
         }
       }
@@ -1167,16 +1290,20 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 54,
-      "tokens": 531896697681,
+      "tokens": 532468764215,
       "share": 0.0018,
       "percentile": 63
     },
     "ranking": {
       "status": "measured",
-      "composite": 66.6,
-      "low": 37.5,
-      "rank": 45,
+      "composite": 42.1,
+      "low": 21.4,
+      "rank": 58,
       "dims": {
+        "reasoning": {
+          "value": 12.7,
+          "evidence": 2
+        },
         "math": {
           "value": 53.5,
           "evidence": 2
@@ -1194,8 +1321,8 @@
           "evidence": 0
         },
         "overall": {
-          "value": 66.6,
-          "evidence": 3
+          "value": 42.1,
+          "evidence": 5
         }
       }
     }
@@ -1273,6 +1400,11 @@
         "hle": 27.14,
         "evaluated": "2026-08-03",
         "board": "https://rank.opencompass.org.cn/leaderboard/llm"
+      },
+      "epoch": {
+        "eci": 156,
+        "date": "2026-09-01",
+        "board": "https://epoch.ai/eci"
       }
     },
     "sources": [
@@ -1284,22 +1416,22 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 201,
-      "tokens": 15271586888,
+      "tokens": 15278260345,
       "share": 0.0001,
       "percentile": 21.7
     },
     "ranking": {
       "status": "measured",
-      "composite": 55.7,
-      "low": 42.9,
-      "rank": 28,
+      "composite": 54,
+      "low": 41.2,
+      "rank": 27,
       "dims": {
         "coding": {
           "value": 43.6,
           "evidence": 1
         },
         "reasoning": {
-          "value": 54.9,
+          "value": 50.3,
           "evidence": 3
         },
         "knowledge": {
@@ -1307,7 +1439,7 @@
           "evidence": 1
         },
         "agentic": {
-          "value": 55.5,
+          "value": 53.9,
           "evidence": 2
         },
         "longContext": {
@@ -1319,7 +1451,7 @@
           "evidence": 0
         },
         "overall": {
-          "value": 55.7,
+          "value": 54,
           "evidence": 7
         }
       }
@@ -1430,6 +1562,29 @@
           "mlcr-aa": 19.4,
           "apex-agents-aa": 59.1
         },
+        "rawScores": {
+          "aa-briefcase": 1686.07,
+          "omniscience-accuracy": 0.437,
+          "omniscience-non-hallucination": 0.7158081705150977,
+          "automationbench-aa": 0.7256119376604481,
+          "terminal-bench-science": 0.233333333333333,
+          "frontiercode-2-0": 0.264534595959596,
+          "hle-diamond": 0.449,
+          "gdp-pdf": 0.262,
+          "terminalbench-4-0": 0.484848484848485,
+          "critpt-v2-hard": 0.43,
+          "aa-analyst-agent": 0.4625,
+          "harvey-lab-aa": 0.09444444444444443,
+          "enterprise-ops-gym-aa": 0.4852282900626679,
+          "gdpval-aa-normalized": 1808.69,
+          "mlcr-aa": 0.194444444444444,
+          "apex-agents-aa": 0.591445427728614
+        },
+        "contextTokens": 983616,
+        "reasoning": true,
+        "openWeights": false,
+        "cacheHitPrice": 0.075,
+        "creator": "Alibaba",
         "source": "https://artificialanalysis.ai/leaderboards/models"
       }
     },
@@ -1443,30 +1598,30 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 72,
-      "tokens": 219892289174,
+      "tokens": 220693229304,
       "share": 0.0008,
       "percentile": 54.3
     },
     "ranking": {
       "status": "measured",
-      "composite": 64.4,
-      "low": 42.9,
-      "rank": 27,
+      "composite": 62.5,
+      "low": 40.5,
+      "rank": 32,
       "dims": {
         "coding": {
           "value": 43.4,
           "evidence": 1
         },
         "reasoning": {
-          "value": 72.7,
+          "value": 66.4,
           "evidence": 4
         },
         "knowledge": {
-          "value": 76.3,
+          "value": 76.2,
           "evidence": 4
         },
         "agentic": {
-          "value": 71.3,
+          "value": 71.1,
           "evidence": 8
         },
         "longContext": {
@@ -1482,7 +1637,7 @@
           "evidence": 1
         },
         "overall": {
-          "value": 64.4,
+          "value": 62.5,
           "evidence": 17
         }
       }
@@ -1668,6 +1823,11 @@
         "evaluated": "2026-08-14",
         "board": "https://rank.opencompass.org.cn/leaderboard/llm"
       },
+      "epoch": {
+        "eci": 157.1,
+        "date": "2026-08-14",
+        "board": "https://epoch.ai/eci"
+      },
       "llmLeaderboard": {
         "ttftSeconds": 0.947,
         "tokensPerSecond": 688.2,
@@ -1703,6 +1863,30 @@
           "scicode": 42,
           "critpt": 14.6
         },
+        "rawScores": {
+          "aa-briefcase": 1185.3,
+          "omniscience-accuracy": 0.319,
+          "omniscience-non-hallucination": 0.3675966715614293,
+          "automationbench-aa": 0.519790983751346,
+          "terminal-bench-science": 0.0380952380952381,
+          "frontiercode-2-0": 0.127379797979798,
+          "hle-diamond": 0.175,
+          "gdp-pdf": 0.088,
+          "terminalbench-4-0": 0.348484848484849,
+          "critpt-v2-hard": 0.215,
+          "gdpval-aa-normalized": 1332.3,
+          "mlcr-aa": 0.111111111111111,
+          "frontiercode": 0.349198666666667,
+          "humanitys-last-exam": 0.365616311399444,
+          "artificial-analysis-long-context-reasoning": 0.726666666666667,
+          "scicode": 0.420138888888889,
+          "critpt": 0.145714285714286
+        },
+        "contextTokens": 1000000,
+        "reasoning": true,
+        "openWeights": true,
+        "cacheHitPrice": 0.26,
+        "creator": "Z AI",
         "source": "https://artificialanalysis.ai/leaderboards/models"
       }
     },
@@ -1715,14 +1899,14 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 10,
-      "tokens": 4095216800847,
+      "tokens": 4103180253597,
       "share": 0.0142,
       "percentile": 91.3
     },
     "ranking": {
       "status": "measured",
-      "composite": 57.8,
-      "low": 51.1,
+      "composite": 55,
+      "low": 48.3,
       "rank": 8,
       "dims": {
         "coding": {
@@ -1730,8 +1914,8 @@
           "evidence": 6
         },
         "reasoning": {
-          "value": 56.1,
-          "evidence": 5
+          "value": 45.7,
+          "evidence": 7
         },
         "math": {
           "value": 63.7,
@@ -1742,12 +1926,12 @@
           "evidence": 7
         },
         "agentic": {
-          "value": 57.9,
+          "value": 57,
           "evidence": 5
         },
         "longContext": {
-          "value": 79.7,
-          "evidence": 1
+          "value": 72.5,
+          "evidence": 2
         },
         "vision": {
           "value": 0,
@@ -1758,8 +1942,8 @@
           "evidence": 2
         },
         "overall": {
-          "value": 57.8,
-          "evidence": 26
+          "value": 55,
+          "evidence": 28
         }
       }
     }
@@ -1870,6 +2054,11 @@
         "evaluated": "2026-07-16",
         "board": "https://rank.opencompass.org.cn/leaderboard/llm"
       },
+      "epoch": {
+        "eci": 158.6,
+        "date": "2026-07-16",
+        "board": "https://epoch.ai/eci"
+      },
       "llmLeaderboard": {
         "ttftSeconds": 1.659,
         "tokensPerSecond": 481.7,
@@ -1894,39 +2083,39 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 32,
-      "tokens": 1344545094040,
+      "tokens": 1346085987632,
       "share": 0.0047,
       "percentile": 78.3
     },
     "ranking": {
       "status": "measured",
-      "composite": 56.2,
-      "low": 46.9,
-      "rank": 14,
+      "composite": 52,
+      "low": 43,
+      "rank": 24,
       "dims": {
         "coding": {
           "value": 48.4,
           "evidence": 8
         },
         "reasoning": {
-          "value": 51.3,
-          "evidence": 6
+          "value": 43.3,
+          "evidence": 8
         },
         "math": {
           "value": 80.6,
           "evidence": 3
         },
         "knowledge": {
-          "value": 61.2,
+          "value": 61.1,
           "evidence": 5
         },
         "agentic": {
-          "value": 50.1,
-          "evidence": 4
+          "value": 39.3,
+          "evidence": 5
         },
         "longContext": {
-          "value": 88.7,
-          "evidence": 1
+          "value": 75.4,
+          "evidence": 2
         },
         "vision": {
           "value": 80.5,
@@ -1937,8 +2126,8 @@
           "evidence": 1
         },
         "overall": {
-          "value": 56.2,
-          "evidence": 26
+          "value": 52,
+          "evidence": 29
         }
       }
     }
@@ -2028,6 +2217,13 @@
       "262K reasoning budget in thinking mode",
       "5M TPM headroom for parallel agents"
     ],
+    "crossChecks": {
+      "epoch": {
+        "eci": 154.6,
+        "date": "2026-05-19",
+        "board": "https://epoch.ai/eci"
+      }
+    },
     "sources": [
       "https://help.aliyun.com/zh/model-studio/qwen3-7-max",
       "https://benchgecko.ai/compare/gpt-5-3-codex-vs-qwen3-7-max",
@@ -2038,47 +2234,47 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 231,
-      "tokens": 9416109433,
+      "tokens": 9429115704,
       "share": 0,
       "percentile": 10.9
     },
     "ranking": {
       "status": "measured",
-      "composite": 68.6,
-      "low": 59.8,
-      "rank": 2,
+      "composite": 63.7,
+      "low": 52,
+      "rank": 4,
       "dims": {
         "coding": {
           "value": 75.8,
           "evidence": 2
         },
         "reasoning": {
-          "value": 73.2,
-          "evidence": 3
+          "value": 53.6,
+          "evidence": 5
         },
         "math": {
           "value": 64.5,
           "evidence": 4
         },
         "knowledge": {
-          "value": 75.7,
-          "evidence": 3
+          "value": 75.3,
+          "evidence": 4
         },
         "agentic": {
           "value": 51.7,
           "evidence": 1
         },
         "longContext": {
-          "value": 99,
-          "evidence": 0
+          "value": 51.8,
+          "evidence": 1
         },
         "vision": {
           "value": 0,
           "evidence": 0
         },
         "overall": {
-          "value": 68.6,
-          "evidence": 13
+          "value": 63.7,
+          "evidence": 16
         }
       }
     }
@@ -2176,47 +2372,47 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 130,
-      "tokens": 54227074425,
+      "tokens": 54264825327,
       "share": 0.0002,
       "percentile": 43.5
     },
     "ranking": {
       "status": "measured",
-      "composite": 39.6,
-      "low": 23.1,
-      "rank": 57,
+      "composite": 39.9,
+      "low": 23.4,
+      "rank": 56,
       "dims": {
         "coding": {
           "value": 28.2,
           "evidence": 2
         },
         "reasoning": {
-          "value": 22.4,
-          "evidence": 2
+          "value": 18.3,
+          "evidence": 4
         },
         "math": {
           "value": 64.8,
           "evidence": 2
         },
         "knowledge": {
-          "value": 51.1,
-          "evidence": 2
+          "value": 60,
+          "evidence": 3
         },
         "agentic": {
           "value": 47.6,
           "evidence": 3
         },
         "longContext": {
-          "value": 73,
-          "evidence": 1
+          "value": 58.6,
+          "evidence": 2
         },
         "vision": {
           "value": 80.5,
           "evidence": 1
         },
         "overall": {
-          "value": 39.6,
-          "evidence": 11
+          "value": 39.9,
+          "evidence": 14
         }
       }
     }
@@ -2300,6 +2496,13 @@
     "distinguishing": [
       "spatial vision for object detection and UI grounding"
     ],
+    "crossChecks": {
+      "epoch": {
+        "eci": 143.8,
+        "date": "2026-04-27",
+        "board": "https://epoch.ai/eci"
+      }
+    },
     "sources": [
       "https://help.aliyun.com/zh/model-studio/qwen3-6-flash",
       "https://benchgecko.ai/model/qwen3-6-flash"
@@ -2308,47 +2511,47 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 217,
-      "tokens": 12318636269,
+      "tokens": 12327547471,
       "share": 0,
       "percentile": 15.2
     },
     "ranking": {
       "status": "measured",
-      "composite": 54.6,
-      "low": 41.1,
-      "rank": 35,
+      "composite": 50.4,
+      "low": 36.6,
+      "rank": 42,
       "dims": {
         "coding": {
           "value": 64.9,
           "evidence": 1
         },
         "reasoning": {
-          "value": 48,
-          "evidence": 3
+          "value": 32.2,
+          "evidence": 5
         },
         "math": {
           "value": 60.1,
           "evidence": 3
         },
         "knowledge": {
-          "value": 53.4,
-          "evidence": 3
+          "value": 51.8,
+          "evidence": 4
         },
         "agentic": {
           "value": 46.7,
           "evidence": 1
         },
         "longContext": {
-          "value": 99,
-          "evidence": 0
+          "value": 36.5,
+          "evidence": 1
         },
         "vision": {
           "value": 100,
           "evidence": 0
         },
         "overall": {
-          "value": 54.6,
-          "evidence": 11
+          "value": 50.4,
+          "evidence": 14
         }
       }
     }
@@ -2448,6 +2651,11 @@
       "coding 58.1 slightly above glm-5.3 in BenchGecko samples"
     ],
     "crossChecks": {
+      "epoch": {
+        "eci": 153,
+        "date": "2026-06-16",
+        "board": "https://epoch.ai/eci"
+      },
       "llmLeaderboard": {
         "ttftSeconds": 1.777,
         "tokensPerSecond": 94.1,
@@ -2468,39 +2676,39 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 35,
-      "tokens": 1063536369452,
+      "tokens": 1065248962876,
       "share": 0.0037,
       "percentile": 76.1
     },
     "ranking": {
       "status": "measured",
-      "composite": 61.4,
-      "low": 42.1,
-      "rank": 32,
+      "composite": 57.5,
+      "low": 37.1,
+      "rank": 41,
       "dims": {
         "coding": {
           "value": 61.9,
           "evidence": 7
         },
         "reasoning": {
-          "value": 63.2,
-          "evidence": 4
+          "value": 46.9,
+          "evidence": 6
         },
         "math": {
           "value": 64.3,
           "evidence": 4
         },
         "knowledge": {
-          "value": 57.6,
-          "evidence": 4
+          "value": 58.4,
+          "evidence": 5
         },
         "agentic": {
           "value": 59.3,
           "evidence": 2
         },
         "longContext": {
-          "value": 100,
-          "evidence": 0
+          "value": 53.9,
+          "evidence": 1
         },
         "vision": {
           "value": 0,
@@ -2511,8 +2719,8 @@
           "evidence": 1
         },
         "overall": {
-          "value": 61.4,
-          "evidence": 21
+          "value": 57.5,
+          "evidence": 24
         }
       }
     }
@@ -2593,7 +2801,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 11,
-      "tokens": 3937018987183,
+      "tokens": 3943226959286,
       "share": 0.0137,
       "percentile": 89.1
     }
@@ -2674,7 +2882,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 1,
-      "tokens": 69740904760259,
+      "tokens": 69825430138208,
       "share": 0.2419,
       "percentile": 100
     }
@@ -2751,8 +2959,8 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 60.7,
-      "low": 38.7,
+      "composite": 58.4,
+      "low": 36.4,
       "rank": 43,
       "dims": {
         "coding": {
@@ -2760,11 +2968,11 @@
           "evidence": 1
         },
         "knowledge": {
-          "value": 49.8,
+          "value": 49.1,
           "evidence": 1
         },
         "agentic": {
-          "value": 60.5,
+          "value": 53.9,
           "evidence": 1
         },
         "longContext": {
@@ -2780,7 +2988,7 @@
           "evidence": 2
         },
         "overall": {
-          "value": 60.7,
+          "value": 58.4,
           "evidence": 3
         }
       }
@@ -2788,7 +2996,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 11,
-      "tokens": 3937018987183,
+      "tokens": 3943226959286,
       "share": 0.0137,
       "percentile": 89.1
     }
@@ -2885,24 +3093,24 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 59.8,
-      "low": 42.8,
-      "rank": 30,
+      "composite": 57.5,
+      "low": 41.2,
+      "rank": 26,
       "dims": {
         "coding": {
           "value": 50.8,
           "evidence": 4
         },
         "reasoning": {
-          "value": 80.6,
+          "value": 75,
           "evidence": 2
         },
         "knowledge": {
-          "value": 52.4,
-          "evidence": 4
+          "value": 50.1,
+          "evidence": 5
         },
         "agentic": {
-          "value": 50.6,
+          "value": 49.5,
           "evidence": 6
         },
         "longContext": {
@@ -2918,15 +3126,15 @@
           "evidence": 1
         },
         "overall": {
-          "value": 59.8,
-          "evidence": 16
+          "value": 57.5,
+          "evidence": 17
         }
       }
     },
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 13,
-      "tokens": 3802937482872,
+      "tokens": 3807736496054,
       "share": 0.0132,
       "percentile": 87
     }
@@ -3023,24 +3231,24 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 58.8,
-      "low": 41,
-      "rank": 37,
+      "composite": 56.7,
+      "low": 38.4,
+      "rank": 40,
       "dims": {
         "coding": {
           "value": 51.5,
           "evidence": 4
         },
         "reasoning": {
-          "value": 79.1,
+          "value": 73.5,
           "evidence": 2
         },
         "knowledge": {
-          "value": 48.7,
-          "evidence": 4
+          "value": 47.1,
+          "evidence": 5
         },
         "agentic": {
-          "value": 50.3,
+          "value": 49.2,
           "evidence": 6
         },
         "longContext": {
@@ -3052,15 +3260,15 @@
           "evidence": 0
         },
         "overall": {
-          "value": 58.8,
-          "evidence": 16
+          "value": 56.7,
+          "evidence": 17
         }
       }
     },
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 8,
-      "tokens": 7347747647383,
+      "tokens": 7347780417103,
       "share": 0.0255,
       "percentile": 93.5
     }
@@ -3163,24 +3371,24 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 61,
-      "low": 43.4,
-      "rank": 23,
+      "composite": 58.4,
+      "low": 40.7,
+      "rank": 30,
       "dims": {
         "coding": {
           "value": 49.5,
           "evidence": 4
         },
         "reasoning": {
-          "value": 73.1,
+          "value": 67.5,
           "evidence": 2
         },
         "knowledge": {
-          "value": 60.3,
-          "evidence": 4
+          "value": 56.4,
+          "evidence": 5
         },
         "agentic": {
-          "value": 60.7,
+          "value": 59.6,
           "evidence": 6
         },
         "longContext": {
@@ -3196,15 +3404,15 @@
           "evidence": 1
         },
         "overall": {
-          "value": 61,
-          "evidence": 16
+          "value": 58.4,
+          "evidence": 17
         }
       }
     },
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 5,
-      "tokens": 13145837441651,
+      "tokens": 13160124480039,
       "share": 0.0456,
       "percentile": 95.7
     }
@@ -3289,8 +3497,8 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 52.2,
-      "low": 40.7,
+      "composite": 49.9,
+      "low": 38.5,
       "rank": 39,
       "dims": {
         "coding": {
@@ -3298,12 +3506,12 @@
           "evidence": 3
         },
         "reasoning": {
-          "value": 75.5,
+          "value": 69.9,
           "evidence": 2
         },
         "knowledge": {
-          "value": 56.7,
-          "evidence": 3
+          "value": 53,
+          "evidence": 4
         },
         "agentic": {
           "value": 38.7,
@@ -3318,15 +3526,15 @@
           "evidence": 0
         },
         "overall": {
-          "value": 52.2,
-          "evidence": 13
+          "value": 49.9,
+          "evidence": 14
         }
       }
     },
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 42,
-      "tokens": 823070094705,
+      "tokens": 824204542298,
       "share": 0.0029,
       "percentile": 69.6
     }
@@ -3403,6 +3611,36 @@
           "gpqa-diamond": 90.5,
           "tau3-banking": 48
         },
+        "rawScores": {
+          "aa-briefcase": 1391.36,
+          "omniscience-accuracy": 0.173,
+          "omniscience-non-hallucination": 0.7138250705360742,
+          "automationbench-aa": 0.48242443682241926,
+          "terminal-bench-science": 0.00476190476190476,
+          "frontiercode-2-0": 0.149142929292929,
+          "hle-diamond": 0.153,
+          "gdp-pdf": 0.164,
+          "terminalbench-4-0": 0.0555555555555556,
+          "critpt-v2-hard": 0.04,
+          "enterprise-ops-gym-aa": 0.4422560429722471,
+          "gdpval-aa-normalized": 1426.15,
+          "code2video-aa": 949.04,
+          "mlcr-aa": 0.227777777777778,
+          "mmmu-pro": 0.763005780346821,
+          "frontiercode": 0.342324,
+          "humanitys-last-exam": 0.33920296570899,
+          "artificial-analysis-long-context-reasoning": 0.82,
+          "scicode": 0.466435185185185,
+          "critpt": 0.0542857142857143,
+          "terminalbench-2-1": 0.797752808988764,
+          "gpqa-diamond": 0.905050505050505,
+          "tau3-banking": 0.480412371134021
+        },
+        "contextTokens": 256000,
+        "reasoning": true,
+        "openWeights": true,
+        "cacheHitPrice": 0.1,
+        "creator": "Alibaba",
         "source": "https://artificialanalysis.ai/leaderboards/models"
       },
       "epoch": {
@@ -3425,24 +3663,24 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 62.9,
-      "low": 41.4,
-      "rank": 33,
+      "composite": 61,
+      "low": 38.7,
+      "rank": 38,
       "dims": {
         "coding": {
           "value": 59.2,
           "evidence": 3
         },
         "reasoning": {
-          "value": 60.1,
+          "value": 54.5,
           "evidence": 2
         },
         "knowledge": {
-          "value": 76.4,
+          "value": 76.3,
           "evidence": 4
         },
         "agentic": {
-          "value": 61.1,
+          "value": 60,
           "evidence": 6
         },
         "longContext": {
@@ -3458,7 +3696,7 @@
           "evidence": 1
         },
         "overall": {
-          "value": 62.9,
+          "value": 61,
           "evidence": 15
         }
       }
@@ -3466,7 +3704,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 37,
-      "tokens": 943437172313,
+      "tokens": 944462752195,
       "share": 0.0033,
       "percentile": 71.7
     }
@@ -3547,7 +3785,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 10,
-      "tokens": 4095216800847,
+      "tokens": 4103180253597,
       "share": 0.0142,
       "percentile": 91.3
     }
@@ -3619,13 +3857,37 @@
           "gpqa-diamond": 93.5,
           "tau3-banking": 49.1
         },
+        "rawScores": {
+          "aa-briefcase": 1429.66,
+          "omniscience-accuracy": 0.314,
+          "omniscience-non-hallucination": 0.6554907677356656,
+          "automationbench-aa": 0.572473765458222,
+          "hle-diamond": 0.201,
+          "gdp-pdf": 0.156,
+          "terminalbench-4-0": 0.111111111111111,
+          "enterprise-ops-gym-aa": 0.4735899731423456,
+          "gdpval-aa-normalized": 1613.86,
+          "mlcr-aa": 0.305555555555556,
+          "humanitys-last-exam": 0.424467099165894,
+          "artificial-analysis-long-context-reasoning": 0.803333333333333,
+          "scicode": 0.540509259259259,
+          "critpt": 0.2,
+          "terminalbench-2-1": 0.820224719101124,
+          "gpqa-diamond": 0.935353535353535,
+          "tau3-banking": 0.490721649484536
+        },
+        "contextTokens": 262000,
+        "reasoning": true,
+        "openWeights": true,
+        "cacheHitPrice": 0.25,
+        "creator": "Alibaba",
         "source": "https://artificialanalysis.ai/leaderboards/models"
       }
     },
     "ranking": {
       "status": "measured",
-      "composite": 74.7,
-      "low": 62.5,
+      "composite": 73,
+      "low": 60.8,
       "rank": 1,
       "dims": {
         "coding": {
@@ -3633,7 +3895,7 @@
           "evidence": 1
         },
         "reasoning": {
-          "value": 71.1,
+          "value": 65.4,
           "evidence": 2
         },
         "knowledge": {
@@ -3657,7 +3919,7 @@
           "evidence": 1
         },
         "overall": {
-          "value": 74.7,
+          "value": 73,
           "evidence": 11
         }
       }
@@ -3665,7 +3927,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 167,
-      "tokens": 29207928665,
+      "tokens": 29233256852,
       "share": 0.0001,
       "percentile": 34.8
     }
@@ -3765,21 +4027,21 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 55.1,
-      "low": 42.3,
-      "rank": 31,
+      "composite": 54.7,
+      "low": 41.4,
+      "rank": 25,
       "dims": {
         "coding": {
           "value": 40.1,
           "evidence": 3
         },
         "reasoning": {
-          "value": 66.8,
+          "value": 61.2,
           "evidence": 2
         },
         "knowledge": {
-          "value": 63.3,
-          "evidence": 4
+          "value": 70.5,
+          "evidence": 5
         },
         "agentic": {
           "value": 53,
@@ -3798,15 +4060,15 @@
           "evidence": 1
         },
         "overall": {
-          "value": 55.1,
-          "evidence": 14
+          "value": 54.7,
+          "evidence": 15
         }
       }
     },
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 48,
-      "tokens": 642793925875,
+      "tokens": 643609102948,
       "share": 0.0022,
       "percentile": 67.4
     }
@@ -3887,7 +4149,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 119,
-      "tokens": 69829080401,
+      "tokens": 69920553093,
       "share": 0.0002,
       "percentile": 47.8
     }
@@ -3973,7 +4235,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 119,
-      "tokens": 69829080401,
+      "tokens": 69920553093,
       "share": 0.0002,
       "percentile": 47.8
     }
@@ -4048,6 +4310,33 @@
           "tau3-banking": 17.5,
           "apex-agents-aa": 22.4
         },
+        "rawScores": {
+          "aa-briefcase": 915.09,
+          "automationbench-aa": 0.17391220980015495,
+          "hle-diamond": 0.139,
+          "gdp-pdf": 0.122,
+          "terminalbench-4-0": 0.0101010101010101,
+          "enterprise-ops-gym-aa": 0.40555058191584603,
+          "gdpval-aa-normalized": 774.43,
+          "mlcr-aa": 0.0888888888888889,
+          "mmmu-pro": 0.804624277456647,
+          "humanitys-last-exam": 0.356348470806302,
+          "artificial-analysis-long-context-reasoning": 0.73,
+          "scicode": 0.460648148148148,
+          "critpt": 0.0914285714285714,
+          "terminalbench-hard": 0.46969696969697,
+          "terminalbench-2-1": 0.610486891385768,
+          "tau2-bench": 0.929824561403509,
+          "gpqa-diamond": 0.9,
+          "ifbench": 0.779591836734694,
+          "tau3-banking": 0.175257731958763,
+          "apex-agents-aa": 0.224188790560472
+        },
+        "contextTokens": 1000000,
+        "reasoning": true,
+        "openWeights": false,
+        "cacheHitPrice": 0.08,
+        "creator": "Alibaba",
         "source": "https://artificialanalysis.ai/leaderboards/models"
       },
       "epoch": {
@@ -4058,21 +4347,21 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 65.4,
-      "low": 53.1,
-      "rank": 6,
+      "composite": 65.1,
+      "low": 52.9,
+      "rank": 3,
       "dims": {
         "coding": {
           "value": 63,
           "evidence": 1
         },
         "reasoning": {
-          "value": 62.4,
+          "value": 56.8,
           "evidence": 2
         },
         "knowledge": {
-          "value": 77,
-          "evidence": 2
+          "value": 84.6,
+          "evidence": 3
         },
         "agentic": {
           "value": 63.3,
@@ -4091,8 +4380,8 @@
           "evidence": 1
         },
         "overall": {
-          "value": 65.4,
-          "evidence": 11
+          "value": 65.1,
+          "evidence": 12
         }
       }
     }
@@ -4164,6 +4453,30 @@
           "ifbench": 64.4,
           "tau3-banking": 9.3
         },
+        "rawScores": {
+          "aa-briefcase": 712.58,
+          "automationbench-aa": 0.05208565614505884,
+          "hle-diamond": 0.069,
+          "gdp-pdf": 0.066,
+          "terminalbench-4-0": 0,
+          "gdpval-aa-normalized": 898.86,
+          "mlcr-aa": 0.05,
+          "mmmu-pro": 0.75028901734104,
+          "humanitys-last-exam": 0.222428174235403,
+          "artificial-analysis-long-context-reasoning": 0.716666666666667,
+          "scicode": 0.365740740740741,
+          "critpt": 0.00285714285714286,
+          "terminalbench-hard": 0.348484848484849,
+          "terminalbench-2-1": 0.449438202247191,
+          "tau2-bench": 0.953216374269006,
+          "gpqa-diamond": 0.841414141414142,
+          "ifbench": 0.643537414965986,
+          "tau3-banking": 0.0927835051546392
+        },
+        "contextTokens": 262144,
+        "reasoning": true,
+        "openWeights": true,
+        "creator": "Alibaba",
         "source": "https://artificialanalysis.ai/leaderboards/models"
       },
       "epoch": {
@@ -4174,21 +4487,21 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 58.6,
+      "composite": 58.5,
       "low": 46.2,
-      "rank": 15,
+      "rank": 12,
       "dims": {
         "coding": {
           "value": 53.5,
           "evidence": 1
         },
         "reasoning": {
-          "value": 52.9,
+          "value": 47.3,
           "evidence": 2
         },
         "knowledge": {
-          "value": 74.2,
-          "evidence": 2
+          "value": 82.8,
+          "evidence": 3
         },
         "agentic": {
           "value": 60.4,
@@ -4207,15 +4520,15 @@
           "evidence": 1
         },
         "overall": {
-          "value": 58.6,
-          "evidence": 9
+          "value": 58.5,
+          "evidence": 10
         }
       }
     },
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 68,
-      "tokens": 265270545500,
+      "tokens": 266062404306,
       "share": 0.0009,
       "percentile": 58.7
     }
@@ -4287,26 +4600,50 @@
           "ifbench": 75.7,
           "tau3-banking": 15.3
         },
+        "rawScores": {
+          "aa-briefcase": 498.53,
+          "automationbench-aa": 0.054811162302925646,
+          "hle-diamond": 0.073,
+          "gdp-pdf": 0.034,
+          "terminalbench-4-0": 0,
+          "gdpval-aa-normalized": 821.09,
+          "mlcr-aa": 0.0777777777777778,
+          "mmmu-pro": 0.74971098265896,
+          "humanitys-last-exam": 0.252085264133457,
+          "artificial-analysis-long-context-reasoning": 0.763333333333333,
+          "scicode": 0.396990740740741,
+          "critpt": 0.00571428571428571,
+          "terminalbench-hard": 0.310606060606061,
+          "terminalbench-2-1": 0.47565543071161,
+          "tau2-bench": 0.935672514619883,
+          "gpqa-diamond": 0.856565656565657,
+          "ifbench": 0.757142857142857,
+          "tau3-banking": 0.152577319587629
+        },
+        "contextTokens": 262144,
+        "reasoning": true,
+        "openWeights": true,
+        "creator": "Alibaba",
         "source": "https://artificialanalysis.ai/leaderboards/models"
       }
     },
     "ranking": {
       "status": "measured",
-      "composite": 59.9,
+      "composite": 59.8,
       "low": 47.5,
-      "rank": 12,
+      "rank": 10,
       "dims": {
         "coding": {
           "value": 56.6,
           "evidence": 1
         },
         "reasoning": {
-          "value": 53.9,
+          "value": 48.3,
           "evidence": 2
         },
         "knowledge": {
-          "value": 72.6,
-          "evidence": 2
+          "value": 81.7,
+          "evidence": 3
         },
         "agentic": {
           "value": 61.9,
@@ -4325,15 +4662,15 @@
           "evidence": 1
         },
         "overall": {
-          "value": 59.9,
-          "evidence": 9
+          "value": 59.8,
+          "evidence": 10
         }
       }
     },
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 235,
-      "tokens": 8686546571,
+      "tokens": 8713000305,
       "share": 0,
       "percentile": 6.5
     }
@@ -4398,6 +4735,20 @@
           "gpqa-diamond": 86.1,
           "ifbench": 51.6
         },
+        "rawScores": {
+          "mmmu-pro": 0.526589595375723,
+          "humanitys-last-exam": 0.198331788693234,
+          "artificial-analysis-long-context-reasoning": 0.643333333333333,
+          "critpt": 0.00857142857142857,
+          "terminalbench-hard": 0.356060606060606,
+          "tau2-bench": 0.839181286549708,
+          "gpqa-diamond": 0.860606060606061,
+          "ifbench": 0.516326530612245
+        },
+        "contextTokens": 262144,
+        "reasoning": false,
+        "openWeights": true,
+        "creator": "Alibaba",
         "source": "https://artificialanalysis.ai/leaderboards/models"
       },
       "epoch": {
@@ -4419,15 +4770,15 @@
       "status": "measured",
       "composite": 67,
       "low": 40.3,
-      "rank": 41,
+      "rank": 34,
       "dims": {
         "reasoning": {
-          "value": 55.8,
+          "value": 50.2,
           "evidence": 2
         },
         "knowledge": {
-          "value": 65.3,
-          "evidence": 2
+          "value": 74.4,
+          "evidence": 3
         },
         "agentic": {
           "value": 82.4,
@@ -4447,14 +4798,14 @@
         },
         "overall": {
           "value": 67,
-          "evidence": 6
+          "evidence": 7
         }
       }
     },
     "usage": {
       "source": "openrouter-top-weekly",
-      "rank": 170,
-      "tokens": 28519185846,
+      "rank": 171,
+      "tokens": 28526048481,
       "share": 0.0001,
       "percentile": 32.6
     }
@@ -4539,8 +4890,8 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 54.4,
-      "low": 42.9,
+      "composite": 52.3,
+      "low": 40.9,
       "rank": 29,
       "dims": {
         "coding": {
@@ -4548,12 +4899,12 @@
           "evidence": 3
         },
         "reasoning": {
-          "value": 80.2,
+          "value": 74.6,
           "evidence": 2
         },
         "knowledge": {
-          "value": 50.5,
-          "evidence": 3
+          "value": 48.3,
+          "evidence": 4
         },
         "agentic": {
           "value": 44.5,
@@ -4568,15 +4919,15 @@
           "evidence": 0
         },
         "overall": {
-          "value": 54.4,
-          "evidence": 13
+          "value": 52.3,
+          "evidence": 14
         }
       }
     },
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 120,
-      "tokens": 69796794653,
+      "tokens": 69865421691,
       "share": 0.0002,
       "percentile": 45.7
     }
@@ -4752,24 +5103,24 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 64,
-      "low": 49,
-      "rank": 9,
+      "composite": 61.6,
+      "low": 47.2,
+      "rank": 11,
       "dims": {
         "coding": {
           "value": 53.8,
           "evidence": 4
         },
         "reasoning": {
-          "value": 84,
+          "value": 78.4,
           "evidence": 2
         },
         "knowledge": {
-          "value": 56,
-          "evidence": 4
+          "value": 53,
+          "evidence": 5
         },
         "agentic": {
-          "value": 57.9,
+          "value": 56.8,
           "evidence": 6
         },
         "longContext": {
@@ -4785,8 +5136,8 @@
           "evidence": 1
         },
         "overall": {
-          "value": 64,
-          "evidence": 16
+          "value": 61.6,
+          "evidence": 17
         }
       }
     }
@@ -4883,24 +5234,24 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 61.3,
-      "low": 44.9,
-      "rank": 17,
+      "composite": 59.1,
+      "low": 43.8,
+      "rank": 18,
       "dims": {
         "coding": {
           "value": 53.4,
           "evidence": 4
         },
         "reasoning": {
-          "value": 83.4,
+          "value": 77.8,
           "evidence": 2
         },
         "knowledge": {
-          "value": 49.4,
-          "evidence": 4
+          "value": 47.7,
+          "evidence": 5
         },
         "agentic": {
-          "value": 52.4,
+          "value": 51.3,
           "evidence": 6
         },
         "longContext": {
@@ -4912,15 +5263,15 @@
           "evidence": 0
         },
         "overall": {
-          "value": 61.3,
-          "evidence": 16
+          "value": 59.1,
+          "evidence": 17
         }
       }
     },
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 232,
-      "tokens": 9388951592,
+      "tokens": 9392954612,
       "share": 0,
       "percentile": 8.7
     }
@@ -5001,7 +5352,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 173,
-      "tokens": 27194300906,
+      "tokens": 27230024390,
       "share": 0.0001,
       "percentile": 28.3
     }
@@ -5082,7 +5433,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 87,
-      "tokens": 150471078459,
+      "tokens": 150835691360,
       "share": 0.0005,
       "percentile": 52.2
     }
@@ -5163,7 +5514,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 3,
-      "tokens": 17914109069859,
+      "tokens": 17937445707030,
       "share": 0.0621,
       "percentile": 97.8
     }
@@ -5248,21 +5599,21 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 58.8,
-      "low": 47.3,
-      "rank": 13,
+      "composite": 55.6,
+      "low": 44.2,
+      "rank": 16,
       "dims": {
         "coding": {
           "value": 43.2,
           "evidence": 3
         },
         "reasoning": {
-          "value": 74.9,
+          "value": 69.3,
           "evidence": 2
         },
         "knowledge": {
-          "value": 76.2,
-          "evidence": 3
+          "value": 67.6,
+          "evidence": 4
         },
         "agentic": {
           "value": 45,
@@ -5277,15 +5628,15 @@
           "evidence": 0
         },
         "overall": {
-          "value": 58.8,
-          "evidence": 13
+          "value": 55.6,
+          "evidence": 14
         }
       }
     },
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 49,
-      "tokens": 627678629735,
+      "tokens": 628588368833,
       "share": 0.0022,
       "percentile": 65.2
     }
@@ -5358,6 +5709,31 @@
           "ifbench": 63.1,
           "tau3-banking": 20.2
         },
+        "rawScores": {
+          "aa-briefcase": 858.25,
+          "automationbench-aa": 0.24454304615216713,
+          "hle-diamond": 0.148,
+          "gdp-pdf": 0.112,
+          "terminalbench-4-0": 0.0101010101010101,
+          "enterprise-ops-gym-aa": 0.40226797970754996,
+          "gdpval-aa-normalized": 1045.88,
+          "mlcr-aa": 0.122222222222222,
+          "humanitys-last-exam": 0.35032437442076,
+          "artificial-analysis-long-context-reasoning": 0.793333333333333,
+          "scicode": 0.478009259259259,
+          "critpt": 0.1,
+          "terminalbench-hard": 0.446969696969697,
+          "terminalbench-2-1": 0.674157303370786,
+          "tau2-bench": 0.900584795321637,
+          "gpqa-diamond": 0.895959595959596,
+          "ifbench": 0.631292517006803,
+          "tau3-banking": 0.202061855670103
+        },
+        "contextTokens": 256000,
+        "reasoning": true,
+        "openWeights": true,
+        "cacheHitPrice": 0.19,
+        "creator": "Kimi",
         "source": "https://artificialanalysis.ai/leaderboards/models"
       },
       "epoch": {
@@ -5368,21 +5744,21 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 67,
-      "low": 54.6,
-      "rank": 4,
+      "composite": 66.7,
+      "low": 54.4,
+      "rank": 2,
       "dims": {
         "coding": {
           "value": 64.7,
           "evidence": 1
         },
         "reasoning": {
-          "value": 62.9,
+          "value": 57.3,
           "evidence": 2
         },
         "knowledge": {
-          "value": 76.5,
-          "evidence": 2
+          "value": 84.3,
+          "evidence": 3
         },
         "agentic": {
           "value": 67.8,
@@ -5401,8 +5777,8 @@
           "evidence": 1
         },
         "overall": {
-          "value": 67,
-          "evidence": 10
+          "value": 66.7,
+          "evidence": 11
         }
       }
     }
@@ -5483,7 +5859,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 293,
-      "tokens": 2853767503,
+      "tokens": 2860176377,
       "share": 0,
       "percentile": 0
     }
@@ -5573,21 +5949,21 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 65.5,
-      "low": 54,
-      "rank": 5,
+      "composite": 61.7,
+      "low": 50.3,
+      "rank": 6,
       "dims": {
         "coding": {
           "value": 46.9,
           "evidence": 3
         },
         "reasoning": {
-          "value": 76.1,
+          "value": 70.5,
           "evidence": 2
         },
         "knowledge": {
-          "value": 90.1,
-          "evidence": 3
+          "value": 78,
+          "evidence": 4
         },
         "agentic": {
           "value": 56.9,
@@ -5602,15 +5978,15 @@
           "evidence": 0
         },
         "overall": {
-          "value": 65.5,
-          "evidence": 13
+          "value": 61.7,
+          "evidence": 14
         }
       }
     },
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 293,
-      "tokens": 2853767503,
+      "tokens": 2860176377,
       "share": 0,
       "percentile": 0
     }
@@ -5695,21 +6071,21 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 59.4,
-      "low": 47.9,
-      "rank": 11,
+      "composite": 57.1,
+      "low": 45.7,
+      "rank": 13,
       "dims": {
         "coding": {
           "value": 47.6,
           "evidence": 3
         },
         "reasoning": {
-          "value": 79.1,
+          "value": 73.4,
           "evidence": 2
         },
         "knowledge": {
-          "value": 54.9,
-          "evidence": 3
+          "value": 51.6,
+          "evidence": 4
         },
         "agentic": {
           "value": 52.8,
@@ -5724,8 +6100,8 @@
           "evidence": 0
         },
         "overall": {
-          "value": 59.4,
-          "evidence": 13
+          "value": 57.1,
+          "evidence": 14
         }
       }
     }
@@ -5808,21 +6184,21 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 52.5,
-      "low": 40.8,
-      "rank": 38,
+      "composite": 52.6,
+      "low": 41,
+      "rank": 28,
       "dims": {
         "coding": {
           "value": 31.5,
           "evidence": 3
         },
         "reasoning": {
-          "value": 57.3,
+          "value": 51.7,
           "evidence": 2
         },
         "knowledge": {
-          "value": 70.9,
-          "evidence": 2
+          "value": 80.6,
+          "evidence": 3
         },
         "agentic": {
           "value": 59.1,
@@ -5833,15 +6209,15 @@
           "evidence": 0
         },
         "overall": {
-          "value": 52.5,
-          "evidence": 11
+          "value": 52.6,
+          "evidence": 12
         }
       }
     },
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 204,
-      "tokens": 14120722503,
+      "tokens": 14170127610,
       "share": 0,
       "percentile": 19.6
     }
@@ -5925,21 +6301,21 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 66.9,
-      "low": 55.3,
-      "rank": 3,
+      "composite": 61.9,
+      "low": 50.4,
+      "rank": 5,
       "dims": {
         "coding": {
           "value": 44,
           "evidence": 3
         },
         "reasoning": {
-          "value": 80.6,
+          "value": 75,
           "evidence": 2
         },
         "knowledge": {
-          "value": 98.2,
-          "evidence": 2
+          "value": 79.4,
+          "evidence": 3
         },
         "agentic": {
           "value": 54.9,
@@ -5950,15 +6326,15 @@
           "evidence": 0
         },
         "overall": {
-          "value": 66.9,
-          "evidence": 12
+          "value": 61.9,
+          "evidence": 13
         }
       }
     },
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 32,
-      "tokens": 1344545094040,
+      "tokens": 1346085987632,
       "share": 0.0047,
       "percentile": 78.3
     }
@@ -6043,21 +6419,21 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 59.5,
-      "low": 48,
-      "rank": 10,
+      "composite": 59.2,
+      "low": 47.8,
+      "rank": 9,
       "dims": {
         "coding": {
           "value": 34,
           "evidence": 3
         },
         "reasoning": {
-          "value": 76.4,
+          "value": 70.8,
           "evidence": 2
         },
         "knowledge": {
-          "value": 68.2,
-          "evidence": 3
+          "value": 76.1,
+          "evidence": 4
         },
         "agentic": {
           "value": 63.6,
@@ -6068,15 +6444,15 @@
           "evidence": 0
         },
         "overall": {
-          "value": 59.5,
-          "evidence": 13
+          "value": 59.2,
+          "evidence": 14
         }
       }
     },
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 35,
-      "tokens": 1063536369452,
+      "tokens": 1065248962876,
       "share": 0.0037,
       "percentile": 76.1
     }
@@ -6160,21 +6536,21 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 54.6,
-      "low": 43,
-      "rank": 26,
+      "composite": 54.7,
+      "low": 43.2,
+      "rank": 21,
       "dims": {
         "coding": {
           "value": 31.8,
           "evidence": 3
         },
         "reasoning": {
-          "value": 62.8,
+          "value": 57.2,
           "evidence": 2
         },
         "knowledge": {
-          "value": 70.9,
-          "evidence": 2
+          "value": 80.6,
+          "evidence": 3
         },
         "agentic": {
           "value": 60.8,
@@ -6185,15 +6561,15 @@
           "evidence": 0
         },
         "overall": {
-          "value": 54.6,
-          "evidence": 12
+          "value": 54.7,
+          "evidence": 13
         }
       }
     },
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 184,
-      "tokens": 23082503758,
+      "tokens": 23103490194,
       "share": 0.0001,
       "percentile": 26.1
     }
@@ -6278,20 +6654,20 @@
     "ranking": {
       "status": "measured",
       "composite": 56.2,
-      "low": 44.6,
-      "rank": 19,
+      "low": 44.7,
+      "rank": 14,
       "dims": {
         "coding": {
           "value": 34.1,
           "evidence": 3
         },
         "reasoning": {
-          "value": 68.2,
+          "value": 62.6,
           "evidence": 2
         },
         "knowledge": {
-          "value": 70.9,
-          "evidence": 2
+          "value": 80.6,
+          "evidence": 3
         },
         "agentic": {
           "value": 57.6,
@@ -6303,14 +6679,14 @@
         },
         "overall": {
           "value": 56.2,
-          "evidence": 12
+          "evidence": 13
         }
       }
     },
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 97,
-      "tokens": 109880668967,
+      "tokens": 110001524692,
       "share": 0.0004,
       "percentile": 50
     }
@@ -6399,21 +6775,21 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 50.4,
-      "low": 38.8,
-      "rank": 42,
+      "composite": 50.5,
+      "low": 39,
+      "rank": 37,
       "dims": {
         "coding": {
           "value": 31.2,
           "evidence": 3
         },
         "reasoning": {
-          "value": 57.5,
+          "value": 51.9,
           "evidence": 2
         },
         "knowledge": {
-          "value": 70.9,
-          "evidence": 2
+          "value": 80.6,
+          "evidence": 3
         },
         "agentic": {
           "value": 50.3,
@@ -6424,15 +6800,15 @@
           "evidence": 0
         },
         "overall": {
-          "value": 50.4,
-          "evidence": 12
+          "value": 50.5,
+          "evidence": 13
         }
       }
     },
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 207,
-      "tokens": 13657514331,
+      "tokens": 13674854297,
       "share": 0,
       "percentile": 17.4
     }
@@ -6531,21 +6907,21 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 53.6,
-      "low": 41.3,
-      "rank": 34,
+      "composite": 53.8,
+      "low": 40.6,
+      "rank": 31,
       "dims": {
         "coding": {
           "value": 34.1,
           "evidence": 3
         },
         "reasoning": {
-          "value": 68.2,
+          "value": 62.6,
           "evidence": 2
         },
         "knowledge": {
-          "value": 56.3,
-          "evidence": 3
+          "value": 67,
+          "evidence": 4
         },
         "agentic": {
           "value": 57.6,
@@ -6560,15 +6936,15 @@
           "evidence": 1
         },
         "overall": {
-          "value": 53.6,
-          "evidence": 13
+          "value": 53.8,
+          "evidence": 14
         }
       }
     },
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 97,
-      "tokens": 109880668967,
+      "tokens": 110001524692,
       "share": 0.0004,
       "percentile": 50
     }
@@ -6666,8 +7042,8 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 52,
-      "low": 36.6,
+      "composite": 52.3,
+      "low": 36.1,
       "rank": 46,
       "dims": {
         "coding": {
@@ -6675,12 +7051,12 @@
           "evidence": 3
         },
         "reasoning": {
-          "value": 62.8,
+          "value": 57.2,
           "evidence": 2
         },
         "knowledge": {
-          "value": 56.2,
-          "evidence": 3
+          "value": 67,
+          "evidence": 4
         },
         "agentic": {
           "value": 60.8,
@@ -6691,15 +7067,15 @@
           "evidence": 0
         },
         "overall": {
-          "value": 52,
-          "evidence": 13
+          "value": 52.3,
+          "evidence": 14
         }
       }
     },
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 184,
-      "tokens": 23082503758,
+      "tokens": 23103490194,
       "share": 0.0001,
       "percentile": 26.1
     }
@@ -6783,21 +7159,21 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 54.7,
+      "composite": 54.6,
       "low": 43.1,
-      "rank": 25,
+      "rank": 23,
       "dims": {
         "coding": {
           "value": 56.2,
           "evidence": 3
         },
         "reasoning": {
-          "value": 54.5,
+          "value": 48.9,
           "evidence": 2
         },
         "knowledge": {
-          "value": 70.9,
-          "evidence": 2
+          "value": 80.1,
+          "evidence": 3
         },
         "agentic": {
           "value": 40.8,
@@ -6808,15 +7184,15 @@
           "evidence": 0
         },
         "overall": {
-          "value": 54.7,
-          "evidence": 12
+          "value": 54.6,
+          "evidence": 13
         }
       }
     },
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 259,
-      "tokens": 5563266349,
+      "tokens": 5568569458,
       "share": 0,
       "percentile": 2.2
     }
@@ -6899,21 +7275,21 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 47.9,
-      "low": 36.2,
-      "rank": 48,
+      "composite": 48,
+      "low": 36.4,
+      "rank": 45,
       "dims": {
         "coding": {
           "value": 16.9,
           "evidence": 3
         },
         "reasoning": {
-          "value": 60.8,
+          "value": 55.2,
           "evidence": 2
         },
         "knowledge": {
-          "value": 70.9,
-          "evidence": 2
+          "value": 80.6,
+          "evidence": 3
         },
         "agentic": {
           "value": 53.4,
@@ -6924,8 +7300,8 @@
           "evidence": 0
         },
         "overall": {
-          "value": 47.9,
-          "evidence": 11
+          "value": 48,
+          "evidence": 12
         }
       }
     }
@@ -7013,21 +7389,21 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 47.9,
-      "low": 36.2,
-      "rank": 47,
+      "composite": 48,
+      "low": 36.4,
+      "rank": 44,
       "dims": {
         "coding": {
           "value": 16.9,
           "evidence": 3
         },
         "reasoning": {
-          "value": 60.8,
+          "value": 55.2,
           "evidence": 2
         },
         "knowledge": {
-          "value": 70.9,
-          "evidence": 2
+          "value": 80.6,
+          "evidence": 3
         },
         "agentic": {
           "value": 53.4,
@@ -7038,15 +7414,15 @@
           "evidence": 0
         },
         "overall": {
-          "value": 47.9,
-          "evidence": 11
+          "value": 48,
+          "evidence": 12
         }
       }
     },
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 226,
-      "tokens": 10932357615,
+      "tokens": 10940223431,
       "share": 0,
       "percentile": 13
     }
@@ -7139,8 +7515,8 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 50.2,
-      "low": 34.6,
+      "composite": 50.5,
+      "low": 34.3,
       "rank": 50,
       "dims": {
         "coding": {
@@ -7148,12 +7524,12 @@
           "evidence": 3
         },
         "reasoning": {
-          "value": 60.5,
+          "value": 54.9,
           "evidence": 2
         },
         "knowledge": {
-          "value": 55.4,
-          "evidence": 3
+          "value": 66.4,
+          "evidence": 4
         },
         "agentic": {
           "value": 54.2,
@@ -7164,15 +7540,15 @@
           "evidence": 0
         },
         "overall": {
-          "value": 50.2,
-          "evidence": 13
+          "value": 50.5,
+          "evidence": 14
         }
       }
     },
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 160,
-      "tokens": 32727209460,
+      "tokens": 32752762375,
       "share": 0.0001,
       "percentile": 37
     }
@@ -7256,21 +7632,21 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 54.7,
+      "composite": 54.6,
       "low": 43.1,
-      "rank": 24,
+      "rank": 22,
       "dims": {
         "coding": {
           "value": 56.2,
           "evidence": 3
         },
         "reasoning": {
-          "value": 54.5,
+          "value": 48.9,
           "evidence": 2
         },
         "knowledge": {
-          "value": 70.9,
-          "evidence": 2
+          "value": 80.1,
+          "evidence": 3
         },
         "agentic": {
           "value": 40.8,
@@ -7281,15 +7657,15 @@
           "evidence": 0
         },
         "overall": {
-          "value": 54.7,
-          "evidence": 12
+          "value": 54.6,
+          "evidence": 13
         }
       }
     },
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 259,
-      "tokens": 5563266349,
+      "tokens": 5568569458,
       "share": 0,
       "percentile": 2.2
     }
@@ -7373,20 +7749,20 @@
     "ranking": {
       "status": "measured",
       "composite": 55.3,
-      "low": 43.6,
-      "rank": 22,
+      "low": 43.7,
+      "rank": 20,
       "dims": {
         "coding": {
           "value": 44.6,
           "evidence": 3
         },
         "reasoning": {
-          "value": 59.2,
+          "value": 53.6,
           "evidence": 2
         },
         "knowledge": {
-          "value": 70.9,
-          "evidence": 2
+          "value": 80.6,
+          "evidence": 3
         },
         "agentic": {
           "value": 52,
@@ -7398,7 +7774,7 @@
         },
         "overall": {
           "value": 55.3,
-          "evidence": 11
+          "evidence": 12
         }
       }
     }
@@ -7482,21 +7858,21 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 43.8,
-      "low": 32.2,
-      "rank": 54,
+      "composite": 43.9,
+      "low": 32.4,
+      "rank": 53,
       "dims": {
         "coding": {
           "value": 16.9,
           "evidence": 3
         },
         "reasoning": {
-          "value": 56.2,
+          "value": 50.6,
           "evidence": 2
         },
         "knowledge": {
-          "value": 61.1,
-          "evidence": 3
+          "value": 70.9,
+          "evidence": 4
         },
         "agentic": {
           "value": 49,
@@ -7507,8 +7883,8 @@
           "evidence": 0
         },
         "overall": {
-          "value": 43.8,
-          "evidence": 12
+          "value": 43.9,
+          "evidence": 13
         }
       }
     }
@@ -7598,27 +7974,27 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 148,
-      "tokens": 38132199418,
+      "tokens": 38149271892,
       "share": 0.0001,
       "percentile": 39.1
     },
     "ranking": {
       "status": "measured",
-      "composite": 45,
-      "low": 33.4,
-      "rank": 52,
+      "composite": 45.1,
+      "low": 33.6,
+      "rank": 51,
       "dims": {
         "coding": {
           "value": 16.9,
           "evidence": 3
         },
         "reasoning": {
-          "value": 56.4,
+          "value": 50.8,
           "evidence": 2
         },
         "knowledge": {
-          "value": 61.1,
-          "evidence": 3
+          "value": 70.9,
+          "evidence": 4
         },
         "agentic": {
           "value": 53.9,
@@ -7629,8 +8005,8 @@
           "evidence": 0
         },
         "overall": {
-          "value": 45,
-          "evidence": 12
+          "value": 45.1,
+          "evidence": 13
         }
       }
     }
@@ -7715,27 +8091,27 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 192,
-      "tokens": 19366222237,
+      "tokens": 19397027352,
       "share": 0.0001,
       "percentile": 23.9
     },
     "ranking": {
       "status": "measured",
       "composite": 46.4,
-      "low": 34.8,
-      "rank": 49,
+      "low": 34.9,
+      "rank": 48,
       "dims": {
         "coding": {
           "value": 16.9,
           "evidence": 3
         },
         "reasoning": {
-          "value": 57.8,
+          "value": 52.2,
           "evidence": 2
         },
         "knowledge": {
-          "value": 61.1,
-          "evidence": 3
+          "value": 70.9,
+          "evidence": 4
         },
         "agentic": {
           "value": 57.8,
@@ -7747,7 +8123,7 @@
         },
         "overall": {
           "value": 46.4,
-          "evidence": 12
+          "evidence": 13
         }
       }
     }
@@ -7832,20 +8208,20 @@
     "ranking": {
       "status": "measured",
       "composite": 52,
-      "low": 40.4,
-      "rank": 40,
+      "low": 40.5,
+      "rank": 33,
       "dims": {
         "coding": {
           "value": 43.9,
           "evidence": 3
         },
         "reasoning": {
-          "value": 57.2,
+          "value": 51.6,
           "evidence": 2
         },
         "knowledge": {
-          "value": 61.1,
-          "evidence": 3
+          "value": 70.9,
+          "evidence": 4
         },
         "agentic": {
           "value": 48.6,
@@ -7857,7 +8233,7 @@
         },
         "overall": {
           "value": 52,
-          "evidence": 12
+          "evidence": 13
         }
       }
     }
@@ -7942,27 +8318,27 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 238,
-      "tokens": 7829696882,
+      "tokens": 7833581583,
       "share": 0,
       "percentile": 4.3
     },
     "ranking": {
       "status": "measured",
-      "composite": 43.8,
-      "low": 32.2,
-      "rank": 55,
+      "composite": 43.9,
+      "low": 32.4,
+      "rank": 54,
       "dims": {
         "coding": {
           "value": 16.9,
           "evidence": 3
         },
         "reasoning": {
-          "value": 56.2,
+          "value": 50.6,
           "evidence": 2
         },
         "knowledge": {
-          "value": 61.1,
-          "evidence": 3
+          "value": 70.9,
+          "evidence": 4
         },
         "agentic": {
           "value": 49,
@@ -7973,8 +8349,8 @@
           "evidence": 0
         },
         "overall": {
-          "value": 43.8,
-          "evidence": 12
+          "value": 43.9,
+          "evidence": 13
         }
       }
     }
@@ -8072,27 +8448,27 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 172,
-      "tokens": 27278637765,
+      "tokens": 27319326430,
       "share": 0.0001,
       "percentile": 30.4
     },
     "ranking": {
       "status": "measured",
-      "composite": 47.5,
-      "low": 34.3,
-      "rank": 51,
+      "composite": 47.7,
+      "low": 35.5,
+      "rank": 47,
       "dims": {
         "coding": {
           "value": 16.9,
           "evidence": 3
         },
         "reasoning": {
-          "value": 62.3,
+          "value": 56.7,
           "evidence": 2
         },
         "knowledge": {
-          "value": 67.9,
-          "evidence": 2
+          "value": 78.6,
+          "evidence": 3
         },
         "agentic": {
           "value": 51.9,
@@ -8103,8 +8479,8 @@
           "evidence": 0
         },
         "overall": {
-          "value": 47.5,
-          "evidence": 11
+          "value": 47.7,
+          "evidence": 12
         }
       }
     }
@@ -8188,27 +8564,27 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 63,
-      "tokens": 339987082470,
+      "tokens": 340476871490,
       "share": 0.0012,
       "percentile": 60.9
     },
     "ranking": {
       "status": "measured",
       "composite": 55.3,
-      "low": 43.6,
-      "rank": 21,
+      "low": 43.7,
+      "rank": 19,
       "dims": {
         "coding": {
           "value": 44.6,
           "evidence": 3
         },
         "reasoning": {
-          "value": 59.2,
+          "value": 53.6,
           "evidence": 2
         },
         "knowledge": {
-          "value": 70.9,
-          "evidence": 2
+          "value": 80.6,
+          "evidence": 3
         },
         "agentic": {
           "value": 52,
@@ -8220,7 +8596,7 @@
         },
         "overall": {
           "value": 55.3,
-          "evidence": 11
+          "evidence": 12
         }
       }
     }
@@ -8304,21 +8680,21 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 39.6,
-      "low": 28,
-      "rank": 56,
+      "composite": 38.5,
+      "low": 27,
+      "rank": 55,
       "dims": {
         "coding": {
           "value": 25.8,
           "evidence": 3
         },
         "reasoning": {
-          "value": 48,
+          "value": 42.3,
           "evidence": 2
         },
         "knowledge": {
-          "value": 55.1,
-          "evidence": 3
+          "value": 58.6,
+          "evidence": 4
         },
         "agentic": {
           "value": 34.7,
@@ -8329,8 +8705,8 @@
           "evidence": 0
         },
         "overall": {
-          "value": 39.6,
-          "evidence": 12
+          "value": 38.5,
+          "evidence": 13
         }
       }
     }
@@ -8414,21 +8790,21 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 34.3,
-      "low": 22.7,
-      "rank": 58,
+      "composite": 33,
+      "low": 21.5,
+      "rank": 57,
       "dims": {
         "coding": {
           "value": 19.2,
           "evidence": 3
         },
         "reasoning": {
-          "value": 47,
+          "value": 41.3,
           "evidence": 2
         },
         "knowledge": {
-          "value": 45,
-          "evidence": 3
+          "value": 47.5,
+          "evidence": 4
         },
         "agentic": {
           "value": 29.1,
@@ -8439,8 +8815,8 @@
           "evidence": 0
         },
         "overall": {
-          "value": 34.3,
-          "evidence": 12
+          "value": 33,
+          "evidence": 13
         }
       }
     }

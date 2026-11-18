@@ -901,14 +901,31 @@ export function extractArtificialAnalysis(html, index) {
     if (Number.isFinite(context)) value.contextTokens = context
     // AA mixes scales in one `scores` map: percentages (0-1), Elo ratings
     // (aa-3d, aa-briefcase, code2video) and raw normalised scores
-    // (gdpval-aa-normalized, -402..1866). Only percentages are comparable, so
-    // anything outside 0..1 is kept out instead of being multiplied by 100.
+    // (gdpval-aa-normalized, -402..1866). Only percentages are comparable, so the
+    // engine gets those; everything is retained as published in `rawScores` so a
+    // later consumer can use a scale we have not decided how to read yet.
     const scores = {}
+    const rawScores = {}
     for (const [benchmark, raw] of Object.entries(row.scores ?? {})) {
       const number = Number(raw)
-      if (Number.isFinite(number) && number > 0 && number <= 1) scores[benchmark] = Math.round(number * 1000) / 10
+      if (!Number.isFinite(number)) continue
+      rawScores[benchmark] = number
+      if (number > 0 && number <= 1) scores[benchmark] = Math.round(number * 1000) / 10
     }
     if (Object.keys(scores).length > 0) value.benchmarks = scores
+    if (Object.keys(rawScores).length > 0) value.rawScores = rawScores
+    for (const [field, key] of [
+      ['contextWindowTokens', 'contextTokens'],
+      ['isReasoning', 'reasoning'],
+      ['isOpenWeights', 'openWeights'],
+      ['cacheHitPrice', 'cacheHitPrice'],
+      ['omniscienceAccuracy', 'omniscienceAccuracy'],
+      ['omniscienceHallucinationRate', 'omniscienceHallucination'],
+    ]) {
+      if (row[field] !== undefined && row[field] !== null) value[key] = row[field]
+    }
+    if (typeof row.releaseDate === 'string') value.releaseDate = row.releaseDate
+    if (typeof row.modelCreatorName === 'string') value.creator = row.modelCreatorName
     if (!(Number.isFinite(value.intelligenceIndex) || Object.keys(scores).length > 0 || Number.isFinite(priceIn))) continue
     value.name = row.name
     byName.set(normalizeName(row.name), value)
@@ -1080,6 +1097,17 @@ export function attachArtificialAnalysis(dataset, { base = {}, analysis = {}, wa
       // The per-benchmark percentages are kept: the ranking engine reads them as
       // observations, and dropping them here was why AA barely moved any score.
       ...(value.benchmarks === undefined ? {} : { benchmarks: value.benchmarks }),
+      // Everything else AA published, as published. The router does not read these
+      // yet, but discarding them loses measurements no other source carries.
+      ...(value.rawScores === undefined ? {} : { rawScores: value.rawScores }),
+      ...(value.contextTokens === undefined ? {} : { contextTokens: value.contextTokens }),
+      ...(value.reasoning === undefined ? {} : { reasoning: value.reasoning }),
+      ...(value.openWeights === undefined ? {} : { openWeights: value.openWeights }),
+      ...(value.cacheHitPrice === undefined ? {} : { cacheHitPrice: value.cacheHitPrice }),
+      ...(value.omniscienceAccuracy === undefined ? {} : { omniscienceAccuracy: value.omniscienceAccuracy }),
+      ...(value.omniscienceHallucination === undefined ? {} : { omniscienceHallucination: value.omniscienceHallucination }),
+      ...(value.releaseDate === undefined ? {} : { releaseDate: value.releaseDate }),
+      ...(value.creator === undefined ? {} : { creator: value.creator }),
       source: ARTIFICIAL_ANALYSIS_URL,
     } }
 

@@ -257,3 +257,27 @@ test('a fuzzy neighbour cannot relabel a different model', () => {
   })
   assert.deepEqual(dataset, {}, 'no entry is created for an unrelated model')
 })
+
+test('the raw mixed-scale scores and metadata are retained, not discarded', () => {
+  // The router reads percentages; the rest is kept as published so a later
+  // consumer (or the decision model) can use what we have not decided to read.
+  const rows = [{
+    id: 'r', name: 'GLM-5.3', intelligenceIndex: 31,
+    price1mInputTokens: 1.4, price1mOutputTokens: 4,
+    contextWindowTokens: 200000, isReasoning: true, isOpenWeights: false,
+    releaseDate: '2026-10-01', modelCreatorName: 'Z AI', cacheHitPrice: 0.02,
+    scores: { gpqa: 0.866, 'aa-3d': 1187.5, 'gdpval-aa-normalized': -400 },
+  }]
+  const dataset = { 'glm-5.3': { label: 'GLM-5.3' } }
+  const analysis = extractArtificialAnalysis(page(rows), nameIndex(dataset))
+  attachArtificialAnalysis(dataset, { base: {}, analysis })
+  const aa = dataset['glm-5.3'].crossChecks.artificialAnalysis
+  assert.equal(aa.benchmarks.gpqa, 86.6, 'percentages are scaled for the engine')
+  assert.equal(aa.rawScores['aa-3d'], 1187.5, 'Elo is retained as published')
+  assert.equal(aa.rawScores['gdpval-aa-normalized'], -400)
+  assert.equal(aa.contextTokens, 200000)
+  assert.equal(aa.reasoning, true)
+  assert.equal(aa.releaseDate, '2026-10-01')
+  assert.equal(aa.creator, 'Z AI')
+  assert.equal(aa.cacheHitPrice, 0.02)
+})

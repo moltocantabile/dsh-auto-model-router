@@ -539,6 +539,7 @@ export function apply(ctx, input) {
         composite: Number.isFinite(info.ranking?.composite) ? info.ranking.composite : null,
         status: info.ranking?.status ?? null,
         usage: Number.isFinite(info.usage?.percentile) ? info.usage.percentile : null,
+        uncalibrated: Number.isFinite(info.ranking?.uncalibrated) ? info.ranking.uncalibrated : null,
       }
     }
     assigned.meta = meta
