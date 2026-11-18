@@ -264,6 +264,7 @@ The settings page shows the assignment as a board of **capsules**:
 | click a capsule | switch that model off (it leaves the routing pool; shown under `off`) |
 | "Follow auto" in the capsule popover | drop the override and let the computation place it |
 | "Reset board to automatic" | drop every override and every disabled model |
+| the **Providers** menu | tick one or more catalogs to show; nothing ticked shows all |
 
 `tiers.mode: manual` routes only what is assigned explicitly — an unassigned model
 stays out rather than being guessed at. The same data is on the `model_router`

@@ -293,13 +293,31 @@ test('the page mounts, fetches its snapshot, and renders rows', async () => {
     assert.equal(unmeasured.length, 1, 'the unmeasured model is shown')
     assert.ok((unmeasured[0].textContent ?? '').includes('m-unmeasured'))
 
-    // The provider filter is a dropdown listing what is on the board.
-    const selects = [...container.querySelectorAll('select')]
-    const providerSelect = selects.find((node) =>
-      [...node.options].some((option) => option.value === 'provider-a'),
+    // The provider filter is a multi-select menu: one checkbox per provider, and
+    // ticking more than one keeps several catalogs on the board at once.
+    const filterButton = [...container.querySelectorAll('button.amr-toggle')].find((node) =>
+      (node.textContent ?? '').includes('allProviders'),
     )
-    assert.ok(providerSelect !== undefined, 'a provider dropdown exists')
-    assert.ok([...providerSelect.options].some((option) => option.value === 'all'), 'it offers all providers')
+    assert.ok(filterButton !== undefined, 'the provider filter button exists')
+    filterButton.dispatchEvent(new loaded.window.MouseEvent('click', { bubbles: true }))
+    await new Promise((resolve) => setTimeout(resolve, 25))
+    const checkboxes = [...container.querySelectorAll('.amr-pop input[type="checkbox"]')]
+    assert.ok(checkboxes.length >= 2, `one checkbox per provider (found ${checkboxes.length})`)
+
+    // Tick one provider: the board keeps only its capsules.
+    checkboxes[0].dispatchEvent(new loaded.window.MouseEvent('click', { bubbles: true }))
+    await new Promise((resolve) => setTimeout(resolve, 25))
+    const afterOne = [...container.querySelectorAll('.amr-capsule[data-measured="true"]')]
+    assert.equal(afterOne.length, 1, 'one provider selected shows its single placed model')
+
+    // Tick the second as well: both are shown, so the filter is a set, not a radio.
+    const remaining = [...container.querySelectorAll('.amr-pop input[type="checkbox"]')]
+    const second = remaining.find((node) => !node.checked)
+    assert.ok(second !== undefined, 'a second provider is available to tick')
+    second.dispatchEvent(new loaded.window.MouseEvent('click', { bubbles: true }))
+    await new Promise((resolve) => setTimeout(resolve, 25))
+    const afterTwo = [...container.querySelectorAll('.amr-capsule[data-measured="true"]')]
+    assert.equal(afterTwo.length, 2, 'both selected providers are shown together')
 
     // The old catalog table is gone: capsules carry the information now.
     assert.ok(!text.includes('catalogModels'), 'the Provider models card is removed')

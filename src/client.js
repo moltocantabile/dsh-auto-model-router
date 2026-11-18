@@ -226,8 +226,10 @@ window.__ModuleLoader__.load({
         tiersHint: 'Membership is computed from measurement: a model joins the cheapest tier whose envelope it satisfies. Drag a capsule to move it, click one to switch it off.',
         boardHint: 'Hover a model for its price, capability and context. Drag between tiers to overrule the automatic assignment; click to disable it.',
         providersSeen: 'Providers on this board: {count}.',
-        providerFilter: 'Provider',
+        providerFilter: 'Providers',
         allProviders: 'All providers',
+        providersSelected: '{count} providers',
+        providerFilterHint: 'Tick the providers to show. Nothing ticked shows all.',
         filterActive: 'Showing {provider} only.',
         unmeasuredHint: '{count} advertised models are not routable: nobody measured their quality, so they cannot be ranked.',
         tierUnmeasured: 'unmeasured',
@@ -382,6 +384,8 @@ window.__ModuleLoader__.load({
         providersSeen: '当前面板包含 {count} 个供应商。',
         providerFilter: '供应商',
         allProviders: '全部供应商',
+        providersSelected: '{count} 个供应商',
+        providerFilterHint: '勾选要显示的供应商；全不勾选则显示全部。',
         filterActive: '仅显示 {provider}。',
         unmeasuredHint: '另有 {count} 个模型未被路由：没有任何质量测量，无法排序。',
         tierUnmeasured: '未测量',
@@ -874,7 +878,10 @@ window.__ModuleLoader__.load({
       // Which provider's models are on screen. Capsules from one provider share a
       // colour, so this filter is the difference between a readable board and a
       // soup of ids once a profile exposes several catalogs.
-      const [providerFilter, setProviderFilter] = useState('all')
+      // Empty means "every provider": an explicit empty selection would hide the
+      // whole board, which is never what someone meant by unticking the last box.
+      const [providerFilter, setProviderFilter] = useState([])
+      const [providerMenu, setProviderMenu] = useState(false)
 
       const providers = useMemo(() => {
         const seen = new Map()
@@ -891,7 +898,9 @@ window.__ModuleLoader__.load({
         return tones
       }, [providers])
 
-      const visible = (model) => providerFilter === 'all' || providerOf[model] === providerFilter
+      const visible = (key) => providerFilter.length === 0 || providerFilter.includes(providerOf[key])
+      const toggleProvider = (id) =>
+        setProviderFilter((current) => (current.includes(id) ? current.filter((entry) => entry !== id) : [...current, id]))
 
       const lanes = [
         ...['fast', 'balanced', 'deep'].map((id) => ({ id, label: id, off: false })),
@@ -1022,19 +1031,61 @@ window.__ModuleLoader__.load({
           { className: 'amr-row' },
           h(
             'div',
-            { className: 'amr-field', style: { minWidth: 200 } },
+            { className: 'amr-field', style: { minWidth: 200, position: 'relative' } },
             h('span', { className: 'amr-label' }, t('providerFilter')),
             h(
-              Select,
-              { value: providerFilter, onChange: (next) => setProviderFilter(next) },
-              h('option', { value: 'all' }, t('allProviders')),
-              providers.map((provider) =>
-                h('option', { key: provider.id, value: provider.id }, `${provider.id} (${provider.count})`),
-              ),
+              'button',
+              {
+                type: 'button',
+                className: 'amr-toggle',
+                'data-on': providerFilter.length > 0 ? 'true' : 'false',
+                'aria-expanded': providerMenu ? 'true' : 'false',
+                onClick: () => setProviderMenu((open) => !open),
+              },
+              h('span', { className: 'amr-toggleDot' }),
+              providerFilter.length === 0
+                ? t('allProviders')
+                : t('providersSelected').replace('{count}', String(providerFilter.length)),
             ),
+            providerMenu &&
+              h(
+                'div',
+                {
+                  className: 'amr-pop',
+                  style: { width: 260 },
+                  onMouseLeave: () => setProviderMenu(false),
+                },
+                h(
+                  'div',
+                  { className: 'amr-row', style: { justifyContent: 'space-between' } },
+                  h('span', { className: 'amr-popTitle' }, t('providerFilter')),
+                  h(
+                    'button',
+                    {
+                      type: 'button',
+                      className: 'amr-segBtn',
+                      onClick: () => setProviderFilter([]),
+                    },
+                    t('allProviders'),
+                  ),
+                ),
+                ...providers.map((provider) =>
+                  h(
+                    'label',
+                    { key: provider.id, className: 'amr-check' },
+                    h('input', {
+                      type: 'checkbox',
+                      checked: providerFilter.includes(provider.id),
+                      onChange: () => toggleProvider(provider.id),
+                    }),
+                    h('span', {}, `${provider.id} (${provider.count})`),
+                  ),
+                ),
+                h('span', { className: 'amr-popHint' }, t('providerFilterHint')),
+              ),
           ),
-          providerFilter !== 'all' &&
-            h('span', { className: 'amr-note' }, t('filterActive').replace('{provider}', providerFilter)),
+          providerFilter.length > 0 &&
+            h('span', { className: 'amr-note' }, t('filterActive').replace('{provider}', providerFilter.join(', '))),
         ),
         h('p', { className: 'amr-note' }, t('boardHint')),
         (board.unmeasured ?? []).length > 0 &&
