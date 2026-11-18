@@ -1348,6 +1348,9 @@ export function apply(ctx, input) {
         config.logDecisions = merged.logDecisions
         syncDigestOptions()
         mode = next.mode
+        // the page reads the board straight after configure; do not make it wait
+        // for the next step
+        assignedTiers().catch(() => {})
         if (mode !== 'off') routeValidity.clear()
         const persist =
           args?.runtimeOnly === true
@@ -1401,6 +1404,15 @@ export function apply(ctx, input) {
   }
 
   ctx.effect(() => ctx.tools.register(routerTool), '@dsh-external/dsh-auto-model-router: model_router tool')
+
+  // The tier board is catalog data, not routing state: compute it once at start
+  // so the settings page is populated even when mode is `off` and no decision
+  // ever runs.
+  queueMicrotask(() => {
+    assignedTiers().catch((error) => {
+      ctx.logger.warn(`[model-router] initial tier assignment failed: ${error?.message ?? error}`)
+    })
+  })
 
   // ── config UI transport: JSON endpoint for the bundle-page panel ──────────
   ctx.inject(['webServer', 'connection'], (webCtx) => {

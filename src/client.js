@@ -42,6 +42,8 @@ window.__ModuleLoader__.load({
     const API = '/dsh-auto-model-router-api'
     const MODES = ['on', 'shadow', 'off']
     const CUSTOM = '__custom__'
+    /** Stamped by scripts/build.sh, so the page can name the bundle it runs. */
+    const BUILD = '__AMR_BUILD_STAMP__'
 
     /** Copy an envelope without the latency ceiling (the "any latency" choice). */
     function omitLatency(envelope) {
@@ -75,6 +77,7 @@ window.__ModuleLoader__.load({
 .amr-head { display:flex; align-items:flex-start; justify-content:space-between; gap:14px; flex-wrap:wrap; }
 .amr-headText { display:flex; flex-direction:column; gap:2px; min-width:220px; flex:1; }
 .amr-title { font-size:16px; line-height:24px; font-weight:500; margin:0; }
+.amr-build { margin:0; font-size:11px; line-height:16px; color:var(--dsw-alias-label-tertiary); font-variant-numeric:tabular-nums; }
 .amr-sub { font-size:13px; line-height:20px; color:var(--dsw-alias-label-tertiary); margin:0; max-width:64ch; }
 .amr-summary { display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin-top:4px; }
 .amr-card { display:flex; flex-direction:column; gap:14px; padding:12px 14px; border:.5px solid var(--dsw-alias-settings-card-stroke); border-radius:var(--dsw-radius-xl); background:var(--dsw-alias-settings-card-fill); }
@@ -222,6 +225,7 @@ window.__ModuleLoader__.load({
         toggleTitle: 'Automatic model routing',
         toggleOnTitle: 'Auto routing is deciding the model',
         toggleOffTitle: 'Auto routing is off; the model picker decides',
+        toggleUnknown: 'Auto routing: state unknown (click to read it)',
         toggleOn: 'On — route every session',
         toggleShadow: 'Observe — decide and log, do not switch',
         toggleOff: 'Off — leave the model alone',
@@ -367,6 +371,7 @@ window.__ModuleLoader__.load({
         toggleTitle: '自动模型路由',
         toggleOnTitle: '自动路由正在决定模型',
         toggleOffTitle: '自动路由已关闭，由模型选择器决定',
+        toggleUnknown: '自动路由：状态未知（点击读取）',
         toggleOn: '开启 — 路由每个会话',
         toggleShadow: '观察 — 只决策记录，不切换',
         toggleOff: '关闭 — 不干预模型',
@@ -1046,7 +1051,10 @@ window.__ModuleLoader__.load({
         }
       }
 
-      if (mode === null) return null
+      // Never render nothing: a chip that hides itself when `status` fails is
+      // indistinguishable from a plugin that never loaded, which is exactly the
+      // confusion this cost once. Unknown reads as "off" and clicking re-reads.
+      const known = mode !== null
       const on = mode === 'on'
       return h(
         'div',
@@ -1057,9 +1065,20 @@ window.__ModuleLoader__.load({
             type: 'button',
             className: 'amr-toggle',
             'data-on': on ? 'true' : 'false',
-            title: on ? t('toggleOnTitle') : t('toggleOffTitle'),
+            title: known ? (on ? t('toggleOnTitle') : t('toggleOffTitle')) : t('toggleUnknown'),
             'aria-pressed': on ? 'true' : 'false',
-            onClick: () => setOpen((current) => !current),
+            'data-known': known ? 'true' : 'false',
+            onClick: () => {
+              if (!known) {
+                api('status')
+                  .then((body) => {
+                    if (mounted.current) setMode(body.mode ?? 'off')
+                  })
+                  .catch(() => {})
+                return
+              }
+              setOpen((current) => !current)
+            },
           },
           h('span', { className: 'amr-toggleDot' }),
           t('toggleLabel'),
@@ -1296,6 +1315,7 @@ window.__ModuleLoader__.load({
             'div',
             { className: 'amr-headText' },
             h('h2', { className: 'amr-title' }, t('title')),
+            h('p', { className: 'amr-build', 'data-amr-build': BUILD }, `build ${BUILD}`),
             h('p', { className: 'amr-sub' }, t('intro')),
             // One glance answers "is it on, what does it fall back to, how much
             // does it care about price" without scrolling to three sections.

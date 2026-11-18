@@ -17,4 +17,12 @@ mkdir -p lib
 # dead plugin rather than a visible error.
 for file in src/*.js; do cp "$file" "lib/$(basename "$file")"; done
 cp src/model-info-data.json lib/model-info-data.json
-echo "build: $(cd lib && ls | tr '\n' ' ')"
+
+# Stamp the browser half with the build time. A stale tab and a bundle that
+# failed to register look identical from the outside; the page now names the
+# bundle it is running, so "did my change land" is answerable without guessing.
+STAMP="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+if grep -q '__AMR_BUILD_STAMP__' lib/client.js; then
+  sed -i.bak "s/__AMR_BUILD_STAMP__/${STAMP}/" lib/client.js && rm -f lib/client.js.bak
+fi
+echo "build: $(cd lib && ls | tr '\n' ' ') | client stamp ${STAMP}"
