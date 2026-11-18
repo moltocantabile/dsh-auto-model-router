@@ -223,6 +223,7 @@ window.__ModuleLoader__.load({
         tiers: 'Tiers',
         tiersHint: 'Membership is computed from measurement: a model joins the cheapest tier whose envelope it satisfies. Drag a capsule to move it, click one to switch it off.',
         boardHint: 'Hover a model for its price, capability and context. Drag between tiers to overrule the automatic assignment; click to disable it.',
+        providersSeen: 'Providers on this board: {count}.',
         providerFilter: 'Provider',
         allProviders: 'All providers',
         filterActive: 'Showing {provider} only.',
@@ -374,6 +375,7 @@ window.__ModuleLoader__.load({
         tiers: '档位',
         tiersHint: '档位成员由实测自动划分：模型进入它能满足的最便宜档位。拖动胶囊可改档，点击可停用。',
         boardHint: '悬停查看价格、能力与上下文；拖动可覆盖自动分配，点击可停用该模型。',
+        providersSeen: '当前面板包含 {count} 个供应商。',
         providerFilter: '供应商',
         allProviders: '全部供应商',
         filterActive: '仅显示 {provider}。',
@@ -1304,10 +1306,22 @@ window.__ModuleLoader__.load({
         refresh().catch((error) => {
           if (mounted.current) setNotice({ tone: 'error', text: String(error?.message ?? error) })
         })
+        // The host can change under an open page (a reload, a tool call, another
+        // window). Poll the snapshot so the board is never showing a membership
+        // the router no longer has -- stale data here reads as a broken feature.
+        const timer = setInterval(() => {
+          if (!mounted.current) return
+          api('snapshot')
+            .then((payload) => {
+              if (mounted.current && payload?.config !== undefined) adopt(payload)
+            })
+            .catch(() => {})
+        }, 5000)
         return () => {
           mounted.current = false
+          clearInterval(timer)
         }
-      }, [refresh])
+      }, [adopt, refresh])
 
       const models = catalog?.models ?? []
       const byId = useMemo(() => {
@@ -1496,7 +1510,10 @@ window.__ModuleLoader__.load({
 
         h(
           Card,
-          { title: t('tiers'), hint: t('tiersHint') },
+          {
+            title: t('tiers'),
+            hint: `${t('tiersHint')} ${t('providersSeen').replace('{count}', String((snap.board?.providerOf ? new Set(Object.values(snap.board.providerOf)).size : 0)))}`,
+          },
           h(TierBoard, { snap, draft, models, t, applyTiers, busy: blocked }),
         ),
 
