@@ -2,6 +2,8 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import {
   ARTIFICIAL_ANALYSIS_URL,
+  aaSlugCandidates,
+  extractArtificialAnalysisModelPage,
   CNY_PER_USD,
   attachArtificialAnalysis,
   decodeFlightChunks,
@@ -169,4 +171,55 @@ test('every merged entry leaves complete, whatever route it took', () => {
       assert.ok(Number.isInteger(entry.evidence[dim]), `${id}.${dim} evidence is not an integer`)
     }
   }
+})
+
+test('a benchmarked model without an index still gets a measured quality', () => {
+  // AA publishes benchmark scores for rows it never indexes. Those rows were being
+  // stored as a cross-check and ignored, so the model read as unmeasured.
+  const fraction = (value) => ({ gpqa: value, hle: value, 'mmlu-pro': value, aime25: value, 'livecodebench': value })
+  const indexed = Array.from({ length: 10 }, (_, position) => ({
+    id: `i${position}`,
+    name: `Indexed ${position}`,
+    intelligenceIndex: 10 + position * 3,
+    price1mInputTokens: 1,
+    scores: fraction(0.3 + position * 0.04),
+  }))
+  const unindexed = { id: 'u1', name: 'Kimi K2.7 Code', price1mInputTokens: 0.95, scores: fraction(0.55) }
+  const dataset = { 'kimi-k2.7-code': { label: 'Kimi K2.7 Code' } }
+  const analysis = extractArtificialAnalysis(page([...indexed, unindexed]), nameIndex(dataset))
+  attachArtificialAnalysis(dataset, { base: {}, analysis, wanted: [] })
+  const entry = dataset['kimi-k2.7-code']
+  assert.ok(Number.isFinite(entry.quality) && entry.quality > 0, `derived quality ${entry.quality}`)
+})
+
+test('a model with too few benchmark fractions is not guessed at', () => {
+  const dataset = { 'thin-row': { label: 'Thin Row' } }
+  const analysis = extractArtificialAnalysis(page([{ id: 'thin', name: 'Thin Row', scores: { gpqa: 0.5 } }]), nameIndex(dataset))
+  attachArtificialAnalysis(dataset, { base: {}, analysis })
+  assert.equal(dataset['thin-row'].quality, undefined, 'no measurement invented from one benchmark')
+})
+
+test('a model dropped from the table is still readable from its own page', () => {
+  // AA keeps /models/<slug> for models it no longer ranks; the page carries the
+  // benchmark scores, which is where GLM-5.1 and MiniMax-M2.7 live.
+  const page = `<script>self.__next_f.push([1,${JSON.stringify(JSON.stringify({
+    id: 'p1',
+    name: 'GLM-5.1',
+    gpqa: 0.867,
+    hle: 0.301,
+    terminalbenchHard: 0.432,
+    livecodebench: 0.55,
+    scicode: 0.6,
+    price1mInputTokens: 1.19,
+  }))}])</script>`
+  const found = extractArtificialAnalysisModelPage(page, new Map([['glm51', 'glm-5.1']]))
+  assert.ok(found['glm-5.1'] !== undefined, 'matched by name')
+  assert.ok(Object.keys(found['glm-5.1'].benchmarks).length >= 4)
+  assert.ok(found['glm-5.1'].benchmarks.gpqa > 80, 'fractions become 0-100 scores')
+})
+
+test('slug candidates follow AA spelling', () => {
+  assert.deepEqual(aaSlugCandidates('glm-5.1').slice(0, 1), ['glm-5-1'])
+  assert.ok(aaSlugCandidates('MiniMax/MiniMax-M2.7').includes('minimax-m2-7'))
+  assert.ok(aaSlugCandidates('cmaas-glm-5.3').some((slug) => slug.startsWith('glm-5-3')))
 })

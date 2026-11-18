@@ -39,6 +39,8 @@ export const ARTIFICIAL_ANALYSIS_URL = 'https://artificialanalysis.ai/leaderboar
  * has to be converted at one stated rate instead of silently mixing units.
  */
 export const CNY_PER_USD = 7.2
+/** How many per-model AA pages one refresh may fetch (only for unmeasured ids). */
+const MAX_MODEL_PAGES = 60
 export const LLM_COMPARISON_URL = `${LLM_LEADERBOARD}/api/models/comparison.csv`
 /**
  * Benchmark pages to read. Each board is server-rendered as table rows carrying
@@ -337,6 +339,43 @@ export async function refreshCatalog({ base, wanted = [], fetchImpl = fetch, sig
     errors.push(`artificialanalysis: ${String(error?.message ?? error)}`)
   }
 
+  // Second pass: models the comparison table dropped still have a page with their
+  // benchmark scores. Only unmeasured ids are fetched, so this costs a few dozen
+  // requests on a refresh, not one per model in the catalog.
+  const pageBudget = { left: MAX_MODEL_PAGES }
+  const missingIds = []
+  for (const raw of wanted) {
+    const id = typeof raw === 'string' ? raw : raw?.model
+    if (typeof id !== 'string' || id.length === 0) continue
+    const bare = id.includes('/') ? id.slice(id.lastIndexOf('/') + 1) : id
+    const keys = [normalizeName(id), normalizeName(bare), normalizeName(bare.replace(/^cmaas-/i, ''))]
+    if (matchAnalysisRow(keys, analysis.byName) !== undefined) continue
+    if (Number(base[id]?.quality) > 0) continue
+    missingIds.push({ id, bare })
+  }
+  let pagesFetched = 0
+  for (const { id, bare } of missingIds) {
+    if (signal?.aborted === true) throw new Error('refresh aborted')
+    if (pageBudget.left <= 0) break
+    for (const slug of aaSlugCandidates(id).slice(0, 2)) {
+      if (pageBudget.left <= 0) break
+      try {
+        const html = await fetchText(`${ARTIFICIAL_ANALYSIS_URL.replace('/leaderboards/models', '')}/models/${slug}`, { fetchImpl, signal })
+        pageBudget.left -= 1
+        pagesFetched += 1
+        const found = extractArtificialAnalysisModelPage(html, index)
+        for (const [key, value] of Object.entries(found)) {
+          if (key.startsWith('\u0000page:')) analysis.byName.set(key.slice('\u0000page:'.length), value)
+          else analysis.byId[key] = value
+        }
+        if (matchAnalysisRow([normalizeName(id), normalizeName(bare)], analysis.byName) !== undefined) break
+      } catch {
+        // a 404 slug is normal: AA names do not follow one rule
+      }
+    }
+  }
+  analysis.pagesFetched = pagesFetched
+
   const dataset = buildDataset({
     base,
     benchgecko: extractions,
@@ -470,7 +509,7 @@ const VARIANT_WORDS = new Set([
   'max', 'high', 'low', 'medium', 'min', 'mini', 'thinking', 'nonreasoning', 'reasoning',
   // Speed tiers and lightweight variants: the same weights, a different serving
   // offer. They are only ignored when the base model name already lines up.
-  'flash', 'flashlite', 'turbo', 'air', 'speed', 'lite',
+  'flash', 'flashlite', 'turbo', 'air', 'speed', 'lite', 'next',
   'default', 'fallback', 'preview', 'prime', 'highspeed', 'ultraspeed', 'vision', 'flashx',
   'reasoningmedium', 'reasoninglow', 'reasoninghigh', 'cmaas', 'based', 'on', 'instruct',
 ])
@@ -642,6 +681,67 @@ export function extractArtificialAnalysis(html, index) {
   return { byId: out, byName }
 }
 
+/** Benchmark-ish fields AA exposes per model page, as 0-1 fractions. */
+const MODEL_PAGE_BENCHMARKS = [
+  'gpqa', 'hle', 'terminalbenchHard', 'terminalBench21', 'terminalBench40', 'terminalBenchScience',
+  'livecodebench', 'scicode', 'tau2', 'itBenchSre', 'tauBanking', 'mmmuPro', 'aime25',
+  'critpt', 'analystAgent', 'automationBenchPartialScore', 'frontierCode', 'frontierCode20',
+  'ifbench', 'mkaClimbWsr', 'vialsScore', 'healthbench', 'gdpval', 'omniscienceAccuracy',
+]
+
+/**
+ * Slugs to try for a model's own AA page.
+ *
+ * AA keeps a page per model even when it drops the model from the comparison
+ * table, and that page carries the benchmark scores -- which is where GLM-5.1 and
+ * MiniMax-M2.7 live today.
+ *
+ * @param {string} id - catalog model id, possibly provider- or reseller-prefixed
+ * @returns {string[]}
+ */
+export function aaSlugCandidates(id) {
+  let bare = String(id ?? '')
+  const slash = bare.lastIndexOf('/')
+  if (slash >= 0) bare = bare.slice(slash + 1)
+  bare = bare.replace(/^cmaas-/i, '').toLowerCase()
+  const dotted = bare.replace(/[^a-z0-9.]+/g, '-').replace(/\./g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '')
+  const flat = bare.replace(/[^a-z0-9]+/g, '')
+  const undotted = flat.replace(/^([a-z]+)(\d)(\d+)/, '$1-$2-$3')
+  return [...new Set([dotted, flat, undotted])].filter((slug) => slug.length > 0)
+}
+
+/** Read the benchmark scores out of one AA model page. */
+export function extractArtificialAnalysisModelPage(html, index) {
+  const out = {}
+  for (const text of decodeFlightChunks(html)) {
+    let at = text.indexOf('{"id":"')
+    while (at >= 0) {
+      const row = readJsonObjectAt(text, at)
+      if (row !== null && typeof row.name === 'string') {
+        const scores = {}
+        for (const key of MODEL_PAGE_BENCHMARKS) {
+          const value = Number(row[key])
+          if (Number.isFinite(value) && value >= 0 && value <= 1) scores[key] = Math.round(value * 1000) / 10
+        }
+        if (Object.keys(scores).length >= 4) {
+          const value = { source: ARTIFICIAL_ANALYSIS_URL, name: row.name, benchmarks: scores }
+          const priceIn = Number(row.price1mInputTokens)
+          const priceOut = Number(row.price1mOutputTokens)
+          if (Number.isFinite(priceIn)) value.priceIn = priceIn
+          if (Number.isFinite(priceOut)) value.priceOut = priceOut
+          const ttft = Number(row.timeToFirstToken)
+          if (Number.isFinite(ttft)) value.ttft = ttft
+          const idFromIndex = index.get(normalizeName(row.name))
+          if (idFromIndex !== undefined) out[idFromIndex] = value
+          out[`\u0000page:${normalizeName(row.name)}`] = value
+        }
+      }
+      at = text.indexOf('{"id":"', at + 1)
+    }
+  }
+  return out
+}
+
 /**
  * Fold Artificial Analysis into the catalog.
  *
@@ -681,6 +781,49 @@ export function attachArtificialAnalysis(dataset, { base = {}, analysis = {}, wa
   }
   const qualityOf = (value) => Math.max(0, Math.min(100, Math.round((slope * value.intelligenceIndex + intercept) * 10) / 10))
 
+  // Not every model AA ran on benchmarks gets a published intelligence index, but
+  // the per-benchmark scores are there. A benchmark mean, calibrated against the
+  // rows that have both, is a real measurement of those models rather than a
+  // family guess -- 160 rows of the table were being stored and never used.
+  const fractionMean = (value) => {
+    const fractions = Object.values(value.benchmarks ?? {}).filter((score) => score >= 0 && score <= 100)
+    if (fractions.length < 4) return null
+    return fractions.reduce((sum, score) => sum + score, 0) / fractions.length
+  }
+  // Calibrate on every row that has both, not only the rows this catalog matched:
+  // the fit is about AA's own scales, and restricting it to our ids throws away
+  // most of the evidence.
+  const benchPairs = []
+  for (const value of new Set(byName.values())) {
+    if (!Number.isFinite(value.intelligenceIndex)) continue
+    const mean = fractionMean(value)
+    if (mean !== null) benchPairs.push([mean, value.intelligenceIndex])
+  }
+  let benchSlope = 0
+  let benchIntercept = 0
+  if (benchPairs.length >= 8) {
+    const meanX = benchPairs.reduce((sum, [x]) => sum + x, 0) / benchPairs.length
+    const meanY = benchPairs.reduce((sum, [, y]) => sum + y, 0) / benchPairs.length
+    let numerator = 0
+    let denominator = 0
+    for (const [x, y] of benchPairs) {
+      numerator += (x - meanX) * (y - meanY)
+      denominator += (x - meanX) ** 2
+    }
+    if (denominator > 0) {
+      benchSlope = numerator / denominator
+      benchIntercept = meanY - benchSlope * meanX
+    }
+  }
+  /** AA quality for one row: its index when published, else its benchmark mean. */
+  const analysisQuality = (value) => {
+    if (Number.isFinite(value.intelligenceIndex)) return qualityOf(value)
+    const mean = fractionMean(value)
+    if (mean === null || benchPairs.length < 8) return null
+    const index = benchSlope * mean + benchIntercept
+    return Math.max(0, Math.min(100, Math.round((slope * index + intercept) * 10) / 10))
+  }
+
   let filledQuality = 0
   let filledPrice = 0
   let filledLatency = 0
@@ -697,8 +840,9 @@ export function attachArtificialAnalysis(dataset, { base = {}, analysis = {}, wa
     } }
 
     const hasQuality = Number.isFinite(Number(entry.quality)) && Number(entry.quality) > 0
-    if (!hasQuality && Number.isFinite(value.intelligenceIndex)) {
-      const quality = qualityOf(value)
+    const derived = analysisQuality(value)
+    if (!hasQuality && derived !== null) {
+      const quality = derived
       entry.quality = quality
       entry.scores = { ...(entry.scores ?? {}), overall: quality }
       entry.evidence = { ...(entry.evidence ?? {}), overall: 0 }
@@ -745,7 +889,7 @@ export function attachArtificialAnalysis(dataset, { base = {}, analysis = {}, wa
     const entryKey = id.toLowerCase()
     const existing = dataset[id] ?? dataset[entryKey]
     if (existing !== undefined) continue
-    const quality = Number.isFinite(value.intelligenceIndex) ? qualityOf(value) : null
+    const quality = analysisQuality(value)
     if (quality === null && !Number.isFinite(value.priceIn)) continue
     const price = Number.isFinite(value.priceIn)
       ? { input: round1(value.priceIn * CNY_PER_USD), output: round1((value.priceOut ?? value.priceIn) * CNY_PER_USD) }
@@ -810,7 +954,12 @@ export function attachArtificialAnalysis(dataset, { base = {}, analysis = {}, wa
     filledQuality,
     filledPrice,
     filledLatency,
-    calibration: { pairs: pairs.length, slope: Math.round(slope * 100) / 100, intercept: Math.round(intercept * 100) / 100 },
+    calibration: {
+      pairs: pairs.length,
+      slope: Math.round(slope * 100) / 100,
+      intercept: Math.round(intercept * 100) / 100,
+      benchmarkPairs: benchPairs.length,
+    },
   }
 }
 
