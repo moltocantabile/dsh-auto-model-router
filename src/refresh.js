@@ -22,6 +22,7 @@
 
 import zlib from 'node:zlib'
 import { buildDataset, COMPASS_ID } from './model-data-build.js'
+import { rankTable } from './rank.js'
 import { DIMENSIONS } from './select.js'
 
 const CDN = 'https://cdn.opencompass.org.cn/assets/lm'
@@ -384,6 +385,9 @@ export async function refreshCatalog({ base, wanted = [], fetchImpl = fetch, sig
   })
   const attached = attachCrossChecks(dataset, { epoch, llm })
   const artificialAnalysis = attachArtificialAnalysis(dataset, { base, analysis, wanted, now })
+  // Phase 1 of the data-utilisation design: rank the whole catalog and record the
+  // result per entry. Nothing routes on it yet -- the decision log shows the diff.
+  const ranked = attachRanking(dataset)
 
   return {
     dataset,
@@ -397,8 +401,65 @@ export async function refreshCatalog({ base, wanted = [], fetchImpl = fetch, sig
       epoch: attached.epoch,
       llmLeaderboard: attached.llmLeaderboard,
       artificialAnalysis,
+      ranking: ranked.summary,
       sources: [COMPASS_ABILITY_URL, COMPASS_BENCH_URL, 'https://benchgecko.ai', EPOCH_ECI_URL, LLM_LEADERBOARD, ARTIFICIAL_ANALYSIS_URL],
       errors,
+    },
+  }
+}
+
+/**
+ * Rank every model across all sources and record the result on the entry.
+ *
+ * The ranking engine works on a whole catalog at once because its channels are
+ * calibrated against each other; the compact result it leaves on each entry is
+ * what the selector and the board read: status, composite with its uncertainty
+ * band, rank, and the per-dimension estimates with their evidence counts.
+ *
+ * @param {Record<string, object>} dataset
+ * @param {object} [options] - passed to `rankTable`
+ * @returns {{ table: object, summary: object }}
+ */
+export function attachRanking(dataset, options = {}) {
+  const table = rankTable(dataset, options)
+  const dims = ['coding', 'reasoning', 'math', 'knowledge', 'agentic', 'longContext', 'vision', 'speed', 'overall']
+  const round = (value) => (typeof value === 'number' && Number.isFinite(value) ? Math.round(value * 10) / 10 : null)
+  for (const row of table.models) {
+    const entry = dataset[row.key]
+    if (entry === null || typeof entry !== 'object') continue
+    const compact = {}
+    for (const dim of dims) {
+      const value = row.dims?.[dim]
+      if (value === undefined || value === null) continue
+      const estimate = round(value.estimate ?? value.value)
+      if (estimate === null) continue
+      compact[dim] = {
+        value: estimate,
+        evidence: Number.isInteger(value.evidence) ? value.evidence : Number(value.evidence) || 0,
+        ...(value.derived === true ? { derived: true } : {}),
+      }
+    }
+    entry.ranking = {
+      status: row.status,
+      composite: round(row.composite),
+      low: round(row.compositeLow ?? null),
+      rank: Number.isInteger(row.rank) ? row.rank : null,
+      dims: compact,
+    }
+  }
+  const top = table.models
+    .filter((row) => Number.isInteger(row.rank) && row.rank <= 5)
+    .sort((a, b) => a.rank - b.rank)
+    .map((row) => ({ key: row.key, rank: row.rank, composite: round(row.composite) }))
+  return {
+    table,
+    summary: {
+      measured: table.measured.length,
+      provisional: table.provisional.length,
+      unmeasured: table.unmeasured.length,
+      calibratedChannels: table.coverage?.channels ?? null,
+      uncalibratedObservations: table.coverage?.uncalibratedObservations ?? 0,
+      top,
     },
   }
 }
@@ -869,6 +930,9 @@ export function attachArtificialAnalysis(dataset, { base = {}, analysis = {}, wa
       priceOut: value.priceOut ?? null,
       ttft: value.ttft ?? null,
       speed: value.speed ?? null,
+      // The per-benchmark percentages are kept: the ranking engine reads them as
+      // observations, and dropping them here was why AA barely moved any score.
+      ...(value.benchmarks === undefined ? {} : { benchmarks: value.benchmarks }),
       source: ARTIFICIAL_ANALYSIS_URL,
     } }
 
@@ -965,6 +1029,7 @@ export function attachArtificialAnalysis(dataset, { base = {}, analysis = {}, wa
         priceOut: value.priceOut ?? null,
         ttft: value.ttft ?? null,
         speed: value.speed ?? null,
+        ...(value.benchmarks === undefined ? {} : { benchmarks: value.benchmarks }),
         source: ARTIFICIAL_ANALYSIS_URL,
       } },
     }

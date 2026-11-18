@@ -1417,8 +1417,9 @@ export function apply(ctx, input) {
         applyDataset(result.dataset, { checkedAt: summary.checkedAt })
         summary.file = RUNTIME_DATA_URL.pathname
         const aa = summary.artificialAnalysis ?? {}
+        const ranked = summary.ranking ?? {}
         const text = summary.errors.length === 0
-          ? `model data refreshed: ${summary.models} models (${summary.benchgecko} benchgecko, ${summary.compass} compassrank, ${summary.epoch} epoch, ${summary.llmLeaderboard} llmleaderboard, ${aa.models ?? 0} artificialanalysis → ${aa.created ?? 0} new, ${aa.filledQuality ?? 0} measured, ${aa.filledPrice ?? 0} priced) at ${summary.checkedAt}`
+          ? `model data refreshed: ${summary.models} models (${summary.benchgecko} benchgecko, ${summary.compass} compassrank, ${summary.epoch} epoch, ${summary.llmLeaderboard} llmleaderboard, ${aa.models ?? 0} artificialanalysis → ${aa.created ?? 0} new, ${aa.filledQuality ?? 0} measured, ${aa.filledPrice ?? 0} priced; ranking: ${ranked.measured ?? 0} measured / ${ranked.provisional ?? 0} provisional / ${ranked.unmeasured ?? 0} unmeasured) at ${summary.checkedAt}`
           : `model data refreshed with ${summary.errors.length} source error(s): ${summary.errors.slice(0, 3).join('; ')}`
         return { ok: true, text, data: { summary } }
       }
