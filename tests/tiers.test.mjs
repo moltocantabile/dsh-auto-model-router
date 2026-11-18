@@ -152,3 +152,37 @@ test('the same model id on two providers is two entries, not one', () => {
   assert.deepEqual(new Set(placed), new Set(['provider-a/deepseek-v4-pro', 'provider-b/deepseek-v4-pro']))
   assert.equal(assigned.modelOf['provider-a/deepseek-v4-pro'], 'deepseek-v4-pro')
 })
+
+const priced = (id, quality, price) => ({
+  model: id,
+  key: `p/${id}`,
+  provider: 'p',
+  info: { quality, price: { input: price, output: price }, latency: 'balanced' },
+})
+
+test('a model beaten on quality and price lands off, with the winner named', () => {
+  // Same work, more than ten cost-index points dearer, measurably worse: paying
+  // more for less. Automatic placement alone would keep it, so it is switched off.
+  // Both fit `balanced`; only the price/quality comparison separates them.
+  const assigned = assignTiers([priced('bad', 60, 10), priced('good', 62, 1)], ROUTES, {})
+  assert.equal(assigned.tierOf['p/bad'], 'off')
+  assert.ok(assigned.groups.off.includes('p/bad'))
+  const record = assigned.dominated.find((entry) => entry.key === 'p/bad')
+  assert.equal(record.by, 'p/good')
+  assert.ok(assigned.groups[assigned.tierOf['p/good']].includes('p/good'), 'the winner keeps its tier')
+})
+
+test('a dearer model is not "dominated" just for being dearer', () => {
+  // Higher quality at a higher price is a trade, not a loss; the tiers exist to
+  // express that trade.
+  const assigned = assignTiers([priced('cheap', 56, 0.5), priced('strong', 70, 8)], ROUTES, {})
+  assert.deepEqual(assigned.dominated, [])
+  assert.ok(['fast', 'balanced', 'deep'].includes(assigned.tierOf['p/strong']))
+  assert.ok(['fast', 'balanced', 'deep'].includes(assigned.tierOf['p/cheap']))
+})
+
+test('a hand-assigned model is never pruned by dominance', () => {
+  const assigned = assignTiers([priced('bad', 60, 10), priced('good', 62, 1)], ROUTES, { overrides: { 'p/bad': 'deep' } })
+  assert.equal(assigned.tierOf['p/bad'], 'deep', 'the override outranks the automated rule')
+  assert.ok(assigned.groups.deep.includes('p/bad'))
+})

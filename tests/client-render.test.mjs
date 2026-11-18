@@ -154,7 +154,11 @@ function loadBundle() {
   globalThis.fetch = async (_url, init) => {
     const body = JSON.parse(init.body)
     calls.push(body.action)
-    const data = body.action === 'catalog' ? CATALOG : body.action === 'refresh' ? replies.refresh : SNAPSHOT
+    const data = body.action === 'catalog'
+      ? (body.provider === 'provider-a'
+        ? { ...CATALOG, provider: 'provider-a', models: CATALOG.models }
+        : { ...CATALOG, provider: body.provider ?? 'p', models: CATALOG.models.filter((model) => model.id === 'm-balanced') })
+      : body.action === 'refresh' ? replies.refresh : SNAPSHOT
     // The endpoint answers with the payload itself; `api()` only needs
     // `ok`, `status` and `text()`, which jsdom does not implement.
     return {
@@ -321,6 +325,16 @@ test('the page mounts, fetches its snapshot, and renders rows', async () => {
 
     // The old catalog table is gone: capsules carry the information now.
     assert.ok(!text.includes('catalogModels'), 'the Provider models card is removed')
+
+    // A capsule finds its own catalog row: "not in this provider catalog" was the
+    // symptom of loading only the route's provider. The label lives in the hover
+    // card, so open it rather than scanning the whole page.
+    const probe = capsules[0]
+    probe.dispatchEvent(new loaded.window.MouseEvent('mouseover', { bubbles: true }))
+    await new Promise((resolve) => setTimeout(resolve, 25))
+    const card = container.querySelector('.amr-pop')
+    assert.ok(card !== null, 'hovering a capsule opens its card')
+    assert.ok(!(card.textContent ?? '').includes('notInCatalog'), 'the capsule resolves its catalog row')
     root.unmount()
     await new Promise((resolve) => setTimeout(resolve, 25))
   } finally {

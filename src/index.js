@@ -949,6 +949,9 @@ export function apply(ctx, input) {
         lines.push(`  off: ${shown.join(', ')}${rest > 0 ? ` (+${rest} more)` : ''}`)
       }
       if ((board.unmeasured ?? []).length > 0) lines.push(`  unmeasured: ${board.unmeasured.length} not routable (no quality measurement)`)
+      if ((board.dominated ?? []).length > 0) {
+        lines.push(`  dominated: ${board.dominated.length} off (another model is cheaper and better)`)
+      }
     }
     const summarizer = summarizerOptions()
     lines.push(

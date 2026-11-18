@@ -12,7 +12,16 @@
  * The operator still overrules the computation, per model: drag one to another
  * tier, or switch it off. Those overrides are the only hand-made assignments.
  */
-import { withinEnvelope } from './select.js'
+import { costIndex, withinEnvelope } from './select.js'
+
+/** How much cheaper a model must be to justify a lower quality by "dominance". */
+const DOMINANCE_COST_MARGIN = 10
+
+/** Measured quality of a candidate, 0 when nothing measured it. */
+const qualityOf = (info) => {
+  const quality = Number(info?.quality ?? info?.scores?.composite)
+  return Number.isFinite(quality) ? quality : 0
+}
 
 /** Tiers from cheapest to most capable. */
 export const TIER_IDS = ['fast', 'balanced', 'deep']
@@ -87,6 +96,9 @@ export function assignTiers(pool, routes, config = {}) {
   const modelOf = {}
   /** Models the catalog offers but nothing measured: never routed, never shown as a choice. */
   const unmeasured = []
+  /** Placed models another model beats on both quality and price. */
+  const dominated = []
+  const placed = []
 
   for (const candidate of Array.isArray(pool) ? pool : []) {
     const model = candidate?.model
@@ -126,9 +138,44 @@ export function assignTiers(pool, routes, config = {}) {
     }
     groups[tier].push(key)
     tierOf[key] = tier
+    placed.push({ key, tier, quality: qualityOf(candidate.info), cost: costIndex(candidate.info) })
   }
 
-  return { mode, groups, tierOf, providerOf, modelOf, overridden, disabled: [...disabled], unassigned, unmeasured }
+  // A model that another one beats on both axes is not worth routing: it pays
+  // more for less. Automatic placement ignores that competition because it only
+  // asks "does this fit an envelope", so the losers are turned off here -- the
+  // operator can still drag one back and take it as a deliberate choice.
+  if (mode === 'auto') {
+    for (const candidate of placed) {
+      const winner = placed.find(
+        (other) =>
+          other.key !== candidate.key &&
+          other.quality > candidate.quality &&
+          other.cost <= candidate.cost - DOMINANCE_COST_MARGIN,
+      )
+      if (winner === undefined) continue
+      const tier = tierOf[candidate.key]
+      const members = groups[tier]
+      const position = members.indexOf(candidate.key)
+      if (position >= 0) members.splice(position, 1)
+      groups.off.push(candidate.key)
+      tierOf[candidate.key] = OFF
+      dominated.push({ key: candidate.key, by: winner.key, quality: candidate.quality, winnerQuality: winner.quality, cost: candidate.cost, winnerCost: winner.cost })
+    }
+  }
+
+  return {
+    mode,
+    groups,
+    tierOf,
+    providerOf,
+    modelOf,
+    overridden,
+    dominated,
+    disabled: [...disabled],
+    unassigned,
+    unmeasured,
+  }
 }
 
 /**

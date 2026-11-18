@@ -122,6 +122,7 @@ window.__ModuleLoader__.load({
 .amr-capsule[data-off="true"] { opacity:.55; text-decoration:line-through; cursor:pointer; }
 .amr-capsule[data-measured="false"] { border-style:dotted; opacity:.75; }
 .amr-capsule[data-measured="false"] .amr-capsuleProvider { font-style:italic; }
+.amr-capsule[data-dominated="true"] { opacity:.5; }
 .amr-capsule[data-overridden="true"] { border-style:dashed; }
 .amr-capsuleName { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-variant-numeric:tabular-nums; }
 .amr-capsuleDot { width:6px; height:6px; border-radius:50%; flex:none; background:var(--dsw-alias-brand-primary); }
@@ -234,6 +235,7 @@ window.__ModuleLoader__.load({
         unmeasuredHint: '{count} advertised models are not routable: nobody measured their quality, so they cannot be ranked.',
         tierUnmeasured: 'unmeasured',
         unmeasuredModelHint: 'No quality measurement: it cannot be ranked automatically. Drag it into a tier to route it anyway.',
+        dominatedHint: 'Off automatically: {by} is cheaper and scores higher. Drag it into a tier to use it anyway.',
         tierOff: 'off',
         laneEmpty: 'No model here yet.',
         modelCount: '{count} models',
@@ -390,6 +392,7 @@ window.__ModuleLoader__.load({
         unmeasuredHint: '另有 {count} 个模型未被路由：没有任何质量测量，无法排序。',
         tierUnmeasured: '未测量',
         unmeasuredModelHint: '没有任何质量测量，无法自动排序。拖入某个档位即可强制纳入路由。',
+        dominatedHint: '已自动停用：{by} 更便宜且得分更高。仍可拖入档位强制使用。',
         tierOff: '停用',
         laneEmpty: '暂无模型。',
         modelCount: '{count} 个模型',
@@ -870,8 +873,15 @@ window.__ModuleLoader__.load({
       const board = snap.board ?? { mode: draft.tiers?.mode ?? 'auto', groups: { fast: [], balanced: [], deep: [], off: [] }, overridden: [], unassigned: [] }
       const overrides = draft.tiers?.overrides ?? {}
       const disabled = new Set(draft.tiers?.disabled ?? [])
-      const index = new Map((models ?? []).map((entry) => [entry.id, entry]))
+      // Keyed the same way as the board (provider/model): a bare id is ambiguous
+      // once several catalogs are on screen.
+      const index = new Map((models ?? []).map((entry) => [`${entry.provider}/${entry.id}`, entry]))
+      // Bare-id fallback: a board key without a provider (an older snapshot) still
+      // finds its row instead of claiming the model is not in any catalog.
+      const byBareId = new Map()
+      for (const entry of models ?? []) if (!byBareId.has(entry.id)) byBareId.set(entry.id, entry)
       const providerOf = board.providerOf ?? {}
+      const dominatedBy = new Map((board.dominated ?? []).map((entry) => [entry.key, entry.by]))
       const [hovered, setHovered] = useState(null)
       const [dragging, setDragging] = useState(null)
       const [over, setOver] = useState(null)
@@ -928,7 +938,7 @@ window.__ModuleLoader__.load({
 
       function capsule(key, laneId) {
         const model = board.modelOf?.[key] ?? key
-        const entry = index.get(model) ?? null
+        const entry = index.get(key) ?? index.get(`${providerOf[key]}/${model}`) ?? byBareId.get(model) ?? null
         const off = disabled.has(key)
         const handAssigned = Object.hasOwn(overrides, key)
         const open = hovered === key
@@ -942,8 +952,11 @@ window.__ModuleLoader__.load({
             'data-overridden': handAssigned ? 'true' : 'false',
             'data-tone': String(providerTone.get(providerOf[key]) ?? 0),
             'data-measured': laneId === 'unmeasured' ? 'false' : 'true',
+            'data-dominated': dominatedBy.has(key) ? 'true' : 'false',
             'data-dragging': dragging === key ? 'true' : 'false',
-            title: laneId === 'unmeasured' ? t('unmeasuredModelHint') : off ? t('enableModel') : t('disableModel'),
+            title: dominatedBy.has(key)
+              ? t('dominatedHint').replace('{by}', dominatedBy.get(key))
+              : laneId === 'unmeasured' ? t('unmeasuredModelHint') : off ? t('enableModel') : t('disableModel'),
             onMouseEnter: () => setHovered(key),
             onMouseLeave: () => setHovered((current) => (current === key ? null : current)),
             onClick: () => (off ? followAuto(key) : move(key, 'off')),
@@ -975,6 +988,7 @@ window.__ModuleLoader__.load({
               { className: 'amr-pop', onClick: (event) => event.stopPropagation() },
               h('span', { className: 'amr-popTitle' }, `${providerOf[key] ?? 'unknown'}/${model}`),
               laneId === 'unmeasured' && h('p', { className: 'amr-note' }, t('unmeasuredModelHint')),
+              dominatedBy.has(key) && h('p', { className: 'amr-note' }, t('dominatedHint').replace('{by}', dominatedBy.get(key))),
               h(ModelFacts, { entry, t }),
               h(
                 'div',
@@ -1292,15 +1306,21 @@ window.__ModuleLoader__.load({
         setCatalogs((previous) => ({ ...previous, [body.provider]: body.models ?? [] }))
       }, [])
 
-      /** Load the catalog for every provider the routes currently reference. */
+      /**
+       * Load a catalog for every provider the page can show.
+       *
+       * The board spans every provider the harness exposes, so loading only the
+       * providers named in the routes left most capsules without a catalog row --
+       * reported to the operator as "not in this provider catalog", which read
+       * like a missing model rather than a missing fetch.
+       */
       const loadCatalogsFor = useCallback(
-        async (config) => {
+        async (config, board) => {
           const providers = new Set(Object.values(config?.routes ?? {}).map((route) => route.provider))
+          for (const provider of Object.values(board?.providerOf ?? {})) providers.add(provider)
           for (const provider of providers) {
             if (typeof provider === 'string' && provider.length > 0) await loadCatalog(provider)
           }
-          const fallback = config?.routes?.[config?.defaultRoute]?.provider
-          if (typeof fallback === 'string' && fallback.length > 0) await loadCatalog(fallback)
         },
         [loadCatalog],
       )
@@ -1309,7 +1329,7 @@ window.__ModuleLoader__.load({
         const payload = await api('snapshot')
         if (!mounted.current) return
         adopt(payload)
-        await loadCatalogsFor(payload.config)
+        await loadCatalogsFor(payload.config, payload.board)
       }, [adopt, loadCatalog])
 
       /**
@@ -1406,7 +1426,12 @@ window.__ModuleLoader__.load({
         }
       }, [adopt, refresh])
 
-      const models = catalog?.models ?? []
+      // Every provider's catalog, flattened with its origin: the board keys models
+      // by provider/model, so a bare id would collide across catalogs.
+      const models = useMemo(
+        () => Object.entries(catalogs).flatMap(([provider, list]) => list.map((entry) => ({ ...entry, provider }))),
+        [catalogs],
+      )
       const byId = useMemo(() => {
         const table = {}
         for (const entry of models) table[entry.id] = entry
@@ -1605,7 +1630,13 @@ window.__ModuleLoader__.load({
           { title: t('routes'), hint: t('routesHint') },
           routeIds.map((id) => {
             const route = draft.routes[id]
-            const entry = (catalogs[route.provider] ?? []).find((candidate) => candidate.id === route.model) ?? null
+            // The route's own provider is the right place to look, but a route may
+            // be anchored to an id another catalog serves; showing its facts beats
+            // claiming the model is not in any catalog.
+            const entry =
+              (catalogs[route.provider] ?? []).find((candidate) => candidate.id === route.model) ??
+              (models ?? []).find((candidate) => candidate.id === route.model) ??
+              null
             return h(
               'div',
               { key: id, className: 'amr-tier' },
