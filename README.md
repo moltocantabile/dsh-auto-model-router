@@ -16,15 +16,36 @@ capability.
 ## How it works
 
 ```
-user message ──► agent loop step
-                    │
+user message ──► agent/inbox/inserted   pre-select: the previous decision applies
+                    │                   to the step this message opens
+                    ▼
+                agent loop step
                     ├─ agent/inbox/claimed       capture the step's new messages
-                    ├─ system-prompt/assemble    System One → task profile (one forward pass)
-                    │     shape · depth · breadth · risk · vision · tools · latency
-                    │     then: pick the tier, and rank the models inside its envelope
-                    │     publish provider/model as prompt variables
-                    └─ agent/request             replace the frozen call config
+                    └─ system-prompt/assemble    System One → task profile (one forward pass)
+                          shape · depth · breadth · risk · intent · vision · tools · latency
+                          then: pick the tier, rank the models inside its envelope,
+                          and record the winner with agent.model.select()
 ```
+
+Routing happens in two places because the harness fixes a step's model before
+any plugin sees it:
+
+- `agent.model.select()` is the only supported way to move an agent between
+  models, so assembly records the decision rather than rewriting the request.
+  The selection is durable — it is a `model/selection` event on the session, so
+  a resumed session continues on the routed model.
+- Because the selection lands *after* the step that produced it, a message
+  arriving at an idle agent gets the route decided by the previous step. That is
+  exact for a continuation (`continue`, `ok`) and self-correcting otherwise: a
+  fresh request is decided at its own assembly, one step before it is served.
+
+Harness-injected messages are filtered out of the decision input: the
+environment block, the system prompt, and the notice that a previous turn ran on
+another model. That last one is not decoration — it names the models it switched
+between, so reading it as the request lets the router answer its own output: the
+notice scores as a task about a model, the next switch writes another notice.
+With the notice excluded, a step that carries only it reuses the decision that
+caused the switch, and routing stays put.
 
 Both hooks are registered at the host root and declared `prepend`, so they run
 outermost and win over the UI model-selection listener. The scope chain of

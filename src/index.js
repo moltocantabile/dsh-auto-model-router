@@ -2,17 +2,23 @@
  * @dsh-external/dsh-auto-model-router
  *
  * Routes every model request through a System One decision model and applies
- * the structured reply to the request route. Main agents and subagents are
- * treated identically: both assemble prompts and dispatch `agent/request`
- * through the agent scope chain, so one host-plane plugin covers every agent
- * the process runs — including children spawned by `subagent`/`subagent_fork`.
+ * the structured reply as the agent's model selection. Main agents and
+ * subagents are treated identically: both assemble prompts inside the agent
+ * scope chain, so one host-plane plugin covers every agent the process runs —
+ * including children spawned by `subagent`/`subagent_fork`.
  *
  * Seams used:
  * - `agent/inbox/claimed`  capture the batch claimed for the step (the new
  *   user message is not yet on the session surface when assembly runs).
- * - `system-prompt/assemble` (outermost) decide once per request and publish
- *   the chosen route as the `provider`/`model` prompt variables.
- * - `agent/request` (outermost) replace the frozen call config with that route.
+ * - `agent/inbox/inserted` record the last decision as the agent's selection
+ *   when a message lands, because `preStep` reads the selection synchronously
+ *   with no async window in front of it.
+ * - `system-prompt/assemble` (outermost) decide once per step and record the
+ *   chosen route with `agent.model.select()` so it applies from the next step.
+ *
+ * Model choice never happens in `agent/request`: the harness fixes the step's
+ * model before that waterfall runs and rejects a late change (see
+ * `prepareRequest`). `agent.model.select()` is the supported seam.
  *
  * The plugin imports nothing at runtime: the host process resolves no peer
  * package for it, so an injected build needs only its own lib/ files.
@@ -31,6 +37,7 @@ import {
   DEFAULT_POLICY,
   DEFAULT_ROUTES,
   buildState,
+  isRoutableMessage,
   callDecisionModel,
   parseDecision,
 } from './decision.js'
@@ -38,6 +45,7 @@ import { infoFor, knowledgeProvider, routingNote, applyDataset, saveRuntimeDatas
 import { refreshCatalog } from './refresh.js'
 import { DEFAULT_SUMMARIZER, buildDigestPrompt, callChatModel, createDigestCache } from './summarize.js'
 import { selectForTier, describeRanking } from './select.js'
+import { selectRoute as recordSelection } from './route.js'
 
 export const name = '@dsh-external/dsh-auto-model-router'
 export const inject = ['tools']
@@ -101,8 +109,12 @@ export function apply(ctx, input) {
 
   /** Messages claimed for a step, consumed by the next assembly of that agent. */
   const claimed = new WeakMap()
-  /** Latest decision computed for an agent, reused by its `agent/request`. */
+  /** Latest decision computed for an agent, reused when its next message lands. */
   const pending = new WeakMap()
+  /** The selection this router last recorded for an agent. */
+  const recorded = new WeakMap()
+  /** Where an agent is in the loop, for logs: `{ turn, step }`. */
+  const position = new WeakMap()
   /** Route currently serving an agent (for switch hysteresis and status). */
   const current = new WeakMap()
   /** Per-agent forced route ids. */
@@ -405,6 +417,14 @@ export function apply(ctx, input) {
     // gets a short budget so it cannot hold up a turn indefinitely, and whatever
     // arrives later still lands in the cache for the next decision.
     const messages = agent.session.deriveMessages()
+
+    // A step whose whole new input is harness-injected (a model-switch notice,
+    // the environment block) is not a new request. Deciding from it would let
+    // the router answer its own output, and a switch would keep re-routing.
+    // The route that caused the notice stands instead.
+    if (claimedBatch.length > 0 && !claimedBatch.some(isRoutableMessage)) {
+      return pending.get(agent)?.decision ?? null
+    }
     const pin = pinOf(agent)
     const pinTargetOf = pinTarget(pin)
     const forceId = pinTargetOf?.kind === 'route' ? pinTargetOf.routeId : null
@@ -545,6 +565,11 @@ export function apply(ctx, input) {
       switched: false,
       ...(failure === null ? {} : { error: String(failure.message ?? failure) }),
     }
+    const where = position.get(agent)
+    if (where !== undefined) {
+      record.turn = where.turn
+      record.step = where.step
+    }
     pending.set(agent, { signature, at: Date.now(), decision: record })
     remember(record)
     stats.latencyTotal += latencyMs
@@ -557,6 +582,50 @@ export function apply(ctx, input) {
     return record
   }
 
+  /**
+   * Record a route as the agent's model selection.
+   *
+   * `preStep` captures the selection before any plugin code runs for that step,
+   * and `agent/request` may not change provider/model afterwards, so this is the
+   * only seam that moves an agent between models. `select()` appends a durable
+   * `model/selection` event, which is what makes the change survive a resume.
+   *
+   * @returns whether a selection was recorded (false when it was already set).
+   */
+  function selectRoute(agent, route) {
+    const previous = recorded.get(agent) ?? null
+    const selection = recordSelection(agent, route, previous)
+    if (selection === null) return false
+    recorded.set(agent, selection)
+    if (previous !== null) stats.switches += 1
+    stats.applied += 1
+    current.set(agent, route.id)
+    return true
+  }
+
+  /**
+   * Pre-select for the step a newly landed message will open.
+   *
+   * A turn's first step has no window for a decision: the loop claims the
+   * message and reads the selection in the same synchronous pass. So the route
+   * recorded here is the one the previous step decided — exact for a
+   * continuation ("continue", "ok"), and corrected by assembly before the next
+   * step for a fresh request.
+   */
+  ctx.on('agent/inbox/inserted', (payload) => {
+    const agent = payload?.agent
+    // `shadow` observes and must not move a session between models, so this
+    // gate is `on`, not `!== off`.
+    if (agent === undefined || mode !== 'on') return
+    const latest = pending.get(agent)?.decision
+    if (latest === undefined) return
+    try {
+      selectRoute(agent, routeOf(agent, latest))
+    } catch (error) {
+      ctx.logger.warn(`[model-router] selection failed for ${agent.id}: ${error?.message ?? error}`)
+    }
+  })
+
   // ── decision input: the batch claimed for this step ────────────────────────
   ctx.on('agent/inbox/claimed', (payload) => {
     const agent = payload?.agent
@@ -564,6 +633,13 @@ export function apply(ctx, input) {
     const batch = claimed.get(agent) ?? []
     batch.push(payload.message)
     claimed.set(agent, batch)
+    // One claim per step, so the counter is the step number. The harness does
+    // not hand these numbers to assembly, and they are what makes a decision
+    // log readable across a long turn.
+    const turn = Number(payload.turn)
+    const previous = position.get(agent)
+    const step = Number.isFinite(turn) && previous?.turn === turn ? previous.step + 1 : 1
+    position.set(agent, { turn: Number.isFinite(turn) ? turn : null, step })
   })
 
   // ── decide before the request is built, publish route variables ────────────
@@ -590,51 +666,20 @@ export function apply(ctx, input) {
         if (route.id === fallback.id || !(await routeUsable(fallback, context.signal))) return resolved
         route = fallback
       }
-      return {
-        ...resolved,
-        variables: { ...(resolved.variables ?? {}), provider: route.provider, model: route.model },
-      }
-    },
-    { prepend: true },
-  )
-
-  // ── apply the route to the actual model request ────────────────────────────
-  ctx.on(
-    'agent/request',
-    async (payload, next) => {
-      const resolved = await next()
+      // The step being assembled already has its model; this selection applies
+      // from the next step, and to the next turn's first step via the insert
+      // hook above.
       stats.requests += 1
-      const agent = payload?.agent
-      if (agent === undefined) return resolved
-      const latest = pending.get(agent)
-      if (latest === undefined) return resolved
-      latest.decision.turn = payload.turn
-      latest.decision.step = payload.step
-      if (mode !== 'on') return resolved
-      let route = routeOf(agent, latest.decision)
-      if (!(await routeUsable(route, payload.signal))) {
-        const fallback = { id: config.defaultRoute, ...routes[config.defaultRoute] }
-        if (route.id !== fallback.id && (await routeUsable(fallback, payload.signal))) route = fallback
-        else return resolved
+      const switchesBefore = stats.switches
+      try {
+        selectRoute(agent, route)
+        decision.applied = true
+        decision.routeId = route.id
+        decision.switched = stats.switches > switchesBefore
+      } catch (error) {
+        ctx.logger.warn(`[model-router] selection failed for ${agent.id}: ${error?.message ?? error}`)
       }
-      const previous = current.get(agent)
-      if (previous !== route.id) {
-        stats.switches += 1
-        latest.decision.switched = true
-      }
-      current.set(agent, route.id)
-      latest.decision.applied = true
-      latest.decision.routeId = route.id
-      latest.decision.turn = payload.turn
-      latest.decision.step = payload.step
-      stats.applied += 1
-      const { reasoningEffort: _inherited, ...rest } = resolved
-      return {
-        ...rest,
-        provider: route.provider,
-        model: route.model,
-        ...(route.reasoningEffort === undefined ? {} : { reasoningEffort: route.reasoningEffort }),
-      }
+      return resolved
     },
     { prepend: true },
   )

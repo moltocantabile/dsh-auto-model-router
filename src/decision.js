@@ -82,7 +82,51 @@ export const DEFAULT_POLICY = {
 
 const num = (value, fallback) => (typeof value === 'number' && Number.isFinite(value) ? value : fallback)
 
-const SKIP_SOURCE_KINDS = new Set(['runtime-context', 'model-selection', 'system-prompt'])
+/**
+ * Messages the harness injects into the transcript for the model to read. They
+ * are not what the user asked for, and two of them are actively misleading:
+ *
+ * - `model-selection` is the notice that a previous turn ran on another model.
+ *   It names both models, so reading it as the request lets the router answer
+ *   its own output: the notice scores as a task about a model, and the next
+ *   switch writes another notice about that model.
+ * - `time-context` is the clock block appended before a turn. It is a `user`
+ *   message with no request in it, and it is often the newest message, so it
+ *   would win the "what is being asked" slot even though it asks nothing.
+ */
+export const NOISE_SOURCE_KINDS = new Set([
+  'runtime-context',
+  'model-selection',
+  'system-prompt',
+  'time-context',
+  'skill-catalog',
+  'tool-registry',
+  'compact-checkpoint',
+])
+
+/**
+ * Whether a message may stand in as the request being routed. Only what the
+ * user typed qualifies: a synthetic message (no source kind) is allowed so
+ * tests and hosts can pass plain messages.
+ *
+ * @param {object|undefined} message
+ */
+export function isRoutableMessage(message) {
+  if (NOISE_SOURCE_KINDS.has(message?.source?.kind)) return false
+  if (message?.role !== 'user') return false
+  return message.source?.kind === undefined || message.source?.kind === 'user'
+}
+
+/**
+ * Whether a message belongs in the state at all. Assistant and tool messages
+ * are context — they are what the work looked like — so only injected noise is
+ * dropped here.
+ *
+ * @param {object|undefined} message
+ */
+export function isContextMessage(message) {
+  return !NOISE_SOURCE_KINDS.has(message?.source?.kind)
+}
 
 /** Trim one string to `max` characters with an explicit ellipsis marker. */
 function clip(text, max) {
@@ -106,10 +150,20 @@ export function messageText(message, maxChars = 2000) {
 function stateFromMessages(messages, claimed, config, meta) {
   const { maxMessages = 10, maxStateChars = 12000, maxMessageChars = 2000 } = config.decision ?? config
   const recent = Array.isArray(messages) ? messages.slice(-maxMessages) : []
-  const filtered = recent.filter((m) => m.source?.kind !== 'runtime-context')
-  const claimedList = Array.isArray(claimed) ? claimed.filter((m) => m !== null && m !== undefined) : []
+  const filtered = recent.filter(isContextMessage)
+  const claimedList = Array.isArray(claimed) ? claimed.filter((m) => m !== null && m !== undefined && isRoutableMessage(m)) : []
   const claimedLines = claimedList.map((m) => messageText(m, maxMessageChars))
-  const lines = [...filtered.map((m) => messageText(m, maxMessageChars)), ...claimedLines]
+  const windowLines = [...filtered.map((m) => messageText(m, maxMessageChars)), ...claimedLines]
+
+  // The request being routed must be in the state even when it fell out of the
+  // window: deep into a turn the window is mostly tool results, and scoring
+  // those instead of the request is how a step inherits the wrong difficulty.
+  const whole = Array.isArray(messages) ? messages : []
+  const lastUser = [...whole, ...claimedList].findLast(isRoutableMessage) ?? null
+  const requestLine = lastUser === null ? null : `request: ${messageText(lastUser, maxMessageChars).replace(/^user: /, '')}`
+  const lines = requestLine !== null && !windowLines.includes(messageText(lastUser, maxMessageChars))
+    ? [...windowLines, requestLine]
+    : windowLines
   const tools = Array.isArray(meta?.toolNames) ? meta.toolNames.slice(0, 12) : []
   const agent = meta?.agentKind ?? 'main'
   const session = claimedList.length > 0 ? 'steered' : 'no steering'
@@ -144,11 +198,16 @@ function stateFromMessages(messages, claimed, config, meta) {
       : bounded
 
   // Extract the last non-runtime user message as the "task" for logging
-  const lastUser = [...filtered, ...(Array.isArray(claimed) ? claimed : [])].findLast((m) => m?.role === 'user')
-  const task = lastUser ? clip(lastUser.content?.[0]?.text ?? '', 100) : ''
+  // The task label names the request being routed, so it is found across the
+  // whole transcript: inside a long turn the newest user message is further back
+  // than the state window, and the window itself is mostly tool results. The
+  // text comes from the first text block, since a message may open with an
+  // image or an attached file.
+  const task = lastUser ? clip((lastUser.content ?? []).find((block) => block?.type === 'text')?.text ?? '', 100) : ''
+
 
   // Build message IDs for signature
-  const messageIds = `${filtered.length}:${lastUser?.content?.[0]?.text?.length ?? 0}`
+  const messageIds = `${filtered.length}:${task.length}`
 
   return { text, task, messageIds }
 }

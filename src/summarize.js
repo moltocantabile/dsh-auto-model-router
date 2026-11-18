@@ -22,7 +22,7 @@
  *   digest (or none) in place; the decision proceeds on the recent messages.
  */
 
-import { messageText } from './decision.js'
+import { messageText, NOISE_SOURCE_KINDS } from './decision.js'
 
 export const DEFAULT_SUMMARIZER = {
   enabled: true,
@@ -51,8 +51,7 @@ const clip = (text, max) => (typeof text === 'string' && text.length > max ? `${
 export function transcriptOf(messages, maxChars = DEFAULT_SUMMARIZER.maxInputChars) {
   const lines = []
   for (const message of Array.isArray(messages) ? messages : []) {
-    const source = message?.source?.kind
-    if (source === 'runtime-context' || source === 'model-selection' || source === 'system-prompt') continue
+    if (NOISE_SOURCE_KINDS.has(message?.source?.kind)) continue
     const text = messageText(message, 1500)
     if (text.length > 0) lines.push(text)
   }
