@@ -1,0 +1,10 @@
+# Bundle patch for @dsh-external/dsh-auto-model-router.
+#
+# This package is a DSH ≥ 0.2.1 bundle: the harness assembles bundles by
+# applying their patch layers in dsh.profile.bundles order. Entry creation
+# uses the insert form; the profile's own cordis.patch.yml layer then
+# overrides `auto-model-router`'s config (mode on) on top of this layer.
+- insert:
+    - id: auto-model-router
+      name: '@dsh-external/dsh-auto-model-router'
+      config: {}

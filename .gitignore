@@ -1,0 +1,12 @@
+node_modules/
+lib/
+*.tsbuildinfo
+*.tgz
+
+# local profile layer and backups: these hold the operator's own provider
+# endpoints and model lists, never the plugin's business
+backup-cordis.patch.yml
+.DS_Store
+
+# local scratch harness, not part of the plugin
+debug-bars.mjs

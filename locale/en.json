@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Auto Model Router",
+    "description": "Routes every request and subagent to the model tier a System One decision model selects, with a configuration panel on this page."
+  }
+}

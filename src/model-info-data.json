@@ -1,0 +1,1515 @@
+{
+  "deepseek-v4.1-flash-1017": {
+    "label": "DeepSeek-V4.1-Flash-1017",
+    "contextWindow": 1000000,
+    "maxOutput": 393216,
+    "price": {
+      "input": 2,
+      "output": 8,
+      "cacheHitInput": 0.04
+    },
+    "modalities": [
+      "text",
+      "image"
+    ],
+    "toolCalling": true,
+    "reasoning": true,
+    "structuredOutput": true,
+    "parallelTools": false,
+    "mcp": false,
+    "explicitCache": true,
+    "latency": "fast",
+    "quality": 68.2,
+    "scores": {
+      "coding": 50,
+      "reasoning": 79.8,
+      "math": 68.7,
+      "knowledge": 50,
+      "agentic": 62,
+      "overall": 67,
+      "longContext": 99,
+      "vision": 100,
+      "speed": 78
+    },
+    "evidence": {
+      "coding": 1,
+      "reasoning": 3,
+      "math": 4,
+      "knowledge": 5,
+      "agentic": 2,
+      "overall": 1,
+      "longContext": 0,
+      "vision": 0,
+      "speed": 0
+    },
+    "benchmarks": {
+      "OTIS Mock AIME 2024-2025": 99.4,
+      "GPQA diamond": 94.7,
+      "ARC-AGI": 94.5,
+      "ARC-AGI-2": 78.1,
+      "FrontierMath-Tiers-1-3-v2-Private": 75,
+      "APEX-Agents": 69.8,
+      "FrontierMath-Tier-4-v2-Private": 46.3,
+      "Mystery Game Puzzles": 43.8,
+      "Chess Puzzles": 43.2,
+      "SimpleQA Verified": 42.5,
+      "WeirdML v3": 22.1
+    },
+    "benchmarkSources": [
+      "benchgecko",
+      "opencompass-compassrank"
+    ],
+    "bestFor": [
+      "agentic tool loops: long multi-step runs with recovery",
+      "reasoning-heavy review and root-cause analysis at flash price",
+      "vision input where the screenshot is the evidence",
+      "bulk implementation where 2/8 pricing compounds"
+    ],
+    "weaknesses": [
+      "no coding benchmark published: SWE-style work is unmeasured",
+      "knowledge depth is mid (50.6); weak on niche factual recall",
+      "implicit cache only, so repeated preambles are not free"
+    ],
+    "distinguishing": [
+      "384K max output covers whole-repo refactor rounds",
+      "off-peak bills at half price (1/4)"
+    ],
+    "crossChecks": {
+      "compassRank": {
+        "average": 61.73,
+        "knowledge": 68,
+        "reasoning": 82.5,
+        "abstraction": 72.5,
+        "agent": 61.73,
+        "swePro": 57.86,
+        "terminalBench": 37.78,
+        "hle": 27.34,
+        "evaluated": "2026/10/23",
+        "board": "https://rank.opencompass.org.cn/leaderboard/llm"
+      }
+    },
+    "sources": [
+      "https://help.aliyun.com/zh/model-studio/deepseek-v4-1-flash",
+      "https://api-docs.deepseek.com/quick_start/pricing",
+      "https://benchgecko.ai/model/deepseek-v4-1-flash-1017",
+      "https://rank.opencompass.org.cn/leaderboard/llm"
+    ],
+    "notes": "Off-peak (22:00-08:00 UTC+8) bills at half: 1 in / 4 out."
+  },
+  "deepseek-v4.1-flash": {
+    "label": "DeepSeek-V4.1-Flash (latest alias)",
+    "contextWindow": 1000000,
+    "maxOutput": 393216,
+    "price": {
+      "input": 2,
+      "output": 8,
+      "cacheHitInput": 0.04
+    },
+    "modalities": [
+      "text",
+      "image"
+    ],
+    "toolCalling": true,
+    "reasoning": true,
+    "structuredOutput": true,
+    "parallelTools": false,
+    "mcp": false,
+    "explicitCache": true,
+    "latency": "fast",
+    "quality": 58,
+    "scores": {
+      "coding": 52.4,
+      "reasoning": 70,
+      "math": 64.3,
+      "knowledge": 47.9,
+      "agentic": 42.8,
+      "overall": 58,
+      "longContext": 99,
+      "vision": 100,
+      "speed": 56.3
+    },
+    "evidence": {
+      "coding": 2,
+      "reasoning": 3,
+      "math": 3,
+      "knowledge": 4,
+      "agentic": 1,
+      "overall": 0,
+      "longContext": 0,
+      "vision": 0,
+      "speed": 7
+    },
+    "benchmarks": {
+      "OTIS Mock AIME 2024-2025": 98.3,
+      "ARC-AGI": 94.5,
+      "GPQA diamond": 90.1,
+      "AA Long Context Reasoning": 84,
+      "Dtbench": 83.1,
+      "AA MMMU Pro": 77,
+      "ARC-AGI-2": 72.9,
+      "FrontierMath-Tiers-1-3-v2-Private": 70.9,
+      "Mirrorcode": 64.4,
+      "SimpleBench": 60,
+      "Lmca": 55.3,
+      "AA GDPval": 55,
+      "Proofbench": 54,
+      "AA SciCode": 51.9,
+      "Surface Evolver Bench": 46.3,
+      "Chess Puzzles": 45.3,
+      "Frontiercode": 43.9,
+      "SimpleQA Verified": 42.9,
+      "APEX-Agents": 39.5,
+      "AA Quality Index": 39.5,
+      "AA Humanity's Last Exam": 39.2,
+      "Mystery Game Puzzles": 37.2,
+      "FrontierMath-Tier-4-v2-Private": 26.8,
+      "AA CritPt": 14.3,
+      "WeirdML v3": 12.9,
+      "Furniture Assembly": 6
+    },
+    "benchmarkSources": [
+      "benchgecko"
+    ],
+    "bestFor": [
+      "same lane as the 1017 snapshot but slightly weaker",
+      "vision input at flash price",
+      "tasks where the harness pins a stable alias, not a date"
+    ],
+    "weaknesses": [
+      "reasoning and agentic trail the 1017 snapshot by 5-10 points",
+      "knowledge depth mid-low (47.8)",
+      "no coding benchmark evidence"
+    ],
+    "distinguishing": [
+      "rolling alias: always the newest V4.1 Flash build"
+    ],
+    "sources": [
+      "https://help.aliyun.com/zh/model-studio/deepseek-v4-1-flash",
+      "https://benchgecko.ai/model/deepseek-v4-1-flash"
+    ],
+    "notes": "Identical specs and prices to deepseek-v4.1-flash-1017."
+  },
+  "deepseek-v4-flash-0731": {
+    "label": "DeepSeek-V4-Flash-0731 (retired)",
+    "contextWindow": 1048576,
+    "maxOutput": null,
+    "price": {
+      "input": null,
+      "output": null,
+      "cacheHitInput": null
+    },
+    "modalities": [
+      "text"
+    ],
+    "toolCalling": true,
+    "reasoning": true,
+    "structuredOutput": true,
+    "parallelTools": false,
+    "mcp": false,
+    "explicitCache": false,
+    "latency": "fast",
+    "quality": 58,
+    "scores": {
+      "coding": 42.7,
+      "reasoning": 65.9,
+      "math": 58.2,
+      "knowledge": 50.9,
+      "agentic": 42,
+      "overall": 58,
+      "longContext": 100,
+      "vision": 0,
+      "speed": 75
+    },
+    "evidence": {
+      "coding": 2,
+      "reasoning": 3,
+      "math": 3,
+      "knowledge": 3,
+      "agentic": 0,
+      "overall": 0,
+      "longContext": 0,
+      "vision": 0,
+      "speed": 0
+    },
+    "benchmarks": {
+      "OTIS Mock AIME 2024-2025": 94.4,
+      "GPQA diamond": 91.7,
+      "ARC-AGI": 89,
+      "Dtbench": 84.9,
+      "WeirdML": 63,
+      "ARC-AGI-2": 61.4,
+      "FrontierMath-Tiers-1-3-v2-Private": 60.6,
+      "Proofbench": 56,
+      "SimpleBench": 53.3,
+      "Lmca": 49.1,
+      "SimpleQA Verified": 33.6,
+      "Chess Puzzles": 28.5,
+      "Mystery Game Puzzles": 27.3,
+      "FrontierMath-Tier-4-v2-Private": 24.4,
+      "Frontiercode": 18.8
+    },
+    "benchmarkSources": [
+      "benchgecko"
+    ],
+    "bestFor": [
+      "legacy pin only; prefer deepseek-v4.1-flash-1017"
+    ],
+    "weaknesses": [
+      "retired and unconfigured in this profile",
+      "coding 40.9, the weakest of the family",
+      "no cache-hit price"
+    ],
+    "distinguishing": [
+      "cheapest DeepSeek build if a workload is frozen to it"
+    ],
+    "sources": [
+      "https://api-docs.deepseek.com/quick_start/pricing",
+      "https://benchgecko.ai/model/deepseek-v4-flash-0731"
+    ],
+    "notes": "Not selectable on Bailian; requests fall back to V4.1-Flash-1017. Kept so a stale config is reported instead of failing silently.",
+    "retired": true,
+    "replaceWith": "deepseek-v4.1-flash-1017"
+  },
+  "deepseek-v4-flash": {
+    "label": "DeepSeek-V4-Flash (legacy name)",
+    "contextWindow": 1048576,
+    "maxOutput": 393216,
+    "price": {
+      "input": 2,
+      "output": 8,
+      "cacheHitInput": 0.04
+    },
+    "modalities": [
+      "text",
+      "image"
+    ],
+    "toolCalling": true,
+    "reasoning": true,
+    "structuredOutput": true,
+    "parallelTools": false,
+    "mcp": false,
+    "explicitCache": true,
+    "latency": "fast",
+    "quality": null,
+    "scores": {
+      "coding": 45,
+      "reasoning": 62,
+      "math": 55,
+      "knowledge": 50,
+      "agentic": 42,
+      "overall": 51,
+      "longContext": 100,
+      "vision": 100,
+      "speed": 75
+    },
+    "evidence": {
+      "coding": 0,
+      "reasoning": 0,
+      "math": 0,
+      "knowledge": 0,
+      "agentic": 0,
+      "overall": 0,
+      "longContext": 0,
+      "vision": 0,
+      "speed": 0
+    },
+    "benchmarks": null,
+    "benchmarkSources": [],
+    "bestFor": [
+      "legacy alias resolution; route to deepseek-v4.1-flash-1017 instead"
+    ],
+    "weaknesses": [
+      "legacy name, superseded by the V4.1 line",
+      "no distinct capability"
+    ],
+    "distinguishing": [
+      "resolves to the V4 flash family for old configs"
+    ],
+    "sources": [
+      "https://api-docs.deepseek.com/quick_start/pricing"
+    ],
+    "notes": "Retired alias backed by DeepSeek-V4.1-Flash-1017."
+  },
+  "deepseek-v4-pro-0813": {
+    "label": "DeepSeek-V4-Pro-0813",
+    "contextWindow": 1000000,
+    "maxOutput": 393216,
+    "price": {
+      "input": 9,
+      "output": 27,
+      "cacheHitInput": 0.9
+    },
+    "modalities": [
+      "text"
+    ],
+    "toolCalling": true,
+    "reasoning": true,
+    "structuredOutput": true,
+    "parallelTools": false,
+    "mcp": false,
+    "explicitCache": true,
+    "latency": "slow",
+    "quality": 62.3,
+    "scores": {
+      "coding": 47.2,
+      "reasoning": 74.1,
+      "math": 65.1,
+      "knowledge": 58.6,
+      "agentic": 46.9,
+      "overall": 63.3,
+      "longContext": 99,
+      "vision": 0,
+      "speed": 27.3
+    },
+    "evidence": {
+      "coding": 4,
+      "reasoning": 3,
+      "math": 4,
+      "knowledge": 4,
+      "agentic": 2,
+      "overall": 1,
+      "longContext": 0,
+      "vision": 0,
+      "speed": 6
+    },
+    "benchmarks": {
+      "OTIS Mock AIME 2024-2025": 98.6,
+      "GPQA diamond": 92.6,
+      "ARC-AGI": 90.5,
+      "Dtbench": 89.8,
+      "FrontierMath-Tiers-1-3-v2-Private": 68,
+      "WeirdML": 66.2,
+      "ARC-AGI-2": 61.3,
+      "Lmca": 53.5,
+      "SimpleQA Verified": 52.9,
+      "AA Long Context Reasoning": 50.7,
+      "Proofbench": 50,
+      "APEX-Agents": 47.3,
+      "Chess Puzzles": 43.2,
+      "AA SciCode": 39.9,
+      "Mystery Game Puzzles": 37.2,
+      "Mirrorcode": 33.3,
+      "Frontiercode": 28.6,
+      "AA GDPval": 27.9,
+      "FrontierMath-Tier-4-v2-Private": 26.8,
+      "AA Quality Index": 20.4,
+      "AA Humanity's Last Exam": 10.6,
+      "AA CritPt": 0
+    },
+    "benchmarkSources": [
+      "benchgecko",
+      "opencompass-compassrank"
+    ],
+    "bestFor": [
+      "knowledge-heavy analysis where latency does not matter",
+      "long reasoning over dense documents",
+      "factual/spec questions needing recall"
+    ],
+    "weaknesses": [
+      "speed 24.9: the slowest model in this catalog by a wide margin",
+      "coding 42.7 is poor for its price",
+      "text only"
+    ],
+    "distinguishing": [
+      "knowledge 62.9, joint highest of the reasoning-first models"
+    ],
+    "crossChecks": {
+      "compassRank": {
+        "average": 60.39,
+        "knowledge": 66,
+        "reasoning": 72.5,
+        "abstraction": 72.5,
+        "agent": 60.39,
+        "swePro": 61.42,
+        "terminalBench": 14.86,
+        "hle": 21.13,
+        "evaluated": "2026/10/23",
+        "board": "https://rank.opencompass.org.cn/leaderboard/llm"
+      }
+    },
+    "sources": [
+      "https://help.aliyun.com/zh/model-studio/deepseek-v4-pro",
+      "https://api-docs.deepseek.com/quick_start/pricing",
+      "https://benchgecko.ai/model/deepseek-v4-pro-0813",
+      "https://rank.opencompass.org.cn/leaderboard/llm"
+    ],
+    "notes": "Not in this provider's advertised catalog; off-peak is half price."
+  },
+  "deepseek-v4-pro": {
+    "label": "DeepSeek-V4-Pro",
+    "contextWindow": 1000000,
+    "maxOutput": 393216,
+    "price": {
+      "input": 12,
+      "output": 24,
+      "cacheHitInput": 1
+    },
+    "modalities": [
+      "text"
+    ],
+    "toolCalling": true,
+    "reasoning": true,
+    "structuredOutput": true,
+    "parallelTools": false,
+    "mcp": false,
+    "explicitCache": true,
+    "latency": "balanced",
+    "quality": 60.4,
+    "scores": {
+      "coding": 54.2,
+      "reasoning": 72.4,
+      "math": 59.6,
+      "knowledge": 56.5,
+      "agentic": 45,
+      "overall": 60.4,
+      "longContext": 99,
+      "vision": 0,
+      "speed": 51.2
+    },
+    "evidence": {
+      "coding": 5,
+      "reasoning": 2,
+      "math": 4,
+      "knowledge": 4,
+      "agentic": 0,
+      "overall": 0,
+      "longContext": 0,
+      "vision": 0,
+      "speed": 9
+    },
+    "benchmarks": {
+      "Chatbot Arena Elo · Overall": 1457.8,
+      "Chatbot Arena Elo · Coding": 1446,
+      "OTIS Mock AIME 2024-2025": 96.7,
+      "AA GPQA Diamond": 92.8,
+      "GPQA diamond": 91.5,
+      "LiveBench · Mathematics": 90.7,
+      "Dtbench": 84.5,
+      "LiveBench · Reasoning": 82.7,
+      "AA Long Context Reasoning": 80.3,
+      "LiveBench · Language": 78.1,
+      "SWE-Bench verified": 77.6,
+      "LiveBench · Data Analysis": 74.5,
+      "LiveBench · Overall": 73.6,
+      "LiveBench · Coding": 70,
+      "LiveBench · If": 62.4,
+      "AA Coding Index": 59.4,
+      "LiveBench · Agentic Coding": 56.7,
+      "AA SciCode": 51,
+      "WeirdML": 48.9,
+      "Lmca": 48.5,
+      "FrontierMath-Tiers-1-3-v2-Private": 47.7,
+      "AA GDPval": 47.5,
+      "SimpleQA Verified": 47,
+      "AA Humanity's Last Exam": 41,
+      "Surface Evolver Bench": 40,
+      "AA Agentic Index": 36.4,
+      "AA Quality Index": 36,
+      "AA CritPt": 18,
+      "Frontiercode": 17.6,
+      "Proofbench": 16,
+      "Chess Puzzles": 14.8,
+      "Cl Bench Life": 13.5,
+      "Mystery Game Puzzles": 8.6,
+      "FrontierMath-Tier-4-v2-Private": 2.4
+    },
+    "benchmarkSources": [
+      "benchgecko"
+    ],
+    "bestFor": [
+      "reasoning depth when the answer matters more than the wait",
+      "architectural critique and tradeoff analysis",
+      "text-only pipelines that must stay cheap-ish"
+    ],
+    "weaknesses": [
+      "no vision",
+      "agentic tool use is unmeasured and weak in practice",
+      "12 in / 24 out costs more than the newer 0813 for less"
+    ],
+    "distinguishing": [
+      "reasoning 78.6 with no output-token penalty tier"
+    ],
+    "sources": [
+      "https://help.aliyun.com/zh/model-studio/deepseek-v4-pro",
+      "https://benchgecko.ai/model/deepseek-v4-pro"
+    ],
+    "notes": "Prefer the explicit -0813 id when the cheaper tiered rate applies."
+  },
+  "qwen3.8-flash": {
+    "label": "Qwen3.8-Flash",
+    "contextWindow": 1000000,
+    "maxOutput": 131072,
+    "price": {
+      "input": 0.8,
+      "output": 2.7,
+      "cacheHitInput": 0.1
+    },
+    "modalities": [
+      "text",
+      "image",
+      "video"
+    ],
+    "toolCalling": true,
+    "reasoning": true,
+    "structuredOutput": true,
+    "parallelTools": false,
+    "mcp": false,
+    "explicitCache": true,
+    "latency": "fast",
+    "quality": 60.1,
+    "scores": {
+      "coding": 45.5,
+      "reasoning": 73.5,
+      "math": 77.6,
+      "knowledge": 46.4,
+      "agentic": 54.6,
+      "overall": 60.1,
+      "longContext": 99,
+      "vision": 100,
+      "speed": 85
+    },
+    "evidence": {
+      "coding": 1,
+      "reasoning": 1,
+      "math": 1,
+      "knowledge": 1,
+      "agentic": 1,
+      "overall": 1,
+      "longContext": 0,
+      "vision": 0,
+      "speed": 0
+    },
+    "benchmarks": {},
+    "benchmarkSources": [
+      "opencompass-compassrank"
+    ],
+    "bestFor": [
+      "cheap general workhorse: reads, edits with known location, summaries",
+      "vision input at 0.8 / 2.7",
+      "high-volume agent steps where cost dominates"
+    ],
+    "weaknesses": [
+      "no third-party benchmarks yet: scores are vendor claims",
+      "reasoning depth well below the max tier",
+      "agentic coding claims are unverified externally"
+    ],
+    "distinguishing": [
+      "0.8 / 2.7 with 1M context and vision, the cheapest capable multimodal"
+    ],
+    "crossChecks": {
+      "compassRank": {
+        "average": 56.12,
+        "knowledge": 66,
+        "reasoning": 75,
+        "abstraction": 69.23,
+        "agent": 56.12,
+        "swePro": 53.28,
+        "terminalBench": 38.47,
+        "hle": 16.14,
+        "evaluated": "2026/10/23",
+        "board": "https://rank.opencompass.org.cn/leaderboard/llm"
+      }
+    },
+    "sources": [
+      "https://help.aliyun.com/zh/model-studio/qwen3-8-flash",
+      "https://www.alibabacloud.com/help/zh/model-studio/model-pricing",
+      "https://benchgecko.ai/model/qwen3-8-flash",
+      "https://rank.opencompass.org.cn/leaderboard/llm"
+    ],
+    "notes": "Thinking mode supports 983K input and 131K output."
+  },
+  "qwen3.7-flash": {
+    "label": "Qwen3.7-Flash",
+    "contextWindow": 1000000,
+    "maxOutput": 131072,
+    "price": {
+      "input": 0.2,
+      "output": 0.8,
+      "cacheHitInput": 0.04
+    },
+    "modalities": [
+      "text",
+      "image",
+      "video"
+    ],
+    "toolCalling": true,
+    "reasoning": true,
+    "structuredOutput": true,
+    "parallelTools": false,
+    "mcp": false,
+    "explicitCache": true,
+    "latency": "fast",
+    "quality": 43.7,
+    "scores": {
+      "coding": 45,
+      "reasoning": 45,
+      "math": 50.7,
+      "knowledge": 47,
+      "agentic": 45,
+      "overall": 43.7,
+      "longContext": 99,
+      "vision": 100,
+      "speed": 80
+    },
+    "evidence": {
+      "coding": 0,
+      "reasoning": 0,
+      "math": 2,
+      "knowledge": 2,
+      "agentic": 0,
+      "overall": 0,
+      "longContext": 0,
+      "vision": 0,
+      "speed": 0
+    },
+    "benchmarks": {
+      "OTIS Mock AIME 2024-2025": 86.7,
+      "GPQA diamond": 79.6,
+      "FrontierMath-Tiers-1-3-v2-Private": 20.3,
+      "Chess Puzzles": 19,
+      "Mystery Game Puzzles": 6.4
+    },
+    "benchmarkSources": [
+      "benchgecko"
+    ],
+    "bestFor": [
+      "cheapest possible text or vision pass at 0.2 / 0.8",
+      "classification, extraction and routing pre-passes",
+      "high-volume tagging with 10M TPM"
+    ],
+    "weaknesses": [
+      "math 53.5 and general 6.4: not a reasoning model",
+      "superseded by qwen3.8-flash at similar price",
+      "thin benchmark coverage"
+    ],
+    "distinguishing": [
+      "lowest input price in the catalog"
+    ],
+    "sources": [
+      "https://help.aliyun.com/zh/model-studio/qwen3-7-flash",
+      "https://benchgecko.ai/model/qwen3-7-flash"
+    ],
+    "notes": "Prices are the <=32K tier; 32K-256K is 0.6/2.4 and 256K-1M is 1.2/4.8."
+  },
+  "qwen3.8-max": {
+    "label": "Qwen3.8-Max",
+    "contextWindow": 1000000,
+    "maxOutput": 131072,
+    "price": {
+      "input": 12,
+      "output": 36,
+      "cacheHitInput": 1.5
+    },
+    "modalities": [
+      "text",
+      "image",
+      "video"
+    ],
+    "toolCalling": true,
+    "reasoning": true,
+    "structuredOutput": true,
+    "parallelTools": false,
+    "mcp": false,
+    "explicitCache": true,
+    "latency": "balanced",
+    "quality": 62.9,
+    "scores": {
+      "coding": 51.8,
+      "reasoning": 76.4,
+      "math": 67.6,
+      "knowledge": 58.4,
+      "agentic": 54,
+      "overall": 62.9,
+      "longContext": 99,
+      "vision": 100,
+      "speed": 60
+    },
+    "evidence": {
+      "coding": 1,
+      "reasoning": 1,
+      "math": 1,
+      "knowledge": 1,
+      "agentic": 1,
+      "overall": 1,
+      "longContext": 0,
+      "vision": 0,
+      "speed": 0
+    },
+    "benchmarks": {},
+    "benchmarkSources": [
+      "opencompass-compassrank"
+    ],
+    "bestFor": [
+      "reasoning-heavy work when Qwen3.7-Max is unavailable",
+      "multimodal analysis of video and long documents",
+      "mid-priced balanced default"
+    ],
+    "weaknesses": [
+      "no third-party benchmarks",
+      "same price band as qwen3.7-max with weaker coding evidence",
+      "vision input raises token cost"
+    ],
+    "distinguishing": [
+      "video modality at max tier"
+    ],
+    "crossChecks": {
+      "compassRank": {
+        "average": 58.9,
+        "knowledge": 78,
+        "reasoning": 77.5,
+        "abstraction": 72.5,
+        "agent": 58.9,
+        "swePro": 59.65,
+        "terminalBench": 34.49,
+        "hle": 27.14,
+        "evaluated": "2026/10/23",
+        "board": "https://rank.opencompass.org.cn/leaderboard/llm"
+      }
+    },
+    "sources": [
+      "https://help.aliyun.com/zh/model-studio/qwen3-8-max",
+      "https://benchgecko.ai/model/qwen3-8-max",
+      "https://rank.opencompass.org.cn/leaderboard/llm"
+    ],
+    "notes": "Explicit cache hit bills at 1.0; cache creation at 15."
+  },
+  "qwen4-max": {
+    "label": "Qwen4-Max",
+    "contextWindow": 1000000,
+    "maxOutput": 131072,
+    "price": {
+      "input": 10,
+      "output": 30,
+      "cacheHitInput": 0.5
+    },
+    "modalities": [
+      "text",
+      "image",
+      "video"
+    ],
+    "toolCalling": true,
+    "reasoning": true,
+    "structuredOutput": true,
+    "parallelTools": false,
+    "mcp": false,
+    "explicitCache": true,
+    "latency": "slow",
+    "quality": 72,
+    "scores": {
+      "coding": 74,
+      "reasoning": 73.9,
+      "math": 77.6,
+      "knowledge": 44.4,
+      "agentic": 75.3,
+      "overall": 72,
+      "longContext": 99,
+      "vision": 100,
+      "speed": 50
+    },
+    "evidence": {
+      "coding": 0,
+      "reasoning": 1,
+      "math": 1,
+      "knowledge": 1,
+      "agentic": 1,
+      "overall": 1,
+      "longContext": 0,
+      "vision": 0,
+      "speed": 0
+    },
+    "benchmarks": {},
+    "benchmarkSources": [
+      "opencompass-compassrank"
+    ],
+    "bestFor": [
+      "newest-generation reasoning and coding when price is secondary",
+      "long transcripts up to 1M with vision",
+      "the hardest single-shot problems"
+    ],
+    "weaknesses": [
+      "expensive at 10 / 30 and slow (AA: 155s to first token)",
+      "very little independent benchmark coverage",
+      "overkill for routine edits"
+    ],
+    "distinguishing": [
+      "AA Intelligence 43, the highest of any model in this catalog"
+    ],
+    "crossChecks": {
+      "compassRank": {
+        "average": 67.98,
+        "knowledge": 64,
+        "reasoning": 77.5,
+        "abstraction": 67.5,
+        "agent": 67.98,
+        "swePro": null,
+        "terminalBench": null,
+        "hle": null,
+        "evaluated": "2026/11/17",
+        "board": "https://rank.opencompass.org.cn/leaderboard/llm"
+      }
+    },
+    "sources": [
+      "https://help.aliyun.com/zh/model-studio/qwen4-max",
+      "https://www.alibabacloud.com/help/zh/model-studio/model-pricing",
+      "https://benchgecko.ai/model/qwen4-max",
+      "https://rank.opencompass.org.cn/leaderboard/llm"
+    ],
+    "notes": "Cache hit is 5 percent of input; explicit-cache creation bills at 125 percent (5m) or 200 percent (1h)."
+  },
+  "qwen4-max-preview": {
+    "label": "Qwen4-Max-Preview",
+    "contextWindow": 1000000,
+    "maxOutput": 393216,
+    "price": {
+      "input": null,
+      "output": null,
+      "cacheHitInput": null
+    },
+    "modalities": [
+      "text",
+      "image",
+      "video"
+    ],
+    "toolCalling": true,
+    "reasoning": true,
+    "structuredOutput": true,
+    "parallelTools": false,
+    "mcp": false,
+    "explicitCache": false,
+    "latency": "slow",
+    "quality": null,
+    "scores": {
+      "coding": 74,
+      "reasoning": 72,
+      "math": 74,
+      "knowledge": 70,
+      "agentic": 72,
+      "overall": 72,
+      "longContext": 99,
+      "vision": 100,
+      "speed": 50
+    },
+    "evidence": {
+      "coding": 0,
+      "reasoning": 0,
+      "math": 0,
+      "knowledge": 0,
+      "agentic": 0,
+      "overall": 0,
+      "longContext": 0,
+      "vision": 0,
+      "speed": 0
+    },
+    "benchmarks": {},
+    "benchmarkSources": [],
+    "bestFor": [
+      "evaluation only: unpriced and scheduled to sunset 2026-11-25"
+    ],
+    "weaknesses": [
+      "no published price and no benchmarks",
+      "preview id can change without notice",
+      "sunset in one week"
+    ],
+    "distinguishing": [
+      "preview of Qwen4-Max; must not be used for durable routes"
+    ],
+    "sources": [
+      "https://help.aliyun.com/zh/model-studio/qwen4-max-preview",
+      "https://benchgecko.ai/model/qwen4-max-preview"
+    ],
+    "notes": "Unpriced by design; GA qwen4-max is the replacement.",
+    "preview": true,
+    "sunsetAt": "2026-11-25"
+  },
+  "glm-5.3": {
+    "label": "GLM-5.3",
+    "contextWindow": 1048576,
+    "maxOutput": 131072,
+    "price": {
+      "input": 8,
+      "output": 28,
+      "cacheHitInput": 2
+    },
+    "modalities": [
+      "text"
+    ],
+    "toolCalling": true,
+    "reasoning": true,
+    "structuredOutput": true,
+    "parallelTools": false,
+    "mcp": false,
+    "explicitCache": true,
+    "latency": "balanced",
+    "quality": 63.1,
+    "scores": {
+      "coding": 53.6,
+      "reasoning": 67.9,
+      "math": 70.9,
+      "knowledge": 51.3,
+      "agentic": 57.9,
+      "overall": 64.5,
+      "longContext": 100,
+      "vision": 0,
+      "speed": 55.5
+    },
+    "evidence": {
+      "coding": 2,
+      "reasoning": 2,
+      "math": 2,
+      "knowledge": 2,
+      "agentic": 2,
+      "overall": 1,
+      "longContext": 0,
+      "vision": 0,
+      "speed": 1
+    },
+    "benchmarks": {
+      "AA GPQA Diamond": 91.7,
+      "GPQA diamond": 91.5,
+      "OTIS Mock AIME 2024-2025": 91.1,
+      "AA Long Context Reasoning": 79.7,
+      "Dtbench": 79.5,
+      "WeirdML": 75.4,
+      "FrontierMath-Tiers-1-3-v2-Private": 72.4,
+      "Deepswe": 69,
+      "Lmca": 65.3,
+      "SimpleBench": 59.4,
+      "AA SciCode": 59,
+      "AA GDPval": 57.5,
+      "APEX-Agents": 56.6,
+      "Proofbench": 49,
+      "AA Quality Index": 44.8,
+      "AA Humanity's Last Exam": 42.3,
+      "SimpleQA Verified": 41,
+      "Frontiercode": 40.1,
+      "PostTrainBench": 34.5,
+      "Chess Puzzles": 33.7,
+      "Frontierswe": 30.2,
+      "FrontierMath-Tier-4-v2-Private": 29.3,
+      "Mystery Game Puzzles": 26.2,
+      "AA CritPt": 19.1
+    },
+    "benchmarkSources": [
+      "benchgecko",
+      "opencompass-compassrank"
+    ],
+    "bestFor": [
+      "agentic workflows with structured output and function calling",
+      "mid-cost balanced default at 8 / 28",
+      "long-context tasks up to 1M"
+    ],
+    "weaknesses": [
+      "coding 53.7 trails deepseek flash at 4x the price",
+      "knowledge 50.2 mid",
+      "text only"
+    ],
+    "distinguishing": [
+      "APEX-Agents 56.6, strong agentic for its price",
+      "1M context with explicit cache"
+    ],
+    "crossChecks": {
+      "compassRank": {
+        "average": 61.89,
+        "knowledge": 72,
+        "reasoning": 84.21,
+        "abstraction": 65,
+        "agent": 61.89,
+        "swePro": 58.82,
+        "terminalBench": 41.58,
+        "hle": 15.34,
+        "evaluated": "2026/10/23",
+        "board": "https://rank.opencompass.org.cn/leaderboard/llm"
+      }
+    },
+    "sources": [
+      "https://help.aliyun.com/zh/model-studio/glm-5-3-by-zhipu",
+      "https://benchgecko.ai/model/glm-5-3",
+      "https://rank.opencompass.org.cn/leaderboard/llm"
+    ],
+    "notes": "Benchmarks are BenchGecko-normalised scores dated 2026-11-17, not official SWE-bench."
+  },
+  "kimi-k3": {
+    "label": "Kimi-K3",
+    "contextWindow": 1048576,
+    "maxOutput": 1048576,
+    "price": {
+      "input": 20,
+      "output": 100,
+      "cacheHitInput": 2
+    },
+    "modalities": [
+      "text",
+      "image"
+    ],
+    "toolCalling": true,
+    "reasoning": true,
+    "structuredOutput": true,
+    "parallelTools": false,
+    "mcp": false,
+    "explicitCache": true,
+    "latency": "balanced",
+    "quality": 63.4,
+    "scores": {
+      "coding": 55.1,
+      "reasoning": 70.2,
+      "math": 69.3,
+      "knowledge": 48.1,
+      "agentic": 49.4,
+      "overall": 62.4,
+      "longContext": 100,
+      "vision": 100,
+      "speed": 57.4
+    },
+    "evidence": {
+      "coding": 2,
+      "reasoning": 2,
+      "math": 2,
+      "knowledge": 2,
+      "agentic": 2,
+      "overall": 1,
+      "longContext": 0,
+      "vision": 0,
+      "speed": 1
+    },
+    "benchmarks": {
+      "OTIS Mock AIME 2024-2025": 97.2,
+      "Surface Evolver Bench": 95,
+      "GPQA diamond": 94.6,
+      "ARC-AGI": 94.5,
+      "AA GPQA Diamond": 93.5,
+      "AA Long Context Reasoning": 88.7,
+      "Proofbench": 87,
+      "Dtbench": 85.3,
+      "WeirdML": 82.6,
+      "AA MMMU Pro": 80.5,
+      "FrontierMath-Tiers-1-3-v2-Private": 76,
+      "Deepswe": 68.5,
+      "Lmca": 62.1,
+      "ARC-AGI-2": 60.4,
+      "AA SciCode": 59.5,
+      "Mirrorcode": 54.4,
+      "SimpleBench": 52.8,
+      "AA GDPval": 51.7,
+      "SimpleQA Verified": 50.6,
+      "APEX-Agents": 47.8,
+      "AA Humanity's Last Exam": 46.9,
+      "Frontiercode": 44.2,
+      "AA Quality Index": 43.6,
+      "FrontierMath-Tier-4-v2-Private": 39,
+      "Chess Puzzles": 33.7,
+      "PostTrainBench": 31.5,
+      "Frontierswe": 25.9,
+      "AA CritPt": 23.4,
+      "Mystery Game Puzzles": 18.5,
+      "WeirdML v3": 17.1,
+      "Furniture Assembly": 6
+    },
+    "benchmarkSources": [
+      "benchgecko",
+      "opencompass-compassrank"
+    ],
+    "bestFor": [
+      "math-heavy and general reasoning that must be right",
+      "long-form writing and instruction following",
+      "1M-context document work"
+    ],
+    "weaknesses": [
+      "20 / 100 is 5-10x peers with similar scores",
+      "knowledge 45.5 is low for a flagship",
+      "agentic 47.8 trails cheaper models"
+    ],
+    "distinguishing": [
+      "general 59.0, the highest general score in this catalog"
+    ],
+    "crossChecks": {
+      "compassRank": {
+        "average": 57.31,
+        "knowledge": 70,
+        "reasoning": 72.5,
+        "abstraction": 67.5,
+        "agent": 57.31,
+        "swePro": 62.93,
+        "terminalBench": 29.87,
+        "hle": 26.49,
+        "evaluated": "2026/10/23",
+        "board": "https://rank.opencompass.org.cn/leaderboard/llm"
+      }
+    },
+    "sources": [
+      "https://help.aliyun.com/zh/model-studio/kimi-k3",
+      "https://benchgecko.ai/model/kimi-k3",
+      "https://rank.opencompass.org.cn/leaderboard/llm"
+    ],
+    "notes": "Bailian China-Beijing list price; aggregators quote a much lower USD price."
+  },
+  "qwen3.7-max": {
+    "label": "Qwen3.7-Max",
+    "contextWindow": 1000000,
+    "maxOutput": 131072,
+    "price": {
+      "input": 12,
+      "output": 36,
+      "cacheHitInput": 2.4
+    },
+    "modalities": [
+      "text"
+    ],
+    "toolCalling": true,
+    "reasoning": true,
+    "structuredOutput": true,
+    "parallelTools": false,
+    "mcp": false,
+    "explicitCache": true,
+    "latency": "balanced",
+    "quality": 69.2,
+    "scores": {
+      "coding": 67.8,
+      "reasoning": 73.1,
+      "math": 70.8,
+      "knowledge": 61.1,
+      "agentic": 55,
+      "overall": 69.2,
+      "longContext": 99,
+      "vision": 0,
+      "speed": 46.7
+    },
+    "evidence": {
+      "coding": 3,
+      "reasoning": 3,
+      "math": 4,
+      "knowledge": 4,
+      "agentic": 0,
+      "overall": 0,
+      "longContext": 0,
+      "vision": 0,
+      "speed": 3
+    },
+    "benchmarks": {
+      "OTIS Mock AIME 2024-2025": 95.6,
+      "GPQA diamond": 91.5,
+      "Dtbench": 87.1,
+      "LiveBench · Mathematics": 85.3,
+      "LiveBench · Reasoning": 83.3,
+      "LiveBench · Language": 79.7,
+      "SWE-Bench verified": 77.3,
+      "LiveBench · Overall": 74.3,
+      "LiveBench · Coding": 74.2,
+      "LiveBench · If": 74,
+      "LiveBench · Data Analysis": 71.8,
+      "FrontierMath-Tiers-1-3-v2-Private": 68,
+      "AA Coding Index": 66,
+      "SimpleBench": 64.5,
+      "SimpleQA Verified": 55.8,
+      "Lmca": 51.8,
+      "LiveBench · Agentic Coding": 51.7,
+      "AA Quality Index": 46,
+      "FrontierMath-Tier-4-v2-Private": 34.2,
+      "AA Agentic Index": 30.6,
+      "Proofbench": 26,
+      "Mystery Game Puzzles": 25.1,
+      "Chess Puzzles": 23.2,
+      "Ebr Bench": 9.5
+    },
+    "benchmarkSources": [
+      "benchgecko"
+    ],
+    "bestFor": [
+      "hardest coding: multi-file refactors, architecture, tricky debugging",
+      "math and quantitative reasoning that must be right",
+      "long-horizon autonomy with 1M context and 262K thinking"
+    ],
+    "weaknesses": [
+      "slowest first token of the flagships (speed 47.5)",
+      "priciest text model here at 12 / 36",
+      "text only, no screenshot input"
+    ],
+    "distinguishing": [
+      "262K reasoning budget in thinking mode",
+      "5M TPM headroom for parallel agents"
+    ],
+    "sources": [
+      "https://help.aliyun.com/zh/model-studio/qwen3-7-max",
+      "https://benchgecko.ai/compare/gpt-5-3-codex-vs-qwen3-7-max",
+      "https://qwen.ai/blog?id=qwen3.7",
+      "https://benchgecko.ai/model/qwen3-7-max"
+    ],
+    "notes": "Generic id equals snapshot qwen3.7-max-2026-05-20, text only. Beijing list prices. Benchmarks aggregated by BenchGecko, 2026-11-17."
+  },
+  "qwen3.7-plus": {
+    "label": "Qwen3.7-Plus",
+    "contextWindow": 1000000,
+    "maxOutput": 131072,
+    "price": {
+      "input": 2,
+      "output": 8,
+      "cacheHitInput": 0.4
+    },
+    "modalities": [
+      "text",
+      "image",
+      "video"
+    ],
+    "toolCalling": true,
+    "reasoning": true,
+    "structuredOutput": true,
+    "parallelTools": false,
+    "mcp": false,
+    "explicitCache": true,
+    "latency": "balanced",
+    "quality": 42.5,
+    "scores": {
+      "coding": 37.1,
+      "reasoning": 54.5,
+      "math": 54.5,
+      "knowledge": 54.3,
+      "agentic": 54.5,
+      "overall": 42.5,
+      "longContext": 99,
+      "vision": 100,
+      "speed": 52.4
+    },
+    "evidence": {
+      "coding": 1,
+      "reasoning": 0,
+      "math": 2,
+      "knowledge": 2,
+      "agentic": 0,
+      "overall": 0,
+      "longContext": 0,
+      "vision": 0,
+      "speed": 13
+    },
+    "benchmarks": {
+      "Chatbot Arena Elo · Overall": 1455.8,
+      "OTIS Mock AIME 2024-2025": 93.3,
+      "AA tau2-Bench Telecom": 93,
+      "AA GPQA Diamond": 90,
+      "GPQA diamond": 87.3,
+      "AA MMMU Pro": 80.5,
+      "AA IFBench": 78,
+      "Dtbench": 73.3,
+      "AA Long Context Reasoning": 73,
+      "AA Coding Index": 55.9,
+      "AA Terminal-Bench Hard": 47,
+      "AA SciCode": 46.1,
+      "Lmca": 44.2,
+      "FrontierMath-Tiers-1-3-v2-Private": 36.2,
+      "AA Humanity's Last Exam": 35.6,
+      "AA Quality Index": 25.2,
+      "AA Agentic Index": 20.8,
+      "Chess Puzzles": 20,
+      "AA GDPval": 13.4,
+      "Frontiercode": 10.2,
+      "AA CritPt": 9.1,
+      "Mystery Game Puzzles": 8.6,
+      "Osworld 2 0": 2.8
+    },
+    "benchmarkSources": [
+      "benchgecko"
+    ],
+    "bestFor": [
+      "vision plus coding: UI screenshots, charts, GUI automation",
+      "mid-cost multimodal work at 2 / 8",
+      "long documents under 256K"
+    ],
+    "weaknesses": [
+      "coding evidence is a single noisy benchmark (10.2)",
+      "6 / 24 above 256K input",
+      "no published SWE-bench or agentic scores"
+    ],
+    "distinguishing": [
+      "cheapest multimodal entry with full agent skills"
+    ],
+    "sources": [
+      "https://help.aliyun.com/zh/model-studio/qwen3-7-plus",
+      "https://benchgecko.ai/model/qwen3-7-plus"
+    ],
+    "notes": "Prices are the <=256K Beijing tier; 256K-1M is 6/24. No benchmarks published."
+  },
+  "qwen3.6-flash": {
+    "label": "Qwen3.6-Flash",
+    "contextWindow": 1000000,
+    "maxOutput": 65536,
+    "price": {
+      "input": 1.2,
+      "output": 7.2,
+      "cacheHitInput": 0.12
+    },
+    "modalities": [
+      "text",
+      "image",
+      "video"
+    ],
+    "toolCalling": true,
+    "reasoning": true,
+    "structuredOutput": true,
+    "parallelTools": false,
+    "mcp": false,
+    "explicitCache": true,
+    "latency": "fast",
+    "quality": 45.3,
+    "scores": {
+      "coding": 51.2,
+      "reasoning": 46,
+      "math": 39.6,
+      "knowledge": 40.9,
+      "agentic": 42,
+      "overall": 45.3,
+      "longContext": 99,
+      "vision": 100,
+      "speed": 80
+    },
+    "evidence": {
+      "coding": 2,
+      "reasoning": 3,
+      "math": 5,
+      "knowledge": 4,
+      "agentic": 0,
+      "overall": 0,
+      "longContext": 0,
+      "vision": 0,
+      "speed": 0
+    },
+    "benchmarks": {
+      "OTIS Mock AIME 2024-2025": 84.4,
+      "GPQA diamond": 81,
+      "LiveBench · Mathematics": 78.9,
+      "LiveBench · Coding": 64.9,
+      "LiveBench · Language": 63.2,
+      "LiveBench · Reasoning": 62.9,
+      "Dtbench": 61.8,
+      "LiveBench · Overall": 60.4,
+      "LiveBench · Data Analysis": 58.8,
+      "LiveBench · If": 47.2,
+      "LiveBench · Agentic Coding": 46.7,
+      "Lmca": 36.5,
+      "FrontierMath-Tiers-1-3-v2-Private": 23.6,
+      "SimpleBench": 22.2,
+      "SimpleQA Verified": 15.9,
+      "FrontierMath-2025-02-28-Private": 10.3,
+      "Mystery Game Puzzles": 9.7,
+      "Chess Puzzles": 7.4,
+      "FrontierMath-Tier-4-2025-07-01-Private": 0
+    },
+    "benchmarkSources": [
+      "benchgecko"
+    ],
+    "bestFor": [
+      "legacy compatibility only; prefer qwen3.8-flash"
+    ],
+    "weaknesses": [
+      "reasoning 48.0, math 39.5: the weakest reasoning here",
+      "undercut by newer flash models",
+      "64K output cap"
+    ],
+    "distinguishing": [
+      "spatial vision for object detection and UI grounding"
+    ],
+    "sources": [
+      "https://help.aliyun.com/zh/model-studio/qwen3-6-flash",
+      "https://benchgecko.ai/model/qwen3-6-flash"
+    ],
+    "notes": "Prices are the <=256K Beijing tier. Older flash line, dominated by its successors."
+  },
+  "glm-5.2": {
+    "label": "GLM-5.2",
+    "contextWindow": 1048576,
+    "maxOutput": 131072,
+    "price": {
+      "input": 8,
+      "output": 28,
+      "cacheHitInput": 2
+    },
+    "modalities": [
+      "text"
+    ],
+    "toolCalling": true,
+    "reasoning": true,
+    "structuredOutput": true,
+    "parallelTools": false,
+    "mcp": false,
+    "explicitCache": true,
+    "latency": "balanced",
+    "quality": 62.6,
+    "scores": {
+      "coding": 56.8,
+      "reasoning": 60.2,
+      "math": 65.8,
+      "knowledge": 50.1,
+      "agentic": 46.9,
+      "overall": 62.6,
+      "longContext": 100,
+      "vision": 0,
+      "speed": 54.7
+    },
+    "evidence": {
+      "coding": 1,
+      "reasoning": 1,
+      "math": 1,
+      "knowledge": 1,
+      "agentic": 1,
+      "overall": 0,
+      "longContext": 0,
+      "vision": 0,
+      "speed": 1
+    },
+    "benchmarks": {
+      "Chatbot Arena Elo · Coding": 1593.3,
+      "Chatbot Arena Elo · Overall": 1471,
+      "GPQA diamond": 92.9,
+      "LiveBench · Mathematics": 89.8,
+      "Dtbench": 89.3,
+      "OTIS Mock AIME 2024-2025": 86.4,
+      "LiveBench · Coding": 79.7,
+      "SWE-Bench verified": 78.7,
+      "LiveBench · Reasoning": 78.6,
+      "ARC-AGI": 77,
+      "LiveBench · Language": 76.2,
+      "LiveBench · Overall": 76.2,
+      "LiveBench · Data Analysis": 73.7,
+      "LiveBench · Agentic Coding": 73.3,
+      "WeirdML": 70.1,
+      "AA Coding Index": 68.8,
+      "FrontierMath-Tiers-1-3-v2-Private": 62.3,
+      "LiveBench · If": 62.3,
+      "Surface Evolver Bench": 55.6,
+      "Lmca": 53.9,
+      "AA Quality Index": 51.1,
+      "SimpleBench": 50.6,
+      "APEX-Agents": 45.2,
+      "Deepswe": 43.8,
+      "AA Agentic Index": 43.1,
+      "Mirrorcode": 36.7,
+      "Proofbench": 35,
+      "SimpleQA Verified": 34.2,
+      "PostTrainBench": 30.4,
+      "FrontierMath-Tier-4-v2-Private": 29.3,
+      "Frontiercode": 24.5,
+      "ARC-AGI-2": 22.8,
+      "Chess Puzzles": 17.9,
+      "Mystery Game Puzzles": 10.8,
+      "Ebr Bench": 9.5
+    },
+    "benchmarkSources": [
+      "benchgecko"
+    ],
+    "bestFor": [
+      "legacy pin; glm-5.3 supersedes it at the same price",
+      "code generation where the 5.3 behaviour regressed"
+    ],
+    "weaknesses": [
+      "same price as glm-5.3 but weaker reasoning and agentic",
+      "text only",
+      "no vision"
+    ],
+    "distinguishing": [
+      "coding 58.1 slightly above glm-5.3 in BenchGecko samples"
+    ],
+    "sources": [
+      "https://help.aliyun.com/zh/model-studio/glm-5-2",
+      "https://m.ithome.com/html/0989689.htm",
+      "https://benchgecko.ai/model/glm-5-2"
+    ],
+    "notes": "Dominated by glm-5.3 at identical Bailian Beijing pricing."
+  }
+}
