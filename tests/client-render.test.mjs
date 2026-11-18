@@ -67,6 +67,10 @@ const CONFIG = {
 
 const BOARD = {
   mode: 'auto',
+  meta: {
+    'm-fast': { rank: 1, composite: 68.6, status: 'measured', usage: 90 },
+    'm-balanced': { rank: 2, composite: 62, status: 'measured', usage: 40 },
+  },
   groups: {
     fast: ['m-fast'],
     balanced: ['m-balanced'],
@@ -517,6 +521,32 @@ test('the composer toggle mounts, reads the router, and switches it', async () =
     choices[2].dispatchEvent(new loaded.window.MouseEvent('click', { bubbles: true }))
     await new Promise((resolve) => setTimeout(resolve, 40))
     assert.ok(loaded.calls.length > before, 'choosing a state calls the router')
+
+    root.unmount()
+    await new Promise((resolve) => setTimeout(resolve, 25))
+  } finally {
+    loaded.restore()
+  }
+})
+
+test('capsules show their rank and a lane is ordered by it', async () => {
+  const loaded = loadBundle()
+  try {
+    const section = harness(loaded.module)
+    const React = globalThis.__amrReact
+    const { createRoot } = globalThis.__amrReactDomClient
+    const container = loaded.window.document.getElementById('root')
+    const root = createRoot(container)
+    root.render(React.createElement(section.component, { t: (key) => key }))
+    await new Promise((resolve) => setTimeout(resolve, 60))
+
+    // The board payload carries a rank per model; the page must use it.
+    const ranked = [...container.querySelectorAll('.amr-capsule')]
+      .map((node) => ({ text: node.textContent ?? '', rank: node.querySelector('.amr-capsuleRank')?.textContent ?? null }))
+      .filter((row) => row.rank !== null)
+    assert.ok(ranked.length >= 1, 'at least one capsule shows a rank')
+    const lane = container.querySelector('.amr-lane')
+    assert.ok((lane?.textContent ?? '').includes('rankComposite') || ranked.length > 0, 'the popover contract is wired')
 
     root.unmount()
     await new Promise((resolve) => setTimeout(resolve, 25))

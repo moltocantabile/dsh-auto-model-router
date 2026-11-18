@@ -528,6 +528,20 @@ export function apply(ctx, input) {
       }
     }
     const assigned = assignTiers(pool, routes, config.tiers)
+    // Rank and adoption travel with the board so the page can order a tier by
+    // measured rank instead of insertion order, and show where a model sits.
+    const meta = {}
+    for (const candidate of pool) {
+      const key = candidate.key ?? candidate.model
+      const info = candidate.info ?? {}
+      meta[key] = {
+        rank: Number.isInteger(info.ranking?.rank) ? info.ranking.rank : null,
+        composite: Number.isFinite(info.ranking?.composite) ? info.ranking.composite : null,
+        status: info.ranking?.status ?? null,
+        usage: Number.isFinite(info.usage?.percentile) ? info.usage.percentile : null,
+      }
+    }
+    assigned.meta = meta
     const membership = membershipOf(assigned)
     const byModel = new Map(pool.map((candidate) => [candidate.model, candidate]))
     const candidates = pool.filter((candidate) => TIER_IDS.includes(assigned.tierOf[candidate.key ?? candidate.model]))

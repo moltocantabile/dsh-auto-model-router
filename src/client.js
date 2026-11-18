@@ -127,6 +127,7 @@ window.__ModuleLoader__.load({
 .amr-capsuleName { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-variant-numeric:tabular-nums; }
 .amr-capsuleDot { width:6px; height:6px; border-radius:50%; flex:none; background:var(--dsw-alias-brand-primary); }
 .amr-capsuleProvider { color:var(--dsw-alias-label-tertiary); }
+.amr-capsuleRank { color:var(--dsw-alias-label-tertiary); font-size:11px; font-variant-numeric:tabular-nums; }
 .amr-capsule[data-tone="0"] { border-color:var(--dsw-alias-brand-primary); }
 .amr-capsule[data-tone="0"] .amr-capsuleDot { background:var(--dsw-alias-brand-primary); }
 .amr-capsule[data-tone="1"] { border-color:var(--dsw-alias-state-success-primary); }
@@ -235,6 +236,9 @@ window.__ModuleLoader__.load({
         filterActive: 'Showing {provider} only.',
         unmeasuredHint: '{count} advertised models are not routable: nobody measured their quality, so they cannot be ranked.',
         tierUnmeasured: 'unmeasured',
+        rankComposite: 'composite {value}',
+        rankPosition: 'rank #{rank}',
+        rankUsage: 'usage {pct}th pct',
         unmeasuredModelHint: 'No quality measurement: it cannot be ranked automatically. Drag it into a tier to route it anyway.',
         dominatedHint: 'Off automatically: {by} is cheaper and scores higher. Drag it into a tier to use it anyway.',
         tierOff: 'off',
@@ -397,6 +401,9 @@ window.__ModuleLoader__.load({
         filterActive: '仅显示 {provider}。',
         unmeasuredHint: '另有 {count} 个模型未被路由：没有任何质量测量，无法排序。',
         tierUnmeasured: '未测量',
+        rankComposite: '综合分 {value}',
+        rankPosition: '排名 #{rank}',
+        rankUsage: '使用度 {pct} 百分位',
         unmeasuredModelHint: '没有任何质量测量，无法自动排序。拖入某个档位即可强制纳入路由。',
         dominatedHint: '已自动停用：{by} 更便宜且得分更高。仍可拖入档位强制使用。',
         tierOff: '停用',
@@ -927,7 +934,19 @@ window.__ModuleLoader__.load({
         { id: 'off', label: t('tierOff'), off: true },
         { id: 'unmeasured', label: t('tierUnmeasured'), off: true },
       ]
-      const laneMembers = (id) => (id === 'unmeasured' ? board.unmeasured ?? [] : board.groups?.[id] ?? []).filter(visible)
+      const metaOf = (key) => board.meta?.[key] ?? {}
+      const laneMembers = (id) => {
+        const members = (id === 'unmeasured' ? board.unmeasured ?? [] : board.groups?.[id] ?? []).filter(visible)
+        // Measured rank first (best first), then the unranked ones in place.
+        return [...members].sort((a, b) => {
+          const ra = metaOf(a).rank
+          const rb = metaOf(b).rank
+          if (ra === rb) return a.localeCompare(b)
+          if (ra === null || ra === undefined) return 1
+          if (rb === null || rb === undefined) return -1
+          return ra - rb
+        })
+      }
 
       function move(model, tier) {
         if (busy === true) return
@@ -985,6 +1004,8 @@ window.__ModuleLoader__.load({
             },
           },
           h('span', { className: 'amr-capsuleDot' }),
+          metaOf(key).rank !== null && metaOf(key).rank !== undefined &&
+            h('span', { className: 'amr-capsuleRank' }, `#${metaOf(key).rank}`),
           h(
             'span',
             { className: 'amr-capsuleName' },
@@ -997,6 +1018,16 @@ window.__ModuleLoader__.load({
               'div',
               { className: 'amr-pop', onClick: (event) => event.stopPropagation() },
               h('span', { className: 'amr-popTitle' }, `${providerOf[key] ?? 'unknown'}/${model}`),
+              (metaOf(key).composite !== null || metaOf(key).usage !== null) &&
+                h(
+                  'p',
+                  { className: 'amr-note' },
+                  [
+                    metaOf(key).composite === null ? null : t('rankComposite').replace('{value}', String(metaOf(key).composite)),
+                    metaOf(key).rank === null ? null : t('rankPosition').replace('{rank}', String(metaOf(key).rank)),
+                    metaOf(key).usage === null ? null : t('rankUsage').replace('{pct}', String(metaOf(key).usage)),
+                  ].filter(Boolean).join(' · '),
+                ),
               laneId === 'unmeasured' && h('p', { className: 'amr-note' }, t('unmeasuredModelHint')),
               dominatedBy.has(key) && h('p', { className: 'amr-note' }, t('dominatedHint').replace('{by}', dominatedBy.get(key))),
               h(ModelFacts, { entry, t }),
