@@ -63,6 +63,8 @@ export function assignTiers(pool, routes, config = {}) {
   const tierOf = {}
   const overridden = []
   const unassigned = []
+  /** Models the catalog offers but nothing measured: never routed, never shown as a choice. */
+  const unmeasured = []
 
   for (const candidate of Array.isArray(pool) ? pool : []) {
     const model = candidate?.model
@@ -79,6 +81,15 @@ export function assignTiers(pool, routes, config = {}) {
       overridden.push(model)
       continue
     }
+    // Routing is measurement-driven: a model with no measured quality cannot be
+    // ranked, so it is not placed in a tier. A profile that exposes a provider
+    // with hundreds of unmeasured ids must not turn the tier board into a list of
+    // everything the provider can bill for.
+    const measured = candidate.info?.quality != null || candidate.info?.scores?.composite != null
+    if (mode === 'auto' && !measured) {
+      unmeasured.push(model)
+      continue
+    }
     // `manual` means the operator has taken over: an unassigned model is not
     // routed rather than guessed at, which is what makes the mode predictable.
     const tier = autoTierFor(candidate.info ?? null, routes)
@@ -92,7 +103,7 @@ export function assignTiers(pool, routes, config = {}) {
     tierOf[model] = tier
   }
 
-  return { mode, groups, tierOf, overridden, disabled: [...disabled], unassigned }
+  return { mode, groups, tierOf, overridden, disabled: [...disabled], unassigned, unmeasured }
 }
 
 /**

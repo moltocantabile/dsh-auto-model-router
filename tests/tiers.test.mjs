@@ -103,3 +103,21 @@ test('an empty tier widens to the default instead of ranking the whole pool', ()
   assert.equal(result.widened, true)
   assert.notEqual(result.selected.model, 'expensive-strong', 'the disabled model never comes back')
 })
+test('a model with no measurement is not placed and not routed', () => {
+  // A provider can advertise hundreds of ids nobody measured. Placing them in a
+  // tier would rank them on a prior; listing them under `off` would bury the
+  // models the operator switched off on purpose.
+  const unmeasured = { model: 'unknown-model', provider: 'p', info: null }
+  const assigned = assignTiers([...POOL, unmeasured], ROUTES, {})
+  assert.equal(assigned.tierOf['unknown-model'], undefined)
+  assert.deepEqual(assigned.unmeasured, ['unknown-model'])
+  assert.deepEqual(assigned.groups.off, [], 'the off lane stays for deliberate switches')
+  const placed = TIER_IDS.flatMap((id) => assigned.groups[id])
+  assert.ok(!placed.includes('unknown-model'))
+})
+
+test('manual mode still routes an unmeasured model the operator placed by hand', () => {
+  const unmeasured = { model: 'unknown-model', provider: 'p', info: null }
+  const assigned = assignTiers([unmeasured], ROUTES, { mode: 'manual', overrides: { 'unknown-model': 'balanced' } })
+  assert.deepEqual(assigned.groups.balanced, ['unknown-model'])
+})

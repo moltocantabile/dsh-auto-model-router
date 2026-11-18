@@ -209,6 +209,7 @@ window.__ModuleLoader__.load({
         tiers: 'Tiers',
         tiersHint: 'Membership is computed from measurement: a model joins the cheapest tier whose envelope it satisfies. Drag a capsule to move it, click one to switch it off.',
         boardHint: 'Hover a model for its price, capability and context. Drag between tiers to overrule the automatic assignment; click to disable it.',
+        unmeasuredHint: '{count} advertised models are not routable: nobody measured their quality, so they cannot be ranked.',
         tierOff: 'off',
         laneEmpty: 'No model here yet.',
         modelCount: '{count} models',
@@ -355,6 +356,7 @@ window.__ModuleLoader__.load({
         tiers: '档位',
         tiersHint: '档位成员由实测自动划分：模型进入它能满足的最便宜档位。拖动胶囊可改档，点击可停用。',
         boardHint: '悬停查看价格、能力与上下文；拖动可覆盖自动分配，点击可停用该模型。',
+        unmeasuredHint: '另有 {count} 个模型未被路由：没有任何质量测量，无法排序。',
         tierOff: '停用',
         laneEmpty: '暂无模型。',
         modelCount: '{count} 个模型',
@@ -953,6 +955,8 @@ window.__ModuleLoader__.load({
         'div',
         { className: 'amr-board' },
         h('p', { className: 'amr-note' }, t('boardHint')),
+        (board.unmeasured ?? []).length > 0 &&
+          h('p', { className: 'amr-note' }, t('unmeasuredHint').replace('{count}', String((board.unmeasured ?? []).length))),
         ...lanes.map((lane) => {
           const members = board.groups?.[lane.id] ?? []
           return h(

@@ -437,14 +437,14 @@ export function apply(ctx, input) {
     const assigned = assignTiers(pool, routes, config.tiers)
     const membership = membershipOf(assigned)
     const byModel = new Map(pool.map((candidate) => [candidate.model, candidate]))
-    const candidates = pool.filter((candidate) => assigned.tierOf[candidate.model] !== 'off')
+    const candidates = pool.filter((candidate) => TIER_IDS.includes(assigned.tierOf[candidate.model]))
     boardCache = assigned
     return { pool, assigned, membership, candidates, byModel }
   }
 
   /** Candidates the assignment actually routes (everything not switched off). */
   function assignedMembers(candidates, assigned) {
-    return candidates.filter((candidate) => assigned.tierOf[candidate.model] !== 'off')
+    return candidates.filter((candidate) => TIER_IDS.includes(assigned.tierOf[candidate.model]))
   }
 
   /** Whether the llm runtime accepts this route; cached per route id. */
@@ -919,7 +919,12 @@ export function apply(ctx, input) {
         const members = board.groups[id] ?? []
         lines.push(`  ${id}: ${members.length === 0 ? '(none)' : members.join(', ')}`)
       }
-      if (board.groups.off.length > 0) lines.push(`  off: ${board.groups.off.join(', ')}`)
+      if (board.groups.off.length > 0) {
+        const shown = board.groups.off.slice(0, 12)
+        const rest = board.groups.off.length - shown.length
+        lines.push(`  off: ${shown.join(', ')}${rest > 0 ? ` (+${rest} more)` : ''}`)
+      }
+      if ((board.unmeasured ?? []).length > 0) lines.push(`  unmeasured: ${board.unmeasured.length} not routable (no quality measurement)`)
     }
     const summarizer = summarizerOptions()
     lines.push(
