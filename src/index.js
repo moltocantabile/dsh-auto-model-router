@@ -461,7 +461,14 @@ export function apply(ctx, input) {
    * re-applying an envelope it has already satisfied.
    */
   async function assignedTiers() {
-    const pool = await candidatePool()
+    let pool = await candidatePool()
+    // A pool this small is not a catalog, it is the route anchors: the providers
+    // answered empty while re-registering. Drop the cached answers and ask once
+    // more before believing it.
+    if (pool.length < 8) {
+      catalogs.clear()
+      pool = await candidatePool()
+    }
     // A pool that collapsed — to nothing, or to a handful of route anchors — is a
     // catalog problem, not a routing decision. Keep the last good board so a
     // transient empty answer cannot shrink every tier to one provider.

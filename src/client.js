@@ -1326,11 +1326,20 @@ window.__ModuleLoader__.load({
       )
 
       const refresh = useCallback(async () => {
-        const payload = await api('snapshot')
+        let payload = await api('snapshot')
+        // A snapshot taken while the host is rebuilding its catalog can carry a
+        // board built from the route anchors alone. One retry turns that from a
+        // wrong board on screen into a short delay.
+        const boardProviders = new Set(Object.values(payload?.board?.providerOf ?? {}))
+        if (payload?.board !== undefined && payload.board !== null && boardProviders.size < 2) {
+          await new Promise((resolve) => setTimeout(resolve, 900))
+          const again = await api('snapshot')
+          if (new Set(Object.values(again?.board?.providerOf ?? {})).size > boardProviders.size) payload = again
+        }
         if (!mounted.current) return
         adopt(payload)
         await loadCatalogsFor(payload.config, payload.board)
-      }, [adopt, loadCatalog])
+      }, [adopt, loadCatalogsFor])
 
       /**
        * Re-read the upstream model facts. The catalog's scores come from them,
@@ -1409,20 +1418,30 @@ window.__ModuleLoader__.load({
         // The host can change under an open page (a reload, a tool call, another
         // window). Poll the snapshot so the board is never showing a membership
         // the router no longer has -- stale data here reads as a broken feature.
-        const timer = setInterval(() => {
+        const read = () => {
           if (!mounted.current) return
           api('snapshot')
             .then((payload) => {
               if (mounted.current && payload?.config !== undefined) adopt(payload)
             })
             .catch(() => {})
+        }
+        const timer = setInterval(() => {
+          // Background tabs throttle timers to about once a minute, so a poll
+          // scheduled there is not a refresh: read on return instead.
+          if (typeof document === 'undefined' || document.visibilityState !== 'hidden') read()
         }, 5000)
+        const onVisible = () => {
+          if (document.visibilityState === 'visible') read()
+        }
+        if (typeof document !== 'undefined') document.addEventListener('visibilitychange', onVisible)
         // Node-based test hosts keep the loop alive for an interval; `unref` is a
         // no-op in a browser, where the timer belongs to the page anyway.
         timer?.unref?.()
         return () => {
           mounted.current = false
           clearInterval(timer)
+          if (typeof document !== 'undefined') document.removeEventListener('visibilitychange', onVisible)
         }
       }, [adopt, refresh])
 
