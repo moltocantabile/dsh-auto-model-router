@@ -63,12 +63,15 @@ export function assignTiers(pool, routes, config = {}) {
   const tierOf = {}
   const overridden = []
   const unassigned = []
+  /** Provider each placed model belongs to, so the UI can label and colour it. */
+  const providerOf = {}
   /** Models the catalog offers but nothing measured: never routed, never shown as a choice. */
   const unmeasured = []
 
   for (const candidate of Array.isArray(pool) ? pool : []) {
     const model = candidate?.model
     if (typeof model !== 'string' || model.length === 0) continue
+    if (typeof candidate.provider === 'string' && candidate.provider.length > 0) providerOf[model] = candidate.provider
     if (disabled.has(model)) {
       groups.off.push(model)
       tierOf[model] = OFF
@@ -103,7 +106,7 @@ export function assignTiers(pool, routes, config = {}) {
     tierOf[model] = tier
   }
 
-  return { mode, groups, tierOf, overridden, disabled: [...disabled], unassigned, unmeasured }
+  return { mode, groups, tierOf, providerOf, overridden, disabled: [...disabled], unassigned, unmeasured }
 }
 
 /**

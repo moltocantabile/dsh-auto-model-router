@@ -121,3 +121,15 @@ test('manual mode still routes an unmeasured model the operator placed by hand',
   const assigned = assignTiers([unmeasured], ROUTES, { mode: 'manual', overrides: { 'unknown-model': 'balanced' } })
   assert.deepEqual(assigned.groups.balanced, ['unknown-model'])
 })
+
+test('the assignment records which provider each model came from', () => {
+  // Two providers can serve the same id; the board labels capsules
+  // `provider/model`, so membership without provenance is not enough.
+  const pool = [
+    { model: 'shared-id', provider: 'provider-a', info: { quality: 70, price: { input: 1, output: 2 }, latency: 'fast' } },
+    { model: 'cheap-weak', provider: 'provider-b', info: { quality: 48, price: { input: 0.2, output: 0.2 }, latency: 'fast' } },
+  ]
+  const assigned = assignTiers(pool, ROUTES, {})
+  assert.equal(assigned.providerOf['shared-id'], 'provider-a')
+  assert.equal(assigned.providerOf['cheap-weak'], 'provider-b')
+})

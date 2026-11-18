@@ -42,6 +42,9 @@ window.__ModuleLoader__.load({
     const API = '/dsh-auto-model-router-api'
     const MODES = ['on', 'shadow', 'off']
     const CUSTOM = '__custom__'
+    /** How many distinct provider colours the capsule dots cycle through. */
+    const PROVIDER_TONES = 5
+
     /** Stamped by scripts/build.sh, so the page can name the bundle it runs. */
     const BUILD = '__AMR_BUILD_STAMP__'
 
@@ -120,6 +123,17 @@ window.__ModuleLoader__.load({
 .amr-capsule[data-overridden="true"] { border-style:dashed; }
 .amr-capsuleName { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-variant-numeric:tabular-nums; }
 .amr-capsuleDot { width:6px; height:6px; border-radius:50%; flex:none; background:var(--dsw-alias-brand-primary); }
+.amr-capsuleProvider { color:var(--dsw-alias-label-tertiary); }
+.amr-capsule[data-tone="0"] { border-color:var(--dsw-alias-brand-primary); }
+.amr-capsule[data-tone="0"] .amr-capsuleDot { background:var(--dsw-alias-brand-primary); }
+.amr-capsule[data-tone="1"] { border-color:var(--dsw-alias-state-success-primary); }
+.amr-capsule[data-tone="1"] .amr-capsuleDot { background:var(--dsw-alias-state-success-primary); }
+.amr-capsule[data-tone="2"] { border-color:var(--dsw-alias-state-warn-primary); }
+.amr-capsule[data-tone="2"] .amr-capsuleDot { background:var(--dsw-alias-state-warn-primary); }
+.amr-capsule[data-tone="3"] { border-color:var(--dsw-alias-state-error-primary); }
+.amr-capsule[data-tone="3"] .amr-capsuleDot { background:var(--dsw-alias-state-error-primary); }
+.amr-capsule[data-tone="4"] { border-color:var(--dsw-alias-state-idle-primary); }
+.amr-capsule[data-tone="4"] .amr-capsuleDot { background:var(--dsw-alias-state-idle-primary); }
 .amr-capsule[data-off="true"] .amr-capsuleDot { background:var(--dsw-alias-label-tertiary); }
 .amr-pop { position:absolute; z-index:40; top:calc(100% + 6px); left:0; width:260px; display:flex; flex-direction:column; gap:6px; padding:10px 12px; border:.5px solid var(--dsw-alias-settings-card-stroke); border-radius:var(--dsw-radius-lg); background:var(--dsw-alias-bg-overlay); color:var(--dsw-alias-label-primary); font-size:12px; line-height:18px; cursor:default; }
 .amr-popTitle { font-size:13px; font-weight:500; }
@@ -209,6 +223,9 @@ window.__ModuleLoader__.load({
         tiers: 'Tiers',
         tiersHint: 'Membership is computed from measurement: a model joins the cheapest tier whose envelope it satisfies. Drag a capsule to move it, click one to switch it off.',
         boardHint: 'Hover a model for its price, capability and context. Drag between tiers to overrule the automatic assignment; click to disable it.',
+        providerFilter: 'Provider',
+        allProviders: 'All providers',
+        filterActive: 'Showing {provider} only.',
         unmeasuredHint: '{count} advertised models are not routable: nobody measured their quality, so they cannot be ranked.',
         tierOff: 'off',
         laneEmpty: 'No model here yet.',
@@ -357,6 +374,9 @@ window.__ModuleLoader__.load({
         tiers: '档位',
         tiersHint: '档位成员由实测自动划分：模型进入它能满足的最便宜档位。拖动胶囊可改档，点击可停用。',
         boardHint: '悬停查看价格、能力与上下文；拖动可覆盖自动分配，点击可停用该模型。',
+        providerFilter: '供应商',
+        allProviders: '全部供应商',
+        filterActive: '仅显示 {provider}。',
         unmeasuredHint: '另有 {count} 个模型未被路由：没有任何质量测量，无法排序。',
         tierOff: '停用',
         laneEmpty: '暂无模型。',
@@ -839,9 +859,31 @@ window.__ModuleLoader__.load({
       const overrides = draft.tiers?.overrides ?? {}
       const disabled = new Set(draft.tiers?.disabled ?? [])
       const index = new Map((models ?? []).map((entry) => [entry.id, entry]))
+      const providerOf = board.providerOf ?? {}
       const [hovered, setHovered] = useState(null)
       const [dragging, setDragging] = useState(null)
       const [over, setOver] = useState(null)
+      // Which provider's models are on screen. Capsules from one provider share a
+      // colour, so this filter is the difference between a readable board and a
+      // soup of ids once a profile exposes several catalogs.
+      const [providerFilter, setProviderFilter] = useState('all')
+
+      const providers = useMemo(() => {
+        const seen = new Map()
+        for (const id of Object.values(providerOf)) {
+          if (typeof id !== 'string' || id.length === 0) continue
+          seen.set(id, (seen.get(id) ?? 0) + 1)
+        }
+        return [...seen.entries()].sort((a, b) => a[0].localeCompare(b[0])).map(([id, count]) => ({ id, count }))
+      }, [board])
+
+      const providerTone = useMemo(() => {
+        const tones = new Map()
+        providers.forEach((provider, position) => tones.set(provider.id, position % PROVIDER_TONES))
+        return tones
+      }, [providers])
+
+      const visible = (model) => providerFilter === 'all' || providerOf[model] === providerFilter
 
       const lanes = [
         ...['fast', 'balanced', 'deep'].map((id) => ({ id, label: id, off: false })),
@@ -878,6 +920,7 @@ window.__ModuleLoader__.load({
             draggable: !off && busy !== true,
             'data-off': off ? 'true' : 'false',
             'data-overridden': handAssigned ? 'true' : 'false',
+            'data-tone': String(providerTone.get(providerOf[model]) ?? 0),
             'data-dragging': dragging === model ? 'true' : 'false',
             title: off ? t('enableModel') : t('disableModel'),
             onMouseEnter: () => setHovered(model),
@@ -898,7 +941,12 @@ window.__ModuleLoader__.load({
             },
           },
           h('span', { className: 'amr-capsuleDot' }),
-          h('span', { className: 'amr-capsuleName' }, model),
+          h(
+            'span',
+            { className: 'amr-capsuleName' },
+            h('span', { className: 'amr-capsuleProvider' }, `${providerOf[model] ?? 'unknown'}/`),
+            model,
+          ),
           handAssigned && h(Chip, { tone: 'warn' }, t('handAssigned')),
           open &&
             h(
@@ -956,11 +1004,30 @@ window.__ModuleLoader__.load({
       return h(
         'div',
         { className: 'amr-board' },
+        h(
+          'div',
+          { className: 'amr-row' },
+          h(
+            'div',
+            { className: 'amr-field', style: { minWidth: 200 } },
+            h('span', { className: 'amr-label' }, t('providerFilter')),
+            h(
+              Select,
+              { value: providerFilter, onChange: (next) => setProviderFilter(next) },
+              h('option', { value: 'all' }, t('allProviders')),
+              providers.map((provider) =>
+                h('option', { key: provider.id, value: provider.id }, `${provider.id} (${provider.count})`),
+              ),
+            ),
+          ),
+          providerFilter !== 'all' &&
+            h('span', { className: 'amr-note' }, t('filterActive').replace('{provider}', providerFilter)),
+        ),
         h('p', { className: 'amr-note' }, t('boardHint')),
         (board.unmeasured ?? []).length > 0 &&
           h('p', { className: 'amr-note' }, t('unmeasuredHint').replace('{count}', String((board.unmeasured ?? []).length))),
         ...lanes.map((lane) => {
-          const members = board.groups?.[lane.id] ?? []
+          const members = (board.groups?.[lane.id] ?? []).filter(visible)
           return h(
             'div',
             {
@@ -1512,91 +1579,6 @@ window.__ModuleLoader__.load({
               h(ModelFacts, { entry, t }),
             )
           }),
-        ),
-
-        h(
-          Card,
-          {
-            title: t('catalogModels'),
-            hint:
-              catalog?.error !== undefined
-                ? t('contextFailed').replace('{error}', String(catalog.error))
-                : t('catalogModelsHint'),
-          },
-          models.length === 0
-            ? h('p', { className: 'amr-empty' }, t('noModels'))
-            : h(
-                'table',
-                { className: 'amr-table' },
-                h(
-                  'thead',
-                  null,
-                  h(
-                    'tr',
-                    null,
-                    h('th', { style: { width: '30%' } }, t('modelCol')),
-                    h('th', { style: { width: '34%' } }, t('capabilityCol')),
-                    h('th', { style: { width: '18%' } }, t('costCol')),
-                    h('th', { style: { width: '18%' } }, t('tierCol')),
-                  ),
-                ),
-                h(
-                  'tbody',
-                  null,
-                  models.map((entry) =>
-                    h(
-                      'tr',
-                      { key: entry.id },
-                      h(
-                        'td',
-                        null,
-                        h('span', { className: 'amr-mono' }, entry.id),
-                        entry.retired === true &&
-                          h('span', { style: { marginLeft: 6 } }, h(Chip, { tone: 'error' }, t('retiredModel'))),
-                        entry.preview === true &&
-                          h('span', { style: { marginLeft: 6 } }, h(Chip, { tone: 'warn' }, t('previewModel'))),
-                        entry.configured === false &&
-                          h('span', { style: { marginLeft: 6 }, title: t('notConfiguredHint') }, h(Chip, { tone: 'warn' }, t('notConfigured'))),
-                      ),
-                      h(
-                        'td',
-                        { style: { whiteSpace: 'normal' } },
-                        scoreLine(entry.info),
-                        h(
-                          'div',
-                          { className: 'amr-scoreRow' },
-                          scoreBar(entry.info),
-                        ),
-                      ),
-                      h('td', { className: 'amr-mono' }, costLabel(entry.info) ?? t('priceUnknown')),
-                      h(
-                        'td',
-                        null,
-                        h(
-                          Select,
-                          {
-                            value: draft.tiers?.overrides?.[entry.id] ?? ((draft.tiers?.disabled ?? []).includes(entry.id) ? 'off' : 'auto'),
-                            onChange: (target) => {
-                              const tiers = { ...(draft.tiers ?? {}) }
-                              const overrides = { ...(tiers.overrides ?? {}) }
-                              const disabled = (tiers.disabled ?? []).filter((id) => id !== entry.id)
-                              if (target === 'auto') delete overrides[entry.id]
-                              else if (target === 'off') {
-                                delete overrides[entry.id]
-                                if (!disabled.includes(entry.id)) disabled.push(entry.id)
-                              } else overrides[entry.id] = target
-                              applyTiers({ ...tiers, overrides, disabled })
-                            },
-                          },
-                          h('option', { value: 'auto' }, t('tierAuto')),
-                          ...['fast', 'balanced', 'deep'].map((id) => h('option', { key: id, value: id }, id)),
-                          h('option', { value: 'off' }, t('tierOff')),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
         ),
 
         h(

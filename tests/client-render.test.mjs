@@ -74,6 +74,7 @@ const BOARD = {
     off: [],
   },
   tierOf: { 'm-fast': 'fast', 'm-balanced': 'balanced' },
+  providerOf: { 'm-fast': 'provider-a', 'm-balanced': 'provider-b' },
   overridden: [],
   disabled: [],
   unassigned: [],
@@ -279,8 +280,22 @@ test('the page mounts, fetches its snapshot, and renders rows', async () => {
     assert.ok(names.some((name) => name.includes('m-balanced')), names.join(' | '))
     // Lanes are labelled by tier.
     for (const tier of ['fast', 'balanced', 'deep']) assert.ok(text.includes(tier), `lane ${tier} is labelled`)
-    // The dead "Assign" column is gone; the catalog now reports the tier instead.
-    assert.ok(!text.includes('assignCol'), 'no assign column')
+    // Captions name the provider, and each provider gets its own tone.
+    assert.ok(names.some((name) => name.includes('provider-a/m-fast')), names.join(' | '))
+    assert.ok(names.some((name) => name.includes('provider-b/m-balanced')), names.join(' | '))
+    const tones = capsules.map((node) => node.getAttribute('data-tone'))
+    assert.equal(new Set(tones).size, 2, `one tone per provider (saw ${tones.join(',')})`)
+
+    // The provider filter is a dropdown listing what is on the board.
+    const selects = [...container.querySelectorAll('select')]
+    const providerSelect = selects.find((node) =>
+      [...node.options].some((option) => option.value === 'provider-a'),
+    )
+    assert.ok(providerSelect !== undefined, 'a provider dropdown exists')
+    assert.ok([...providerSelect.options].some((option) => option.value === 'all'), 'it offers all providers')
+
+    // The old catalog table is gone: capsules carry the information now.
+    assert.ok(!text.includes('catalogModels'), 'the Provider models card is removed')
     root.unmount()
     await new Promise((resolve) => setTimeout(resolve, 25))
   } finally {
