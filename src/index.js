@@ -420,6 +420,9 @@ export function apply(ctx, input) {
     return { providers, provider: chosen, models, error }
   }
 
+  /** Newest diagnostic the browser half sent: what it actually rendered. */
+  let clientReport = null
+
   /** Newest tier assignment, so status and the config page can show it without
    * walking the catalog again. */
   let boardCache = null
@@ -941,6 +944,15 @@ export function apply(ctx, input) {
         ? 'session digest: off (routing on recent messages only)'
         : `session digest: ${summarizer.model}, ${stats.summaries} summarized${stats.digestFailures > 0 ? `, ${stats.digestFailures} failed` : ''}${stats.digestChars > 0 ? `, last ${stats.digestChars} chars` : ''}`,
     )
+    if (clientReport !== null) {
+      const age = Math.round((Date.now() - clientReport.at) / 1000)
+      lines.push(
+        `browser page: build=${clientReport.build ?? '?'} board=${clientReport.board} providers=${clientReport.providers.length} ` +
+          `capsules=${clientReport.capsules ?? '?'} lanes=${JSON.stringify(clientReport.lanes)} (${age}s ago)`,
+      )
+    } else {
+      lines.push('browser page: no report (bundle predates the report, or the page has not opened settings)')
+    }
     lines.push('routes:')
     for (const [id, route] of Object.entries(routes)) {
       const marks = []
@@ -1376,6 +1388,21 @@ export function apply(ctx, input) {
           ? `persisted to ${persist.document ?? 'the profile patch'}`
           : `runtime only (${persist.reason})`
         return { ok: true, text: `config applied; ${note}`, data: { persist, ...snapshotPayload(agent) } }
+      }
+      if (action === 'client-report') {
+        // The page reporting on itself: the only way to tell "the bundle never
+        // reached the browser" from "the host sent no data" without a debugger.
+        const safe = (value, max) => (typeof value === 'string' ? value.slice(0, max) : null)
+        clientReport = {
+          at: Date.now(),
+          build: safe(args?.build, 40),
+          board: args?.board === true,
+          providers: Array.isArray(args?.providers) ? args.providers.slice(0, 12).map((id) => safe(id, 60)) : [],
+          lanes: args?.lanes !== null && typeof args?.lanes === 'object' ? args.lanes : null,
+          capsules: Number.isFinite(Number(args?.capsules)) ? Number(args.capsules) : null,
+          tiersMode: safe(args?.tiersMode, 20),
+        }
+        return { ok: true, text: 'client report recorded', data: snapshotPayload(agent) }
       }
       throw new Error(`unknown action "${String(action)}"`)
     } catch (error) {

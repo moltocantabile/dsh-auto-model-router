@@ -1301,6 +1301,25 @@ window.__ModuleLoader__.load({
         [adopt, loadCatalogsFor, t],
       )
 
+      // Tell the host what this page actually has. Without it, "the UI shows one
+      // provider" and "the bundle never loaded" are indistinguishable from the
+      // host side, which cost several rounds of guesswork.
+      useEffect(() => {
+        if (snap === null || draft === null) return
+        const board = snap.board ?? null
+        const count = (id) => (board?.groups?.[id] ?? []).length
+        const providers = board?.providerOf ? [...new Set(Object.values(board.providerOf))] : []
+        const capsules = typeof document === 'undefined' ? null : document.querySelectorAll('.amr-capsule').length
+        api('client-report', {
+          build: BUILD,
+          board: board !== null,
+          providers,
+          lanes: board === null ? null : { fast: count('fast'), balanced: count('balanced'), deep: count('deep'), off: count('off') },
+          capsules,
+          tiersMode: (draft.tiers?.mode ?? 'auto'),
+        }).catch(() => {})
+      }, [snap, draft])
+
       useEffect(() => {
         mounted.current = true
         refresh().catch((error) => {
