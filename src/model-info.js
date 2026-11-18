@@ -98,6 +98,32 @@ function reindex() {
   for (const [key, entry] of Object.entries(MODEL_INFO)) LOOKUP.set(key.toLowerCase(), entry)
 }
 
+/** File holding the data-derived tier envelopes computed by the last refresh. */
+export const RUNTIME_DERIVED_URL = new URL('../data/routing-derived.json', import.meta.url)
+
+/**
+ * Read the derived tier envelopes, or null when the file is absent or unusable.
+ * A missing file is normal: it just means no refresh has derived them yet.
+ */
+export function loadRuntimeDerived() {
+  try {
+    if (!fs.existsSync(RUNTIME_DERIVED_URL)) return null
+    const parsed = JSON.parse(fs.readFileSync(RUNTIME_DERIVED_URL, 'utf8'))
+    if (parsed === null || typeof parsed !== 'object') return null
+    return parsed.envelopes !== null && typeof parsed.envelopes === 'object' ? parsed.envelopes : null
+  } catch {
+    return null
+  }
+}
+
+/** Persist the derived tier envelopes next to the catalog snapshot. */
+export function saveRuntimeDerived(envelopes, meta = {}) {
+  if (envelopes === null || typeof envelopes !== 'object') return null
+  fs.mkdirSync(new URL('.', RUNTIME_DERIVED_URL), { recursive: true })
+  fs.writeFileSync(RUNTIME_DERIVED_URL, JSON.stringify({ ...meta, envelopes }, null, 2) + '\n')
+  return RUNTIME_DERIVED_URL.pathname
+}
+
 /** Persist a refreshed catalog so it survives the next start. */
 export function saveRuntimeDataset(dataset) {
   fs.mkdirSync(new URL('.', RUNTIME_DATA_URL), { recursive: true })

@@ -41,9 +41,10 @@ import {
   callDecisionModel,
   parseDecision,
 } from './decision.js'
-import { infoFor, knowledgeProvider, routingNote, applyDataset, applyProviderAliases, saveRuntimeDataset, MODEL_INFO, RUNTIME_DATA_URL } from './model-info.js'
+import { infoFor, knowledgeProvider, routingNote, applyDataset, applyProviderAliases, saveRuntimeDataset, saveRuntimeDerived, loadRuntimeDerived, MODEL_INFO, RUNTIME_DATA_URL } from './model-info.js'
 import { refreshCatalog } from './refresh.js'
 import { DEFAULT_SUMMARIZER, buildDigestPrompt, callChatModel, createDigestCache } from './summarize.js'
+import { derivedRouteEnvelopes, mergeEnvelopes } from './refresh.js'
 import { selectForTier, describeRanking, costIndex } from './select.js'
 import { selectRoute as recordSelection } from './route.js'
 import { TIER_IDS, assignTiers, membershipOf } from './tiers.js'
@@ -113,6 +114,10 @@ function mergeConfig(input) {
     // stays out instead of being guessed at.
     tiers: {
       mode: provided.tiers?.mode === 'manual' ? 'manual' : 'auto',
+      // Where tier ceilings come from: `explicit` trusts the config, `merge`
+      // fills what the config omits from the measured catalog, `derived` uses the
+      // data's cut-offs and keeps only the operator's latency policy.
+      envelopeMode: ['explicit', 'merge', 'derived'].includes(provided.tiers?.envelopeMode) ? provided.tiers.envelopeMode : 'merge',
       overrides: { ...(provided.tiers?.overrides ?? {}) },
       disabled: [...(provided.tiers?.disabled ?? [])],
     },
@@ -128,6 +133,20 @@ export function apply(ctx, input) {
   // they are per-profile config rather than a table of vendor names in here.
   applyProviderAliases(config.knowledgeProviderAliases)
   const routes = config.routes
+
+  /** Operator-authored envelopes, kept so a merge can be recomputed. */
+  const operatorRoutes = JSON.parse(JSON.stringify(routes))
+  let derivedEnvelopes = loadRuntimeDerived()
+
+  /** Recompute tier envelopes from the operator config plus the derived cut-offs. */
+  function applyEnvelopes() {
+    const merged = mergeEnvelopes(operatorRoutes, derivedEnvelopes, config.tiers?.envelopeMode ?? 'merge')
+    for (const [id, route] of Object.entries(merged)) {
+      if (routes[id] === undefined) continue
+      routes[id].envelope = route.envelope
+    }
+  }
+  applyEnvelopes()
 
   let mode = config.mode
   let globalForce = null
@@ -1026,6 +1045,9 @@ export function apply(ctx, input) {
     const board = lastBoard()
     if (board !== null) {
       lines.push(`plugin instance: ${INSTANCE}`)
+    const envelopeMode = config.tiers?.envelopeMode ?? 'merge'
+    const derivedSample = derivedEnvelopes === null || derivedEnvelopes === undefined ? 0 : (derivedEnvelopes.fast?.sample ?? 0)
+    lines.push(`envelopes: ${envelopeMode}${derivedEnvelopes === null ? ' (no derived cut-offs yet)' : ` (derived from ${derivedSample || 'measured'} models)`}`)
     lines.push(`tiers: ${board.mode}${board.overridden.length > 0 ? `, ${board.overridden.length} hand-assigned` : ''}`)
       for (const id of TIER_IDS) {
         const members = board.groups[id] ?? []
@@ -1235,7 +1257,12 @@ export function apply(ctx, input) {
       overrides[model] = tier
     }
     const disabled = [...new Set((Array.isArray(source.disabled) ? source.disabled : []).filter((id) => typeof id === 'string' && id.length > 0))]
-    return { mode: source.mode === 'manual' ? 'manual' : 'auto', overrides, disabled }
+    return {
+      mode: source.mode === 'manual' ? 'manual' : 'auto',
+      envelopeMode: ['explicit', 'merge', 'derived'].includes(source.envelopeMode) ? source.envelopeMode : (config.tiers?.envelopeMode ?? 'merge'),
+      overrides,
+      disabled,
+    }
   }
 
   /** Coerce a UI-submitted config into the merged shape the runtime keeps. */
@@ -1351,6 +1378,7 @@ export function apply(ctx, input) {
         selection: { ...config.selection },
         switching: config.switching,
         tiers: { ...config.tiers },
+        envelopes: { mode: config.tiers?.envelopeMode ?? 'merge', derived: derivedEnvelopes },
         logDecisions: config.logDecisions,
       },
       stats: {
@@ -1422,6 +1450,11 @@ export function apply(ctx, input) {
         // Persist first: if writing fails, the in-memory catalog stays as it was,
         // so the page never shows numbers that would disappear on restart.
         summary.path = saveRuntimeDataset(result.dataset)
+        if (result.derived !== null && result.derived !== undefined) {
+          derivedEnvelopes = result.derived
+          summary.envelopePath = saveRuntimeDerived(result.derived, { checkedAt: summary.checkedAt })
+          applyEnvelopes()
+        }
         applyDataset(result.dataset, { checkedAt: summary.checkedAt })
         summary.file = RUNTIME_DATA_URL.pathname
         const aa = summary.artificialAnalysis ?? {}
@@ -1491,6 +1524,11 @@ export function apply(ctx, input) {
         // never the binding, or decisions keep consulting the pre-configure catalog.
         for (const id of Object.keys(routes)) delete routes[id]
         Object.assign(routes, merged.routes)
+        // The newly configured envelopes are the operator's, so they replace the
+        // baseline a merge is computed from.
+        for (const key of Object.keys(operatorRoutes)) delete operatorRoutes[key]
+        Object.assign(operatorRoutes, JSON.parse(JSON.stringify(merged.routes)))
+        applyEnvelopes()
         config.decision = merged.decision
         config.policy = merged.policy
         config.switching = merged.switching

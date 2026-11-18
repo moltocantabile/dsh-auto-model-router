@@ -22,7 +22,8 @@
 
 import zlib from 'node:zlib'
 import { buildDataset, COMPASS_ID } from './model-data-build.js'
-import { rankTable } from './rank.js'
+import { derivedEnvelopes as rankDerivedEnvelopes, rankTable } from './rank.js'
+import { costIndex } from './select.js'
 import { fetchOpenRouterUsage } from './openrouter.js'
 import { DIMENSIONS } from './select.js'
 
@@ -399,9 +400,11 @@ export async function refreshCatalog({ base, wanted = [], fetchImpl = fetch, sig
   // Phase 1 of the data-utilisation design: rank the whole catalog and record the
   // result per entry. Nothing routes on it yet -- the decision log shows the diff.
   const ranked = attachRanking(dataset)
+  const derived = derivedRouteEnvelopes(ranked.table)
 
   return {
     dataset,
+    derived: derived.valid === true ? derived.envelopes : null,
     summary: {
       checkedAt: now.toISOString().slice(0, 10),
       models: Object.keys(dataset).length,
@@ -413,11 +416,83 @@ export async function refreshCatalog({ base, wanted = [], fetchImpl = fetch, sig
       llmLeaderboard: attached.llmLeaderboard,
       artificialAnalysis,
       ranking: ranked.summary,
+      envelopes: derived.valid === true ? { sample: derived.sample, ...derived.envelopes } : { valid: false, reason: derived.reason ?? 'not enough measured models' },
       openrouter,
       sources: [COMPASS_ABILITY_URL, COMPASS_BENCH_URL, 'https://benchgecko.ai', EPOCH_ECI_URL, LLM_LEADERBOARD, ARTIFICIAL_ANALYSIS_URL],
       errors,
     },
   }
+}
+
+/**
+ * Tier envelopes derived from the measured catalog.
+ *
+ * `rank.derivedEnvelopes` states its cost cut-off as a percentile of the pool;
+ * the selector compares a cost *index*. Both are 0-100 but they are different
+ * axes, so each percentile is translated into the cost index at that quantile --
+ * otherwise "the cheapest 40%" would be compared against a price scale.
+ *
+ * @param {object} table - result of `rankTable`
+ * @returns {{valid: boolean, reason?: string, sample?: number, envelopes?: object}}
+ */
+export function derivedRouteEnvelopes(table) {
+  const derived = rankDerivedEnvelopes(table)
+  if (derived.valid !== true) return { valid: false, reason: derived.reason, sample: derived.sample ?? 0 }
+  const measured = table.models.filter((row) => row.measured === true && Number.isFinite(row.features?.price?.blended))
+  const costs = measured.map((row) => costIndex({ price: { input: row.features.price.blended, output: row.features.price.blended } })).sort((a, b) => a - b)
+  if (costs.length === 0) return { valid: false, reason: 'no priced measured models', sample: 0 }
+  const costAt = (percentile) => {
+    const position = Math.min(costs.length - 1, Math.max(0, Math.round(((percentile / 100) * (costs.length - 1)))))
+    return costs[position]
+  }
+  const envelopes = {}
+  for (const tier of ['fast', 'balanced', 'deep']) {
+    const source = derived.envelopes[tier]
+    envelopes[tier] = {
+      maxCost: costAt(source.maxCost),
+      minQuality: source.minQuality,
+      maxLatency: source.maxLatency,
+      derived: true,
+    }
+  }
+  return { valid: true, sample: costs.length, envelopes }
+}
+
+/**
+ * Combine operator envelopes with derived ones.
+ *
+ * `explicit` trusts the operator only, `merge` fills fields the operator left out
+ * (a hand-set ceiling always wins), `derived` takes the data's cut-offs and keeps
+ * only the operator's latency class, which is a policy choice rather than a
+ * measurement.
+ *
+ * @param {Record<string, {envelope?: object}>} routes
+ * @param {Record<string, object>|null} derived
+ * @param {'explicit'|'merge'|'derived'} mode
+ * @returns {Record<string, {envelope?: object}>}
+ */
+export function mergeEnvelopes(routes, derived, mode = 'merge') {
+  if (mode === 'explicit' || derived === null || derived === undefined) return routes
+  const out = {}
+  for (const [id, route] of Object.entries(routes ?? {})) {
+    const base = route?.envelope ?? {}
+    const data = derived[id]
+    if (data === undefined) {
+      out[id] = route
+      continue
+    }
+    const envelope = mode === 'derived'
+      ? { maxCost: data.maxCost, minQuality: data.minQuality, maxLatency: base.maxLatency ?? data.maxLatency }
+      : {
+          maxCost: base.maxCost ?? data.maxCost,
+          minQuality: base.minQuality ?? data.minQuality,
+          maxLatency: base.maxLatency ?? data.maxLatency,
+          ...(data.source === undefined ? {} : { source: data.source }),
+          ...(data.sample === undefined ? {} : { sample: data.sample }),
+        }
+    out[id] = { ...route, envelope }
+  }
+  return out
 }
 
 /**

@@ -1,0 +1,24 @@
+{
+  "checkedAt": "2026-11-18",
+  "sample": 57,
+  "envelopes": {
+    "fast": {
+      "maxCost": 61,
+      "minQuality": 38,
+      "maxLatency": "fast",
+      "derived": true
+    },
+    "balanced": {
+      "maxCost": 79,
+      "minQuality": 43,
+      "maxLatency": "balanced",
+      "derived": true
+    },
+    "deep": {
+      "maxCost": 100,
+      "minQuality": 46,
+      "maxLatency": "slow",
+      "derived": true
+    }
+  }
+}

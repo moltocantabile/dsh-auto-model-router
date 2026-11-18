@@ -87,11 +87,6 @@
         "evaluated": "2026-10-17",
         "board": "https://rank.opencompass.org.cn/leaderboard/llm"
       },
-      "epoch": {
-        "eci": 159.4,
-        "date": "2026-10-17",
-        "board": "https://epoch.ai/eci"
-      },
       "llmLeaderboard": {
         "ttftSeconds": 1.317,
         "tokensPerSecond": 1075.3,
@@ -135,7 +130,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 1,
-      "tokens": 69715103443632,
+      "tokens": 69740904760259,
       "share": 0.2419,
       "percentile": 100
     },
@@ -273,11 +268,6 @@
       "rolling alias: always the newest V4.1 Flash build"
     ],
     "crossChecks": {
-      "epoch": {
-        "eci": 157,
-        "date": "2026-09-09",
-        "board": "https://epoch.ai/eci"
-      },
       "llmLeaderboard": {
         "ttftSeconds": 0.94,
         "tokensPerSecond": 830,
@@ -296,7 +286,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 3,
-      "tokens": 17906251204821,
+      "tokens": 17914109069859,
       "share": 0.0621,
       "percentile": 97.8
     },
@@ -418,13 +408,6 @@
     "distinguishing": [
       "cheapest DeepSeek build if a workload is frozen to it"
     ],
-    "crossChecks": {
-      "epoch": {
-        "eci": 154.4,
-        "date": "2026-07-31",
-        "board": "https://epoch.ai/eci"
-      }
-    },
     "sources": [
       "https://api-docs.deepseek.com/quick_start/pricing",
       "https://benchgecko.ai/model/deepseek-v4-flash-0731"
@@ -435,7 +418,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 15,
-      "tokens": 3435679476339,
+      "tokens": 3436880920735,
       "share": 0.0119,
       "percentile": 84.8
     },
@@ -496,14 +479,14 @@
     "mcp": false,
     "explicitCache": true,
     "latency": "fast",
-    "quality": 67.8,
+    "quality": 68.5,
     "scores": {
       "coding": 45,
       "reasoning": 62,
       "math": 55,
       "knowledge": 50,
       "agentic": 42,
-      "overall": 67.8,
+      "overall": 68.5,
       "longContext": 100,
       "vision": 100,
       "speed": 75
@@ -532,11 +515,6 @@
       "resolves to the V4 flash family for old configs"
     ],
     "crossChecks": {
-      "epoch": {
-        "eci": 146.8,
-        "date": "2026-04-24",
-        "board": "https://epoch.ai/eci"
-      },
       "llmLeaderboard": {
         "ttftSeconds": null,
         "tokensPerSecond": null,
@@ -577,7 +555,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 23,
-      "tokens": 2263750315301,
+      "tokens": 2264648514944,
       "share": 0.0079,
       "percentile": 82.6
     },
@@ -718,11 +696,6 @@
         "evaluated": "2026-08-13",
         "board": "https://rank.opencompass.org.cn/leaderboard/llm"
       },
-      "epoch": {
-        "eci": 156,
-        "date": "2026-08-13",
-        "board": "https://epoch.ai/eci"
-      },
       "llmLeaderboard": {
         "ttftSeconds": 1.894,
         "tokensPerSecond": 305,
@@ -765,7 +738,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 42,
-      "tokens": 822735129202,
+      "tokens": 823070094705,
       "share": 0.0029,
       "percentile": 69.6
     },
@@ -908,13 +881,6 @@
     "distinguishing": [
       "reasoning 78.6 with no output-token penalty tier"
     ],
-    "crossChecks": {
-      "epoch": {
-        "eci": 150.2,
-        "date": "2026-04-24",
-        "board": "https://epoch.ai/eci"
-      }
-    },
     "sources": [
       "https://help.aliyun.com/zh/model-studio/deepseek-v4-pro",
       "https://benchgecko.ai/model/deepseek-v4-pro"
@@ -923,7 +889,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 49,
-      "tokens": 627409393798,
+      "tokens": 627678629735,
       "share": 0.0022,
       "percentile": 65.2
     },
@@ -1081,7 +1047,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 201,
-      "tokens": 15268810217,
+      "tokens": 15271586888,
       "share": 0.0001,
       "percentile": 21.7
     },
@@ -1201,7 +1167,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 54,
-      "tokens": 531709739815,
+      "tokens": 531896697681,
       "share": 0.0018,
       "percentile": 63
     },
@@ -1307,11 +1273,6 @@
         "hle": 27.14,
         "evaluated": "2026-08-03",
         "board": "https://rank.opencompass.org.cn/leaderboard/llm"
-      },
-      "epoch": {
-        "eci": 156,
-        "date": "2026-09-01",
-        "board": "https://epoch.ai/eci"
       }
     },
     "sources": [
@@ -1323,7 +1284,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 201,
-      "tokens": 15268810217,
+      "tokens": 15271586888,
       "share": 0.0001,
       "percentile": 21.7
     },
@@ -1482,7 +1443,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 72,
-      "tokens": 219693833993,
+      "tokens": 219892289174,
       "share": 0.0008,
       "percentile": 54.3
     },
@@ -1707,11 +1668,6 @@
         "evaluated": "2026-08-14",
         "board": "https://rank.opencompass.org.cn/leaderboard/llm"
       },
-      "epoch": {
-        "eci": 157.1,
-        "date": "2026-08-14",
-        "board": "https://epoch.ai/eci"
-      },
       "llmLeaderboard": {
         "ttftSeconds": 0.947,
         "tokensPerSecond": 688.2,
@@ -1759,7 +1715,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 10,
-      "tokens": 4092770972483,
+      "tokens": 4095216800847,
       "share": 0.0142,
       "percentile": 91.3
     },
@@ -1914,11 +1870,6 @@
         "evaluated": "2026-07-16",
         "board": "https://rank.opencompass.org.cn/leaderboard/llm"
       },
-      "epoch": {
-        "eci": 158.6,
-        "date": "2026-07-16",
-        "board": "https://epoch.ai/eci"
-      },
       "llmLeaderboard": {
         "ttftSeconds": 1.659,
         "tokensPerSecond": 481.7,
@@ -1943,7 +1894,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 32,
-      "tokens": 1344131938433,
+      "tokens": 1344545094040,
       "share": 0.0047,
       "percentile": 78.3
     },
@@ -2077,13 +2028,6 @@
       "262K reasoning budget in thinking mode",
       "5M TPM headroom for parallel agents"
     ],
-    "crossChecks": {
-      "epoch": {
-        "eci": 154.6,
-        "date": "2026-05-19",
-        "board": "https://epoch.ai/eci"
-      }
-    },
     "sources": [
       "https://help.aliyun.com/zh/model-studio/qwen3-7-max",
       "https://benchgecko.ai/compare/gpt-5-3-codex-vs-qwen3-7-max",
@@ -2094,7 +2038,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 231,
-      "tokens": 9412504916,
+      "tokens": 9416109433,
       "share": 0,
       "percentile": 10.9
     },
@@ -2232,7 +2176,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 130,
-      "tokens": 54212477812,
+      "tokens": 54227074425,
       "share": 0.0002,
       "percentile": 43.5
     },
@@ -2356,13 +2300,6 @@
     "distinguishing": [
       "spatial vision for object detection and UI grounding"
     ],
-    "crossChecks": {
-      "epoch": {
-        "eci": 143.8,
-        "date": "2026-04-27",
-        "board": "https://epoch.ai/eci"
-      }
-    },
     "sources": [
       "https://help.aliyun.com/zh/model-studio/qwen3-6-flash",
       "https://benchgecko.ai/model/qwen3-6-flash"
@@ -2371,7 +2308,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 217,
-      "tokens": 12316560783,
+      "tokens": 12318636269,
       "share": 0,
       "percentile": 15.2
     },
@@ -2511,11 +2448,6 @@
       "coding 58.1 slightly above glm-5.3 in BenchGecko samples"
     ],
     "crossChecks": {
-      "epoch": {
-        "eci": 153,
-        "date": "2026-06-16",
-        "board": "https://epoch.ai/eci"
-      },
       "llmLeaderboard": {
         "ttftSeconds": 1.777,
         "tokensPerSecond": 94.1,
@@ -2536,7 +2468,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 35,
-      "tokens": 1063148249606,
+      "tokens": 1063536369452,
       "share": 0.0037,
       "percentile": 76.1
     },
@@ -2661,7 +2593,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 11,
-      "tokens": 3935275948041,
+      "tokens": 3937018987183,
       "share": 0.0137,
       "percentile": 89.1
     }
@@ -2742,7 +2674,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 1,
-      "tokens": 69715103443632,
+      "tokens": 69740904760259,
       "share": 0.2419,
       "percentile": 100
     }
@@ -2856,7 +2788,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 11,
-      "tokens": 3935275948041,
+      "tokens": 3937018987183,
       "share": 0.0137,
       "percentile": 89.1
     }
@@ -2994,7 +2926,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 13,
-      "tokens": 3801477682738,
+      "tokens": 3802937482872,
       "share": 0.0132,
       "percentile": 87
     }
@@ -3128,7 +3060,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 8,
-      "tokens": 7347738000559,
+      "tokens": 7347747647383,
       "share": 0.0255,
       "percentile": 93.5
     }
@@ -3272,7 +3204,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 5,
-      "tokens": 13141406823341,
+      "tokens": 13145837441651,
       "share": 0.0456,
       "percentile": 95.7
     }
@@ -3394,7 +3326,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 42,
-      "tokens": 822735129202,
+      "tokens": 823070094705,
       "share": 0.0029,
       "percentile": 69.6
     }
@@ -3534,7 +3466,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 37,
-      "tokens": 943131218459,
+      "tokens": 943437172313,
       "share": 0.0033,
       "percentile": 71.7
     }
@@ -3615,7 +3547,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 10,
-      "tokens": 4092770972483,
+      "tokens": 4095216800847,
       "share": 0.0142,
       "percentile": 91.3
     }
@@ -3733,7 +3665,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 167,
-      "tokens": 29202357001,
+      "tokens": 29207928665,
       "share": 0.0001,
       "percentile": 34.8
     }
@@ -3874,7 +3806,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 48,
-      "tokens": 642558956566,
+      "tokens": 642793925875,
       "share": 0.0022,
       "percentile": 67.4
     }
@@ -3955,7 +3887,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 119,
-      "tokens": 69804120451,
+      "tokens": 69829080401,
       "share": 0.0002,
       "percentile": 47.8
     }
@@ -4041,7 +3973,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 119,
-      "tokens": 69804120451,
+      "tokens": 69829080401,
       "share": 0.0002,
       "percentile": 47.8
     }
@@ -4283,7 +4215,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 68,
-      "tokens": 264996109025,
+      "tokens": 265270545500,
       "share": 0.0009,
       "percentile": 58.7
     }
@@ -4401,7 +4333,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 235,
-      "tokens": 8680068054,
+      "tokens": 8686546571,
       "share": 0,
       "percentile": 6.5
     }
@@ -4522,7 +4454,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 170,
-      "tokens": 28516987560,
+      "tokens": 28519185846,
       "share": 0.0001,
       "percentile": 32.6
     }
@@ -4644,7 +4576,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 120,
-      "tokens": 69772076974,
+      "tokens": 69796794653,
       "share": 0.0002,
       "percentile": 45.7
     }
@@ -4988,7 +4920,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 232,
-      "tokens": 9386183144,
+      "tokens": 9388951592,
       "share": 0,
       "percentile": 8.7
     }
@@ -5069,7 +5001,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 173,
-      "tokens": 27183863721,
+      "tokens": 27194300906,
       "share": 0.0001,
       "percentile": 28.3
     }
@@ -5150,7 +5082,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 87,
-      "tokens": 150386139585,
+      "tokens": 150471078459,
       "share": 0.0005,
       "percentile": 52.2
     }
@@ -5231,7 +5163,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 3,
-      "tokens": 17906251204821,
+      "tokens": 17914109069859,
       "share": 0.0621,
       "percentile": 97.8
     }
@@ -5353,7 +5285,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 49,
-      "tokens": 627409393798,
+      "tokens": 627678629735,
       "share": 0.0022,
       "percentile": 65.2
     }
@@ -5551,7 +5483,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 293,
-      "tokens": 2852047899,
+      "tokens": 2853767503,
       "share": 0,
       "percentile": 0
     }
@@ -5678,7 +5610,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 293,
-      "tokens": 2852047899,
+      "tokens": 2853767503,
       "share": 0,
       "percentile": 0
     }
@@ -5909,7 +5841,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 204,
-      "tokens": 14105905482,
+      "tokens": 14120722503,
       "share": 0,
       "percentile": 19.6
     }
@@ -6026,7 +5958,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 32,
-      "tokens": 1344131938433,
+      "tokens": 1344545094040,
       "share": 0.0047,
       "percentile": 78.3
     }
@@ -6144,7 +6076,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 35,
-      "tokens": 1063148249606,
+      "tokens": 1063536369452,
       "share": 0.0037,
       "percentile": 76.1
     }
@@ -6261,7 +6193,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 184,
-      "tokens": 23077418279,
+      "tokens": 23082503758,
       "share": 0.0001,
       "percentile": 26.1
     }
@@ -6378,7 +6310,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 97,
-      "tokens": 109838087977,
+      "tokens": 109880668967,
       "share": 0.0004,
       "percentile": 50
     }
@@ -6500,7 +6432,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 207,
-      "tokens": 13653094825,
+      "tokens": 13657514331,
       "share": 0,
       "percentile": 17.4
     }
@@ -6636,7 +6568,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 97,
-      "tokens": 109838087977,
+      "tokens": 109880668967,
       "share": 0.0004,
       "percentile": 50
     }
@@ -6767,7 +6699,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 184,
-      "tokens": 23077418279,
+      "tokens": 23082503758,
       "share": 0.0001,
       "percentile": 26.1
     }
@@ -6884,7 +6816,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 259,
-      "tokens": 5561845027,
+      "tokens": 5563266349,
       "share": 0,
       "percentile": 2.2
     }
@@ -7114,7 +7046,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 226,
-      "tokens": 10926543887,
+      "tokens": 10932357615,
       "share": 0,
       "percentile": 13
     }
@@ -7240,7 +7172,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 160,
-      "tokens": 32721905326,
+      "tokens": 32727209460,
       "share": 0.0001,
       "percentile": 37
     }
@@ -7357,7 +7289,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 259,
-      "tokens": 5561845027,
+      "tokens": 5563266349,
       "share": 0,
       "percentile": 2.2
     }
@@ -7666,7 +7598,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 148,
-      "tokens": 38130464064,
+      "tokens": 38132199418,
       "share": 0.0001,
       "percentile": 39.1
     },
@@ -7783,7 +7715,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 192,
-      "tokens": 19359778748,
+      "tokens": 19366222237,
       "share": 0.0001,
       "percentile": 23.9
     },
@@ -8010,7 +7942,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 238,
-      "tokens": 7829002568,
+      "tokens": 7829696882,
       "share": 0,
       "percentile": 4.3
     },
@@ -8140,7 +8072,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 172,
-      "tokens": 27265724067,
+      "tokens": 27278637765,
       "share": 0.0001,
       "percentile": 30.4
     },
@@ -8256,7 +8188,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 63,
-      "tokens": 339807075895,
+      "tokens": 339987082470,
       "share": 0.0012,
       "percentile": 60.9
     },
