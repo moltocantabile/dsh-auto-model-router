@@ -74,7 +74,7 @@ const BOARD = {
     off: [],
   },
   tierOf: { 'm-fast': 'fast', 'm-balanced': 'balanced' },
-  providerOf: { 'm-fast': 'provider-a', 'm-balanced': 'provider-b' },
+  providerOf: { 'm-fast': 'provider-a', 'm-balanced': 'provider-b', 'm-unmeasured': 'provider-c' },
   overridden: [],
   disabled: [],
   unassigned: [],
@@ -283,8 +283,15 @@ test('the page mounts, fetches its snapshot, and renders rows', async () => {
     // Captions name the provider, and each provider gets its own tone.
     assert.ok(names.some((name) => name.includes('provider-a/m-fast')), names.join(' | '))
     assert.ok(names.some((name) => name.includes('provider-b/m-balanced')), names.join(' | '))
-    const tones = capsules.map((node) => node.getAttribute('data-tone'))
-    assert.equal(new Set(tones).size, 2, `one tone per provider (saw ${tones.join(',')})`)
+    const tiered = capsules.filter((node) => node.getAttribute('data-measured') !== 'false')
+    const tones = tiered.map((node) => node.getAttribute('data-tone'))
+    assert.equal(new Set(tones).size, 2, `one tone per provider among placed models (saw ${tones.join(',')})`)
+
+    // Models nobody measured are visible, dotted, and marked as such rather than
+    // hidden: the operator can still drag one into a tier deliberately.
+    const unmeasured = [...container.querySelectorAll('.amr-capsule[data-measured="false"]')]
+    assert.equal(unmeasured.length, 1, 'the unmeasured model is shown')
+    assert.ok((unmeasured[0].textContent ?? '').includes('m-unmeasured'))
 
     // The provider filter is a dropdown listing what is on the board.
     const selects = [...container.querySelectorAll('select')]

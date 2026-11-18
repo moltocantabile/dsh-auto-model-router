@@ -120,6 +120,8 @@ window.__ModuleLoader__.load({
 .amr-capsule:hover { border-color:var(--dsw-alias-brand-primary); }
 .amr-capsule[data-dragging="true"] { opacity:.4; }
 .amr-capsule[data-off="true"] { opacity:.55; text-decoration:line-through; cursor:pointer; }
+.amr-capsule[data-measured="false"] { border-style:dotted; opacity:.75; }
+.amr-capsule[data-measured="false"] .amr-capsuleProvider { font-style:italic; }
 .amr-capsule[data-overridden="true"] { border-style:dashed; }
 .amr-capsuleName { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-variant-numeric:tabular-nums; }
 .amr-capsuleDot { width:6px; height:6px; border-radius:50%; flex:none; background:var(--dsw-alias-brand-primary); }
@@ -228,6 +230,8 @@ window.__ModuleLoader__.load({
         allProviders: 'All providers',
         filterActive: 'Showing {provider} only.',
         unmeasuredHint: '{count} advertised models are not routable: nobody measured their quality, so they cannot be ranked.',
+        tierUnmeasured: 'unmeasured',
+        unmeasuredModelHint: 'No quality measurement: it cannot be ranked automatically. Drag it into a tier to route it anyway.',
         tierOff: 'off',
         laneEmpty: 'No model here yet.',
         modelCount: '{count} models',
@@ -380,6 +384,8 @@ window.__ModuleLoader__.load({
         allProviders: '全部供应商',
         filterActive: '仅显示 {provider}。',
         unmeasuredHint: '另有 {count} 个模型未被路由：没有任何质量测量，无法排序。',
+        tierUnmeasured: '未测量',
+        unmeasuredModelHint: '没有任何质量测量，无法自动排序。拖入某个档位即可强制纳入路由。',
         tierOff: '停用',
         laneEmpty: '暂无模型。',
         modelCount: '{count} 个模型',
@@ -890,7 +896,9 @@ window.__ModuleLoader__.load({
       const lanes = [
         ...['fast', 'balanced', 'deep'].map((id) => ({ id, label: id, off: false })),
         { id: 'off', label: t('tierOff'), off: true },
+        { id: 'unmeasured', label: t('tierUnmeasured'), off: true },
       ]
+      const laneMembers = (id) => (id === 'unmeasured' ? board.unmeasured ?? [] : board.groups?.[id] ?? []).filter(visible)
 
       function move(model, tier) {
         if (busy === true) return
@@ -909,7 +917,7 @@ window.__ModuleLoader__.load({
         applyTiers({ ...(draft.tiers ?? {}), overrides: nextOverrides, disabled: [...disabled].filter((id) => id !== model) })
       }
 
-      function capsule(key) {
+      function capsule(key, laneId) {
         const model = board.modelOf?.[key] ?? key
         const entry = index.get(model) ?? null
         const off = disabled.has(key)
@@ -924,8 +932,9 @@ window.__ModuleLoader__.load({
             'data-off': off ? 'true' : 'false',
             'data-overridden': handAssigned ? 'true' : 'false',
             'data-tone': String(providerTone.get(providerOf[key]) ?? 0),
+            'data-measured': laneId === 'unmeasured' ? 'false' : 'true',
             'data-dragging': dragging === key ? 'true' : 'false',
-            title: off ? t('enableModel') : t('disableModel'),
+            title: laneId === 'unmeasured' ? t('unmeasuredModelHint') : off ? t('enableModel') : t('disableModel'),
             onMouseEnter: () => setHovered(key),
             onMouseLeave: () => setHovered((current) => (current === key ? null : current)),
             onClick: () => (off ? followAuto(key) : move(key, 'off')),
@@ -956,6 +965,7 @@ window.__ModuleLoader__.load({
               'div',
               { className: 'amr-pop', onClick: (event) => event.stopPropagation() },
               h('span', { className: 'amr-popTitle' }, `${providerOf[key] ?? 'unknown'}/${model}`),
+              laneId === 'unmeasured' && h('p', { className: 'amr-note' }, t('unmeasuredModelHint')),
               h(ModelFacts, { entry, t }),
               h(
                 'div',
@@ -1030,7 +1040,7 @@ window.__ModuleLoader__.load({
         (board.unmeasured ?? []).length > 0 &&
           h('p', { className: 'amr-note' }, t('unmeasuredHint').replace('{count}', String((board.unmeasured ?? []).length))),
         ...lanes.map((lane) => {
-          const members = (board.groups?.[lane.id] ?? []).filter(visible)
+          const members = laneMembers(lane.id)
           return h(
             'div',
             {
@@ -1061,7 +1071,7 @@ window.__ModuleLoader__.load({
               { className: 'amr-capsules' },
               members.length === 0
                 ? h('span', { className: 'amr-emptyLane' }, t('laneEmpty'))
-                : members.map((model) => capsule(model)),
+                : members.map((model) => capsule(model, lane.id)),
             ),
           )
         }),
@@ -1336,6 +1346,9 @@ window.__ModuleLoader__.load({
             })
             .catch(() => {})
         }, 5000)
+        // Node-based test hosts keep the loop alive for an interval; `unref` is a
+        // no-op in a browser, where the timer belongs to the page anyway.
+        timer?.unref?.()
         return () => {
           mounted.current = false
           clearInterval(timer)
