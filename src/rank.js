@@ -236,6 +236,9 @@ const DIM_RULES = [
   ['livebench-data-analysis', 'reasoning', /^(livebench-data-analysis|livebench-2-data-analysis|data-analysis)$/],
   ['simplebench', 'reasoning', /^simplebench/],
   ['critpt', 'reasoning', /^critpt/],
+  // Puzzle and game benchmarks measure novel-problem reasoning, not knowledge.
+  ['chess-puzzles', 'reasoning', /^chess-puzzles?$/],
+  ['mystery-game-puzzles', 'reasoning', /^mystery-game/],
   // math
   ['aime', 'math', /^(aime|aime-2025|otis-mock-aime)/],
   ['frontiermath', 'math', /^frontiermath/],
@@ -256,6 +259,10 @@ const DIM_RULES = [
   ['gdpval', 'knowledge', /^gdpval/],
   ['gdp-pdf', 'knowledge', /^gdp-pdf/],
   ['livebench-language', 'knowledge', /^(livebench-language|livebench-2-language|language)$/],
+  // Instruction-following boards live under both channels; they measure the same
+  // skill, so they share one canonical benchmark instead of voting twice.
+  ['ifbench', 'knowledge', /^ifbench$/],
+  ['livebench-if', 'knowledge', /^(if|ifbench)$/],
   // agentic
   ['terminal-bench-science', 'agentic', /^terminal-bench-science/],
   ['terminal-bench', 'agentic', /^terminal-?bench/],
@@ -265,6 +272,7 @@ const DIM_RULES = [
   ['itbench', 'agentic', /^itbench/],
   ['osworld', 'agentic', /^osworld/],
   ['remote-labor-index', 'agentic', /^remote-labor-index/],
+  ['furniture-assembly', 'agentic', /^furniture-assembly/],
   ['automationbench', 'agentic', /^automationbench/],
   ['enterprise-ops-gym', 'agentic', /^enterprise-ops-gym/],
   ['analyst-agent', 'agentic', /^(aa-)?analyst-agent/],
@@ -274,6 +282,8 @@ const DIM_RULES = [
   // vision / long context: measured only when a benchmark measured them
   ['mmmu', 'vision', /^mmmu/],
   ['long-context-reasoning', 'longContext', /^(long-context-reasoning|mlcr|mlcr-aa)$/],
+  // LMCA is a long-memory comprehension assessment: a long-context measurement.
+  ['lmca', 'longContext', /^lmca$/],
 ]
 
 /**

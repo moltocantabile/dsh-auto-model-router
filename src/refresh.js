@@ -605,6 +605,7 @@ export function attachRanking(dataset, options = {}) {
       unmeasured: table.unmeasured.length,
       calibratedChannels: table.coverage?.channels ?? null,
       uncalibratedObservations: table.coverage?.uncalibratedObservations ?? 0,
+      unknownBenchmarks: (table.unknownBenchmarks ?? []).length,
       top,
     },
   }
