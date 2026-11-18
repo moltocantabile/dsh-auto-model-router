@@ -80,8 +80,22 @@ export function applyDataset(dataset, meta = {}) {
   if (dataset === null || typeof dataset !== 'object') return false
   for (const key of Object.keys(MODEL_INFO)) delete MODEL_INFO[key]
   Object.assign(MODEL_INFO, dataset)
+  reindex()
   if (typeof meta.checkedAt === 'string' && meta.checkedAt.length > 0) CHECKED_AT = meta.checkedAt
   return true
+}
+
+/**
+ * Case-insensitive index of the catalog.
+ *
+ * Provider catalogues are not consistent about capitalisation (`MiniMax/MiniMax-M3`,
+ * `ZHIPU/GLM-5.3`), while lookups normalise to lower case. Without this index every
+ * mixed-case id read as "no quality measurement" even though its entry existed.
+ */
+let LOOKUP = new Map()
+function reindex() {
+  LOOKUP = new Map()
+  for (const [key, entry] of Object.entries(MODEL_INFO)) LOOKUP.set(key.toLowerCase(), entry)
 }
 
 /** Persist a refreshed catalog so it survives the next start. */
@@ -93,6 +107,7 @@ export function saveRuntimeDataset(dataset) {
 
 const RUNTIME = loadRuntime()
 if (RUNTIME !== null) applyDataset(RUNTIME)
+else reindex()
 
 /**
  * Provider ids that differ only by deployment, never by model identity.
@@ -143,12 +158,13 @@ export function modelKey(provider, modelId) {
  */
 export function infoFor(provider, modelId) {
   const key = modelKey(provider, modelId)
-  const direct = MODEL_INFO[key]
+  const direct = MODEL_INFO[key] ?? LOOKUP.get(key.toLowerCase())
   if (direct !== undefined) return { key, ...direct }
   // A dated sibling (`...-1017`) may not have its own entry; the family entry
   // still describes it well enough for routing.
   const family = key.replace(/-\d{3,4}$/, '')
-  if (family !== key && MODEL_INFO[family] !== undefined) return { key, ...MODEL_INFO[family], familyOf: family }
+  const familyEntry = MODEL_INFO[family] ?? LOOKUP.get(family.toLowerCase())
+  if (family !== key && familyEntry !== undefined) return { key, ...familyEntry, familyOf: family }
   return null
 }
 

@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import { test } from 'node:test'
 import {
   CHECKED_AT,
+  applyDataset,
   applyProviderAliases,
   MODEL_INFO,
   capabilityFragments,
@@ -113,4 +114,21 @@ test('capabilitySummary carries the cross-check and provenance through to the UI
   assert.ok(Array.isArray(summary.benchmarkSources))
   assert.ok(summary.benchmarkSources.includes('opencompass-compassrank'))
   assert.equal(summary.checkedAt, CHECKED_AT)
+})
+
+test('the catalog lookup is case-insensitive, as provider ids are not consistent', () => {
+  // `MiniMax/MiniMax-M3` and `ZHIPU/GLM-5.3` are advertised with capitals while
+  // lookups normalise to lower case; without the index these read as unmeasured.
+  const backup = JSON.parse(JSON.stringify(MODEL_INFO))
+  try {
+    applyDataset({
+      'MiniMax/MiniMax-M3': { ...backup['qwen3.8-flash'], label: 'MiniMax-M3', quality: 47.1 },
+    })
+    const found = infoFor('bailian-aliyun', 'MiniMax/MiniMax-M3')
+    assert.ok(found !== null, 'a mixed-case entry resolves')
+    assert.equal(found.quality, 47.1)
+    assert.equal(infoFor('bailian-aliyun', 'minimax/minimax-m3')?.quality, 47.1)
+  } finally {
+    applyDataset(backup)
+  }
 })

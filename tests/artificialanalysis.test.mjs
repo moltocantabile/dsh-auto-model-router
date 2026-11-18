@@ -119,7 +119,9 @@ test('a provider-prefixed id matches the bare model name', () => {
     analysis,
     wanted: [{ model: 'ZHIPU/GLM-5.3', provider: 'bailian-aliyun' }],
   })
-  assert.ok(dataset['ZHIPU/GLM-5.3'] !== undefined)
+  // Stored under the lower-case key the catalog lookup derives, so the mixed-case
+  // provider spelling still resolves.
+  assert.ok(dataset['zhipu/glm-5.3'] !== undefined)
 })
 
 test('variant rows of one model resolve to the best-evaluated variant', () => {

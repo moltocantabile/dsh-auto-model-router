@@ -685,7 +685,7 @@ export function attachArtificialAnalysis(dataset, { base = {}, analysis = {}, wa
   let filledPrice = 0
   let filledLatency = 0
   for (const [id, value] of Object.entries(byId)) {
-    const entry = dataset[id]
+    const entry = dataset[id] ?? dataset[id.toLowerCase()]
     if (entry === undefined) continue
     entry.crossChecks = { ...(entry.crossChecks ?? {}), artificialAnalysis: {
       intelligenceIndex: value.intelligenceIndex ?? null,
@@ -742,7 +742,8 @@ export function attachArtificialAnalysis(dataset, { base = {}, analysis = {}, wa
     ]
     const value = matchAnalysisRow(lookupKeys, byName)
     if (value === undefined) continue
-    const existing = dataset[id]
+    const entryKey = id.toLowerCase()
+    const existing = dataset[id] ?? dataset[entryKey]
     if (existing !== undefined) continue
     const quality = Number.isFinite(value.intelligenceIndex) ? qualityOf(value) : null
     if (quality === null && !Number.isFinite(value.priceIn)) continue
@@ -759,7 +760,7 @@ export function attachArtificialAnalysis(dataset, { base = {}, analysis = {}, wa
       scores[dim] = quality ?? 0
       evidence[dim] = 0
     }
-    dataset[id] = {
+    dataset[entryKey] = {
       label: value.name ?? bare,
       ...(provider === undefined ? {} : { provider }),
       contextWindow: Number.isFinite(value.contextTokens) ? value.contextTokens : 0,
