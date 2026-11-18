@@ -240,6 +240,7 @@ window.__ModuleLoader__.load({
         unmeasuredHint: '{count} advertised models are not routable: nobody measured their quality, so they cannot be ranked.',
         tierUnmeasured: 'unmeasured',
         badgeOff: 'off',
+        badgeNoTier: 'no tier',
         badgeSuperseded: 'superseded',
         badgeProvisional: 'provisional',
         badgeUncalibrated: '{count} uncal.',
@@ -409,6 +410,7 @@ window.__ModuleLoader__.load({
         unmeasuredHint: '另有 {count} 个模型未被路由：没有任何质量测量，无法排序。',
         tierUnmeasured: '未测量',
         badgeOff: '停用',
+        badgeNoTier: '无档位',
         badgeSuperseded: '已被超越',
         badgeProvisional: '临时',
         badgeUncalibrated: '{count} 项未校准',
@@ -1026,6 +1028,8 @@ window.__ModuleLoader__.load({
           // State is a badge, not a faded card: a faded parent also faded the
           // hover card, which made superseded models unreadable.
           off && h('span', { className: 'amr-capsuleBadge', 'data-tone': 'warn' }, t('badgeOff')),
+          laneId === 'off' && !off && !dominatedBy.has(key) &&
+            h('span', { className: 'amr-capsuleBadge' }, t('badgeNoTier')),
           dominatedBy.has(key) && h('span', { className: 'amr-capsuleBadge', 'data-tone': 'warn' }, t('badgeSuperseded')),
           metaOf(key).status === 'provisional' && h('span', { className: 'amr-capsuleBadge' }, t('badgeProvisional')),
           (metaOf(key).uncalibrated ?? 0) > 0 && h('span', { className: 'amr-capsuleBadge', 'data-tone': 'error' }, t('badgeUncalibrated').replace('{count}', String(metaOf(key).uncalibrated))),

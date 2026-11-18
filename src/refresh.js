@@ -482,7 +482,7 @@ export function mergeEnvelopes(routes, derived, mode = 'merge') {
       continue
     }
     const envelope = mode === 'derived'
-      ? { maxCost: data.maxCost, minQuality: data.minQuality, maxLatency: base.maxLatency ?? data.maxLatency }
+      ? { maxCost: data.maxCost, minQuality: data.minQuality, maxLatency: base.maxLatency ?? data.maxLatency, derived: true, source: 'derived' }
       : {
           maxCost: base.maxCost ?? data.maxCost,
           minQuality: base.minQuality ?? data.minQuality,

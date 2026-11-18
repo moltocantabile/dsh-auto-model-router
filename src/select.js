@@ -180,6 +180,28 @@ export function blendedPrice(info) {
  * 60 CNY blended). Cheap models crowd near 0 so that a 2x price difference
  * between two cheap models does not dominate a 5-point capability gap.
  */
+/**
+ * Capability basis used by every tier rule: the cross-source ranking when the
+ * catalog has one, the legacy compiled score otherwise.
+ *
+ * The two are different measures of the same idea and must not be mixed within
+ * one comparison -- the board ranks by the composite while dominance read the
+ * legacy score, so a model could be switched off by one measure and ranked above
+ * its killer by the other.
+ *
+ * @param {object|null} [info]
+ * @returns {number|null} the conservative value (ranking low bound) or the score
+ */
+export function qualityBasis(info) {
+  const ranking = info?.ranking ?? null
+  const low = num(ranking?.low, null)
+  if (low !== null) return low
+  const composite = num(ranking?.composite, null)
+  if (composite !== null) return composite
+  const legacy = num(info?.quality, null)
+  return legacy
+}
+
 export function costIndex(info) {
   const blended = blendedPrice(info)
   if (blended === null || blended <= 0) return 55
@@ -500,7 +522,12 @@ export function withinEnvelope(info, envelope) {
     if (rank === undefined || rank > LATENCY_RANK[maxLatency]) return false
   }
   if (typeof minQuality === 'number' && minQuality > 0) {
-    const quality = num(info?.quality, null)
+    // A floor means only what its source meant: a hand-written one was authored
+    // against the legacy score, a derived one is a quantile of the ranking's
+    // conservative value. Comparing a floor against the other scale silently
+    // empties the board, so provenance decides the basis.
+    const derivedFloor = envelope.derived === true || envelope.source === 'derived'
+    const quality = derivedFloor ? qualityBasis(info) : num(info?.quality ?? info?.scores?.composite, null)
     if (quality === null || quality < minQuality) return false
   }
   return true

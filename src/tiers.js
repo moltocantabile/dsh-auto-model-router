@@ -12,7 +12,7 @@
  * The operator still overrules the computation, per model: drag one to another
  * tier, or switch it off. Those overrides are the only hand-made assignments.
  */
-import { costIndex, withinEnvelope } from './select.js'
+import { costIndex, qualityBasis, withinEnvelope } from './select.js'
 
 /** How much cheaper a model must be to justify a lower quality by "dominance". */
 const DOMINANCE_COST_MARGIN = 10
@@ -46,10 +46,10 @@ export function familyOf(key) {
   return word === null ? id : word[0]
 }
 
-/** Measured quality of a candidate, 0 when nothing measured it. */
+/** Measured quality of a candidate on the same basis the tiers are fitted on. */
 const qualityOf = (info) => {
-  const quality = Number(info?.quality ?? info?.scores?.composite)
-  return Number.isFinite(quality) ? quality : 0
+  const quality = qualityBasis(info)
+  return quality === null ? 0 : quality
 }
 
 /** Tiers from cheapest to most capable. */
@@ -151,7 +151,7 @@ export function assignTiers(pool, routes, config = {}) {
     // ranked, so it is not placed in a tier. A profile that exposes a provider
     // with hundreds of unmeasured ids must not turn the tier board into a list of
     // everything the provider can bill for.
-    const measured = candidate.info?.quality != null || candidate.info?.scores?.composite != null
+    const measured = candidate.info?.quality != null || candidate.info?.scores?.composite != null || candidate.info?.ranking?.status === 'measured'
     if (mode === 'auto' && !measured) {
       unmeasured.push(key)
       continue
