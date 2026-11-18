@@ -83,13 +83,12 @@ test('sticky routing treats the model that actually served as the commitment', (
   )
 })
 
-test('the client registers once per page but releases the latch on dispose', () => {
+test('the client half never gates registration on page-wide state', () => {
+  // A page-wide latch blocked a freshly loaded bundle in a warm page: the old
+  // instance still held it, so the new UI never registered and nothing changed.
+  // Duplicate registration is the injector's business, not the bundle's.
   const client = read('client.js')
-  assert.ok(client.includes('__autoModelRouterRegistered === true'), 'duplicate loads do not double-register')
-  assert.ok(
-    client.includes('ctx.effect(() => () => {') && client.includes('__autoModelRouterRegistered = false'),
-    'a disposed instance releases the latch so the next one can register',
-  )
+  assert.ok(!client.includes('__autoModelRouterRegistered'), 'no cross-instance registration latch')
 })
 
 test('the tier board is computed even when the decision endpoint is down', () => {

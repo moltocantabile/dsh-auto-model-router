@@ -1897,16 +1897,6 @@ window.__ModuleLoader__.load({
     return {
       inject: ['slots', 'locale'],
       apply(ctx) {
-        // Register once per page even if the half is loaded twice (duplicate
-        // entries, re-injection). The flag is released through `ctx.effect`, so a
-        // disposed instance does not leave the next one unable to register — that
-        // would leave the plugin alive with no UI at all.
-        if (window.__autoModelRouterRegistered === true) return
-        window.__autoModelRouterRegistered = true
-        ctx.effect(() => () => {
-          window.__autoModelRouterRegistered = false
-        })
-
         installStyles()
         ctx.effect(() => ctx.locale.register(NS, dict))
         const t = ctx.locale.bind(NS)
