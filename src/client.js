@@ -103,6 +103,31 @@ window.__ModuleLoader__.load({
 .amr-segBtn:hover:not([disabled]) { background:var(--dsw-alias-interactive-bg-hover); }
 .amr-segBtn[data-active="true"] { background:var(--dsw-alias-bg-layer-2); color:var(--dsw-alias-label-primary); font-weight:500; }
 .amr-segBtn[disabled] { opacity:.5; cursor:default; }
+.amr-board { display:flex; flex-direction:column; gap:10px; }
+.amr-lane { display:flex; flex-direction:column; gap:8px; padding:10px 12px; border:.5px solid var(--dsw-alias-settings-card-stroke); border-radius:var(--dsw-radius-lg); background:var(--dsw-alias-bg-layer-1, transparent); }
+.amr-lane[data-over="true"] { border-color:var(--dsw-alias-brand-primary); background:var(--dsw-alias-interactive-bg-hover); }
+.amr-laneHead { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.amr-laneId { font-size:13px; font-weight:500; }
+.amr-laneCount { color:var(--dsw-alias-label-tertiary); font-size:12px; }
+.amr-capsules { display:flex; flex-wrap:wrap; gap:6px; min-height:30px; align-items:flex-start; }
+.amr-capsule { position:relative; display:inline-flex; align-items:center; gap:6px; max-width:100%; padding:3px 10px; border-radius:999px; border:.5px solid var(--dsw-alias-border-l3); background:var(--dsw-alias-settings-card-fill); color:var(--dsw-alias-label-primary); font:inherit; font-size:12px; line-height:18px; cursor:grab; user-select:none; }
+.amr-capsule:hover { border-color:var(--dsw-alias-brand-primary); }
+.amr-capsule[data-dragging="true"] { opacity:.4; }
+.amr-capsule[data-off="true"] { opacity:.55; text-decoration:line-through; cursor:pointer; }
+.amr-capsule[data-overridden="true"] { border-style:dashed; }
+.amr-capsuleName { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-variant-numeric:tabular-nums; }
+.amr-capsuleDot { width:6px; height:6px; border-radius:50%; flex:none; background:var(--dsw-alias-brand-primary); }
+.amr-capsule[data-off="true"] .amr-capsuleDot { background:var(--dsw-alias-label-tertiary); }
+.amr-pop { position:absolute; z-index:40; top:calc(100% + 6px); left:0; width:260px; display:flex; flex-direction:column; gap:6px; padding:10px 12px; border:.5px solid var(--dsw-alias-settings-card-stroke); border-radius:var(--dsw-radius-lg); background:var(--dsw-alias-bg-overlay); color:var(--dsw-alias-label-primary); font-size:12px; line-height:18px; cursor:default; }
+.amr-popTitle { font-size:13px; font-weight:500; }
+.amr-popHint { color:var(--dsw-alias-label-tertiary); }
+.amr-popActions { display:flex; gap:6px; flex-wrap:wrap; padding-top:2px; }
+.amr-emptyLane { color:var(--dsw-alias-label-tertiary); font-size:12px; line-height:18px; }
+.amr-toggle { display:inline-flex; align-items:center; gap:6px; height:26px; padding:0 10px; border-radius:999px; border:.5px solid var(--dsw-alias-border-l3); background:0 0; color:var(--dsw-alias-label-secondary); font:inherit; font-size:12px; cursor:pointer; }
+.amr-toggle:hover { background:var(--dsw-alias-interactive-bg-hover); }
+.amr-toggle[data-on="true"] { border-color:var(--dsw-alias-brand-primary); color:var(--dsw-alias-label-primary); }
+.amr-toggleDot { width:6px; height:6px; border-radius:50%; background:var(--dsw-alias-label-tertiary); }
+.amr-toggle[data-on="true"] .amr-toggleDot { background:var(--dsw-alias-brand-primary); }
 .amr-tier { display:flex; flex-direction:column; gap:12px; padding:12px 14px; border:.5px solid var(--dsw-alias-settings-card-stroke); border-radius:var(--dsw-radius-lg); }
 .amr-tier + .amr-tier { margin-top:10px; }
 .amr-tierHead { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
@@ -178,6 +203,29 @@ window.__ModuleLoader__.load({
         catalogModels: 'Provider models',
         anchorModel: 'anchor model',
         anchorModelHint: 'Used for force, for the fallback path, and by the tier menu. Routing picks the best model inside the envelope.',
+        tiers: 'Tiers',
+        tiersHint: 'Membership is computed from measurement: a model joins the cheapest tier whose envelope it satisfies. Drag a capsule to move it, click one to switch it off.',
+        boardHint: 'Hover a model for its price, capability and context. Drag between tiers to overrule the automatic assignment; click to disable it.',
+        tierOff: 'off',
+        laneEmpty: 'No model here yet.',
+        modelCount: '{count} models',
+        modeAuto: 'auto',
+        modeManual: 'manual',
+        handAssigned: 'hand-assigned',
+        moveTo: '→ {tier}',
+        disableModel: 'Disable',
+        enableModel: 'Enable',
+        resetToAuto: 'Follow auto',
+        resetBoard: 'Reset board to automatic',
+        capsuleHint: 'Click a model to switch it off, drag it to move it.',
+        toggleLabel: 'Auto',
+        toggleTitle: 'Automatic model routing',
+        toggleOnTitle: 'Auto routing is deciding the model',
+        toggleOffTitle: 'Auto routing is off; the model picker decides',
+        toggleOn: 'On — route every session',
+        toggleShadow: 'Observe — decide and log, do not switch',
+        toggleOff: 'Off — leave the model alone',
+        toggleHint: 'Sticky sessions keep the model they started on; a named model or a pin still wins.',
         maxCost: 'max cost index',
         minQuality: 'min quality',
         maxLatency: 'max latency',
@@ -300,6 +348,29 @@ window.__ModuleLoader__.load({
         catalogModels: '提供方模型',
         anchorModel: '锚定模型',
         anchorModelHint: '用于强制指定、回退路径与档位菜单。路由会在封套范围内选择最合适的模型。',
+        tiers: '档位',
+        tiersHint: '档位成员由实测自动划分：模型进入它能满足的最便宜档位。拖动胶囊可改档，点击可停用。',
+        boardHint: '悬停查看价格、能力与上下文；拖动可覆盖自动分配，点击可停用该模型。',
+        tierOff: '停用',
+        laneEmpty: '暂无模型。',
+        modelCount: '{count} 个模型',
+        modeAuto: '自动',
+        modeManual: '手动',
+        handAssigned: '手动指定',
+        moveTo: '→ {tier}',
+        disableModel: '停用',
+        enableModel: '启用',
+        resetToAuto: '恢复自动',
+        resetBoard: '全部恢复自动',
+        capsuleHint: '点击停用，拖动换档。',
+        toggleLabel: '自动',
+        toggleTitle: '自动模型路由',
+        toggleOnTitle: '自动路由正在决定模型',
+        toggleOffTitle: '自动路由已关闭，由模型选择器决定',
+        toggleOn: '开启 — 路由每个会话',
+        toggleShadow: '观察 — 只决策记录，不切换',
+        toggleOff: '关闭 — 不干预模型',
+        toggleHint: '固定会话沿用开场模型；点名模型或强制指定仍然优先。',
         maxCost: '成本上限',
         minQuality: '质量下限',
         maxLatency: '延迟上限',
@@ -743,6 +814,289 @@ window.__ModuleLoader__.load({
       )
     }
 
+
+    // ── tier board ──────────────────────────────────────────────────────────
+    /**
+     * Who is in which tier, and the only place membership is edited.
+     *
+     * The board is computed on the host (`snap.board`) so the page and the
+     * router cannot disagree about the assignment. Every gesture maps to one
+     * config change and is applied immediately: dragging a capsule sets an
+     * override for that model, clicking it switches the model off, and a model
+     * with neither follows the automatic assignment again.
+     */
+    function TierBoard({ snap, draft, models, t, applyTiers, busy }) {
+      const board = snap.board ?? { mode: draft.tiers?.mode ?? 'auto', groups: { fast: [], balanced: [], deep: [], off: [] }, overridden: [], unassigned: [] }
+      const overrides = draft.tiers?.overrides ?? {}
+      const disabled = new Set(draft.tiers?.disabled ?? [])
+      const index = new Map((models ?? []).map((entry) => [entry.id, entry]))
+      const [hovered, setHovered] = useState(null)
+      const [dragging, setDragging] = useState(null)
+      const [over, setOver] = useState(null)
+
+      const lanes = [
+        ...['fast', 'balanced', 'deep'].map((id) => ({ id, label: id, off: false })),
+        { id: 'off', label: t('tierOff'), off: true },
+      ]
+
+      function move(model, tier) {
+        if (busy === true) return
+        if (tier === 'off') {
+          applyTiers({ ...(draft.tiers ?? {}), disabled: [...new Set([...disabled, model])] })
+          return
+        }
+        const nextOverrides = { ...overrides, [model]: tier }
+        applyTiers({ ...(draft.tiers ?? {}), overrides: nextOverrides, disabled: [...disabled].filter((id) => id !== model) })
+      }
+
+      function followAuto(model) {
+        if (busy === true) return
+        const nextOverrides = { ...overrides }
+        delete nextOverrides[model]
+        applyTiers({ ...(draft.tiers ?? {}), overrides: nextOverrides, disabled: [...disabled].filter((id) => id !== model) })
+      }
+
+      function capsule(model) {
+        const entry = index.get(model) ?? null
+        const off = disabled.has(model)
+        const handAssigned = Object.hasOwn(overrides, model)
+        const open = hovered === model
+        return h(
+          'div',
+          {
+            key: model,
+            className: 'amr-capsule',
+            draggable: !off && busy !== true,
+            'data-off': off ? 'true' : 'false',
+            'data-overridden': handAssigned ? 'true' : 'false',
+            'data-dragging': dragging === model ? 'true' : 'false',
+            title: off ? t('enableModel') : t('disableModel'),
+            onMouseEnter: () => setHovered(model),
+            onMouseLeave: () => setHovered((current) => (current === model ? null : current)),
+            onClick: () => (off ? followAuto(model) : move(model, 'off')),
+            onDragStart: (event) => {
+              setDragging(model)
+              try {
+                event.dataTransfer.setData('text/plain', model)
+                event.dataTransfer.effectAllowed = 'move'
+              } catch (error) {
+                /* some browsers refuse a synthetic transfer; the drop still reads `dragging` */
+              }
+            },
+            onDragEnd: () => {
+              setDragging(null)
+              setOver(null)
+            },
+          },
+          h('span', { className: 'amr-capsuleDot' }),
+          h('span', { className: 'amr-capsuleName' }, model),
+          handAssigned && h(Chip, { tone: 'warn' }, t('handAssigned')),
+          open &&
+            h(
+              'div',
+              { className: 'amr-pop', onClick: (event) => event.stopPropagation() },
+              h('span', { className: 'amr-popTitle' }, model),
+              h(ModelFacts, { entry, t }),
+              h(
+                'div',
+                { className: 'amr-popActions' },
+                ...['fast', 'balanced', 'deep'].map((tier) =>
+                  h(
+                    Button,
+                    {
+                      key: tier,
+                      disabled: busy === true || overrides[model] === tier,
+                      onClick: () => move(model, tier),
+                    },
+                    t('moveTo').replace('{tier}', tier),
+                  ),
+                ),
+                h(
+                  Button,
+                  { disabled: busy === true, onClick: () => (off ? followAuto(model) : move(model, 'off')) },
+                  off ? t('enableModel') : t('disableModel'),
+                ),
+                handAssigned &&
+                  h(Button, { disabled: busy === true, onClick: () => followAuto(model) }, t('resetToAuto')),
+              ),
+              h('span', { className: 'amr-popHint' }, t('capsuleHint')),
+            ),
+        )
+      }
+
+      function laneMeta(id) {
+        const members = board.groups?.[id] ?? []
+        const count = members.length
+        return h(
+          'div',
+          { className: 'amr-laneHead' },
+          h('span', { className: 'amr-laneId' }, lanes.find((lane) => lane.id === id)?.label ?? id),
+          h('span', { className: 'amr-laneCount' }, t('modelCount').replace('{count}', String(count))),
+          id === draft.defaultRoute && h(Chip, { tone: 'ok' }, t('defaultRoute')),
+          id !== 'off' && h(
+            Button,
+            {
+              disabled: busy === true,
+              onClick: () => applyTiers({ ...(draft.tiers ?? {}), mode: (draft.tiers?.mode ?? 'auto') === 'auto' ? 'manual' : 'auto' }),
+            },
+            (draft.tiers?.mode ?? 'auto') === 'auto' ? t('modeAuto') : t('modeManual'),
+          ),
+        )
+      }
+
+      return h(
+        'div',
+        { className: 'amr-board' },
+        h('p', { className: 'amr-note' }, t('boardHint')),
+        ...lanes.map((lane) => {
+          const members = board.groups?.[lane.id] ?? []
+          return h(
+            'div',
+            {
+              key: lane.id,
+              className: 'amr-lane',
+              'data-over': over === lane.id ? 'true' : 'false',
+              onDragOver: (event) => {
+                event.preventDefault()
+                setOver(lane.id)
+              },
+              onDragLeave: () => setOver((current) => (current === lane.id ? null : current)),
+              onDrop: (event) => {
+                event.preventDefault()
+                let dropped = dragging
+                try {
+                  dropped = event.dataTransfer.getData('text/plain') || dropped
+                } catch (error) {
+                  /* fall back to the capsule that started the drag */
+                }
+                setOver(null)
+                setDragging(null)
+                if (typeof dropped === 'string' && dropped.length > 0) move(dropped, lane.id)
+              },
+            },
+            laneMeta(lane.id),
+            h(
+              'div',
+              { className: 'amr-capsules' },
+              members.length === 0
+                ? h('span', { className: 'amr-emptyLane' }, t('laneEmpty'))
+                : members.map((model) => capsule(model)),
+            ),
+          )
+        }),
+        h(
+          'div',
+          { className: 'amr-row' },
+          h(
+            Button,
+            {
+              disabled: busy === true,
+              onClick: () => applyTiers({ ...(draft.tiers ?? {}), overrides: {}, disabled: [] }),
+            },
+            t('resetBoard'),
+          ),
+        ),
+      )
+    }
+
+
+    // ── composer toggle ─────────────────────────────────────────────────────
+    /**
+     * Auto routing, as a control in the composer tool row.
+     *
+     * The model menu next to it is shell-owned, so this is the seat a plugin
+     * gets: one chip that says whether routing is deciding the model, and a
+     * popover with the states that matter in a session — auto, observe, and off
+     * (the model picker takes over). It reads the host on mount and after every
+     * change, so two windows cannot disagree for long.
+     */
+    function ComposerToggle(props) {
+      const t = props.t
+      const [mode, setMode] = useState(null)
+      const [open, setOpen] = useState(false)
+      const [busy, setBusy] = useState(false)
+      const mounted = useRef(true)
+
+      useEffect(() => {
+        mounted.current = true
+        let cancelled = false
+        api('status')
+          .then((body) => {
+            if (!cancelled && mounted.current) setMode(body.mode ?? 'off')
+          })
+          .catch(() => {
+            /* a router that cannot be reached simply shows no state */
+          })
+        return () => {
+          cancelled = true
+          mounted.current = false
+        }
+      }, [])
+
+      const choose = async (next) => {
+        setBusy(true)
+        try {
+          const body = await api(next === 'toggle' ? (mode === 'on' ? 'off' : 'on') : next)
+          if (mounted.current) setMode(body.mode ?? 'off')
+        } catch (error) {
+          /* leave the previous state visible rather than guessing */
+        } finally {
+          if (mounted.current) setBusy(false)
+          setOpen(false)
+        }
+      }
+
+      if (mode === null) return null
+      const on = mode === 'on'
+      return h(
+        'div',
+        { style: { position: 'relative' } },
+        h(
+          'button',
+          {
+            type: 'button',
+            className: 'amr-toggle',
+            'data-on': on ? 'true' : 'false',
+            title: on ? t('toggleOnTitle') : t('toggleOffTitle'),
+            'aria-pressed': on ? 'true' : 'false',
+            onClick: () => setOpen((current) => !current),
+          },
+          h('span', { className: 'amr-toggleDot' }),
+          t('toggleLabel'),
+        ),
+        open &&
+          h(
+            'div',
+            {
+              className: 'amr-pop',
+              style: { top: 'auto', bottom: 'calc(100% + 6px)', left: 0, width: 220 },
+              onMouseLeave: () => setOpen(false),
+            },
+            h('span', { className: 'amr-popTitle' }, t('toggleTitle')),
+            ...[
+              ['on', t('toggleOn')],
+              ['shadow', t('toggleShadow')],
+              ['off', t('toggleOff')],
+            ].map(([value, label]) =>
+              h(
+                'button',
+                {
+                  key: value,
+                  type: 'button',
+                  className: 'amr-segBtn',
+                  style: { textAlign: 'left', width: '100%' },
+                  'data-active': mode === value ? 'true' : 'false',
+                  disabled: busy,
+                  onClick: () => choose(value),
+                },
+                label,
+              ),
+            ),
+            h('span', { className: 'amr-popHint' }, t('toggleHint')),
+          ),
+      )
+    }
+
     // ── page ────────────────────────────────────────────────────────────────
     function RouterPanel(props) {
       const t = props.t
@@ -909,6 +1263,24 @@ window.__ModuleLoader__.load({
         return h('div', { className: 'amr' }, h('p', { className: 'amr-sub' }, busy ? t('busy') : t('refresh')))
       }
 
+      /**
+       * Apply a tier change and re-read the board.
+       *
+       * Runtime-only on purpose: dragging a capsule is an adjustment, not a
+       * commit, and the page has its own Save for the durable write. The host
+       * recomputes the assignment, so the board the user sees next is the one the
+       * router will use.
+       */
+      const applyTiers = async (tiers) => {
+        edit((next) => {
+          next.tiers = tiers
+        })
+        const body = await run('configure', { config: { ...draft, tiers }, runtimeOnly: true })
+        if (body?.config !== undefined) {
+          setSnap((current) => (current === null ? current : { ...current, board: body.board ?? current.board }))
+        }
+      }
+
       const routeIds = Object.keys(draft.routes)
       const routeOptions = routeIds.map((id) => h('option', { key: id, value: id }, id))
       const saveGlyph = glyphOf('IconCheckOutlineRegular')
@@ -1030,6 +1402,12 @@ window.__ModuleLoader__.load({
 
         h(
           Card,
+          { title: t('tiers'), hint: t('tiersHint') },
+          h(TierBoard, { snap, draft, models, t, applyTiers, busy: blocked }),
+        ),
+
+        h(
+          Card,
           { title: t('routes'), hint: t('routesHint') },
           routeIds.map((id) => {
             const route = draft.routes[id]
@@ -1059,16 +1437,6 @@ window.__ModuleLoader__.load({
                     !(catalog?.providers ?? []).some((provider) => provider.id === route.provider) &&
                       h('option', { value: route.provider }, route.provider),
                   ),
-                ),
-                h(
-                  Field,
-                  { label: t('anchorModel'), hint: t('anchorModelHint') },
-                  h(ModelSelect, {
-                    t,
-                    value: route.model,
-                    models: catalogs[route.provider] ?? [],
-                    onChange: (next) => editRoute(id, { model: next }),
-                  }),
                 ),
                 h(
                   Field,
@@ -1529,6 +1897,16 @@ window.__ModuleLoader__.load({
     return {
       inject: ['slots', 'locale'],
       apply(ctx) {
+        // Register once per page even if the half is loaded twice (duplicate
+        // entries, re-injection). The flag is released through `ctx.effect`, so a
+        // disposed instance does not leave the next one unable to register — that
+        // would leave the plugin alive with no UI at all.
+        if (window.__autoModelRouterRegistered === true) return
+        window.__autoModelRouterRegistered = true
+        ctx.effect(() => () => {
+          window.__autoModelRouterRegistered = false
+        })
+
         installStyles()
         ctx.effect(() => ctx.locale.register(NS, dict))
         const t = ctx.locale.bind(NS)
@@ -1539,6 +1917,15 @@ window.__ModuleLoader__.load({
           label: () => t('title'),
           locale: NS,
         }, RouterPage))
+        // The composer tool row is where a session-level routing switch belongs:
+        // next to the model control it overrides.
+        ctx.slots.inject('conversation.input.left', () => ctx.slots.register({
+          name: 'conversation.input.left',
+          id: 'auto-model-router-toggle',
+          order: 20,
+          label: () => t('toggleLabel'),
+          locale: NS,
+        }, ComposerToggle))
       },
     }
   },

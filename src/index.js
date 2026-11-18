@@ -46,6 +46,7 @@ import { refreshCatalog } from './refresh.js'
 import { DEFAULT_SUMMARIZER, buildDigestPrompt, callChatModel, createDigestCache } from './summarize.js'
 import { selectForTier, describeRanking, costIndex } from './select.js'
 import { selectRoute as recordSelection } from './route.js'
+import { TIER_IDS, assignTiers, membershipOf } from './tiers.js'
 
 export const name = '@dsh-external/dsh-auto-model-router'
 export const inject = ['tools']
@@ -99,6 +100,14 @@ function mergeConfig(input) {
     // models mid-task throws away the prompt cache and the style the turn began
     // in, and a session that keeps changing models is harder to reason about.
     switching: provided.switching === 'auto' ? 'auto' : 'sticky',
+    // Tier membership is computed from measurement by default; `mode: manual`
+    // means only the operator's own assignments route, and an unassigned model
+    // stays out instead of being guessed at.
+    tiers: {
+      mode: provided.tiers?.mode === 'manual' ? 'manual' : 'auto',
+      overrides: { ...(provided.tiers?.overrides ?? {}) },
+      disabled: [...(provided.tiers?.disabled ?? [])],
+    },
     knowledgeProviderAliases: provided.knowledgeProviderAliases ?? {},
     logDecisions: provided.logDecisions ?? false,
   }
@@ -411,6 +420,33 @@ export function apply(ctx, input) {
     return { providers, provider: chosen, models, error }
   }
 
+  /** Newest tier assignment, so status and the config page can show it without
+   * walking the catalog again. */
+  let boardCache = null
+  const lastBoard = () => boardCache
+
+  /**
+   * Tier membership for the current pool.
+   *
+   * Disabled models leave the routing pool entirely; the rest are grouped by the
+   * assignment (auto or overridden) and the selector asks membership rather than
+   * re-applying an envelope it has already satisfied.
+   */
+  async function assignedTiers() {
+    const pool = await candidatePool()
+    const assigned = assignTiers(pool, routes, config.tiers)
+    const membership = membershipOf(assigned)
+    const byModel = new Map(pool.map((candidate) => [candidate.model, candidate]))
+    const candidates = pool.filter((candidate) => assigned.tierOf[candidate.model] !== 'off')
+    boardCache = assigned
+    return { pool, assigned, membership, candidates, byModel }
+  }
+
+  /** Candidates the assignment actually routes (everything not switched off). */
+  function assignedMembers(candidates, assigned) {
+    return candidates.filter((candidate) => assigned.tierOf[candidate.model] !== 'off')
+  }
+
   /** Whether the llm runtime accepts this route; cached per route id. */
   /**
    * The set of models the selector may choose from.
@@ -589,6 +625,8 @@ export function apply(ctx, input) {
     let source = 'error'
     let tierChosen = null
     let envelopeWidened = false
+    /** Tier groups the assignment produced for the pool this decision used. */
+    let tiersAssigned = null
 
     if (failure === null) {
       const parsed = parseDecision(raw, routes, config.policy)
@@ -619,12 +657,14 @@ export function apply(ctx, input) {
         selected = { provider: routes[forceId].provider, model: routes[forceId].model, tier: forceId }
         source = 'force'
       } else {
-        const candidates = await candidatePool()
+        const { candidates, membership, assigned } = await assignedTiers()
         const result = selectForTier(profile, candidates, routes, {
           costWeight: config.selection?.costWeight,
           tierFactors: config.selection?.tierCostFactor,
           defaultRoute: config.defaultRoute,
+          membership,
         })
+        tiersAssigned = assigned.groups
         selected = result.selected
         ranking = result.ranking
         tierChosen = result.tier
@@ -657,6 +697,7 @@ export function apply(ctx, input) {
       source,
       ...(tierChosen === null ? {} : { tier: tierChosen }),
       ...(envelopeWidened ? { envelopeWidened: true } : {}),
+      ...(tiersAssigned === null ? {} : { tiers: tiersAssigned }),
       confidence,
       profile: failure === null ? profile : undefined,
       ranking: failure === null ? ranking : undefined,
@@ -714,6 +755,24 @@ export function apply(ctx, input) {
     const options = agent.options
     if (options?.provider === event.provider && options?.model === event.model) return null
     return { provider: event.provider, model: event.model }
+  }
+
+  /**
+   * The model that actually served this session's last request.
+   *
+   * `model/selection` records deliberate choices, but the harness can also move
+   * a session by falling back to another provider, and that path writes no
+   * selection. The request header is the fact of what ran, so sticky routing
+   * treats it as the commitment instead of pulling the session back to a route
+   * the operator never asked for.
+   */
+  function servedSelection(agent) {
+    const config = agent?.session?.requestHeader?.()?.config
+    if (config === undefined || config === null) return null
+    if (typeof config.provider !== 'string' || typeof config.model !== 'string') return null
+    const options = agent.options
+    if (options?.provider === config.provider && options?.model === config.model) return null
+    return { provider: config.provider, model: config.model }
   }
 
   function selectRoute(agent, route) {
@@ -793,12 +852,18 @@ export function apply(ctx, input) {
       stats.requests += 1
       const switchesBefore = stats.switches
 
+      // A decision that failed says nothing about the right model. Selecting the
+      // default route here is how a broken endpoint used to move a session onto
+      // a different model mid-task, and it fought the harness's own provider
+      // fallback: the fallback moved the model, this moved it back.
+      if (decision.source === 'error') return resolved
+
       // Sticky sessions keep the route they started on. The decision is still
       // computed and logged (so `status` explains what routing would have
       // done), but the session only moves when the request itself asked for a
       // model or a pin is in effect — a user naming a model is an instruction,
       // a router second-guessing itself is not.
-      const kept = committedSelection(agent)
+      const kept = committedSelection(agent) ?? servedSelection(agent)
       const keepSticky = config.switching !== 'auto' && kept !== null && kept !== undefined && decision.source !== 'requested' && decision.source !== 'pin'
       if (keepSticky) {
         // What routing would have chosen stays in the record, so `status` shows
@@ -838,6 +903,16 @@ export function apply(ctx, input) {
     )
     const describePin = (pin) => (pin === null || pin === undefined ? 'none' : pin.replace(/^model:/, 'model '))
     lines.push(`force: global=${describePin(globalForce)} thisAgent=${describePin(agent === undefined ? null : forced.get(agent) ?? null)}`)
+    // Who is in which tier, from the last assignment the router computed.
+    const board = lastBoard()
+    if (board !== null) {
+      lines.push(`tiers: ${board.mode}${board.overridden.length > 0 ? `, ${board.overridden.length} hand-assigned` : ''}`)
+      for (const id of TIER_IDS) {
+        const members = board.groups[id] ?? []
+        lines.push(`  ${id}: ${members.length === 0 ? '(none)' : members.join(', ')}`)
+      }
+      if (board.groups.off.length > 0) lines.push(`  off: ${board.groups.off.join(', ')}`)
+    }
     const summarizer = summarizerOptions()
     lines.push(
       summarizer.enabled === false
@@ -883,7 +958,7 @@ export function apply(ctx, input) {
           ? ''
           : ` shape=${prof.shape} d${prof.depth} b${prof.breadth} r${prof.risk}${prof.vision === true ? ' vision' : ''}`
         lines.push(
-          `  ${time} ${record.agentId} [${record.agentKind}] turn=${record.turn ?? '-'} step=${record.step ?? '-'} -> ${record.model ?? record.routeId}${record.sticky === true ? ` (kept; routing proposed ${record.proposed?.model})` : ''} conf=${Number(record.confidence ?? 0).toFixed(2)} src=${record.source}${shape} ${state} task="${task}"`,
+          `  ${time} ${record.agentId} [${record.agentKind}] turn=${record.turn ?? '-'} step=${record.step ?? '-'} -> ${record.model ?? record.routeId}${record.sticky === true && record.proposed?.model !== record.model ? ` (kept; routing proposed ${record.proposed?.model})` : ''} conf=${Number(record.confidence ?? 0).toFixed(2)} src=${record.source}${shape} ${state} task="${task}"`,
         )
       }
     }
@@ -911,10 +986,12 @@ export function apply(ctx, input) {
       source = 'requested'
       result = { tier: null, eligible: candidates.length, widened: false, ranking: null, selected: { ...requested, tier: 'requested' } }
     } else {
-      result = selectForTier(profile, candidates, routes, {
+      const assigned = assignTiers(candidates, routes, config.tiers)
+      result = selectForTier(profile, assignedMembers(candidates, assigned), routes, {
         costWeight: config.selection?.costWeight,
         tierFactors: config.selection?.tierCostFactor,
         defaultRoute: config.defaultRoute,
+        membership: membershipOf(assigned),
       })
     }
     if (parsed.acknowledged === true) source = `${source} (acknowledged per the model\'s own judgement)`
@@ -997,6 +1074,24 @@ export function apply(ctx, input) {
     }
   }
 
+  /**
+   * Coerce the tier assignment: an optional mode, per-model overrides, and the
+   * list of models the operator switched off. Anything unknown is dropped rather
+   * than trusted, so a hand-edited patch cannot aim a tier at a model that does
+   * not exist.
+   */
+  function sanitizeTiers(input) {
+    const source = input ?? {}
+    const overrides = {}
+    for (const [model, tier] of Object.entries(source.overrides ?? {})) {
+      if (typeof model !== 'string' || model.length === 0) continue
+      if (!TIER_IDS.includes(tier)) continue
+      overrides[model] = tier
+    }
+    const disabled = [...new Set((Array.isArray(source.disabled) ? source.disabled : []).filter((id) => typeof id === 'string' && id.length > 0))]
+    return { mode: source.mode === 'manual' ? 'manual' : 'auto', overrides, disabled }
+  }
+
   /** Coerce a UI-submitted config into the merged shape the runtime keeps. */
   function sanitizeConfig(input) {
     const source = input ?? {}
@@ -1066,6 +1161,7 @@ export function apply(ctx, input) {
     return {
       mode: MODES.has(requestedMode) ? requestedMode : mode,
       switching: source.switching === 'auto' ? 'auto' : 'sticky',
+      tiers: sanitizeTiers(source.tiers),
       defaultRoute: routes[source.defaultRoute] !== undefined ? source.defaultRoute : Object.keys(routes)[0],
       routes,
       decision,
@@ -1078,6 +1174,9 @@ export function apply(ctx, input) {
   /** Machine-readable state for the config UI panel. */
   function snapshotPayload(agent) {
     const avg = stats.decisions === 0 ? 0 : Math.round(stats.latencyTotal / stats.decisions)
+    // The board the UI renders is computed here, so the page and the router agree
+    // about who is in which tier instead of each re-deriving it.
+    const board = lastBoard()
     const agentsService = ctx.get('agents')
     const live = agentsService !== undefined && typeof agentsService.list === 'function' ? agentsService.list() : []
     const info = persistenceInfo()
@@ -1094,6 +1193,8 @@ export function apply(ctx, input) {
         policy: { ...config.policy },
         selection: { ...config.selection },
         switching: config.switching,
+        tiers: { ...config.tiers },
+        board: board,
         logDecisions: config.logDecisions,
       },
       stats: {
@@ -1231,6 +1332,7 @@ export function apply(ctx, input) {
         config.decision = merged.decision
         config.policy = merged.policy
         config.switching = merged.switching
+        config.tiers = merged.tiers
         config.logDecisions = merged.logDecisions
         syncDigestOptions()
         mode = next.mode

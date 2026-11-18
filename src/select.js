@@ -501,7 +501,7 @@ export function withinEnvelope(info, envelope) {
  * @param {TaskProfile} profile
  * @param {Array<object>} candidates - the full pool
  * @param {Record<string, {envelope?: object}>} routes
- * @param {{costWeight?: number, defaultRoute?: string}} options
+ * @param {{costWeight?: number, defaultRoute?: string, membership?: Record<string, Set<string>>}} options
  * @returns {{selected: object|null, ranking: object, tier: string, widened: boolean, eligible: number}}
  */
 export function selectForTier(profile, candidates, routes, options = {}) {
@@ -518,11 +518,19 @@ export function selectForTier(profile, candidates, routes, options = {}) {
   const order = [...new Set([tier, options.defaultRoute, null])]
   let lastRanking = { ranked: [], excluded: [] }
   let fallback = tier
+  // Tier membership, when the router has assigned models to tiers. Membership
+  // replaces the envelope filter rather than joining it: the assignment already
+  // decided which envelope a model answers to, and intersecting the two would
+  // drop a model the operator deliberately dragged into a tighter tier.
+  const membership = options.membership ?? null
   for (const id of order) {
     const envelope = id === null ? null : routes?.[id]?.envelope
-    const eligible = envelope === null || envelope === undefined
-      ? candidates
-      : candidates.filter((candidate) => withinEnvelope(candidate.info, envelope))
+    const allowed = id === null || membership === null ? null : membership[id]
+    const eligible = allowed !== null && allowed !== undefined
+      ? candidates.filter((candidate) => allowed.has(candidate.model))
+      : envelope === null || envelope === undefined
+        ? candidates
+        : candidates.filter((candidate) => withinEnvelope(candidate.info, envelope))
     if (eligible.length === 0) continue
     const ranking = rankModels(profile, eligible, scoped)
     const winner = ranking.ranked[0]
@@ -545,6 +553,7 @@ export function selectForTier(profile, candidates, routes, options = {}) {
       tier: id ?? tier,
       widened: id !== tier,
       eligible: eligible.length,
+      ...(allowed === null || allowed === undefined ? {} : { membership: allowed.size }),
     }
   }
   return { selected: null, ranking: lastRanking, tier: fallback, widened: true, eligible: 0 }

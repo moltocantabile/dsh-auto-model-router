@@ -247,6 +247,38 @@ exposes, because a router that only sees one catalog is a catalog feature. Pin
 any tier to a provider and the pool narrows to that provider: naming one
 deployment is an instruction, not a limitation of the selector.
 
+### Tiers assign themselves
+
+Nobody assigns models to tiers by hand. Each model joins the cheapest tier whose
+envelope (cost ceiling, latency ceiling, quality floor) it satisfies, so a strong
+cheap model can serve cheap work and `deep` is left to what cannot be served any
+cheaper. The assignment is computed on the host and shipped in the config
+snapshot, so the page and the router always agree about who is where.
+
+The settings page shows the assignment as a board of **capsules**:
+
+| gesture | effect |
+|---|---|
+| hover a capsule | price, capability bars, context, latency, cross-checks |
+| drag a capsule to another tier | a per-model override; the board marks it `hand-assigned` |
+| click a capsule | switch that model off (it leaves the routing pool; shown under `off`) |
+| "Follow auto" in the capsule popover | drop the override and let the computation place it |
+| "Reset board to automatic" | drop every override and every disabled model |
+
+`tiers.mode: manual` routes only what is assigned explicitly — an unassigned model
+stays out rather than being guessed at. The same data is on the `model_router`
+tool (`status` prints the lanes; `configure` accepts `tiers`).
+
+### The composer switch
+
+`Auto` sits in the chatbox tool row next to the model control. Clicking it opens
+the three states — **on**, **observe**, **off** — and each choice goes through the
+same host call as the tool, so the page, the chip and `status` cannot disagree.
+
+`shadow` (`observe`) is the safe default for a profile that is being set up: the
+decision model still runs, the tiers are still computed and logged, and no
+session ever moves.
+
 ### Sticky by default
 
 A session routes once, at its start, and then keeps that model. `switching:

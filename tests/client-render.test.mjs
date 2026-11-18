@@ -181,9 +181,13 @@ function harness(module) {
     },
   }
   module.apply(ctx)
-  assert.equal(registered.length, 1, 'exactly one settings section is registered')
-  assert.equal(registered[0].definition.id, 'auto-model-router')
-  return registered[0]
+  const settings = registered.find((entry) => entry.definition.name === 'settings.section')
+  const composer = registered.find((entry) => entry.definition.name === 'conversation.input.left')
+  assert.ok(settings !== undefined, 'the settings section is registered')
+  assert.equal(settings.definition.id, 'auto-model-router')
+  assert.ok(composer !== undefined, 'the composer toggle is registered in the chatbox tool row')
+  assert.equal(typeof composer.component, 'function')
+  return settings
 }
 
 test('the built bundle registers a settings section', () => {
@@ -242,9 +246,14 @@ test('the page mounts, fetches its snapshot, and renders rows', async () => {
     assert.deepEqual(silent.map((button) => button.outerHTML), [], 'no button is nameless')
     assert.ok(container.querySelectorAll('svg[data-icon]').length >= 4, 'the actions render glyphs')
     // The envelope is what steers routing now, so its fields must be on screen.
-    for (const label of ['maxCost', 'minQuality', 'maxLatency', 'anchorModel', 'summarizerModel', 'summarizerRefresh']) {
+    // `anchorModel` is gone on purpose: tier membership is computed and edited on
+    // the board, so there is no hand-picked model per tier to render.
+    for (const label of ['maxCost', 'minQuality', 'maxLatency', 'summarizerModel', 'summarizerRefresh']) {
       assert.ok(text.includes(label), `envelope field ${label} is rendered`)
     }
+    // The board is the new surface on this page; the composer toggle lives in the
+    // chatbox and is mounted by its own test.
+    assert.ok(text.includes('boardHint'), 'the tier board renders')
     root.unmount()
     await new Promise((resolve) => setTimeout(resolve, 25))
   } finally {
@@ -371,6 +380,63 @@ test('the injected stylesheet carries the theme contract', async () => {
     for (const token of [...css.matchAll(/var\((--[a-zA-Z0-9-]+)/g)].map((m) => m[1])) {
       assert.ok(token.startsWith('--dsw-'), `non-theme variable in the shipped stylesheet: ${token}`)
     }
+    root.unmount()
+    await new Promise((resolve) => setTimeout(resolve, 25))
+  } finally {
+    loaded.restore()
+  }
+})
+test('the composer toggle mounts, reads the router, and switches it', async () => {
+  const loaded = loadBundle()
+  try {
+    const registered = []
+    const ctx = {
+      effect: (callback) => {
+        const dispose = callback()
+        return typeof dispose === 'function' ? dispose : () => {}
+      },
+      locale: {
+        register: () => () => {},
+        bind: () => (key) => key,
+      },
+      slots: {
+        inject: (_slot, callback) => callback(),
+        register: (definition, component) => {
+          registered.push({ definition, component })
+          return () => {}
+        },
+      },
+    }
+    loaded.module.apply(ctx)
+    const composer = registered.find((entry) => entry.definition.name === 'conversation.input.left')
+    assert.ok(composer !== undefined, 'the slot is claimed')
+
+    const React = globalThis.__amrReact
+    const { createRoot } = globalThis.__amrReactDomClient
+    const container = loaded.window.document.getElementById('root')
+    const root = createRoot(container)
+    root.render(React.createElement(composer.component, { t: (key) => key }))
+    await new Promise((resolve) => setTimeout(resolve, 40))
+
+    const button = container.querySelector('button.amr-toggle')
+    assert.ok(button !== null, 'the toggle is a button in the tool row')
+    assert.equal(button.getAttribute('data-on'), 'true', 'it reads the live mode (on) from the router')
+    assert.ok(loaded.calls.includes('status'), 'mounting asks the router for its state')
+
+    const before = loaded.calls.length
+    button.dispatchEvent(new loaded.window.MouseEvent('click', { bubbles: true }))
+    await new Promise((resolve) => setTimeout(resolve, 40))
+    assert.equal(loaded.calls.length, before, 'opening the menu is local; it calls nothing')
+    const menu = container.querySelector('.amr-pop')
+    assert.ok(menu !== null, 'clicking opens the state menu')
+    const choices = [...menu.querySelectorAll('button')]
+    assert.equal(choices.length, 3, 'on / observe / off')
+
+    // Choosing a state writes it through the same endpoint the tool uses.
+    choices[2].dispatchEvent(new loaded.window.MouseEvent('click', { bubbles: true }))
+    await new Promise((resolve) => setTimeout(resolve, 40))
+    assert.ok(loaded.calls.length > before, 'choosing a state calls the router')
+
     root.unmount()
     await new Promise((resolve) => setTimeout(resolve, 25))
   } finally {

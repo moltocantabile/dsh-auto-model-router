@@ -42,3 +42,52 @@ test('sticky routing keeps a chosen model but still routes a default one', () =>
   assert.ok(body.includes('agent.options'), 'the startup selection is compared against the agent options')
   assert.ok(body.includes('return null'), 'a selection equal to the configured default is not a commitment')
 })
+
+test('the composer toggle and the tier board are wired to real slots', () => {
+  const client = read('client.js')
+  assert.ok(client.includes("name: 'conversation.input.left'"), 'the toggle sits in the composer tool row')
+  assert.ok(client.includes('function ComposerToggle'), 'the toggle is a component')
+  assert.ok(client.includes('function TierBoard'), 'the board is a component')
+  // Drag and click are the two gestures the design promises; both must exist.
+  assert.ok(client.includes('onDragStart') && client.includes('onDrop'), 'capsules can be dragged between tiers')
+  assert.ok(client.includes('onClick: () => (off ? followAuto(model) : move(model, \'off\'))'), 'clicking a capsule disables it')
+})
+
+test('tier membership is computed on the host, not in the page', () => {
+  const host = read('index.js')
+  assert.ok(host.includes('assignTiers('), 'the host computes the assignment')
+  assert.ok(host.includes('board,'), 'the snapshot carries the computed board')
+  // The page reads `snap.board`; it must not re-derive membership itself.
+  const client = read('client.js')
+  assert.ok(client.includes('snap.board'), 'the page renders the host board')
+  assert.ok(!client.includes('autoTierFor('), 'the page does not duplicate the assignment rule')
+})
+
+test('a failed decision never moves a session', () => {
+  // A broken decision endpoint used to fall back to the default route and apply
+  // it, which moved a running session onto another model and fought the
+  // harness's own provider fallback.
+  const source = read('index.js')
+  assert.ok(
+    source.includes("if (decision.source === 'error') return resolved"),
+    'the error path must leave the selection alone',
+  )
+})
+
+test('sticky routing treats the model that actually served as the commitment', () => {
+  const source = read('index.js')
+  assert.ok(source.includes('function servedSelection'), 'the request header is consulted')
+  assert.ok(
+    source.includes('committedSelection(agent) ?? servedSelection(agent)'),
+    'sticky falls back to what actually ran before it considers re-routing',
+  )
+})
+
+test('the client registers once per page but releases the latch on dispose', () => {
+  const client = read('client.js')
+  assert.ok(client.includes('__autoModelRouterRegistered === true'), 'duplicate loads do not double-register')
+  assert.ok(
+    client.includes('ctx.effect(() => () => {') && client.includes('__autoModelRouterRegistered = false'),
+    'a disposed instance releases the latch so the next one can register',
+  )
+})
