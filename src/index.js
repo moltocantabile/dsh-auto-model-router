@@ -52,6 +52,8 @@ export const name = '@dsh-external/dsh-auto-model-router'
 export const inject = ['tools']
 
 const RECENT_LIMIT = 40
+/** Below this many candidates the pool is the route-anchor fallback, not a catalog. */
+const COLLAPSED_POOL = 8
 /** How many model ids the decision model may be offered as a named choice. */
 const MODEL_CHOICE_LIMIT = 40
 const KEY_CACHE_MS = 60_000
@@ -463,14 +465,27 @@ export function apply(ctx, input) {
    * assignment (auto or overridden) and the selector asks membership rather than
    * re-applying an envelope it has already satisfied.
    */
+  /**
+   * Build the tier board from the live pool.
+   *
+   * Returns null while the pool is still the route-anchor fallback: at startup
+   * this runs before the LLM adapters have registered their providers, and
+   * publishing that three-model board is what made a fresh start look like
+   * "only tokenplan". A null board is honest — the page says it is loading —
+   * and the retry below fills it in a moment.
+   */
   async function assignedTiers() {
     let pool = await candidatePool()
     // A pool this small is not a catalog, it is the route anchors: the providers
     // answered empty while re-registering. Drop the cached answers and ask once
     // more before believing it.
-    if (pool.length < 8) {
+    if (pool.length < COLLAPSED_POOL) {
       catalogs.clear()
       pool = await candidatePool()
+    }
+    if (pool.length < COLLAPSED_POOL && SHARED.board === null) {
+      scheduleBoardRetry()
+      return null
     }
     // A pool that collapsed — to nothing, or to a handful of route anchors — is a
     // catalog problem, not a routing decision. Keep the last good board so a
@@ -494,6 +509,28 @@ export function apply(ctx, input) {
     SHARED.board = assigned
     SHARED.pool = pool
     return { pool, assigned, membership, candidates, byModel }
+  }
+
+  /**
+   * Retry the board until the providers are registered.
+   *
+   * Startup order is not ours to control: the first walk can happen before the
+   * provider adapters exist. Three spaced attempts cover it without polling
+   * forever.
+   */
+  let boardRetryTimer = null
+  const boardRetries = [500, 1500, 4000, 10000]
+  function scheduleBoardRetry() {
+    if (boardRetryTimer !== null) return
+    const delay = boardRetries.shift()
+    if (delay === undefined) return
+    boardRetryTimer = setTimeout(() => {
+      boardRetryTimer = null
+      assignedTiers().catch((error) => {
+        ctx.logger.warn(`[model-router] tier board retry failed: ${error?.message ?? error}`)
+      })
+    }, delay)
+    boardRetryTimer.unref?.()
   }
 
   /** Candidates the assignment actually routes (everything not switched off). */
@@ -720,7 +757,9 @@ export function apply(ctx, input) {
         selected = { provider: routes[forceId].provider, model: routes[forceId].model, tier: forceId }
         source = 'force'
       } else {
-        const { candidates, membership, assigned } = await assignedTiers()
+        const walked = await assignedTiers()
+        if (walked === null) return null
+        const { candidates, membership, assigned } = walked
         const result = selectForTier(profile, candidates, routes, {
           costWeight: config.selection?.costWeight,
           tierFactors: config.selection?.tierCostFactor,
@@ -900,11 +939,13 @@ export function apply(ctx, input) {
       // Membership is a fact about the catalog, not about the decision: refresh it
       // even when the decision endpoint is unavailable, or the board goes blank
       // exactly when the operator needs it to explain what routing would do.
+      let walked = null
       try {
-        await assignedTiers()
+        walked = await assignedTiers()
       } catch (error) {
         ctx.logger.warn(`[model-router] tier assignment failed: ${error?.message ?? error}`)
       }
+      if (walked === null) return resolved
       let decision
       try {
         decision = await decideFor(agent, claimedBatch, context.signal)
@@ -1367,7 +1408,7 @@ export function apply(ctx, input) {
         // The pool names the models the providers actually advertise, so the
         // refresh can describe ones the shipped catalog has never covered.
         const pool = await assignedTiers()
-        const wanted = pool.pool.map((candidate) => ({ model: candidate.model, provider: candidate.provider }))
+        const wanted = pool === null ? [] : pool.pool.map((candidate) => ({ model: candidate.model, provider: candidate.provider }))
         const result = await refreshCatalog({ base: MODEL_INFO, wanted, signal })
         const summary = { ...result.summary, durationMs: Date.now() - started }
         // Persist first: if writing fails, the in-memory catalog stays as it was,

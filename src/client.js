@@ -226,6 +226,7 @@ window.__ModuleLoader__.load({
         tiers: 'Tiers',
         tiersHint: 'Membership is computed from measurement: a model joins the cheapest tier whose envelope it satisfies. Drag a capsule to move it, click one to switch it off.',
         boardHint: 'Hover a model for its price, capability and context. Drag between tiers to overrule the automatic assignment; click to disable it.',
+        boardLoading: 'The provider catalogs are still loading; the tiers fill in as soon as they answer.',
         providersSeen: 'Providers on this board: {count}.',
         providerFilter: 'Providers',
         allProviders: 'All providers',
@@ -383,6 +384,7 @@ window.__ModuleLoader__.load({
         tiers: '档位',
         tiersHint: '档位成员由实测自动划分：模型进入它能满足的最便宜档位。拖动胶囊可改档，点击可停用。',
         boardHint: '悬停查看价格、能力与上下文；拖动可覆盖自动分配，点击可停用该模型。',
+        boardLoading: '正在读取各供应商的模型目录，读取完成后档位会自动填充。',
         providersSeen: '当前面板包含 {count} 个供应商。',
         providerFilter: '供应商',
         allProviders: '全部供应商',
@@ -1101,6 +1103,7 @@ window.__ModuleLoader__.load({
           providerFilter.length > 0 &&
             h('span', { className: 'amr-note' }, t('filterActive').replace('{provider}', providerFilter.join(', '))),
         ),
+        snap.board === null && h('p', { className: 'amr-note', 'data-tone': 'warn' }, t('boardLoading')),
         h('p', { className: 'amr-note' }, t('boardHint')),
         (board.unmeasured ?? []).length > 0 &&
           h('p', { className: 'amr-note' }, t('unmeasuredHint').replace('{count}', String((board.unmeasured ?? []).length))),

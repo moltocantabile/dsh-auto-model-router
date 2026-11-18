@@ -119,3 +119,12 @@ test('an empty catalog answer never shrinks the board', () => {
   assert.ok(source.includes('SHARED.pool'), 'the pool behind the board is retained for that fallback')
   assert.ok(source.includes('catalogs.clear()'), 'a collapsed pool retries the catalog instead of trusting it')
 })
+
+test('a collapsed pool never becomes the published board', () => {
+  const source = read('index.js')
+  // Startup order puts the plugin before the provider adapters; the route-anchor
+  // fallback must not be published as if it were a catalog.
+  assert.ok(source.includes('COLLAPSED_POOL'), 'a collapsed pool is recognised')
+  assert.ok(source.includes('scheduleBoardRetry'), 'the board retries while providers register')
+  assert.ok(source.includes("if (walked === null) return resolved"), 'no decision is taken without a board')
+})
