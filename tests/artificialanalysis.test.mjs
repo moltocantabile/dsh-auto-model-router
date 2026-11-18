@@ -234,3 +234,26 @@ test('zero benchmark scores are "not run", not a floor measurement', () => {
   assert.equal(dataset['empty-benchmarks'].quality, undefined)
   assert.equal(summary.filledQuality, 0)
 })
+
+test('only percentages become benchmark scores, not Elo or raw scales', () => {
+  const rows = [{ id: 'x', name: 'Qwen3.8 Flash', intelligenceIndex: 0, scores: { gpqa: 0.62, 'aa-3d': 1100, 'gdpval-aa-normalized': 1500 } }]
+  const analysis = extractArtificialAnalysis(page(rows), nameIndex({ 'qwen3.8-flash': { label: 'Qwen3.8 Flash' } }))
+  const scores = analysis.byId['qwen3.8-flash'].benchmarks
+  assert.deepEqual(Object.keys(scores), ['gpqa'], 'Elo and raw scales are excluded')
+  assert.equal(scores.gpqa, 62)
+  assert.equal(analysis.byId['qwen3.8-flash'].intelligenceIndex, undefined, 'index 0 is unranked')
+})
+
+test('a fuzzy neighbour cannot relabel a different model', () => {
+  // `siliconflow/deepseek-v3-0324` matched a V4.1 row and shipped its label and
+  // quality. Different stems must not join.
+  const rows = [{ id: 'r', name: 'DeepSeek V4.1 Flash 1017 (Max)', intelligenceIndex: 40, price1mInputTokens: 2, price1mOutputTokens: 8 }]
+  const analysis = extractArtificialAnalysis(page(rows), new Map())
+  const dataset = {}
+  attachArtificialAnalysis(dataset, {
+    base: {},
+    analysis,
+    wanted: [{ model: 'siliconflow/deepseek-v3-0324', provider: 'bailian-aliyun' }],
+  })
+  assert.deepEqual(dataset, {}, 'no entry is created for an unrelated model')
+})

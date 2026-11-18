@@ -540,6 +540,30 @@ export function splitVariant(normalized) {
 }
 
 /**
+ * Model stem without its suffix tokens, computed from the original separators.
+ *
+ * `splitVariant` works on a punctuation-stripped string, where a version and a
+ * release date become one digit run (`deepseekv3` + `0324` -> `deepseekv30324`)
+ * and both get stripped together, leaving `deepseekv`. Identity checks need the
+ * separators, so this walks the original tokens.
+ *
+ * @param {string} text
+ * @returns {string}
+ */
+export function modelStem(text) {
+  const tokens = String(text ?? '').toLowerCase().split(/[^a-z0-9]+/).filter((token) => token.length > 0)
+  while (tokens.length > 1) {
+    const last = tokens[tokens.length - 1]
+    if (/^\d{4,8}$/.test(last) || VARIANT_WORDS.has(last)) {
+      tokens.pop()
+      continue
+    }
+    break
+  }
+  return tokens.join('')
+}
+
+/**
  * Find the analysis row for one advertised id.
  *
  * Tries exact keys first, then a model-name prefix whose remainder is only
@@ -654,7 +678,9 @@ export function extractArtificialAnalysis(html, index) {
   for (const row of rows.values()) {
     const value = { source: ARTIFICIAL_ANALYSIS_URL }
     const index0 = Number(row.intelligenceIndex)
-    if (Number.isFinite(index0)) value.intelligenceIndex = round1(index0)
+    // AA leaves the field null for unranked models and, in some payloads, zero;
+    // zero is not a score -- the fit turned it into a floor every such model shared.
+    if (Number.isFinite(index0) && index0 > 0) value.intelligenceIndex = round1(index0)
     const priceIn = Number(row.price1mInputTokens)
     const priceOut = Number(row.price1mOutputTokens)
     if (Number.isFinite(priceIn)) value.priceIn = priceIn
@@ -665,10 +691,14 @@ export function extractArtificialAnalysis(html, index) {
     if (Number.isFinite(speed)) value.speed = speed
     const context = Number(row.contextWindowTokens)
     if (Number.isFinite(context)) value.contextTokens = context
+    // AA mixes scales in one `scores` map: percentages (0-1), Elo ratings
+    // (aa-3d, aa-briefcase, code2video) and raw normalised scores
+    // (gdpval-aa-normalized, -402..1866). Only percentages are comparable, so
+    // anything outside 0..1 is kept out instead of being multiplied by 100.
     const scores = {}
     for (const [benchmark, raw] of Object.entries(row.scores ?? {})) {
       const number = Number(raw)
-      if (Number.isFinite(number)) scores[benchmark] = Math.round(number * 1000) / 10
+      if (Number.isFinite(number) && number > 0 && number <= 1) scores[benchmark] = Math.round(number * 1000) / 10
     }
     if (Object.keys(scores).length > 0) value.benchmarks = scores
     if (!(Number.isFinite(value.intelligenceIndex) || Object.keys(scores).length > 0 || Number.isFinite(priceIn))) continue
@@ -889,6 +919,12 @@ export function attachArtificialAnalysis(dataset, { base = {}, analysis = {}, wa
     ]
     const value = matchAnalysisRow(lookupKeys, byName)
     if (value === undefined) continue
+    // The match decides the label and the numbers, so the model stems must agree:
+    // a name prefix alone joined `siliconflow/deepseek-v3-0324` to a V4.1 row and
+    // shipped its label and quality under the wrong id.
+    const ourStem = modelStem(bare.replace(/^cmaas-/i, ''))
+    const theirStem = modelStem(value.name ?? '')
+    if (!theirStem.startsWith(ourStem) && !ourStem.startsWith(theirStem)) continue
     const entryKey = id.toLowerCase()
     const existing = dataset[id] ?? dataset[entryKey]
     if (existing !== undefined) continue
