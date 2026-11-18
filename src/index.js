@@ -308,6 +308,8 @@ export function apply(ctx, input) {
 
   /** Provider model lists, cached per provider; failures are cached briefly. */
   const catalogs = new Map()
+  /** Last catalog outcome per provider, so `status` can explain a missing provider. */
+  const catalogStatus = new Map()
   /** Tool names per agent, cached so building a decision does not rebuild schemas. */
   const toolNames = new Map()
 
@@ -352,7 +354,12 @@ export function apply(ctx, input) {
   async function providerModels(provider) {
     const cached = catalogs.get(provider)
     if (cached !== undefined && Date.now() - cached.at < (cached.error === undefined ? CATALOG_TTL_MS : CATALOG_ERROR_TTL_MS)) {
-      if (cached.error !== undefined) throw new Error(cached.error)
+      if (cached.error !== undefined) {
+        // A failed refresh must not erase a provider that worked before: dropping
+        // it silently shrank the whole board to whichever provider answered last.
+        if (Array.isArray(cached.models) && cached.models.length > 0) return cached.models
+        throw new Error(cached.error)
+      }
       return cached.models
     }
     const llm = ctx.get('llm')
@@ -389,10 +396,15 @@ export function apply(ctx, input) {
         }
       }))
       catalogs.set(provider, { at: Date.now(), models })
+      catalogStatus.set(provider, { at: Date.now(), models: models.length, error: null, stale: false })
       return models
     } catch (error) {
       const message = String(error?.message ?? error)
-      catalogs.set(provider, { at: Date.now(), error: message })
+      const previous = Array.isArray(cached?.models) ? cached.models : null
+      catalogs.set(provider, { at: Date.now(), error: message, ...(previous === null ? {} : { models: previous }) })
+      catalogStatus.set(provider, { at: Date.now(), models: previous?.length ?? 0, error: message, stale: previous !== null })
+      ctx.logger.warn(`[model-router] catalog for ${provider} failed: ${message}${previous === null ? '' : ` (keeping ${previous.length} cached models)`}`)
+      if (previous !== null) return previous
       throw new Error(message)
     }
   }
@@ -944,6 +956,14 @@ export function apply(ctx, input) {
         ? 'session digest: off (routing on recent messages only)'
         : `session digest: ${summarizer.model}, ${stats.summaries} summarized${stats.digestFailures > 0 ? `, ${stats.digestFailures} failed` : ''}${stats.digestChars > 0 ? `, last ${stats.digestChars} chars` : ''}`,
     )
+    if (catalogStatus.size > 0) {
+      const parts = [...catalogStatus.entries()].map(([provider, status]) => {
+        const age = Math.round((Date.now() - status.at) / 1000)
+        if (status.error === null) return `${provider}=${status.models}`
+        return `${provider}=${status.models}${status.stale ? ' stale' : ' FAILED'} (${status.error.slice(0, 60)}; ${age}s)`
+      })
+      lines.push(`catalog: ${parts.join(' | ')}`)
+    }
     if (clientReport !== null) {
       const age = Math.round((Date.now() - clientReport.at) / 1000)
       lines.push(
