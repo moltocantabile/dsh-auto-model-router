@@ -1201,6 +1201,9 @@ export function apply(ctx, input) {
       ok: true,
       mode,
       defaultRoute: config.defaultRoute,
+      // The page renders this board; it is computed by the host so the router and
+      // the UI cannot disagree about who is in which tier.
+      board,
       force: { global: globalForce ?? null, thisAgent: agent === undefined ? null : forced.get(agent) ?? null },
       config: {
         mode,
@@ -1211,7 +1214,6 @@ export function apply(ctx, input) {
         selection: { ...config.selection },
         switching: config.switching,
         tiers: { ...config.tiers },
-        board: board,
         logDecisions: config.logDecisions,
       },
       stats: {

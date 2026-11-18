@@ -65,10 +65,26 @@ const CONFIG = {
   logDecisions: false,
 }
 
+const BOARD = {
+  mode: 'auto',
+  groups: {
+    fast: ['m-fast'],
+    balanced: ['m-balanced'],
+    deep: [],
+    off: [],
+  },
+  tierOf: { 'm-fast': 'fast', 'm-balanced': 'balanced' },
+  overridden: [],
+  disabled: [],
+  unassigned: [],
+  unmeasured: ['m-unmeasured'],
+}
+
 const SNAPSHOT = {
   ok: true,
   mode: 'on',
   defaultRoute: 'balanced',
+  board: BOARD,
   force: { global: null },
   config: CONFIG,
   stats: { requests: 12, decisions: 12, applied: 11, switches: 3, fallbacks: 1, errors: 0, avgDecisionMs: 900 },
@@ -254,6 +270,17 @@ test('the page mounts, fetches its snapshot, and renders rows', async () => {
     // The board is the new surface on this page; the composer toggle lives in the
     // chatbox and is mounted by its own test.
     assert.ok(text.includes('boardHint'), 'the tier board renders')
+    // Capsules, not model pickers: this is the whole point of the redesign, and a
+    // snapshot without a top-level `board` silently rendered empty lanes once.
+    const capsules = [...container.querySelectorAll('.amr-capsule')]
+    assert.ok(capsules.length >= 2, `capsules render (found ${capsules.length})`)
+    const names = capsules.map((node) => node.textContent)
+    assert.ok(names.some((name) => name.includes('m-fast')), names.join(' | '))
+    assert.ok(names.some((name) => name.includes('m-balanced')), names.join(' | '))
+    // Lanes are labelled by tier.
+    for (const tier of ['fast', 'balanced', 'deep']) assert.ok(text.includes(tier), `lane ${tier} is labelled`)
+    // The dead "Assign" column is gone; the catalog now reports the tier instead.
+    assert.ok(!text.includes('assignCol'), 'no assign column')
     root.unmount()
     await new Promise((resolve) => setTimeout(resolve, 25))
   } finally {

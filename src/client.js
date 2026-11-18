@@ -241,7 +241,8 @@ window.__ModuleLoader__.load({
         modelCol: 'Model',
         capabilityCol: 'Capabilities',
         costCol: 'CNY per 1M',
-        assignCol: 'Use for',
+        tierCol: 'Tier',
+        tierAuto: 'auto',
         assign: 'Assign',
         noModels: 'No models reported.',
         decision: 'Decision model',
@@ -388,7 +389,8 @@ window.__ModuleLoader__.load({
         modelCol: '模型',
         capabilityCol: '能力',
         costCol: '元 / 百万 token',
-        assignCol: '用于档位',
+        tierCol: '档位',
+        tierAuto: '自动',
         assign: '分配',
         noModels: '没有返回模型。',
         decision: '决策模型',
@@ -1451,19 +1453,6 @@ window.__ModuleLoader__.load({
                 { className: 'amr-grid' },
                 h(
                   Field,
-                  { label: t('provider') },
-                  h(
-                    Select,
-                    { value: route.provider, onChange: (next) => editRoute(id, { provider: next }) },
-                    (catalog?.providers ?? []).map((provider) =>
-                      h('option', { key: provider.id, value: provider.id }, provider.name ?? provider.id),
-                    ),
-                    !(catalog?.providers ?? []).some((provider) => provider.id === route.provider) &&
-                      h('option', { value: route.provider }, route.provider),
-                  ),
-                ),
-                h(
-                  Field,
                   { label: t('maxCost') },
                   h(NumberInput, {
                     value: route.envelope?.maxCost ?? '',
@@ -1548,7 +1537,7 @@ window.__ModuleLoader__.load({
                     h('th', { style: { width: '30%' } }, t('modelCol')),
                     h('th', { style: { width: '34%' } }, t('capabilityCol')),
                     h('th', { style: { width: '18%' } }, t('costCol')),
-                    h('th', { style: { width: '18%' } }, t('assignCol')),
+                    h('th', { style: { width: '18%' } }, t('tierCol')),
                   ),
                 ),
                 h(
@@ -1586,16 +1575,22 @@ window.__ModuleLoader__.load({
                         h(
                           Select,
                           {
-                            value: '',
+                            value: draft.tiers?.overrides?.[entry.id] ?? ((draft.tiers?.disabled ?? []).includes(entry.id) ? 'off' : 'auto'),
                             onChange: (target) => {
-                              if (target.length === 0) return
-                              const route = draft.routes[target]
-                              if (route === undefined) return
-                              editRoute(target, { provider: route.provider, model: entry.id })
+                              const tiers = { ...(draft.tiers ?? {}) }
+                              const overrides = { ...(tiers.overrides ?? {}) }
+                              const disabled = (tiers.disabled ?? []).filter((id) => id !== entry.id)
+                              if (target === 'auto') delete overrides[entry.id]
+                              else if (target === 'off') {
+                                delete overrides[entry.id]
+                                if (!disabled.includes(entry.id)) disabled.push(entry.id)
+                              } else overrides[entry.id] = target
+                              applyTiers({ ...tiers, overrides, disabled })
                             },
                           },
-                          h('option', { value: '' }, t('assign')),
-                          routeIds.map((id) => h('option', { key: id, value: id }, id)),
+                          h('option', { value: 'auto' }, t('tierAuto')),
+                          ...['fast', 'balanced', 'deep'].map((id) => h('option', { key: id, value: id }, id)),
+                          h('option', { value: 'off' }, t('tierOff')),
                         ),
                       ),
                     ),
