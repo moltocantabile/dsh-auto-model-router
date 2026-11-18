@@ -265,7 +265,7 @@ test('the raw mixed-scale scores and metadata are retained, not discarded', () =
     id: 'r', name: 'GLM-5.3', intelligenceIndex: 31,
     price1mInputTokens: 1.4, price1mOutputTokens: 4,
     contextWindowTokens: 200000, isReasoning: true, isOpenWeights: false,
-    releaseDate: '2026-10-01', modelCreatorName: 'Z AI', cacheHitPrice: 0.02,
+    release: { releaseDate: '2026-10-01' }, modelCreatorName: 'Z AI', cacheHitPrice: 0.02,
     scores: { gpqa: 0.866, 'aa-3d': 1187.5, 'gdpval-aa-normalized': -400 },
   }]
   const dataset = { 'glm-5.3': { label: 'GLM-5.3' } }

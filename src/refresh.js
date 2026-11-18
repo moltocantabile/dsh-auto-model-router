@@ -924,7 +924,8 @@ export function extractArtificialAnalysis(html, index) {
     ]) {
       if (row[field] !== undefined && row[field] !== null) value[key] = row[field]
     }
-    if (typeof row.releaseDate === 'string') value.releaseDate = row.releaseDate
+    const releaseDate = typeof row.releaseDate === 'string' ? row.releaseDate : row.release?.releaseDate
+    if (typeof releaseDate === 'string') value.releaseDate = releaseDate
     if (typeof row.modelCreatorName === 'string') value.creator = row.modelCreatorName
     if (!(Number.isFinite(value.intelligenceIndex) || Object.keys(scores).length > 0 || Number.isFinite(priceIn))) continue
     value.name = row.name
