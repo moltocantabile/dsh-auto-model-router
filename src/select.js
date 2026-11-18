@@ -267,7 +267,19 @@ export function scoreCandidate(candidate, weights, profile, options = {}) {
   }
   const uncertaintyPenalty = (1 - confidence) * risk * 7 + unverified * (3 + 2 * risk)
 
-  const utility = qualityTerm - costPenalty - floorPenalty - uncertaintyPenalty
+  // Real-world adoption, as a bias rather than a measurement: at equal measured
+  // quality, a model thousands of production agents already use is the safer
+  // pick. It is capped well below a dimension's worth of score, so popularity can
+  // never outrank a capability gap -- only break near-ties.
+  // The swing is stated so the weight has a meaning: at weight 1 the most-used
+  // model gains USAGE_MAX_SWING and the least-used loses it, which is a few
+  // quality points -- enough to break a near-tie, not enough to outrank a clear
+  // capability difference.
+  const usagePercentile = num(info?.usage?.percentile, null)
+  const usageWeight = clamp(num(options.usageWeight, 0.5), 0, 1)
+  const usageBoost = usagePercentile === null ? 0 : usageWeight * ((usagePercentile - 50) / 50) * USAGE_MAX_SWING
+
+  const utility = qualityTerm - costPenalty - floorPenalty - uncertaintyPenalty + usageBoost
 
   return {
     utility: Math.round(utility * 100) / 100,
@@ -276,11 +288,15 @@ export function scoreCandidate(candidate, weights, profile, options = {}) {
     costPenalty: Math.round(costPenalty * 10) / 10,
     floorPenalty: Math.round(floorPenalty * 10) / 10,
     uncertaintyPenalty: Math.round(uncertaintyPenalty * 10) / 10,
+    ...(usagePercentile === null ? {} : { usagePercentile, usageBoost: Math.round(usageBoost * 100) / 100 }),
     confidence: Math.round(confidence * 100) / 100,
     unverified: Math.round(unverified * 100) / 100,
     floor,
   }
 }
+
+/** Utility points the usage bias can move at weight 1 (quality is 0-100 scale). */
+export const USAGE_MAX_SWING = 3
 
 /** Hard requirements a candidate must satisfy regardless of utility. */
 function passesRequirements(candidate, profile, weights) {
@@ -321,7 +337,7 @@ export function rankModels(profile, candidates, options = {}) {
       excluded.push({ provider: candidate.provider, model: candidate.model, reason })
       continue
     }
-    const scored = scoreCandidate(candidate, weights, profile, { costWeight, floor })
+    const scored = scoreCandidate(candidate, weights, profile, { costWeight, floor, usageWeight: options.usageWeight })
     ranked.push({
       provider: candidate.provider,
       model: candidate.model,

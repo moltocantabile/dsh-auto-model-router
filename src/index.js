@@ -95,7 +95,13 @@ function mergeConfig(input) {
     routes,
     decision: { ...DEFAULT_DECISION, ...(provided.decision ?? {}) },
     policy: { ...DEFAULT_POLICY, ...(provided.policy ?? {}) },
-    selection: { costWeight: 0.35, tierCostFactor: undefined, ...(provided.selection ?? {}) },
+    selection: {
+      costWeight: 0.35,
+      tierCostFactor: undefined,
+      // How much real-world adoption biases a near-tie. 0 disables it.
+      usageWeight: 0.5,
+      ...(provided.selection ?? {}),
+    },
     // How long a session keeps the route it started on. `sticky` chooses once per
     // session and then only moves when the user asks (a named model, `force`);
     // `auto` re-decides at every step. Sticky is the default because switching
@@ -763,6 +769,7 @@ export function apply(ctx, input) {
         const result = selectForTier(profile, candidates, routes, {
           costWeight: config.selection?.costWeight,
           tierFactors: config.selection?.tierCostFactor,
+          usageWeight: config.selection?.usageWeight,
           defaultRoute: config.defaultRoute,
           membership,
         })
@@ -1128,6 +1135,7 @@ export function apply(ctx, input) {
       result = selectForTier(profile, assignedMembers(candidates, assigned), routes, {
         costWeight: config.selection?.costWeight,
         tierFactors: config.selection?.tierCostFactor,
+        usageWeight: config.selection?.usageWeight,
         defaultRoute: config.defaultRoute,
         membership: membershipOf(assigned),
       })
@@ -1419,7 +1427,7 @@ export function apply(ctx, input) {
         const aa = summary.artificialAnalysis ?? {}
         const ranked = summary.ranking ?? {}
         const text = summary.errors.length === 0
-          ? `model data refreshed: ${summary.models} models (${summary.benchgecko} benchgecko, ${summary.compass} compassrank, ${summary.epoch} epoch, ${summary.llmLeaderboard} llmleaderboard, ${aa.models ?? 0} artificialanalysis → ${aa.created ?? 0} new, ${aa.filledQuality ?? 0} measured, ${aa.filledPrice ?? 0} priced; ranking: ${ranked.measured ?? 0} measured / ${ranked.provisional ?? 0} provisional / ${ranked.unmeasured ?? 0} unmeasured) at ${summary.checkedAt}`
+          ? `model data refreshed: ${summary.models} models (${summary.benchgecko} benchgecko, ${summary.compass} compassrank, ${summary.epoch} epoch, ${summary.llmLeaderboard} llmleaderboard, ${aa.models ?? 0} artificialanalysis → ${aa.created ?? 0} new, ${aa.filledQuality ?? 0} measured, ${aa.filledPrice ?? 0} priced; openrouter usage ${summary.openrouter?.matched ?? 0}/${summary.openrouter?.rows ?? 0} matched; ranking: ${ranked.measured ?? 0} measured / ${ranked.provisional ?? 0} provisional / ${ranked.unmeasured ?? 0} unmeasured) at ${summary.checkedAt}`
           : `model data refreshed with ${summary.errors.length} source error(s): ${summary.errors.slice(0, 3).join('; ')}`
         return { ok: true, text, data: { summary } }
       }

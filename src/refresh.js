@@ -23,6 +23,7 @@
 import zlib from 'node:zlib'
 import { buildDataset, COMPASS_ID } from './model-data-build.js'
 import { rankTable } from './rank.js'
+import { fetchOpenRouterUsage } from './openrouter.js'
 import { DIMENSIONS } from './select.js'
 
 const CDN = 'https://cdn.opencompass.org.cn/assets/lm'
@@ -385,6 +386,16 @@ export async function refreshCatalog({ base, wanted = [], fetchImpl = fetch, sig
   })
   const attached = attachCrossChecks(dataset, { epoch, llm })
   const artificialAnalysis = attachArtificialAnalysis(dataset, { base, analysis, wanted, now })
+  // Real usage: OpenRouter's weekly ranking. Popularity is not capability, but at
+  // equal measured quality it says which model is battle-tested in production.
+  let openrouter = { matched: 0, rows: 0 }
+  try {
+    const usage = await fetchOpenRouterUsage({ fetchImpl, signal })
+    openrouter = attachUsage(dataset, usage)
+  } catch (error) {
+    errors.push(`openrouter usage: ${String(error?.message ?? error)}`)
+  }
+
   // Phase 1 of the data-utilisation design: rank the whole catalog and record the
   // result per entry. Nothing routes on it yet -- the decision log shows the diff.
   const ranked = attachRanking(dataset)
@@ -402,10 +413,68 @@ export async function refreshCatalog({ base, wanted = [], fetchImpl = fetch, sig
       llmLeaderboard: attached.llmLeaderboard,
       artificialAnalysis,
       ranking: ranked.summary,
+      openrouter,
       sources: [COMPASS_ABILITY_URL, COMPASS_BENCH_URL, 'https://benchgecko.ai', EPOCH_ECI_URL, LLM_LEADERBOARD, ARTIFICIAL_ANALYSIS_URL],
       errors,
     },
   }
+}
+
+/**
+ * Match OpenRouter's weekly usage rows onto the catalog and record the rank.
+ *
+ * A usage row is `author/model`. The catalog id may be that, or the bare model
+ * with the author implied by its provider, so identity is checked by normalized
+ * id and by model stem -- the same discipline that keeps a fuzzy name from
+ * relabelling a different model.
+ *
+ * @param {Record<string, object>} dataset
+ * @param {Array<{id: string, weeklyRank: number, weeklyTokens?: number, weeklyShare?: number}>} usage
+ * @returns {{rows: number, matched: number}}
+ */
+export function attachUsage(dataset, usage) {
+  const entries = Object.entries(dataset ?? {})
+  const byNormalized = new Map()
+  const byStem = new Map()
+  for (const [key] of entries) {
+    const bare = key.includes('/') ? key.slice(key.lastIndexOf('/') + 1) : key
+    byNormalized.set(normalizeName(key), key)
+    byNormalized.set(normalizeName(bare), key)
+    const stem = modelStem(bare)
+    if (stem.length >= 4) byStem.set(stem, key)
+  }
+
+  const matched = []
+  for (const row of Array.isArray(usage) ? usage : []) {
+    const id = String(row?.id ?? '')
+    if (id.length === 0 || !Number.isFinite(row?.weeklyRank)) continue
+    const bare = id.includes('/') ? id.slice(id.lastIndexOf('/') + 1) : id
+    const key = byNormalized.get(normalizeName(id)) ?? byNormalized.get(normalizeName(bare)) ?? byStem.get(modelStem(bare))
+    if (key === undefined) continue
+    matched.push({ key, row })
+  }
+  if (matched.length === 0) return { rows: Array.isArray(usage) ? usage.length : 0, matched: 0 }
+
+  // Percentile from the rank among matched models: the best-used model is 100,
+  // the least-used 0. Ties keep the higher percentile.
+  const ranks = matched.map(({ row }) => row.weeklyRank).sort((a, b) => a - b)
+  const percentileOf = (rank) => {
+    const position = ranks.indexOf(rank)
+    return ranks.length <= 1 ? 100 : Math.round((1 - position / (ranks.length - 1)) * 1000) / 10
+  }
+  for (const { key, row } of matched) {
+    dataset[key] = {
+      ...dataset[key],
+      usage: {
+        source: 'openrouter-top-weekly',
+        rank: row.weeklyRank,
+        ...(row.weeklyTokens === undefined ? {} : { tokens: Math.round(row.weeklyTokens) }),
+        ...(row.weeklyShare === undefined ? {} : { share: Math.round(row.weeklyShare * 10000) / 10000 }),
+        percentile: percentileOf(row.weeklyRank),
+      },
+    }
+  }
+  return { rows: Array.isArray(usage) ? usage.length : 0, matched: matched.length }
 }
 
 /**

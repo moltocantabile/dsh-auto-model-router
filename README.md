@@ -290,6 +290,7 @@ with `{"action":"refresh"}`) walks five sources and merges them into
 | Epoch ECI | a fitted capability index, recorded as a cross-check |
 | llmleaderboard | measured serving speed and TTFT, independent benchmarks |
 | **Artificial Analysis** | an intelligence index, USD prices, TTFT/output speed, and per-benchmark scores for ~280 models |
+| **OpenRouter** | real weekly usage ranking: which models actually serve traffic, with 7-day token volume (`/api/frontend/v1/models/find?order=top-weekly`, no key) |
 
 Artificial Analysis is scraped, not called through its API: the documented
 `/api/v2/*` endpoints now require a key, while `/leaderboards/models` ships the
@@ -306,6 +307,16 @@ with evidence 0), which is how previously unroutable ids become placeable.
 
 Prices from AA are USD; the catalog stores CNY, so they convert at one stated
 rate (`CNY_PER_USD`, 7.2).
+
+### Usage is a bias, not a measurement
+
+OpenRouter's weekly ranking records `usage: {rank, tokens, share, percentile}` on
+each matched entry. The selector adds
+`selection.usageWeight × ((percentile − 50) / 50) × 3` utility points — at the
+default weight of 0.5 that is ±1.5 points, enough to break a near-tie in favour of
+the model production already runs, and not enough to outrank a real capability
+gap. `usageWeight: 0` disables it. It is deliberately kept out of the capability
+composite: popularity says a model is exercised, not that it is better.
 
 ### The composer switch
 
