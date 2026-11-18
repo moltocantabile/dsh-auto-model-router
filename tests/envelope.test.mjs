@@ -118,11 +118,18 @@ test('each tier orders its pool differently, so deep is not balanced again', asy
 
 test('tierCostFactor in the config overrides the built-in ordering', async () => {
   const { selectForTier } = await import('../src/select.js')
-  const { MODEL_INFO } = await import('../src/model-info.js')
   const { DEFAULT_ROUTES } = await import('../src/decision.js')
-  const candidates = Object.entries(MODEL_INFO).map(([id, info]) => ({ tier: 'auto', provider: 'bailian-tokenplan', model: id, info, configured: true }))
-  const profile = { shape: 'refactor', depth: 3.7, breadth: 3.6, risk: 3.3, vision: false, tools: true, latencyCritical: false }
-  const flat = selectForTier(profile, candidates, DEFAULT_ROUTES, { costWeight: 0.35, defaultRoute: 'balanced', tierFactors: { deep: 1 } })
-  const shaped = selectForTier(profile, candidates, DEFAULT_ROUTES, { costWeight: 0.35, defaultRoute: 'balanced' })
+  // Synthetic candidates, so the assertion does not move when the shipped catalog
+  // is refreshed: one strong-and-dear model, one adequate-and-cheap model.
+  const dims = (value) => ({ overall: value, coding: value, reasoning: value, math: value, knowledge: value, agentic: value, longContext: value, vision: value, speed: value })
+  const evidence = { overall: 2, coding: 2, reasoning: 2, math: 2, knowledge: 2, agentic: 2, longContext: 1, vision: 1, speed: 1 }
+  const candidate = (model, quality, price) => ({
+    tier: 'auto', provider: 'p', model, configured: true,
+    info: { label: model, quality, scores: dims(quality), evidence, price: { input: price, output: price }, latency: 'slow', contextWindow: 400000, modalities: ['text'], toolCalling: true },
+  })
+  const candidates = [candidate('strong-dear', 88, 60), candidate('adequate-cheap', 74, 1)]
+  const profile = { shape: 'refactor', depth: 3.9, breadth: 3.6, risk: 3.3, vision: false, tools: true, latencyCritical: false }
+  const flat = selectForTier(profile, candidates, DEFAULT_ROUTES, { costWeight: 0.35, defaultRoute: 'deep', tierFactors: { deep: 1 } })
+  const shaped = selectForTier(profile, candidates, DEFAULT_ROUTES, { costWeight: 0.35, defaultRoute: 'deep' })
   assert.notEqual(flat.selected.model, shaped.selected.model, 'the override changes the winner')
 })

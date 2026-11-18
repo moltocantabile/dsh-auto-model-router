@@ -434,35 +434,37 @@ export async function refreshCatalog({ base, wanted = [], fetchImpl = fetch, sig
  */
 export function attachUsage(dataset, usage) {
   const entries = Object.entries(dataset ?? {})
-  const byNormalized = new Map()
+  const exact = new Map()
   const byStem = new Map()
   for (const [key] of entries) {
     const bare = key.includes('/') ? key.slice(key.lastIndexOf('/') + 1) : key
-    byNormalized.set(normalizeName(key), key)
-    byNormalized.set(normalizeName(bare), key)
+    for (const candidate of new Set([normalizeName(key), normalizeName(bare)])) exact.set(candidate, (exact.get(candidate) ?? []).concat(key))
     const stem = modelStem(bare)
-    if (stem.length >= 4) byStem.set(stem, key)
+    if (stem.length >= 4) byStem.set(stem, (byStem.get(stem) ?? []).concat(key))
   }
 
-  const matched = []
+  const matches = []
   for (const row of Array.isArray(usage) ? usage : []) {
     const id = String(row?.id ?? '')
     if (id.length === 0 || !Number.isFinite(row?.weeklyRank)) continue
     const bare = id.includes('/') ? id.slice(id.lastIndexOf('/') + 1) : id
-    const key = byNormalized.get(normalizeName(id)) ?? byNormalized.get(normalizeName(bare)) ?? byStem.get(modelStem(bare))
-    if (key === undefined) continue
-    matched.push({ key, row })
+    // Prefer an exact id: a reseller copy of the same model should not steal the
+    // rank from the canonical entry, and the stem fallback would attach to both.
+    const exactKeys = exact.get(normalizeName(id)) ?? exact.get(normalizeName(bare)) ?? []
+    const keys = exactKeys.length > 0 ? exactKeys : byStem.get(modelStem(bare)) ?? []
+    for (const key of new Set(keys)) matches.push({ key, row })
   }
-  if (matched.length === 0) return { rows: Array.isArray(usage) ? usage.length : 0, matched: 0 }
+  if (matches.length === 0) return { rows: Array.isArray(usage) ? usage.length : 0, matched: 0, uniqueRanks: 0 }
 
-  // Percentile from the rank among matched models: the best-used model is 100,
-  // the least-used 0. Ties keep the higher percentile.
-  const ranks = matched.map(({ row }) => row.weeklyRank).sort((a, b) => a - b)
+  // Percentile from unique ranks: several catalog entries can be one OpenRouter
+  // model (same id through different providers), and counting the duplicates
+  // spread the percentiles over a list that was not the ranking.
+  const ranks = [...new Set(matches.map(({ row }) => row.weeklyRank))].sort((a, b) => a - b)
   const percentileOf = (rank) => {
     const position = ranks.indexOf(rank)
     return ranks.length <= 1 ? 100 : Math.round((1 - position / (ranks.length - 1)) * 1000) / 10
   }
-  for (const { key, row } of matched) {
+  for (const { key, row } of matches) {
     dataset[key] = {
       ...dataset[key],
       usage: {
@@ -474,7 +476,7 @@ export function attachUsage(dataset, usage) {
       },
     }
   }
-  return { rows: Array.isArray(usage) ? usage.length : 0, matched: matched.length }
+  return { rows: Array.isArray(usage) ? usage.length : 0, matched: matches.length, uniqueRanks: ranks.length }
 }
 
 /**

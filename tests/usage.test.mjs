@@ -74,3 +74,22 @@ test('tier selection carries the usage weight through', () => {
   const result = selectForTier(profile, candidates, ROUTES, { usageWeight: 1, defaultRoute: 'balanced' })
   assert.equal(result.selected.model, 'used')
 })
+
+test('an exact id beats a reseller copy, and percentiles use unique ranks', () => {
+  const dataset = {
+    'deepseek-v4.1-flash-1017': info(70),
+    'vanchin/deepseek-v4.1-flash-1017': info(70),
+    'p/other': info(60),
+  }
+  const result = attachUsage(dataset, [
+    { id: 'deepseek/deepseek-v4.1-flash-1017', weeklyRank: 1 },
+    { id: 'someone/other', weeklyRank: 2 },
+  ])
+  assert.equal(result.uniqueRanks, 2)
+  // Both entries are the same model served through different providers, so both
+  // carry the rank; what must not happen is a fuzzy stem pulling in an unrelated id.
+  assert.equal(dataset['deepseek-v4.1-flash-1017'].usage.rank, 1)
+  assert.equal(dataset['vanchin/deepseek-v4.1-flash-1017'].usage.rank, 1)
+  assert.equal(dataset['deepseek-v4.1-flash-1017'].usage.percentile, 100)
+  assert.equal(dataset['p/other'].usage.percentile, 0, 'second of two ranks is the 0th percentile')
+})
