@@ -1,24 +1,27 @@
 {
   "checkedAt": "2026-11-18",
-  "sample": 57,
+  "sample": 66,
   "envelopes": {
     "fast": {
-      "maxCost": 61,
-      "minQuality": 36,
+      "maxCost": 67,
+      "minQuality": 29,
       "maxLatency": "fast",
-      "derived": true
+      "derived": true,
+      "sample": 66
     },
     "balanced": {
-      "maxCost": 79,
-      "minQuality": 41,
+      "maxCost": 80,
+      "minQuality": 34,
       "maxLatency": "balanced",
-      "derived": true
+      "derived": true,
+      "sample": 66
     },
     "deep": {
       "maxCost": 100,
-      "minQuality": 44,
+      "minQuality": 38,
       "maxLatency": "slow",
-      "derived": true
+      "derived": true,
+      "sample": 66
     }
   }
 }
