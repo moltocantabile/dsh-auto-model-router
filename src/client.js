@@ -907,29 +907,30 @@ window.__ModuleLoader__.load({
         applyTiers({ ...(draft.tiers ?? {}), overrides: nextOverrides, disabled: [...disabled].filter((id) => id !== model) })
       }
 
-      function capsule(model) {
+      function capsule(key) {
+        const model = board.modelOf?.[key] ?? key
         const entry = index.get(model) ?? null
-        const off = disabled.has(model)
-        const handAssigned = Object.hasOwn(overrides, model)
-        const open = hovered === model
+        const off = disabled.has(key)
+        const handAssigned = Object.hasOwn(overrides, key)
+        const open = hovered === key
         return h(
           'div',
           {
-            key: model,
+            key,
             className: 'amr-capsule',
             draggable: !off && busy !== true,
             'data-off': off ? 'true' : 'false',
             'data-overridden': handAssigned ? 'true' : 'false',
-            'data-tone': String(providerTone.get(providerOf[model]) ?? 0),
-            'data-dragging': dragging === model ? 'true' : 'false',
+            'data-tone': String(providerTone.get(providerOf[key]) ?? 0),
+            'data-dragging': dragging === key ? 'true' : 'false',
             title: off ? t('enableModel') : t('disableModel'),
-            onMouseEnter: () => setHovered(model),
-            onMouseLeave: () => setHovered((current) => (current === model ? null : current)),
-            onClick: () => (off ? followAuto(model) : move(model, 'off')),
+            onMouseEnter: () => setHovered(key),
+            onMouseLeave: () => setHovered((current) => (current === key ? null : current)),
+            onClick: () => (off ? followAuto(key) : move(key, 'off')),
             onDragStart: (event) => {
-              setDragging(model)
+              setDragging(key)
               try {
-                event.dataTransfer.setData('text/plain', model)
+                event.dataTransfer.setData('text/plain', key)
                 event.dataTransfer.effectAllowed = 'move'
               } catch (error) {
                 /* some browsers refuse a synthetic transfer; the drop still reads `dragging` */
@@ -944,7 +945,7 @@ window.__ModuleLoader__.load({
           h(
             'span',
             { className: 'amr-capsuleName' },
-            h('span', { className: 'amr-capsuleProvider' }, `${providerOf[model] ?? 'unknown'}/`),
+            h('span', { className: 'amr-capsuleProvider' }, `${providerOf[key] ?? 'unknown'}/`),
             model,
           ),
           handAssigned && h(Chip, { tone: 'warn' }, t('handAssigned')),
@@ -952,7 +953,7 @@ window.__ModuleLoader__.load({
             h(
               'div',
               { className: 'amr-pop', onClick: (event) => event.stopPropagation() },
-              h('span', { className: 'amr-popTitle' }, model),
+              h('span', { className: 'amr-popTitle' }, `${providerOf[key] ?? 'unknown'}/${model}`),
               h(ModelFacts, { entry, t }),
               h(
                 'div',
@@ -962,19 +963,19 @@ window.__ModuleLoader__.load({
                     Button,
                     {
                       key: tier,
-                      disabled: busy === true || overrides[model] === tier,
-                      onClick: () => move(model, tier),
+                      disabled: busy === true || overrides[key] === tier,
+                      onClick: () => move(key, tier),
                     },
                     t('moveTo').replace('{tier}', tier),
                   ),
                 ),
                 h(
                   Button,
-                  { disabled: busy === true, onClick: () => (off ? followAuto(model) : move(model, 'off')) },
+                  { disabled: busy === true, onClick: () => (off ? followAuto(key) : move(key, 'off')) },
                   off ? t('enableModel') : t('disableModel'),
                 ),
                 handAssigned &&
-                  h(Button, { disabled: busy === true, onClick: () => followAuto(model) }, t('resetToAuto')),
+                  h(Button, { disabled: busy === true, onClick: () => followAuto(key) }, t('resetToAuto')),
               ),
               h('span', { className: 'amr-popHint' }, t('capsuleHint')),
             ),

@@ -55,6 +55,24 @@ export function autoTierFor(info, routes) {
  *   unassigned: string[],
  * }}
  */
+/**
+ * Identity of one routable model.
+ *
+ * A model id alone is not unique across providers: this profile serves
+ * `deepseek-v4-pro` from three of them. Everything the operator edits (tier
+ * membership, a disabled switch) is keyed by `provider/model`, so two endpoints
+ * offering the same id stay two entries.
+ *
+ * @param {{key?: string, provider?: string, model?: string}} candidate
+ * @returns {string}
+ */
+export function modelKeyOf(candidate) {
+  if (typeof candidate?.key === 'string' && candidate.key.length > 0) return candidate.key
+  const provider = typeof candidate?.provider === 'string' ? candidate.provider : ''
+  const model = typeof candidate?.model === 'string' ? candidate.model : ''
+  return provider.length > 0 ? `${provider}/${model}` : model
+}
+
 export function assignTiers(pool, routes, config = {}) {
   const mode = config.mode === 'manual' ? 'manual' : 'auto'
   const overrides = config.overrides ?? {}
@@ -65,23 +83,27 @@ export function assignTiers(pool, routes, config = {}) {
   const unassigned = []
   /** Provider each placed model belongs to, so the UI can label and colour it. */
   const providerOf = {}
+  /** Model id behind each key, so the UI can show `provider/model` without parsing. */
+  const modelOf = {}
   /** Models the catalog offers but nothing measured: never routed, never shown as a choice. */
   const unmeasured = []
 
   for (const candidate of Array.isArray(pool) ? pool : []) {
     const model = candidate?.model
     if (typeof model !== 'string' || model.length === 0) continue
-    if (typeof candidate.provider === 'string' && candidate.provider.length > 0) providerOf[model] = candidate.provider
-    if (disabled.has(model)) {
-      groups.off.push(model)
-      tierOf[model] = OFF
+    const key = modelKeyOf(candidate)
+    modelOf[key] = model
+    if (typeof candidate.provider === 'string' && candidate.provider.length > 0) providerOf[key] = candidate.provider
+    if (disabled.has(key)) {
+      groups.off.push(key)
+      tierOf[key] = OFF
       continue
     }
-    const override = overrides[model]
+    const override = overrides[key]
     if (TIER_IDS.includes(override)) {
-      groups[override].push(model)
-      tierOf[model] = override
-      overridden.push(model)
+      groups[override].push(key)
+      tierOf[key] = override
+      overridden.push(key)
       continue
     }
     // Routing is measurement-driven: a model with no measured quality cannot be
@@ -90,23 +112,23 @@ export function assignTiers(pool, routes, config = {}) {
     // everything the provider can bill for.
     const measured = candidate.info?.quality != null || candidate.info?.scores?.composite != null
     if (mode === 'auto' && !measured) {
-      unmeasured.push(model)
+      unmeasured.push(key)
       continue
     }
     // `manual` means the operator has taken over: an unassigned model is not
     // routed rather than guessed at, which is what makes the mode predictable.
     const tier = autoTierFor(candidate.info ?? null, routes)
     if (tier === null || mode === 'manual') {
-      groups.off.push(model)
-      tierOf[model] = OFF
-      unassigned.push(model)
+      groups.off.push(key)
+      tierOf[key] = OFF
+      unassigned.push(key)
       continue
     }
-    groups[tier].push(model)
-    tierOf[model] = tier
+    groups[tier].push(key)
+    tierOf[key] = tier
   }
 
-  return { mode, groups, tierOf, providerOf, overridden, disabled: [...disabled], unassigned, unmeasured }
+  return { mode, groups, tierOf, providerOf, modelOf, overridden, disabled: [...disabled], unassigned, unmeasured }
 }
 
 /**

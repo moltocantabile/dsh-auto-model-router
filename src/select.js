@@ -527,7 +527,7 @@ export function selectForTier(profile, candidates, routes, options = {}) {
     const envelope = id === null ? null : routes?.[id]?.envelope
     const allowed = id === null || membership === null ? null : membership[id]
     const eligible = allowed !== null && allowed !== undefined
-      ? candidates.filter((candidate) => allowed.has(candidate.model))
+      ? candidates.filter((candidate) => allowed.has(candidate.key ?? candidate.model))
       : envelope === null || envelope === undefined
         ? candidates
         : candidates.filter((candidate) => withinEnvelope(candidate.info, envelope))

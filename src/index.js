@@ -437,14 +437,14 @@ export function apply(ctx, input) {
     const assigned = assignTiers(pool, routes, config.tiers)
     const membership = membershipOf(assigned)
     const byModel = new Map(pool.map((candidate) => [candidate.model, candidate]))
-    const candidates = pool.filter((candidate) => TIER_IDS.includes(assigned.tierOf[candidate.model]))
+    const candidates = pool.filter((candidate) => TIER_IDS.includes(assigned.tierOf[candidate.key ?? candidate.model]))
     boardCache = assigned
     return { pool, assigned, membership, candidates, byModel }
   }
 
   /** Candidates the assignment actually routes (everything not switched off). */
   function assignedMembers(candidates, assigned) {
-    return candidates.filter((candidate) => TIER_IDS.includes(assigned.tierOf[candidate.model]))
+    return candidates.filter((candidate) => TIER_IDS.includes(assigned.tierOf[candidate.key ?? candidate.model]))
   }
 
   /** Whether the llm runtime accepts this route; cached per route id. */
@@ -467,10 +467,12 @@ export function apply(ctx, input) {
    * still name one to pin its tier to a provider.
    */
   async function poolProviders() {
-    const named = Object.values(routes).map((route) => route.provider).filter((provider) => typeof provider === 'string' && provider.length > 0)
-    // A profile that pins its tiers to a deployment means it: the pool stays
-    // inside that provider rather than cataloguing every credential on the host.
-    if (named.length > 0) return [...new Set(named)]
+    // Every provider the harness exposes. A route naming one provider is a
+    // fallback anchor for that tier, not a statement that the other catalogs do
+    // not exist -- narrowing here hid three of this profile's four providers.
+    const allow = Array.isArray(config.selection?.providers) && config.selection.providers.length > 0
+      ? new Set(config.selection.providers.map((id) => String(id)))
+      : null
     let all = []
     const llm = ctx.get('llm')
     if (llm !== undefined && typeof llm.listProviders === 'function') {
@@ -480,7 +482,8 @@ export function apply(ctx, input) {
         all = []
       }
     }
-    return [...new Set([...named, ...all])]
+    const providers = [...new Set(all)]
+    return allow === null ? providers : providers.filter((id) => allow.has(id))
   }
 
   async function candidatePool() {
@@ -496,15 +499,19 @@ export function apply(ctx, input) {
       }
       for (const model of catalog?.models ?? []) {
         if (model.routable === false || model.configured === false || model.retired === true) continue
-        if (seen.has(model.id)) continue
-        seen.add(model.id)
-        pooled.push({ tier: 'auto', provider, model: model.id, info: model.info ?? routeInfo({ provider, model: model.id }), configured: true })
+        // Two providers can serve the same id; they are two routable endpoints,
+        // so the key is provider-qualified rather than the bare id.
+        const key = `${provider}/${model.id}`
+        if (seen.has(key)) continue
+        seen.add(key)
+        pooled.push({ key, tier: 'auto', provider, model: model.id, info: model.info ?? routeInfo({ provider, model: model.id }), configured: true })
       }
     }
     if (pooled.length > 0) return pooled
     return Object.entries(routes)
       .filter(([, route]) => typeof route.provider === 'string' && typeof route.model === 'string')
       .map(([id, route]) => ({
+        key: `${route.provider}/${route.model}`,
         tier: id,
         provider: route.provider,
         model: route.model,
@@ -637,9 +644,11 @@ export function apply(ctx, input) {
 
       // The user naming a model outranks every heuristic in this file: it is the
       // one signal that says what they want without inference.
-      const requested = pool.find((candidate) => candidate.model === parsed.requestedModel) ?? null
+      const requested = pool.find(
+        (candidate) => candidate.key === parsed.requestedModel || candidate.model === parsed.requestedModel,
+      ) ?? null
       if (pinTargetOf?.kind === 'model') {
-        const pinned = pool.find((candidate) => candidate.model === pinTargetOf.model)
+        const pinned = pool.find((candidate) => candidate.key === pinTargetOf.model || candidate.model === pinTargetOf.model)
         if (pinned !== undefined) {
           selected = { provider: pinned.provider, model: pinned.model, tier: 'pinned' }
           tierChosen = null

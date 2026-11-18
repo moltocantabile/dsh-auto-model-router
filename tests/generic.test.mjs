@@ -50,7 +50,10 @@ test('the composer toggle and the tier board are wired to real slots', () => {
   assert.ok(client.includes('function TierBoard'), 'the board is a component')
   // Drag and click are the two gestures the design promises; both must exist.
   assert.ok(client.includes('onDragStart') && client.includes('onDrop'), 'capsules can be dragged between tiers')
-  assert.ok(client.includes('onClick: () => (off ? followAuto(model) : move(model, \'off\'))'), 'clicking a capsule disables it')
+  assert.ok(
+    client.includes("off ? followAuto(key) : move(key, 'off')"),
+    'clicking a capsule disables it',
+  )
 })
 
 test('tier membership is computed on the host, not in the page', () => {
