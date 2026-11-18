@@ -245,6 +245,8 @@ window.__ModuleLoader__.load({
         badgeProvisional: 'provisional',
         badgeUncalibrated: '{count} uncal.',
         rankComposite: 'composite {value}',
+        rankLow: 'low {value}',
+        rankQuality: 'quality {value}',
         rankPosition: 'rank #{rank}',
         rankUsage: 'usage {pct}th pct',
         unmeasuredModelHint: 'No quality measurement: it cannot be ranked automatically. Drag it into a tier to route it anyway.',
@@ -415,6 +417,8 @@ window.__ModuleLoader__.load({
         badgeProvisional: '临时',
         badgeUncalibrated: '{count} 项未校准',
         rankComposite: '综合分 {value}',
+        rankLow: '保守下界 {value}',
+        rankQuality: '质量 {value}',
         rankPosition: '排名 #{rank}',
         rankUsage: '使用度 {pct} 百分位',
         unmeasuredModelHint: '没有任何质量测量，无法自动排序。拖入某个档位即可强制纳入路由。',
@@ -772,16 +776,36 @@ window.__ModuleLoader__.load({
     ]
 
     /**
-     * Measured capability line. Each score is the 0-100 composite this plugin
-     * keeps per model (see `model-info-data.json`), so the abbreviation is always
-     * paired with its full name in a tooltip and the card hint spells them out.
+     * The per-dimension values the router scores, on the same basis it picks:
+     * the ranking's aligned estimates when the entry has a ranking, the legacy
+     * compiled scores only when it has none. Mirrors `dimensionBasis` in
+     * `select.js`; the two must not drift or a card shows a number the rule did
+     * not use.
+     */
+    function basisValues(info) {
+      const dims = info?.ranking?.dims
+      if (dims !== null && typeof dims === 'object' && Object.keys(dims).length > 0) {
+        const values = {}
+        const evidence = {}
+        for (const [dim, entry] of Object.entries(dims)) {
+          if (typeof entry?.value === 'number') values[dim] = entry.value
+          evidence[dim] = typeof entry?.evidence === 'number' ? entry.evidence : 0
+        }
+        return { values, evidence }
+      }
+      return { values: info?.scores ?? {}, evidence: info?.evidence ?? {} }
+    }
+
+    /**
+     * Measured capability line. Each score is the 0-100 capability estimate the
+     * router uses for this model, so the abbreviation is always paired with its
+     * full name in a tooltip and the card hint spells them out.
      */
     function scoreLine(info) {
-      const scores = info?.scores
-      if (scores === null || scores === undefined) {
+      const { values: scores, evidence: verify } = basisValues(info)
+      if (Object.keys(scores).length === 0) {
         return h('span', { className: 'amr-note' }, 'no benchmark data')
       }
-      const verify = info?.evidence ?? {}
       const samples = ['coding', 'reasoning', 'math', 'knowledge', 'agentic'].reduce((sum, dim) => sum + (verify[dim] ?? 0), 0)
       return h(
         'div',
@@ -808,8 +832,7 @@ window.__ModuleLoader__.load({
 
     /** Tiny inline bars so the strongest dimension is visible at a glance. */
     function scoreBar(info) {
-      const scores = info?.scores
-      if (scores === null || scores === undefined) return null
+      const { values: scores } = basisValues(info)
       return SCORE_DIMS.slice(0, 3).map(([label, key]) => {
         const value = scores[key]
         return h(
@@ -1039,14 +1062,24 @@ window.__ModuleLoader__.load({
               'div',
               { className: 'amr-pop', onClick: (event) => event.stopPropagation() },
               h('span', { className: 'amr-popTitle' }, `${providerOf[key] ?? 'unknown'}/${model}`),
-              (metaOf(key).composite !== null || metaOf(key).usage !== null) &&
+              (metaOf(key).composite !== null || metaOf(key).low !== null || metaOf(key).quality !== null || metaOf(key).usage !== null) &&
                 h(
                   'p',
                   { className: 'amr-note' },
                   [
-                    metaOf(key).composite === null ? null : t('rankComposite').replace('{value}', String(metaOf(key).composite)),
-                    metaOf(key).rank === null ? null : t('rankPosition').replace('{rank}', String(metaOf(key).rank)),
-                    metaOf(key).usage === null ? null : t('rankUsage').replace('{pct}', String(metaOf(key).usage)),
+                    // The low bound is the number the board, the dominance rule
+                    // and the rank use; the composite is the point estimate. Both
+                    // are labelled so the card cannot pass one off as the other.
+                    metaOf(key).low === null || metaOf(key).low === undefined ? null : t('rankLow').replace('{value}', String(metaOf(key).low)),
+                    metaOf(key).composite === null || metaOf(key).composite === undefined ? null : t('rankComposite').replace('{value}', String(metaOf(key).composite)),
+                    metaOf(key).low === null &&
+                    metaOf(key).composite === null &&
+                    metaOf(key).quality !== null &&
+                    metaOf(key).quality !== undefined
+                      ? t('rankQuality').replace('{value}', String(metaOf(key).quality))
+                      : null,
+                    metaOf(key).rank === null || metaOf(key).rank === undefined ? null : t('rankPosition').replace('{rank}', String(metaOf(key).rank)),
+                    metaOf(key).usage === null || metaOf(key).usage === undefined ? null : t('rankUsage').replace('{pct}', String(metaOf(key).usage)),
                   ].filter(Boolean).join(' · '),
                 ),
               laneId === 'unmeasured' && h('p', { className: 'amr-note' }, t('unmeasuredModelHint')),

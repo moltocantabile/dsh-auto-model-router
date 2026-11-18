@@ -45,9 +45,9 @@ import { infoFor, knowledgeProvider, routingNote, applyDataset, applyProviderAli
 import { refreshCatalog } from './refresh.js'
 import { DEFAULT_SUMMARIZER, buildDigestPrompt, callChatModel, createDigestCache } from './summarize.js'
 import { derivedRouteEnvelopes, mergeEnvelopes } from './refresh.js'
-import { selectForTier, describeRanking, costIndex } from './select.js'
+import { selectForTier, describeRanking, costIndex, modelsByQuality } from './select.js'
 import { selectRoute as recordSelection } from './route.js'
-import { TIER_IDS, assignTiers, membershipOf } from './tiers.js'
+import { TIER_IDS, assignTiers, boardMetaOf, membershipOf } from './tiers.js'
 
 export const name = '@dsh-external/dsh-auto-model-router'
 export const inject = ['tools']
@@ -75,6 +75,22 @@ const TOOL_NAMES_TTL_MS = 60_000
 /** Ids the provider advertises that must never be treated as routable tiers. */
 const NON_ROUTING_IDS = new Set(['auto', 'decision-model-preview'])
 const NON_ROUTING_PATTERN = /(audio|tts|video|image|embed|asr|ocr|wan\d|cosyvoice|omni)/i
+
+/**
+ * Model ids offered to the decision model as a `model` choice.
+ *
+ * Ordered by the capability basis the board and the selector use, so the ids the
+ * decision model sees first are the ones the router would rank first. Sorting by
+ * the legacy `quality` here offered a different order than the one the router
+ * acts on -- the list is a consumer of the ranking, not of the old field.
+ *
+ * @param {Array<object>} pool
+ * @param {number} [limit]
+ * @returns {Array<string>}
+ */
+export function offerModelIds(pool, limit = MODEL_CHOICE_LIMIT) {
+  return modelsByQuality(pool, limit)
+}
 
 /** Merge deployment config over the defaults without dropping catalog entries. */
 function mergeConfig(input) {
@@ -186,25 +202,6 @@ export function apply(ctx, input) {
     if (unconfiguredWarned) return
     unconfiguredWarned = true
     ctx.logger.warn('[model-router] no decision endpoint configured (decision.baseURL + decision.model); routing stays off until it is set')
-  }
-
-  /**
-   * Model ids offered to the decision model as a `model` choice.
-   *
-   * @param {Array<object>} pool
-   * @returns {Array<string>}
-   */
-  function offerModelIds(pool) {
-    const ranked = [...pool].sort((a, b) => (b.info?.quality ?? 0) - (a.info?.quality ?? 0))
-    const ids = []
-    const seen = new Set()
-    for (const candidate of ranked) {
-      if (seen.has(candidate.model)) continue
-      seen.add(candidate.model)
-      ids.push(candidate.model)
-      if (ids.length >= MODEL_CHOICE_LIMIT) break
-    }
-    return ids
   }
 
   /**
@@ -530,17 +527,12 @@ export function apply(ctx, input) {
     const assigned = assignTiers(pool, routes, config.tiers)
     // Rank and adoption travel with the board so the page can order a tier by
     // measured rank instead of insertion order, and show where a model sits.
+    // The card reads `boardMetaOf`, the same helper the rules are described by,
+    // so the number on the card is the number that placed it.
     const meta = {}
     for (const candidate of pool) {
       const key = candidate.key ?? candidate.model
-      const info = candidate.info ?? {}
-      meta[key] = {
-        rank: Number.isInteger(info.ranking?.rank) ? info.ranking.rank : null,
-        composite: Number.isFinite(info.ranking?.composite) ? info.ranking.composite : null,
-        status: info.ranking?.status ?? null,
-        usage: Number.isFinite(info.usage?.percentile) ? info.usage.percentile : null,
-        uncalibrated: Number.isFinite(info.ranking?.uncalibrated) ? info.ranking.uncalibrated : null,
-      }
+      meta[key] = boardMetaOf(candidate.info)
     }
     assigned.meta = meta
     const membership = membershipOf(assigned)
@@ -1108,9 +1100,14 @@ export function apply(ctx, input) {
       if (id === pinOf(agent)) marks.push('forced')
       if (id === (agent === undefined ? undefined : current.get(agent))) marks.push('current')
       const envelope = route.envelope ?? {}
+      // A derived floor is a quantile of the ranking's conservative value; a
+      // hand-written one belongs to the legacy score. The marker is the same
+      // provenance `withinEnvelope` reads, so a reader can tell which scale the
+      // number is on.
+      const derivedFloor = envelope.derived === true || envelope.source === 'derived'
       const caps = [
         typeof envelope.maxCost === 'number' ? `cost≤${envelope.maxCost}` : null,
-        typeof envelope.minQuality === 'number' ? `q≥${envelope.minQuality}` : null,
+        typeof envelope.minQuality === 'number' ? `q≥${envelope.minQuality}${derivedFloor ? ' low' : ''}` : null,
         typeof envelope.maxLatency === 'string' ? `lat≤${envelope.maxLatency}` : null,
       ].filter((piece) => piece !== null)
       const suffix = caps.length === 0 ? '' : ` (${caps.join(' ')})`
@@ -1155,7 +1152,9 @@ export function apply(ctx, input) {
       model: config.decision.model,
       state: text,
       timeoutMs: config.decision.timeoutMs,
-      models: candidates.map((candidate) => candidate.model),
+      // Same ordered shortlist the live decision path offers: the explanation
+      // must be produced from the same choices the router would consider.
+      models: offerModelIds(candidates),
       signal,
     })
     const parsed = parseDecision(raw, routes, config.policy)

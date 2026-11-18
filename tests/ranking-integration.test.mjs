@@ -79,3 +79,32 @@ test('the shipped runtime catalog ranks without inventing measurements', () => {
   assert.equal(ranks[0], 1)
   assert.equal(new Set(ranks).size, ranks.length)
 })
+
+test('the compact ranking carries the uncalibrated count the board badge reads', () => {
+  // One model is not enough overlap to calibrate CompassRank onto the axis, so
+  // its observation is reported as uncalibrated. The board renders that count;
+  // before the producer wrote it the badge could never appear.
+  const data = {
+    'p/lonely': {
+      label: 'lonely',
+      quality: 60,
+      price: { input: 1, output: 2 },
+      latency: 'fast',
+      contextWindow: 200000,
+      modalities: ['text'],
+      toolCalling: true,
+      scores: { overall: 60 },
+      evidence: { overall: 1 },
+      benchmarks: { 'GPQA diamond': 70, LiveCodeBench: 68, 'MMLU-Pro': 66 },
+      benchmarkSources: ['benchgecko'],
+      crossChecks: { compassRank: { reasoning: 80 } },
+      sources: ['https://example.test'],
+      bestFor: [],
+      weaknesses: [],
+    },
+  }
+  const { table } = attachRanking(data)
+  const row = table.byKey['p/lonely']
+  assert.ok(row.uncalibrated.length > 0, 'the observation could not be aligned')
+  assert.equal(data['p/lonely'].ranking.uncalibrated, row.uncalibrated.length)
+})

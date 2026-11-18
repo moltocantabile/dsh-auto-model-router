@@ -45,6 +45,9 @@ test('derived envelopes translate the cost percentile into a cost index', () => 
     const envelope = derived.envelopes[tier]
     assert.ok(envelope.maxCost >= 0 && envelope.maxCost <= 100, `${tier} maxCost ${envelope.maxCost}`)
     assert.ok(envelope.minQuality >= 0 && envelope.minQuality <= 100)
+    // Persisted and reloaded as a file: the count the status text reports has to
+    // travel with the envelope, not on a sibling key the save drops.
+    assert.equal(envelope.sample, derived.sample)
   }
 })
 

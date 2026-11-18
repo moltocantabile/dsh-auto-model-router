@@ -68,8 +68,8 @@ const CONFIG = {
 const BOARD = {
   mode: 'auto',
   meta: {
-    'm-fast': { rank: 1, composite: 68.6, status: 'measured', usage: 90 },
-    'm-balanced': { rank: 2, composite: 62, status: 'measured', usage: 40 },
+    'm-fast': { rank: 1, composite: 68.6, low: 52.1, quality: 52.1, status: 'measured', usage: 90 },
+    'm-balanced': { rank: 2, composite: 62, low: 48.3, quality: 48.3, status: 'measured', usage: 40 },
   },
   groups: {
     fast: ['m-fast'],
@@ -336,9 +336,16 @@ test('the page mounts, fetches its snapshot, and renders rows', async () => {
     const probe = capsules[0]
     probe.dispatchEvent(new loaded.window.MouseEvent('mouseover', { bubbles: true }))
     await new Promise((resolve) => setTimeout(resolve, 25))
-    const card = container.querySelector('.amr-pop')
+    // Read the hovered capsule's own card: the provider-filter menu is another
+    // `.amr-pop` elsewhere on the page.
+    const card = probe.querySelector('.amr-pop')
     assert.ok(card !== null, 'hovering a capsule opens its card')
     assert.ok(!(card.textContent ?? '').includes('notInCatalog'), 'the capsule resolves its catalog row')
+    // The card shows the conservative low bound the board ranks and prunes on,
+    // labelled apart from the composite point estimate: the rule that placed the
+    // card and the number on it are the same measure.
+    assert.ok((card.textContent ?? '').includes('rankLow'), 'the ranking basis is on the card')
+    assert.ok((card.textContent ?? '').includes('rankComposite'), 'the point estimate is labelled separately')
     root.unmount()
     await new Promise((resolve) => setTimeout(resolve, 25))
   } finally {

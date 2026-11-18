@@ -60,10 +60,10 @@
  *   another vendor's model is cheaper and stronger.
  */
 
-import { DIMENSIONS, costIndex } from './select.js'
+import { DIMENSIONS, PRICE_CNY_PER_USD, costIndex } from './select.js'
 import { TIER_IDS, familyOf } from './tiers.js'
 
-export { TIER_IDS }
+export { PRICE_CNY_PER_USD, TIER_IDS }
 
 /** The five dimensions the router's capability composite is built from. */
 export const CORE_DIMENSIONS = Object.freeze(['coding', 'reasoning', 'math', 'knowledge', 'agentic'])
@@ -81,9 +81,6 @@ export const COMPOSITE_WEIGHTS = Object.freeze({
   knowledge: 0.15,
   agentic: 0.2,
 })
-
-/** AA quotes USD, the catalog quotes CNY per 1M tokens. */
-export const PRICE_CNY_PER_USD = 7.2
 
 /** Below this many overlap models a channel/dimension alignment is a guess. */
 export const MIN_ALIGN_OVERLAP = 3

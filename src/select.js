@@ -162,24 +162,39 @@ export function profileWeights(profile) {
   return { weights, notes }
 }
 
+/** AA quotes USD, the catalog quotes CNY per 1M tokens. One conversion, one place. */
+export const PRICE_CNY_PER_USD = 7.2
+
 /**
  * Blended price per 1M tokens. Output tokens dominate real spend, so weight them
  * at the usual agent ratio of one in to two out.
+ *
+ * An entry with no catalog price but an Artificial Analysis quote is priced from
+ * that quote at the same CNY rate `rank.js`'s `priceOf` converts it with. The
+ * selector needs the same fallback, not just the ranking: without it
+ * `costIndex` called a model the ranking had priced "unpriced, mid-range", so
+ * the tier check and the cost penalty compared a different cost notion than the
+ * ranking's cost percentile.
  */
 export function blendedPrice(info) {
-  const input = info?.price?.input
-  const output = info?.price?.output
-  if (typeof input !== 'number' && typeof output !== 'number') return null
-  const i = typeof input === 'number' ? input : (output ?? 0) / 3
-  const o = typeof output === 'number' ? output : i * 3
-  return (i * 1 + o * 2) / 3
+  const price = info?.price ?? {}
+  const input = num(price.input, null)
+  const output = num(price.output, null)
+  if (input !== null || output !== null) {
+    const i = input !== null ? input : (output ?? 0) / 3
+    const o = output !== null ? output : i * 3
+    return (i * 1 + o * 2) / 3
+  }
+  const analysis = info?.crossChecks?.artificialAnalysis
+  const usdInput = num(analysis?.priceIn, null)
+  if (usdInput !== null && usdInput >= 0) {
+    const i = usdInput * PRICE_CNY_PER_USD
+    const o = (num(analysis?.priceOut, null) ?? usdInput) * PRICE_CNY_PER_USD
+    return (i * 1 + o * 2) / 3
+  }
+  return null
 }
 
-/**
- * Cost index 0-100, log-scaled over the catalog's actual spread (roughly 0.4 to
- * 60 CNY blended). Cheap models crowd near 0 so that a 2x price difference
- * between two cheap models does not dominate a 5-point capability gap.
- */
 /**
  * Capability basis used by every tier rule: the cross-source ranking when the
  * catalog has one, the legacy compiled score otherwise.
@@ -189,19 +204,97 @@ export function blendedPrice(info) {
  * legacy score, so a model could be switched off by one measure and ranked above
  * its killer by the other.
  *
+ * Once an entry has a `ranking`, that ranking is authoritative even when it
+ * reports no measurement: falling back to the legacy `quality` there mixed the
+ * two scales again (an unmeasured model with a compiled prior read stronger than
+ * every measured model). The legacy value is only a basis for entries the
+ * ranking has never seen.
+ *
  * @param {object|null} [info]
  * @returns {number|null} the conservative value (ranking low bound) or the score
  */
 export function qualityBasis(info) {
   const ranking = info?.ranking ?? null
-  const low = num(ranking?.low, null)
-  if (low !== null) return low
-  const composite = num(ranking?.composite, null)
-  if (composite !== null) return composite
-  const legacy = num(info?.quality, null)
-  return legacy
+  if (ranking !== null) {
+    const low = num(ranking.low, null)
+    if (low !== null) return low
+    return num(ranking.composite, null)
+  }
+  return num(info?.quality, null)
 }
 
+/**
+ * The legacy compiled capability scalar: `quality`, else the `scores.composite`
+ * some fixtures carry. This belongs to the hand-written-floor rule only (see
+ * `withinEnvelope`); no rule that has a ranking may compare against it.
+ *
+ * @param {object|null} [info]
+ * @returns {number|null}
+ */
+export function legacyQuality(info) {
+  const quality = num(info?.quality, null)
+  return quality !== null ? quality : num(info?.scores?.composite, null)
+}
+
+/**
+ * The per-dimension measurement basis for one entry, chosen once and used whole.
+ *
+ * When the catalog has ranked the entry, its aligned per-dimension estimates are
+ * the capability numbers -- the same ones the composite, the rank, the tier board
+ * and the dominance rule are built from -- and the evidence counts are the
+ * ranking's integer benchmark counts. Otherwise the legacy compiled
+ * `scores`/`evidence` are the basis. The two are never combined inside one
+ * computation: a dimension the chosen basis has no estimate for is a neutral
+ * prior (see `scoreCandidate`), not a value borrowed from the other basis.
+ *
+ * @param {object|null} [info]
+ * @returns {{values: Record<string, number>, evidence: Record<string, number>, source: 'ranking'|'legacy'|'ranking-empty'}}
+ */
+export function dimensionBasis(info) {
+  const dims = info?.ranking?.dims
+  if (dims !== null && typeof dims === 'object' && Object.keys(dims).length > 0) {
+    const values = {}
+    const evidence = {}
+    for (const dim of DIMENSIONS) {
+      const entry = dims[dim]
+      const value = num(entry?.value, null)
+      if (value !== null) values[dim] = value
+      evidence[dim] = Math.max(0, Math.trunc(num(entry?.evidence, 0)))
+    }
+    return { values, evidence, source: 'ranking' }
+  }
+  if (info?.ranking !== undefined && info?.ranking !== null) {
+    // A ranking with no dimension at all is an unmeasured entry: the legacy
+    // scores it refused to decompose are not a basis (see qualityBasis).
+    return { values: {}, evidence: {}, source: 'ranking-empty' }
+  }
+  return { values: info?.scores ?? {}, evidence: info?.evidence ?? {}, source: 'legacy' }
+}
+
+/**
+ * Whether an entry has a measured capability the router may rank, on the same
+ * basis the tiers place it with.
+ *
+ * Once a ranking exists its status is authoritative: `provisional` (an AA index
+ * only) and `unmeasured` are listed but not auto-placed, even when the legacy
+ * catalog still carries a compiled `quality` for the entry. Before this rule the
+ * tier board routed exactly those entries on the prior the ranking had rejected.
+ *
+ * @param {object|null} [info]
+ * @returns {boolean}
+ */
+export function hasMeasuredQuality(info) {
+  if (info === null || info === undefined) return false
+  const ranking = info.ranking
+  if (ranking !== undefined && ranking !== null) return ranking.status === 'measured'
+  return legacyQuality(info) !== null
+}
+
+/**
+ * Cost index 0-100, log-scaled over the catalog's actual spread (roughly 0.4 to
+ * 60 CNY blended). Cheap models crowd near 0 so that a 2x price difference
+ * between two cheap models does not dominate a 5-point capability gap.
+ */
 export function costIndex(info) {
   const blended = blendedPrice(info)
   if (blended === null || blended <= 0) return 55
@@ -210,18 +303,48 @@ export function costIndex(info) {
   return Math.round(clamp(((Math.log2(blended) - lo) / (hi - lo)) * 100, 0, 100))
 }
 
-/** How much evidence stands behind a model's scores, 0-1. */
-export function evidenceConfidence(info) {
-  const evidence = info?.evidence ?? {}
-  const total = DIMENSIONS.reduce((sum, dim) => sum + num(evidence[dim], 0), 0)
-  // 12 benchmark samples across dimensions is enough to trust the shape.
-  return clamp(total / 12, 0, 1)
+/**
+ * How much evidence stands behind a model's capability scores, 0-1.
+ *
+ * A dimension's confidence is `evidence / (evidence + 3)` -- the ranking engine's
+ * own per-dimension formula: one benchmark is a weak opinion, three a reasonable
+ * one. The model's confidence is the weighted mean over the same dimensions and
+ * weights the capability term uses, so "certainty" describes exactly the number
+ * it discounts. Any other definition would let the penalty describe a different
+ * measurement than the quality term it penalises.
+ *
+ * @param {object|null} [info]
+ * @param {Record<string, number>|null} [weights] - profile weights; uniform when omitted
+ * @returns {number}
+ */
+export function evidenceConfidence(info, weights = null) {
+  const basis = dimensionBasis(info)
+  let total = 0
+  let sum = 0
+  for (const dim of DIMENSIONS) {
+    const weight = weights === null ? 1 : num(weights[dim], 0)
+    if (weight === 0) continue
+    total += weight
+    const evidence = num(basis.evidence[dim], 0)
+    sum += weight * (evidence / (evidence + 3))
+  }
+  return total === 0 ? 0 : clamp(sum / total, 0, 1)
 }
 
 /**
  * Requirement floors implied by risk. A high-risk request should not land on a
  * model whose measured quality is poor just because it is cheap; this is the
  * "never the cheapest tier that can finish" rule expressed as arithmetic.
+ *
+ * The ladder is a policy point on the same 0-100 capability axis `scoreCandidate`
+ * measures: the weighted mean of the measurement basis that entry carries
+ * (ranking dimensions when ranked, legacy scores only in an unranked catalog).
+ * It is not compared against the ranking's conservative `low` bound -- that bound
+ * belongs to the derived envelope floor (see `withinEnvelope`) -- so one basis
+ * serves one comparison.
+ *
+ * @param {TaskProfile} profile
+ * @returns {number}
  */
 export function qualityFloor(profile) {
   const risk = clamp(num(profile?.risk, 1), 0, 4)
@@ -243,7 +366,10 @@ export function qualityFloor(profile) {
  */
 export function scoreCandidate(candidate, weights, profile, options = {}) {
   const info = candidate.info ?? {}
-  const scores = info.scores ?? {}
+  // One basis for the whole computation. The legacy scores are not consulted
+  // when the ranking has measured dims, and a dim the basis lacks is the neutral
+  // prior below rather than a value from the other basis.
+  const basis = dimensionBasis(info)
   const costWeight = clamp(num(options.costWeight, 0.35), 0, 1)
   const floor = num(options.floor, qualityFloor(profile))
 
@@ -252,7 +378,9 @@ export function scoreCandidate(candidate, weights, profile, options = {}) {
   for (const dim of DIMENSIONS) {
     const w = num(weights[dim], 0)
     if (w === 0) continue
-    const score = num(scores[dim], 50)
+    // A dimension the chosen basis has no estimate for is a prior here; the
+    // weight that rests on that guess is charged by `unverified` below.
+    const score = num(basis.values[dim], 50)
     quality += w * score
     known += w
   }
@@ -275,17 +403,19 @@ export function scoreCandidate(candidate, weights, profile, options = {}) {
 
   const gap = Math.max(0, floor - quality)
   const floorPenalty = gap * (1.5 + 0.8 * risk)
-  const confidence = evidenceConfidence(info)
+  // Confidence and the unverified charge read the same basis and weights the
+  // quality term above used, so the certainty penalty describes the measurement
+  // it is penalising.
+  const confidence = evidenceConfidence(info, weights)
   // A model can look strong on the decisive dimension only because an unmeasured
   // dimension got a prior. Charge for that: the weight we could not verify is
   // weight we are guessing about on exactly the axis the task cares about.
-  const evidence = info?.evidence ?? {}
   let unverified = 0
   for (const dim of DIMENSIONS) {
     const w = num(weights[dim], 0)
     if (w === 0) continue
     if (dim === 'vision' || dim === 'longContext' || dim === 'overall') continue
-    if (num(evidence[dim], 0) === 0) unverified += w
+    if (num(basis.evidence[dim], 0) === 0) unverified += w
   }
   const uncertaintyPenalty = (1 - confidence) * risk * 7 + unverified * (3 + 2 * risk)
 
@@ -313,6 +443,7 @@ export function scoreCandidate(candidate, weights, profile, options = {}) {
     ...(usagePercentile === null ? {} : { usagePercentile, usageBoost: Math.round(usageBoost * 100) / 100 }),
     confidence: Math.round(confidence * 100) / 100,
     unverified: Math.round(unverified * 100) / 100,
+    basis: basis.source,
     floor,
   }
 }
@@ -386,7 +517,9 @@ export function rankModels(profile, candidates, options = {}) {
 /** Short, human-readable justifications for one scored candidate. */
 function explainCandidate(candidate, weights, scored, floor) {
   const info = candidate.info ?? {}
-  const scores = info.scores ?? {}
+  // The reasons must cite the numbers that produced the score, so they read the
+  // same basis `scoreCandidate` used.
+  const basis = dimensionBasis(info)
   const reasons = []
 
   const top = Object.entries(weights)
@@ -394,7 +527,7 @@ function explainCandidate(candidate, weights, scored, floor) {
     .sort((a, b) => b[1] - a[1])
     .slice(0, 2)
   for (const [dim] of top) {
-    const value = scores[dim]
+    const value = basis.values[dim]
     if (typeof value === 'number') reasons.push(`${dim} ${value}`)
   }
   if (scored.cost <= 20) reasons.push('cheap')
@@ -518,6 +651,10 @@ export function withinEnvelope(info, envelope) {
   const { maxCost, maxLatency, minQuality } = envelope
   if (typeof maxCost === 'number' && maxCost > 0 && costIndex(info) > maxCost) return false
   if (typeof maxLatency === 'string' && LATENCY_RANK[maxLatency] !== undefined) {
+    // The coarse class stays the filter even when a TTFT/tokens-per-second
+    // measurement exists: serving speed is provider-dependent, so the operator's
+    // class is the policy and `ranking.dims.speed` is the measurement selection
+    // scores. This is the one site where the class is intentionally not replaced.
     const rank = LATENCY_RANK[info?.latency]
     if (rank === undefined || rank > LATENCY_RANK[maxLatency]) return false
   }
@@ -527,7 +664,7 @@ export function withinEnvelope(info, envelope) {
     // conservative value. Comparing a floor against the other scale silently
     // empties the board, so provenance decides the basis.
     const derivedFloor = envelope.derived === true || envelope.source === 'derived'
-    const quality = derivedFloor ? qualityBasis(info) : num(info?.quality ?? info?.scores?.composite, null)
+    const quality = derivedFloor ? qualityBasis(info) : legacyQuality(info)
     if (quality === null || quality < minQuality) return false
   }
   return true
@@ -600,4 +737,36 @@ export function selectForTier(profile, candidates, routes, options = {}) {
     }
   }
   return { selected: null, ranking: lastRanking, tier: fallback, widened: true, eligible: 0 }
+}
+
+/**
+ * Model ids ordered by the capability basis, best first, deduplicated by id.
+ *
+ * The decision model may name one of these instead of asking the router to
+ * choose; that shortlist has to be ordered on the same measure the board and the
+ * selector use, or the ids offered first are the ones the router would not pick.
+ * Entries with no measurement sort last; ties break by model id so the list is
+ * deterministic on identical input.
+ *
+ * @param {Array<{model?: string, info?: object|null}>} pool
+ * @param {number} [limit]
+ * @returns {string[]}
+ */
+export function modelsByQuality(pool, limit = Number.POSITIVE_INFINITY) {
+  const ordered = [...(Array.isArray(pool) ? pool : [])].sort((a, b) => {
+    const qa = qualityBasis(a?.info ?? null) ?? Number.NEGATIVE_INFINITY
+    const qb = qualityBasis(b?.info ?? null) ?? Number.NEGATIVE_INFINITY
+    if (qa !== qb) return qb - qa
+    return String(a?.model ?? '').localeCompare(String(b?.model ?? ''))
+  })
+  const ids = []
+  const seen = new Set()
+  for (const candidate of ordered) {
+    const model = candidate?.model
+    if (typeof model !== 'string' || model.length === 0 || seen.has(model)) continue
+    seen.add(model)
+    ids.push(model)
+    if (ids.length >= limit) break
+  }
+  return ids
 }

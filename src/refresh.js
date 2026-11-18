@@ -23,7 +23,7 @@
 import zlib from 'node:zlib'
 import { buildDataset, COMPASS_ID } from './model-data-build.js'
 import { derivedEnvelopes as rankDerivedEnvelopes, rankTable } from './rank.js'
-import { costIndex } from './select.js'
+import { costIndex, PRICE_CNY_PER_USD } from './select.js'
 import { fetchOpenRouterUsage } from './openrouter.js'
 import { DIMENSIONS } from './select.js'
 
@@ -41,7 +41,7 @@ export const ARTIFICIAL_ANALYSIS_URL = 'https://artificialanalysis.ai/leaderboar
  * models (CNY for the Bailian deployments this profile uses), so a USD source
  * has to be converted at one stated rate instead of silently mixing units.
  */
-export const CNY_PER_USD = 7.2
+export const CNY_PER_USD = PRICE_CNY_PER_USD
 /** How many per-model AA pages one refresh may fetch (only for unmeasured ids). */
 const MAX_MODEL_PAGES = 60
 export const LLM_COMPARISON_URL = `${LLM_LEADERBOARD}/api/models/comparison.csv`
@@ -453,6 +453,10 @@ export function derivedRouteEnvelopes(table) {
       minQuality: source.minQuality,
       maxLatency: source.maxLatency,
       derived: true,
+      // The status text reports how many models the cut-offs were derived from;
+      // a per-envelope count survives being persisted and reloaded, which the
+      // separate top-level `sample` above does not.
+      sample: costs.length,
     }
   }
   return { valid: true, sample: costs.length, envelopes }
@@ -481,6 +485,12 @@ export function mergeEnvelopes(routes, derived, mode = 'merge') {
       out[id] = route
       continue
     }
+    // A merged floor keeps the provenance of the field that was actually used:
+    // `withinEnvelope` compares a derived floor against the ranking's
+    // conservative value and a hand-written one against the legacy score, so a
+    // floor filled from the data must still say it is derived even when the
+    // operator wrote the other fields.
+    const filledFloor = base.minQuality === undefined && data.minQuality !== undefined
     const envelope = mode === 'derived'
       ? { maxCost: data.maxCost, minQuality: data.minQuality, maxLatency: base.maxLatency ?? data.maxLatency, derived: true, source: 'derived' }
       : {
@@ -489,6 +499,7 @@ export function mergeEnvelopes(routes, derived, mode = 'merge') {
           maxLatency: base.maxLatency ?? data.maxLatency,
           ...(data.source === undefined ? {} : { source: data.source }),
           ...(data.sample === undefined ? {} : { sample: data.sample }),
+          ...(filledFloor ? { derived: true, source: 'derived' } : {}),
         }
     out[id] = { ...route, envelope }
   }
@@ -590,6 +601,9 @@ export function attachRanking(dataset, options = {}) {
       composite: round(row.composite),
       low: round(row.compositeLow ?? null),
       rank: Number.isInteger(row.rank) ? row.rank : null,
+      // Observations no alignment fit covered: the board renders this count as a
+      // warning badge, so the field has to be written here or the badge is dead.
+      ...(row.uncalibrated.length === 0 ? {} : { uncalibrated: row.uncalibrated.length }),
       dims: compact,
     }
   }

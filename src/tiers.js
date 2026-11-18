@@ -12,7 +12,7 @@
  * The operator still overrules the computation, per model: drag one to another
  * tier, or switch it off. Those overrides are the only hand-made assignments.
  */
-import { costIndex, qualityBasis, withinEnvelope } from './select.js'
+import { costIndex, hasMeasuredQuality, qualityBasis, withinEnvelope } from './select.js'
 
 /** How much cheaper a model must be to justify a lower quality by "dominance". */
 const DOMINANCE_COST_MARGIN = 10
@@ -50,6 +50,36 @@ export function familyOf(key) {
 const qualityOf = (info) => {
   const quality = qualityBasis(info)
   return quality === null ? 0 : quality
+}
+
+const numOrNull = (value) => (typeof value === 'number' && Number.isFinite(value) ? value : null)
+
+/**
+ * The board-card facts for one model, computed from the same fields the rules
+ * that placed it read.
+ *
+ * `quality` is the capability basis the router ranks and prunes on (ranking low
+ * bound, else composite, else the legacy score); `composite` is the point
+ * estimate next to it, kept separate so the card can label both instead of
+ * showing the point estimate as if it were the number that decided the card's
+ * lane. `uncalibrated` is the producer's count of observations no alignment fit
+ * covered -- a card that reads a field the refresh never writes is a badge that
+ * can never appear.
+ *
+ * @param {object|null} [info] - knowledge entry for the model
+ * @returns {{rank: number|null, composite: number|null, low: number|null, quality: number|null, status: string|null, usage: number|null, uncalibrated: number|null}}
+ */
+export function boardMetaOf(info) {
+  const ranking = info?.ranking ?? null
+  return {
+    rank: Number.isInteger(ranking?.rank) ? ranking.rank : null,
+    composite: numOrNull(ranking?.composite),
+    low: numOrNull(ranking?.low),
+    quality: qualityBasis(info),
+    status: typeof ranking?.status === 'string' ? ranking.status : null,
+    usage: numOrNull(info?.usage?.percentile),
+    uncalibrated: numOrNull(ranking?.uncalibrated),
+  }
 }
 
 /** Tiers from cheapest to most capable. */
@@ -148,10 +178,13 @@ export function assignTiers(pool, routes, config = {}) {
       continue
     }
     // Routing is measurement-driven: a model with no measured quality cannot be
-    // ranked, so it is not placed in a tier. A profile that exposes a provider
-    // with hundreds of unmeasured ids must not turn the tier board into a list of
-    // everything the provider can bill for.
-    const measured = candidate.info?.quality != null || candidate.info?.scores?.composite != null || candidate.info?.ranking?.status === 'measured'
+    // ranked, so it is not placed in a tier. The ranking's own status decides
+    // what "measured" means once it exists -- an entry whose legacy compiled
+    // quality the ranking refused to decompose is not routable, even though the
+    // old field is still present. A profile that exposes a provider with hundreds
+    // of unmeasured ids must not turn the tier board into a list of everything
+    // the provider can bill for.
+    const measured = hasMeasuredQuality(candidate.info ?? null)
     if (mode === 'auto' && !measured) {
       unmeasured.push(key)
       continue
