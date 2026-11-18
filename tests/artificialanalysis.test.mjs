@@ -223,3 +223,14 @@ test('slug candidates follow AA spelling', () => {
   assert.ok(aaSlugCandidates('MiniMax/MiniMax-M2.7').includes('minimax-m2-7'))
   assert.ok(aaSlugCandidates('cmaas-glm-5.3').some((slug) => slug.startsWith('glm-5-3')))
 })
+
+test('zero benchmark scores are "not run", not a floor measurement', () => {
+  // Averaging zeros gave seven unrelated models the same "quality" (the fit's
+  // intercept) with evidence 0, which ranked them on an artifact.
+  const zeroed = { id: 'z1', name: 'Empty Benchmarks', price1mInputTokens: 0.2, scores: { gpqa: 0, hle: 0, 'terminalbench-hard': 0, scicode: 0, 'mmlu-pro': 0 } }
+  const analysis = extractArtificialAnalysis(page([zeroed]), nameIndex({ 'empty-benchmarks': { label: 'Empty Benchmarks' } }))
+  const dataset = { 'empty-benchmarks': { label: 'Empty Benchmarks' } }
+  const summary = attachArtificialAnalysis(dataset, { base: {}, analysis })
+  assert.equal(dataset['empty-benchmarks'].quality, undefined)
+  assert.equal(summary.filledQuality, 0)
+})

@@ -786,7 +786,10 @@ export function attachArtificialAnalysis(dataset, { base = {}, analysis = {}, wa
   // rows that have both, is a real measurement of those models rather than a
   // family guess -- 160 rows of the table were being stored and never used.
   const fractionMean = (value) => {
-    const fractions = Object.values(value.benchmarks ?? {}).filter((score) => score >= 0 && score <= 100)
+    // A zero is "the benchmark did not run", not "the model scored nothing" -- the
+    // same rule the BenchGecko extractor uses. Averaging zeros produced one floor
+    // value that seven unrelated models then shared as if it were a measurement.
+    const fractions = Object.values(value.benchmarks ?? {}).filter((score) => score > 0 && score <= 100)
     if (fractions.length < 4) return null
     return fractions.reduce((sum, score) => sum + score, 0) / fractions.length
   }
