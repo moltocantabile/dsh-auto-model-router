@@ -91,3 +91,19 @@ test('the client registers once per page but releases the latch on dispose', () 
     'a disposed instance releases the latch so the next one can register',
   )
 })
+
+test('the tier board is computed even when the decision endpoint is down', () => {
+  // The boards explains what routing would do; a dead endpoint must not blank it.
+  const source = read('index.js')
+  const assemble = source.slice(source.indexOf("ctx.on(\n    'system-prompt/assemble'"), source.indexOf("ctx.on('agent/inbox/inserted')"))
+  assert.ok(assemble.includes('await assignedTiers()'), 'membership is refreshed before the decision')
+  assert.ok(assemble.indexOf('await assignedTiers()') < assemble.indexOf('decideFor('), 'and before the decision runs')
+})
+
+test('a configure without a defaultRoute keeps the running one', () => {
+  const source = read('index.js')
+  assert.ok(
+    source.includes('routes[config.defaultRoute] !== undefined'),
+    'the previous default is preferred over the first route id',
+  )
+})

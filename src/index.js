@@ -834,6 +834,14 @@ export function apply(ctx, input) {
       if (agent !== undefined) claimed.delete(agent)
       const resolved = await next()
       if (agent === undefined || mode === 'off') return resolved
+      // Membership is a fact about the catalog, not about the decision: refresh it
+      // even when the decision endpoint is unavailable, or the board goes blank
+      // exactly when the operator needs it to explain what routing would do.
+      try {
+        await assignedTiers()
+      } catch (error) {
+        ctx.logger.warn(`[model-router] tier assignment failed: ${error?.message ?? error}`)
+      }
       let decision
       try {
         decision = await decideFor(agent, claimedBatch, context.signal)
@@ -958,7 +966,7 @@ export function apply(ctx, input) {
           ? ''
           : ` shape=${prof.shape} d${prof.depth} b${prof.breadth} r${prof.risk}${prof.vision === true ? ' vision' : ''}`
         lines.push(
-          `  ${time} ${record.agentId} [${record.agentKind}] turn=${record.turn ?? '-'} step=${record.step ?? '-'} -> ${record.model ?? record.routeId}${record.sticky === true && record.proposed?.model !== record.model ? ` (kept; routing proposed ${record.proposed?.model})` : ''} conf=${Number(record.confidence ?? 0).toFixed(2)} src=${record.source}${shape} ${state} task="${task}"`,
+          `  ${time} ${record.agentId} [${record.agentKind}] turn=${record.turn ?? '-'} step=${record.step ?? '-'} -> ${record.source === 'error' ? '(no selection: decision failed)' : record.model ?? record.routeId}${record.sticky === true && record.proposed?.model !== record.model ? ` (kept; routing proposed ${record.proposed?.model})` : ''} conf=${Number(record.confidence ?? 0).toFixed(2)} src=${record.source}${shape} ${state} task="${task}"`,
         )
       }
     }
@@ -1162,7 +1170,11 @@ export function apply(ctx, input) {
       mode: MODES.has(requestedMode) ? requestedMode : mode,
       switching: source.switching === 'auto' ? 'auto' : 'sticky',
       tiers: sanitizeTiers(source.tiers),
-      defaultRoute: routes[source.defaultRoute] !== undefined ? source.defaultRoute : Object.keys(routes)[0],
+      defaultRoute: routes[source.defaultRoute] !== undefined
+        ? source.defaultRoute
+        : routes[config.defaultRoute] !== undefined
+          ? config.defaultRoute
+          : Object.keys(routes)[0],
       routes,
       decision,
       policy,
