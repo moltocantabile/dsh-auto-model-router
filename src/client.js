@@ -1402,6 +1402,7 @@ window.__ModuleLoader__.load({
         const capsules = typeof document === 'undefined' ? null : document.querySelectorAll('.amr-capsule').length
         api('client-report', {
           build: BUILD,
+          instance: snap.instance ?? null,
           board: board !== null,
           providers,
           lanes: board === null ? null : { fast: count('fast'), balanced: count('balanced'), deep: count('deep'), off: count('off') },

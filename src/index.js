@@ -114,6 +114,7 @@ function mergeConfig(input) {
 }
 
 export function apply(ctx, input) {
+  const INSTANCE = Math.random().toString(36).slice(2, 8)
   const config = mergeConfig(input)
   // Provider aliases decide which catalog entries share one knowledge entry, so
   // they are per-profile config rather than a table of vendor names in here.
@@ -448,10 +449,12 @@ export function apply(ctx, input) {
 
   /** Newest tier assignment, so status and the config page can show it without
    * walking the catalog again. */
-  let boardCache = null
-  /** Pool the cached board was built from, reused when a refresh looks broken. */
-  let lastPool = []
-  const lastBoard = () => boardCache
+  // Shared through `globalThis`, not a closure: a reload can leave an older fiber
+  // serving the HTTP route while a newer one serves the tool, and two closured
+  // boards then disagree -- the page showed one provider while `status` showed
+  // four. One process, one board.
+  const SHARED = globalThis.__dshAutoModelRouterShared ??= { board: null, pool: [] }
+  const lastBoard = () => SHARED.board
 
   /**
    * Tier membership for the current pool.
@@ -472,24 +475,24 @@ export function apply(ctx, input) {
     // A pool that collapsed — to nothing, or to a handful of route anchors — is a
     // catalog problem, not a routing decision. Keep the last good board so a
     // transient empty answer cannot shrink every tier to one provider.
-    const previousSize = lastPool.length
-    if (boardCache !== null && previousSize >= 8 && pool.length < Math.floor(previousSize / 2)) {
+    const previousSize = SHARED.pool.length
+    if (SHARED.board !== null && previousSize >= 8 && pool.length < Math.floor(previousSize / 2)) {
       ctx.logger.warn(`[model-router] catalog returned ${pool.length} candidates (had ${previousSize}); keeping the previous tier board`)
-      const kept = lastPool.filter((candidate) => TIER_IDS.includes(boardCache.tierOf[candidate.key ?? candidate.model]))
+      const kept = SHARED.pool.filter((candidate) => TIER_IDS.includes(SHARED.board.tierOf[candidate.key ?? candidate.model]))
       return {
-        pool: lastPool,
-        assigned: boardCache,
-        membership: membershipOf(boardCache),
+        pool: SHARED.pool,
+        assigned: SHARED.board,
+        membership: membershipOf(SHARED.board),
         candidates: kept,
-        byModel: new Map(lastPool.map((candidate) => [candidate.model, candidate])),
+        byModel: new Map(SHARED.pool.map((candidate) => [candidate.model, candidate])),
       }
     }
     const assigned = assignTiers(pool, routes, config.tiers)
     const membership = membershipOf(assigned)
     const byModel = new Map(pool.map((candidate) => [candidate.model, candidate]))
     const candidates = pool.filter((candidate) => TIER_IDS.includes(assigned.tierOf[candidate.key ?? candidate.model]))
-    boardCache = assigned
-    lastPool = pool
+    SHARED.board = assigned
+    SHARED.pool = pool
     return { pool, assigned, membership, candidates, byModel }
   }
 
@@ -974,7 +977,8 @@ export function apply(ctx, input) {
     // Who is in which tier, from the last assignment the router computed.
     const board = lastBoard()
     if (board !== null) {
-      lines.push(`tiers: ${board.mode}${board.overridden.length > 0 ? `, ${board.overridden.length} hand-assigned` : ''}`)
+      lines.push(`plugin instance: ${INSTANCE}`)
+    lines.push(`tiers: ${board.mode}${board.overridden.length > 0 ? `, ${board.overridden.length} hand-assigned` : ''}`)
       for (const id of TIER_IDS) {
         const members = board.groups[id] ?? []
         lines.push(`  ${id}: ${members.length === 0 ? '(none)' : members.join(', ')}`)
@@ -1006,7 +1010,7 @@ export function apply(ctx, input) {
     if (clientReport !== null) {
       const age = Math.round((Date.now() - clientReport.at) / 1000)
       lines.push(
-        `browser page: build=${clientReport.build ?? '?'} board=${clientReport.board} providers=${clientReport.providers.length} ` +
+        `browser page: build=${clientReport.build ?? '?'} instance=${clientReport.instance ?? '?'} board=${clientReport.board} providers=${clientReport.providers.length} ` +
           `capsules=${clientReport.capsules ?? '?'} lanes=${JSON.stringify(clientReport.lanes)} (${age}s ago)`,
       )
     } else {
@@ -1270,6 +1274,9 @@ export function apply(ctx, input) {
 
   /** Machine-readable state for the config UI panel. */
   function snapshotPayload(agent) {
+    // Which plugin instance served this payload: two fibers answering different
+    // halves of the UI is invisible without it.
+    const instance = INSTANCE
     const avg = stats.decisions === 0 ? 0 : Math.round(stats.latencyTotal / stats.decisions)
     // The board the UI renders is computed here, so the page and the router agree
     // about who is in which tier instead of each re-deriving it.
@@ -1280,6 +1287,7 @@ export function apply(ctx, input) {
     return {
       ok: true,
       mode,
+      instance,
       defaultRoute: config.defaultRoute,
       // The page renders this board; it is computed by the host so the router and
       // the UI cannot disagree about who is in which tier.

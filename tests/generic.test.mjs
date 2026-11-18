@@ -116,6 +116,6 @@ test('an empty catalog answer never shrinks the board', () => {
   // provider as empty, which once collapsed the board to the tokenplan routes.
   assert.ok(source.includes('empty answer'), 'an empty list is treated as a failed refresh')
   assert.ok(source.includes('keeping the previous tier board'), 'a collapsed pool keeps the previous board')
-  assert.ok(source.includes('lastPool'), 'the pool behind the board is retained for that fallback')
+  assert.ok(source.includes('SHARED.pool'), 'the pool behind the board is retained for that fallback')
   assert.ok(source.includes('catalogs.clear()'), 'a collapsed pool retries the catalog instead of trusting it')
 })
