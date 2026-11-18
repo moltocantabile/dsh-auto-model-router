@@ -328,6 +328,11 @@ window.__ModuleLoader__.load({
         costWeight: 'Cost weight',
         costWeightHint: '0 = quality at any price · 1 = cheapest that clears the floor',
         costWeightExplain: 'Current {value}: higher trades capability for price.',
+        floorMode: 'Risk floor',
+        floorModePool: 'pool quantile',
+        floorModeAbsolute: 'absolute ladder',
+        floorModeExplain: 'Pool: the floor is a quantile of the candidates capability, like the derived tier ceilings. Absolute: the legacy 36 + 9 x risk ladder.',
+        probeFloor: 'floor',
         classify: 'Classify',
         classifyHint: 'Run the decision model on pasted text without routing anything.',
         probePlaceholder: 'Paste a task description to see which tier the decision model would pick…',
@@ -499,6 +504,11 @@ window.__ModuleLoader__.load({
         costWeight: '成本权重',
         costWeightHint: '0 = 不计价格追求质量 · 1 = 最便宜且达到质量下限',
         costWeightExplain: '当前 {value}：越高越偏向低价。',
+        floorMode: '风险质量下限',
+        floorModePool: '候选池分位',
+        floorModeAbsolute: '固定阶梯',
+        floorModeExplain: '候选池分位：下限取候选池能力的分位数，与推导出的档位上限一致。固定阶梯：沿用 36 + 9 × 风险 的旧阶梯。',
+        probeFloor: '质量下限',
         classify: '试算',
         classifyHint: '对粘贴的文本运行决策模型，不实际路由。',
         probePlaceholder: '粘贴一段任务描述，看看决策模型会选哪个档位…',
@@ -1594,6 +1604,13 @@ window.__ModuleLoader__.load({
         return h('div', { className: 'amr' }, h('p', { className: 'amr-sub' }, busy ? t('busy') : t('refresh')))
       }
 
+      /** The risk floor the last probe was scored against, and where it came from. */
+      const floorLabel = (plan) => {
+        if (plan === null || plan === undefined || plan.floor === null || plan.floor === undefined) return '—'
+        if (plan.mode === 'pool') return `${t('floorModePool')} q${plan.percentile} → ${plan.floor} (${plan.sample})`
+        return `${t('floorModeAbsolute')} ${plan.floor}${typeof plan.note === 'string' ? ` · ${plan.note}` : ''}`
+      }
+
       /**
        * Apply a tier change and re-read the board.
        *
@@ -1963,6 +1980,17 @@ window.__ModuleLoader__.load({
             })),
             h(Field, { label: t('costWeightHint') }, h('span', { className: 'amr-note' },
               t('costWeightExplain').replace('{value}', String(draft.selection?.costWeight ?? 0.35)))),
+            h(Field, { label: t('floorMode'), hint: t('floorModeExplain') }, h(
+              Select,
+              {
+                value: draft.selection?.floorMode ?? 'pool',
+                onChange: (next) => edit((config) => {
+                  config.selection = { ...(config.selection ?? {}), floorMode: next }
+                }),
+              },
+              h('option', { value: 'pool' }, t('floorModePool')),
+              h('option', { value: 'absolute' }, t('floorModeAbsolute')),
+            )),
           ),
         ),
 
@@ -1995,7 +2023,7 @@ window.__ModuleLoader__.load({
                   probeResult.profile === undefined
                     ? '—'
                     : `d${probeResult.profile.depth} b${probeResult.profile.breadth} r${probeResult.profile.risk}`
-                }`,
+                } · ${t('probeFloor')}: ${floorLabel(probeResult.ranking?.floorPlan ?? { floor: probeResult.ranking?.floor, mode: 'absolute' })}`,
               ),
           ),
         ),

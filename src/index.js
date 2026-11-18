@@ -118,6 +118,11 @@ function mergeConfig(input) {
       // How much real-world adoption biases a near-tie. 0 disables it.
       usageWeight: 0.5,
       ...(provided.selection ?? {}),
+      // Where the risk floor comes from: 'pool' derives it as a quantile of the
+      // candidate pool's capability (the aligned scale, like the derived tier
+      // ceilings); 'absolute' keeps the legacy 36 + 9 x risk ladder. Normalized
+      // after the spread so a hand-edited value cannot reach the selector.
+      floorMode: provided.selection?.floorMode === 'absolute' ? 'absolute' : 'pool',
     },
     // How long a session keeps the route it started on. `sticky` chooses once per
     // session and then only moves when the user asks (a named model, `force`);
@@ -796,6 +801,7 @@ export function apply(ctx, input) {
           costWeight: config.selection?.costWeight,
           tierFactors: config.selection?.tierCostFactor,
           usageWeight: config.selection?.usageWeight,
+          floorMode: config.selection?.floorMode,
           defaultRoute: config.defaultRoute,
           membership,
         })
@@ -1040,7 +1046,7 @@ export function apply(ctx, input) {
   // ── model-facing control surface ───────────────────────────────────────────
   function statusText(agent) {
     const lines = []
-    lines.push(`auto model router: mode=${mode} switching=${config.switching} default=${config.defaultRoute} costWeight=${config.selection?.costWeight ?? 0.35}`)
+    lines.push(`auto model router: mode=${mode} switching=${config.switching} default=${config.defaultRoute} costWeight=${config.selection?.costWeight ?? 0.35} floor=${config.selection?.floorMode ?? 'pool'}`)
     lines.push(
       decisionConfigured()
         ? `decision model: ${config.decision.model} @ ${config.decision.baseURL}`
@@ -1126,6 +1132,10 @@ export function apply(ctx, input) {
         lines.push(`  ${candidate.id} [${kind}] route=${current.get(candidate) ?? '-'} status=${candidate.status}`)
       }
     }
+    // A floor that fell back to the explicit ladder says why, so "the numbers
+    // moved" is answerable without reading the log.
+    const lastFloor = decisions.length === 0 ? null : decisions[decisions.length - 1].ranking?.floorPlan ?? null
+    if (lastFloor !== null && typeof lastFloor.note === 'string') lines.push(`floor: ${lastFloor.note}`)
     if (decisions.length > 0) {
       lines.push('recent decisions:')
       for (const record of decisions.slice(-8)) {
@@ -1172,6 +1182,7 @@ export function apply(ctx, input) {
         costWeight: config.selection?.costWeight,
         tierFactors: config.selection?.tierCostFactor,
         usageWeight: config.selection?.usageWeight,
+        floorMode: config.selection?.floorMode,
         defaultRoute: config.defaultRoute,
         membership: membershipOf(assigned),
       })
@@ -1205,6 +1216,7 @@ export function apply(ctx, input) {
               excluded: ranking.excluded,
               weights: ranking.weights,
               floor: ranking.floor,
+              floorPlan: ranking.floorPlan ?? result.floorPlan ?? null,
             }
           : null,
         inputTokens: raw?.inputTokens,
@@ -1339,6 +1351,7 @@ export function apply(ctx, input) {
     const selection = {}
     const costWeight = Number(source.selection?.costWeight)
     if (Number.isFinite(costWeight)) selection.costWeight = Math.max(0, Math.min(1, costWeight))
+    if (source.selection?.floorMode === 'pool' || source.selection?.floorMode === 'absolute') selection.floorMode = source.selection.floorMode
     const policy = {}
     for (const key of ['minConfidence', 'minProbability', 'switchConfidence', 'acknowledgeConfidence', 'modelRequestConfidence']) {
       const value = Number(source.policy?.[key])
@@ -1545,6 +1558,10 @@ export function apply(ctx, input) {
         applyEnvelopes()
         config.decision = merged.decision
         config.policy = merged.policy
+        // The selector reads cost weight, usage weight, tier factors and floor
+        // mode from here; leaving `selection` untouched made a runtime `configure`
+        // write the config without the router ever seeing the new values.
+        config.selection = { ...merged.selection }
         config.switching = merged.switching
         config.tiers = merged.tiers
         config.logDecisions = merged.logDecisions

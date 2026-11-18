@@ -8,7 +8,13 @@ import {
   attachArtificialAnalysis,
   decodeFlightChunks,
   extractArtificialAnalysis,
+  extractEpochEci,
+  extractLlmBenchmarkPage,
+  extractLlmComparison,
+  attachCrossChecks,
+  attachRanking,
   nameIndex,
+  nameIndexAll,
 } from '../src/refresh.js'
 
 /** One Next.js RSC flight chunk carrying an array of model rows. */
@@ -280,4 +286,126 @@ test('the raw mixed-scale scores and metadata are retained, not discarded', () =
   assert.equal(aa.releaseDate, '2026-10-01')
   assert.equal(aa.creator, 'Z AI')
   assert.equal(aa.cacheHitPrice, 0.02)
+})
+
+const measuredEntry = (label) => ({
+  label,
+  quality: 70,
+  price: { input: 2, output: 8 },
+  latency: 'balanced',
+  contextWindow: 200000,
+  modalities: ['text'],
+  toolCalling: true,
+  bestFor: [],
+  weaknesses: [],
+  sources: [],
+})
+
+const AA_FRACTIONS = { gpqa: 0.8, hle: 0.3, livecodebench: 0.6, 'terminalbench-hard': 0.4, 'mmlu-pro': 0.78 }
+
+test('twin catalog ids for one model share a single AA row', () => {
+  // `ZHIPU/GLM-5.3`, `cmaas-glm-5.3` and `glm-5.3` are three endpoints for one
+  // model. AA's row names the model, so every id must receive it; the old
+  // single-id `claim()` filled whichever id won the name index and left the
+  // twins with no per-dimension measurement.
+  const base = {
+    'ZHIPU/GLM-5.3': { label: 'GLM-5.3 (Max)', quality: 60.4 },
+    'cmaas-glm-5.3': { label: 'GLM-5.3 (Max)', quality: 62.6 },
+    'glm-5.3': { label: 'GLM-5.3', quality: 63 },
+  }
+  const row = { id: 'r', name: 'GLM-5.3', price1mInputTokens: 1, price1mOutputTokens: 4, intelligenceIndex: 50, scores: AA_FRACTIONS }
+  const analysis = extractArtificialAnalysis(page([row]), nameIndexAll(base))
+  for (const id of Object.keys(base)) {
+    assert.ok(analysis.byId[id] !== undefined, `${id} received the row`)
+    assert.equal(analysis.byId[id].benchmarks.gpqa, 80)
+  }
+  const dataset = JSON.parse(JSON.stringify(base))
+  attachArtificialAnalysis(dataset, { base, analysis })
+  for (const id of Object.keys(base)) {
+    assert.ok(dataset[id].crossChecks?.artificialAnalysis?.benchmarks?.gpqa > 0, `${id} kept the benchmark observations`)
+  }
+})
+
+test('the stem guard keeps a mislabelled neighbour out of a multi-id fill', () => {
+  // A wrong label on `siliconflow/deepseek-v3-0324` must not let a V4.1 row
+  // attach: the id names a different model even though its label does not.
+  const base = {
+    'deepseek-v4.1-flash-1017': { label: 'DeepSeek-V4.1-Flash-1017', quality: 67.4 },
+    'siliconflow/deepseek-v3-0324': { label: 'DeepSeek V4.1 Flash 1017', quality: 60 },
+  }
+  const rows = [{ id: 'r', name: 'DeepSeek V4.1 Flash 1017', price1mInputTokens: 2, price1mOutputTokens: 8, intelligenceIndex: 40, scores: AA_FRACTIONS }]
+  const analysis = extractArtificialAnalysis(page(rows), nameIndexAll(base))
+  assert.ok(analysis.byId['deepseek-v4.1-flash-1017'] !== undefined, 'the real id gets the row')
+  assert.equal(analysis.byId['siliconflow/deepseek-v3-0324'], undefined, 'the different model does not')
+})
+
+test('llmleaderboard and Epoch rows reach every catalog id for the model', () => {
+  const base = { 'kimi/kimi-k3.1-pro': measuredEntry('Kimi K3.1 Pro'), 'kimi-k3.1-pro': measuredEntry('Kimi K3.1 Pro') }
+  const index = nameIndexAll(base)
+  const csv = [
+    'model,provider,configuration,ttft_seconds,output_tokens_per_second',
+    'Kimi K3.1 Pro,Inco,default,0.8,120',
+  ].join('\n')
+  const llm = extractLlmComparison(csv, index)
+  assert.deepEqual(Object.keys(llm).sort(), ['kimi-k3.1-pro', 'kimi/kimi-k3.1-pro'])
+  const html = '<tr data-benchmark-track="coding" data-benchmark-model="Kimi K3.1 Pro" data-score="67.5">'
+  const board = extractLlmBenchmarkPage(html, 'coding', index)
+  assert.deepEqual(Object.keys(board).sort(), ['kimi-k3.1-pro', 'kimi/kimi-k3.1-pro'])
+  const epoch = extractEpochEci(['Display name,eci,date', 'Kimi K3.1 Pro,44.2,2026-11-01'].join('\n'), index)
+  assert.deepEqual(Object.keys(epoch).sort(), ['kimi-k3.1-pro', 'kimi/kimi-k3.1-pro'])
+})
+
+test('twin ids become rankable together once they share a measurement', () => {
+  // The measured single id is measured from its own AA row; the twin can only be
+  // measured if the same row reaches it. Four anchored models give the AA channel
+  // enough overlap to calibrate, exactly as the real catalog does.
+  const base = {}
+  const rows = []
+  for (let n = 1; n <= 4; n += 1) {
+    const id = `anchor-${n}`
+    const value = 40 + n * 8
+    base[id] = {
+      ...measuredEntry(`Anchor ${n}`),
+      benchmarks: { 'GPQA diamond': value, LiveCodeBench: value - 4, 'Terminal-Bench': value - 6, 'MMLU-Pro': value - 2 },
+      benchmarkSources: ['benchgecko'],
+    }
+    rows.push({
+      id: `a${n}`,
+      name: `Anchor ${n}`,
+      price1mInputTokens: 1,
+      intelligenceIndex: value,
+      scores: { gpqa: value / 100, livecodebench: (value - 4) / 100, 'mmlu-pro': (value - 2) / 100, 'terminalbench-hard': (value - 6) / 100 },
+    })
+  }
+  const twinIds = { 'zhipu/glm-5.3': 'GLM-5.3 (Max)', 'glm-5.3': 'GLM-5.3' }
+  for (const [id, label] of Object.entries(twinIds)) base[id] = measuredEntry(label)
+  rows.push({ id: 'glm', name: 'GLM-5.3', price1mInputTokens: 1, intelligenceIndex: 55, scores: AA_FRACTIONS })
+
+  const analysis = extractArtificialAnalysis(page(rows), nameIndexAll(base))
+  const dataset = JSON.parse(JSON.stringify(base))
+  attachArtificialAnalysis(dataset, { base, analysis })
+  attachRanking(dataset)
+  for (const id of Object.keys(twinIds)) {
+    assert.equal(dataset[id].ranking.status, 'measured', `${id} is measured`)
+    assert.ok(Number.isInteger(dataset[id].ranking.rank), `${id} has a rank`)
+  }
+  // Both twins describe one model, so the shared row gives them the same AA
+  // observations even though their own ids differ.
+  assert.deepEqual(
+    Object.keys(dataset['glm-5.3'].crossChecks.artificialAnalysis.benchmarks).sort(),
+    Object.keys(dataset['zhipu/glm-5.3'].crossChecks.artificialAnalysis.benchmarks).sort(),
+  )
+})
+
+test('nameIndexAll resolves one model name to every id behind it', () => {
+  const index = nameIndexAll({
+    'ZHIPU/GLM-5.3': { label: 'GLM-5.3 (Max)' },
+    'cmaas-glm-5.3': { label: 'Zhipu GLM 5.3' },
+    'glm-5.3': { label: 'GLM-5.3' },
+    'glm-5': { label: 'GLM-5' },
+  })
+  assert.deepEqual([...index.get('glm53')].sort(), ['ZHIPU/GLM-5.3', 'cmaas-glm-5.3', 'glm-5.3'])
+  assert.deepEqual(index.get('glm5'), ['glm-5'])
+  // The single-id index keeps its contract for callers that need one answer.
+  assert.equal(nameIndex({ 'glm-5.3': { label: 'GLM-5.3' } }).get('glm53'), 'glm-5.3')
 })

@@ -301,7 +301,9 @@ export async function refreshCatalog({ base, wanted = [], fetchImpl = fetch, sig
 
   // Two more passes, both independent of the first two: Epoch's fitted index
   // and llmleaderboard's measured serving data plus its benchmark boards.
-  const index = nameIndex(base)
+  // Every name-based source pass resolves a row to all catalog ids that name the
+  // model; the per-id passes (BenchGecko slugs, CompassRank's table) are unchanged.
+  const index = nameIndexAll(base)
   let epoch = {}
   let llm = {}
   try {
@@ -690,6 +692,88 @@ export function nameIndex(base) {
   return index
 }
 
+/**
+ * Index every spelling of every catalog id by normalized name, resolving one
+ * spelling to *all* the ids it names.
+ *
+ * A catalog can carry the same model twice under different provider or reseller
+ * prefixes (`ZHIPU/GLM-5.3` and `glm-5.3`, `kimi/kimi-k3.1-pro` and
+ * `kimi-k3.1-pro`). Identity is `provider/model`, so both entries are legitimate
+ * -- but a source row names the *model*, not the endpoint, and joining it to
+ * whichever id happened to win the single-value index left every twin without
+ * the measurement. Every name-based source pass reads this index instead; the
+ * per-id passes (BenchGecko's slug fetch, CompassRank's operator table) are
+ * untouched.
+ *
+ * @param {Record<string, object>} base
+ * @returns {Map<string, string[]>} normalized spelling -> catalog ids
+ */
+export function nameIndexAll(base) {
+  const index = new Map()
+  const add = (name, id) => {
+    const key = normalizeName(name)
+    if (key.length === 0) return
+    const list = index.get(key) ?? []
+    if (!list.includes(id)) list.push(id)
+    index.set(key, list)
+  }
+  for (const [id, entry] of Object.entries(base)) {
+    add(entry?.label ?? id, id)
+    add(id, id)
+    const bare = id.includes('/') ? id.slice(id.lastIndexOf('/') + 1) : id
+    add(bare, id)
+    if (/^cmaas-/i.test(bare)) add(bare.replace(/^cmaas-/i, ''), id)
+    for (const alias of NAME_ALIASES[id] ?? []) add(alias, id)
+  }
+  return index
+}
+
+/**
+ * Ids one normalized spelling resolves to.
+ *
+ * Accepts both index shapes so a caller holding `nameIndex` (one id per name) and
+ * one holding `nameIndexAll` (a list) behaves the same.
+ *
+ * @param {Map<string, string|string[]>} index
+ * @param {string} key
+ * @returns {string[]}
+ */
+function idsAt(index, key) {
+  const hit = index?.get?.(key)
+  if (hit === undefined) return []
+  return Array.isArray(hit) ? hit : [hit]
+}
+
+/** Model stem of a catalog id, ignoring its provider and reseller prefixes. */
+function idStem(id) {
+  const text = String(id ?? '')
+  const bare = text.includes('/') ? text.slice(text.lastIndexOf('/') + 1) : text
+  return modelStem(bare.replace(/^cmaas-/i, ''))
+}
+
+/**
+ * Whether a source row's name and a catalog id name the same model.
+ *
+ * This is the guard the entry-creation path applied before taking a row's label
+ * and numbers: a prefix match alone joined `siliconflow/deepseek-v3-0324` to a
+ * V4.1 row and shipped its label under the wrong id. A multi-id name join needs
+ * the same check, tightened because it now matches labels as well as ids: the
+ * model cores must be equal, or the extra tail may only be a date or digits
+ * (`qwen3.7-plus-2026-05-26` against `Qwen3.7 Plus`). A version digit is not a
+ * tail -- `GLM-5` must not take `GLM-5.3 (Max)`'s row.
+ */
+function sameModelName(id, name) {
+  const ours = idStem(id)
+  // AA's qualifier parenthesis can split one variant word across two tokens
+  // ("(Non-reasoning)"), so drop it before taking the stem.
+  const theirs = modelStem(String(name ?? '').replace(/\([^)]*\)/g, ' '))
+  if (ours.length < 2 || theirs.length < 2) return false
+  if (ours === theirs) return true
+  const [longer, shorter] = ours.length >= theirs.length ? [ours, theirs] : [theirs, ours]
+  const extra = longer.slice(shorter.length)
+  return /^\d{4,8}$/.test(extra) || VARIANT_WORDS.has(extra)
+}
+
 /** Decode every `self.__next_f.push([1, "…"])` string in a Next.js RSC page. */
 export function decodeFlightChunks(html) {
   const marker = 'self.__next_f.push([1,'
@@ -881,20 +965,27 @@ export function extractArtificialAnalysis(html, index) {
 
   const out = {}
   const byName = new Map()
-  const claim = (name) => {
+  // One AA row names a model, not an endpoint: every catalog id whose name it
+  // matches gets the row. `claim` used to return one id, so a twin entry (same
+  // model behind another provider/reseller prefix) never saw the measurement.
+  const claimAll = (name) => {
     const plain = normalizeName(name)
-    if (index.has(plain)) return index.get(plain)
     // Drop AA's qualifier parenthesis, then trailing variant words.
     const stripped = normalizeName(String(name).replace(/\([^)]*\)/g, ' '))
-    if (index.has(stripped)) return index.get(stripped)
     const trimmed = stripped.replace(/(non)?reasoning$/, '')
-    if (index.has(trimmed)) return index.get(trimmed)
+    for (const spelling of [plain, stripped, trimmed]) {
+      const ids = idsAt(index, spelling)
+      if (ids.length > 0) return ids
+    }
     // Longest catalog key that prefixes the source name (dated ids, "-preview").
     let best = null
-    for (const [key, id] of index) {
-      if (key.length >= 6 && trimmed.startsWith(key) && (best === null || key.length > best.length)) best = key
+    for (const [key, value] of index) {
+      if (key.length < 6 || !trimmed.startsWith(key)) continue
+      const ids = Array.isArray(value) ? value : [value]
+      if (best === null || key.length > best.length) best = { length: key.length, ids }
+      else if (key.length === best.length) best.ids = [...new Set([...best.ids, ...ids])]
     }
-    return best === null ? undefined : index.get(best)
+    return best === null ? [] : best.ids
   }
 
   for (const row of rows.values()) {
@@ -945,8 +1036,11 @@ export function extractArtificialAnalysis(html, index) {
     value.name = row.name
     byName.set(normalizeName(row.name), value)
     byName.set(normalizeName(String(row.name).replace(/\([^)]*\)/g, ' ')), value)
-    const id = claim(row.name)
-    if (id !== undefined) out[id] = value
+    // A prefix match alone is not identity: the creation path refuses a row whose
+    // model stem disagrees, and the multi-id fill must apply the same guard.
+    for (const id of claimAll(row.name)) {
+      if (sameModelName(id, row.name)) out[id] = value
+    }
   }
   return { byId: out, byName }
 }
@@ -1001,8 +1095,9 @@ export function extractArtificialAnalysisModelPage(html, index) {
           if (Number.isFinite(priceOut)) value.priceOut = priceOut
           const ttft = Number(row.timeToFirstToken)
           if (Number.isFinite(ttft)) value.ttft = ttft
-          const idFromIndex = index.get(normalizeName(row.name))
-          if (idFromIndex !== undefined) out[idFromIndex] = value
+          for (const idFromIndex of idsAt(index, normalizeName(row.name))) {
+            if (sameModelName(idFromIndex, row.name)) out[idFromIndex] = value
+          }
           out[`\u0000page:${normalizeName(row.name)}`] = value
         }
       }
@@ -1277,15 +1372,17 @@ export function extractEpochEci(csv, index) {
   const out = {}
   for (const row of rows.slice(1)) {
     const name = row[nameAt]
-    const id = name === undefined ? undefined : index.get(normalizeName(name))
-    if (id === undefined) continue
+    if (name === undefined) continue
     const eci = Number(row[eciAt])
     if (!Number.isFinite(eci)) continue
-    // One row per model; on duplicates keep the newer evaluation date.
-    const previous = out[id]
     const date = row[dateAt] ?? null
-    if (previous !== undefined && String(previous.date) > String(date)) continue
-    out[id] = { eci: round1(eci), date, source: EPOCH_ECI_URL }
+    for (const id of idsAt(index, normalizeName(name))) {
+      if (!sameModelName(id, name)) continue
+      // One row per model; on duplicates keep the newer evaluation date.
+      const previous = out[id]
+      if (previous !== undefined && String(previous.date) > String(date)) continue
+      out[id] = { eci: round1(eci), date, source: EPOCH_ECI_URL }
+    }
   }
   return out
 }
@@ -1312,19 +1409,22 @@ export function extractLlmComparison(csv, index) {
   const speedAt = column('output_tokens_per_second')
   const out = {}
   for (const row of rows.slice(1)) {
-    const id = modelAt === -1 ? undefined : index.get(normalizeName(row[modelAt]))
-    if (id === undefined) continue
+    const name = modelAt === -1 ? undefined : row[modelAt]
+    if (name === undefined) continue
     const ttft = Number(row[ttftAt])
     const speed = Number(row[speedAt])
     if (!Number.isFinite(speed) || speed <= 0) continue
-    const previous = out[id]
-    if (previous !== undefined && previous.tokensPerSecond >= speed) continue
-    out[id] = {
-      provider: row[providerAt] ?? null,
-      configuration: row[configAt] ?? null,
-      ttftSeconds: Number.isFinite(ttft) && ttft > 0 ? round3(ttft) : null,
-      tokensPerSecond: round1(speed),
-      source: LLM_COMPARISON_URL,
+    for (const id of idsAt(index, normalizeName(name))) {
+      if (!sameModelName(id, name)) continue
+      const previous = out[id]
+      if (previous !== undefined && previous.tokensPerSecond >= speed) continue
+      out[id] = {
+        provider: row[providerAt] ?? null,
+        configuration: row[configAt] ?? null,
+        ttftSeconds: Number.isFinite(ttft) && ttft > 0 ? round3(ttft) : null,
+        tokensPerSecond: round1(speed),
+        source: LLM_COMPARISON_URL,
+      }
     }
   }
   return out
@@ -1348,10 +1448,13 @@ export function extractLlmBenchmarkPage(html, track, index) {
   const rowPattern = /<tr data-benchmark-track="([^"]+)" data-benchmark-model="([^"]+)" data-score="([^"]+)"/g
   for (const match of String(html ?? '').matchAll(rowPattern)) {
     if (match[1] !== track) continue
-    const id = index.get(normalizeName(match[2]))
+    const name = match[2]
     const score = Number(match[3])
-    if (id === undefined || !Number.isFinite(score)) continue
-    out[id] = round1(score)
+    if (!Number.isFinite(score)) continue
+    for (const id of idsAt(index, normalizeName(name))) {
+      if (!sameModelName(id, name)) continue
+      out[id] = round1(score)
+    }
   }
   return out
 }

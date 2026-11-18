@@ -332,26 +332,117 @@ export function evidenceConfidence(info, weights = null) {
 }
 
 /**
- * Requirement floors implied by risk. A high-risk request should not land on a
- * model whose measured quality is poor just because it is cheap; this is the
- * "never the cheapest tier that can finish" rule expressed as arithmetic.
+ * The risk floor as the share of the pool below it.
  *
- * The ladder is a policy point on the same 0-100 capability axis `scoreCandidate`
- * measures: the weighted mean of the measurement basis that entry carries
- * (ranking dimensions when ranked, legacy scores only in an unranked catalog).
- * It is not compared against the ranking's conservative `low` bound -- that bound
- * belongs to the derived envelope floor (see `withinEnvelope`) -- so one basis
- * serves one comparison.
+ * The absolute ladder it replaces (36 + 9 x risk) was authored on the legacy
+ * quality axis and then compared against a different scale. Those numbers were
+ * quantiles of the legacy distribution: 45/54/63/72 had 12/20/46/91% of the
+ * catalog below them (the 88th/80th/54th/9th percentile measured from the top).
+ * Expressing the ladder as the same shares lets the floor follow the basis into
+ * the aligned axis, exactly as the derived tier ceilings do. Risk 0 keeps the
+ * top-end spacing of the old ladder (36 sat one 8-point step below 45).
+ */
+export const RISK_FLOOR_QUANTILES = Object.freeze({ 0: 0.04, 1: 0.12, 2: 0.2, 3: 0.46, 4: 0.91 })
+/** Below this many pool values a quantile is a guess, not a measurement. */
+export const MIN_POOL_FLOOR_SAMPLE = 8
+/** The explicit ladder used when no pool quantile is available. */
+const FLOOR_BASE = 36
+const FLOOR_STEP = 9
+
+const finite = (value) => typeof value === 'number' && Number.isFinite(value)
+
+/** Interpolated quantile; same definition as `rank.js`'s helper. */
+function quantileOf(values, p) {
+  const sorted = values.filter(finite).sort((a, b) => a - b)
+  if (sorted.length === 0) return null
+  const at = clamp(p, 0, 1) * (sorted.length - 1)
+  const lo = Math.floor(at)
+  const hi = Math.ceil(at)
+  return sorted[lo] + (sorted[hi] - sorted[lo]) * (at - lo)
+}
+
+/** The risk floor's pool share, interpolated for a fractional risk. */
+function riskFloorQuantile(risk) {
+  const lo = Math.floor(risk)
+  const hi = Math.ceil(risk)
+  if (lo === hi) return RISK_FLOOR_QUANTILES[lo] ?? RISK_FLOOR_QUANTILES[1]
+  const t = risk - lo
+  return (RISK_FLOOR_QUANTILES[lo] ?? 0) + ((RISK_FLOOR_QUANTILES[hi] ?? 0) - (RISK_FLOOR_QUANTILES[lo] ?? 0)) * t
+}
+
+/**
+ * The risk floor for one task, plus how it was obtained.
+ *
+ * `options.basis` is the pool's per-candidate capability values -- the same
+ * profile-weighted quality `scoreCandidate` compares against (see
+ * `capabilityQuality`) -- so a pool-derived floor is a quantile of exactly the
+ * numbers it will be subtracted from. Under `MIN_POOL_FLOOR_SAMPLE` values a
+ * quantile would be a guess, so the explicit ladder is used and the returned
+ * `note` says so; `options.mode: 'absolute'` asks for the ladder outright.
+ *
+ * The floor is not compared against the ranking's conservative `low` bound --
+ * that bound belongs to the derived envelope floor (see `withinEnvelope`) -- so
+ * one basis serves one comparison.
  *
  * @param {TaskProfile} profile
+ * @param {{basis?: number[], mode?: 'pool'|'absolute'}} [options]
+ * @returns {{floor: number, mode: 'pool'|'absolute', percentile: number|null, sample: number, note: string|null}}
+ */
+export function qualityFloorPlan(profile, options = {}) {
+  const risk = clamp(num(profile?.risk, 1), 0, 4)
+  const absolute = FLOOR_BASE + FLOOR_STEP * risk
+  const basis = Array.isArray(options.basis) ? options.basis.filter(finite) : []
+  if (options.mode !== 'absolute' && basis.length >= MIN_POOL_FLOOR_SAMPLE) {
+    const share = riskFloorQuantile(risk)
+    const floor = quantileOf(basis, share)
+    return { floor: Math.round(floor * 10) / 10, mode: 'pool', percentile: Math.round(share * 1000) / 10, sample: basis.length, note: null }
+  }
+  return {
+    floor: absolute,
+    mode: 'absolute',
+    percentile: null,
+    sample: basis.length,
+    note: options.mode === 'absolute' ? null : `pool too small (${basis.length} < ${MIN_POOL_FLOOR_SAMPLE}); explicit ${FLOOR_BASE} + ${FLOOR_STEP}x risk ladder`,
+  }
+}
+
+/**
+ * The risk floor as a number: a quantile of `options.basis` when enough of the
+ * pool is known, else the explicit "good enough for this risk" ladder.
+ *
+ * @param {TaskProfile} profile
+ * @param {{basis?: number[], mode?: 'pool'|'absolute'}} [options]
  * @returns {number}
  */
-export function qualityFloor(profile) {
-  const risk = clamp(num(profile?.risk, 1), 0, 4)
-  // The floor is "good enough for this risk", not "as good as possible". A
-  // trivial task clears 36; a critical one needs 72. Above that floor extra
-  // capability is worth only a fraction of its points (see scoreCandidate).
-  return 36 + risk * 9
+export function qualityFloor(profile, options = {}) {
+  return qualityFloorPlan(profile, options).floor
+}
+
+/**
+ * The profile-weighted capability of one entry on the measurement basis it
+ * carries: the number the risk floor is compared against and the one the
+ * capability term is built from.
+ *
+ * A dimension the basis has no estimate for is the neutral prior 50 here, and
+ * the weight resting on that guess is charged by `unverified` in
+ * `scoreCandidate` -- the two must read the same basis or the floor would
+ * describe a different measurement than the score.
+ *
+ * @param {object|null} info
+ * @param {Record<string, number>} weights - normalized profile weights
+ * @returns {number} 0-100
+ */
+export function capabilityQuality(info, weights) {
+  const basis = dimensionBasis(info)
+  let quality = 0
+  let known = 0
+  for (const dim of DIMENSIONS) {
+    const w = num(weights[dim], 0)
+    if (w === 0) continue
+    quality += w * num(basis.values[dim], 50)
+    known += w
+  }
+  return known === 0 ? 0 : quality / known
 }
 
 /**
@@ -368,23 +459,11 @@ export function scoreCandidate(candidate, weights, profile, options = {}) {
   const info = candidate.info ?? {}
   // One basis for the whole computation. The legacy scores are not consulted
   // when the ranking has measured dims, and a dim the basis lacks is the neutral
-  // prior below rather than a value from the other basis.
+  // prior rather than a value from the other basis.
   const basis = dimensionBasis(info)
   const costWeight = clamp(num(options.costWeight, 0.35), 0, 1)
   const floor = num(options.floor, qualityFloor(profile))
-
-  let quality = 0
-  let known = 0
-  for (const dim of DIMENSIONS) {
-    const w = num(weights[dim], 0)
-    if (w === 0) continue
-    // A dimension the chosen basis has no estimate for is a prior here; the
-    // weight that rests on that guess is charged by `unverified` below.
-    const score = num(basis.values[dim], 50)
-    quality += w * score
-    known += w
-  }
-  if (known > 0) quality = quality / known
+  const quality = capabilityQuality(info, weights)
 
   const risk = clamp(num(profile?.risk, 1), 0, 4)
 
@@ -479,17 +558,31 @@ function passesRequirements(candidate, profile, weights) {
  */
 export function rankModels(profile, candidates, options = {}) {
   const { weights, notes } = profileWeights(profile)
-  const floor = qualityFloor(profile)
   const costWeight = clamp(num(options.costWeight, 0.35), 0, 1)
-  const ranked = []
+  // Requirements filter the pool before the floor is derived: a model that
+  // cannot serve the task (no vision, no tools, a too-small window) is not part
+  // of the distribution "good enough for these stakes" describes.
+  const accepted = []
   const excluded = []
-
   for (const candidate of candidates) {
     const reason = passesRequirements(candidate, profile, weights)
     if (reason !== null) {
       excluded.push({ provider: candidate.provider, model: candidate.model, reason })
       continue
     }
+    accepted.push(candidate)
+  }
+  // A tier selection computes one floor for the whole run and hands it in, so
+  // every tier is scored against the same budget; a bare call derives the floor
+  // from its own eligible candidate pool.
+  const givenFloor = num(options.floor, null)
+  const floorPlan = options.floorPlan ?? (givenFloor !== null
+    ? { floor: givenFloor, mode: 'given', percentile: null, sample: 0, note: null }
+    : qualityFloorPlan(profile, { basis: accepted.map((candidate) => capabilityQuality(candidate.info ?? null, weights)), mode: options.floorMode }))
+  const floor = floorPlan.floor
+  const ranked = []
+
+  for (const candidate of accepted) {
     const scored = scoreCandidate(candidate, weights, profile, { costWeight, floor, usageWeight: options.usageWeight })
     ranked.push({
       provider: candidate.provider,
@@ -511,7 +604,7 @@ export function rankModels(profile, candidates, options = {}) {
   })
 
   const limit = num(options.limit, ranked.length)
-  return { ranked: ranked.slice(0, limit), weights, floor, excluded, notes }
+  return { ranked: ranked.slice(0, limit), weights, floor, floorPlan, excluded, notes }
 }
 
 /** Short, human-readable justifications for one scored candidate. */
@@ -694,7 +787,18 @@ export function selectForTier(profile, candidates, routes, options = {}) {
   // stops meaning anything.
   const factors = options.tierFactors === undefined ? TIER_COST_FACTORS : { ...TIER_COST_FACTORS, ...options.tierFactors }
   const tierFactor = factors[tier] ?? 1
-  const scoped = { ...options, costWeight: (options.costWeight ?? 0.35) * tierFactor }
+  // The risk floor is a property of the task and the whole candidate pool, not of
+  // the tier the selector walked into: deriving it per tier would make "good
+  // enough" move when the tier choice moves. One plan, handed to every rank call.
+  const { weights } = profileWeights(profile)
+  // Only models that can actually serve the task describe "good enough for
+  // these stakes"; the floor is derived from those before the tier filter.
+  const contenders = candidates.filter((candidate) => passesRequirements(candidate, profile, weights) === null)
+  const floorPlan = options.floorPlan ?? qualityFloorPlan(profile, {
+    basis: contenders.map((candidate) => capabilityQuality(candidate.info ?? null, weights)),
+    mode: options.floorMode,
+  })
+  const scoped = { ...options, costWeight: (options.costWeight ?? 0.35) * tierFactor, floor: floorPlan.floor, floorPlan }
   const order = [...new Set([tier, options.defaultRoute, null])]
   let lastRanking = { ranked: [], excluded: [] }
   let fallback = tier
@@ -733,10 +837,11 @@ export function selectForTier(profile, candidates, routes, options = {}) {
       tier: id ?? tier,
       widened: id !== tier,
       eligible: eligible.length,
+      floorPlan,
       ...(allowed === null || allowed === undefined ? {} : { membership: allowed.size }),
     }
   }
-  return { selected: null, ranking: lastRanking, tier: fallback, widened: true, eligible: 0 }
+  return { selected: null, ranking: lastRanking, tier: fallback, widened: true, eligible: 0, floorPlan }
 }
 
 /**

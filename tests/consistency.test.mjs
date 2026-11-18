@@ -4,6 +4,7 @@ import assert from 'node:assert/strict'
 import {
   DIMENSIONS,
   blendedPrice,
+  capabilityQuality,
   costIndex,
   dimensionBasis,
   evidenceConfidence,
@@ -11,8 +12,11 @@ import {
   modelsByQuality,
   profileWeights,
   qualityBasis,
+  qualityFloor,
+  qualityFloorPlan,
   rankModels,
   scoreCandidate,
+  selectForTier,
   withinEnvelope,
 } from '../src/select.js'
 import { assignTiers, boardMetaOf } from '../src/tiers.js'
@@ -348,4 +352,79 @@ test('the dominance margin of 10 is cost-index points, the same cost axis the ti
   const above = assignTiers([strong(8.1), weak(13.9)], ROUTES, {})
   assert.deepEqual(above.dominated.map((entry) => entry.key), ['p/deepseek-weak'], 'an 11-point gap on the cost index is dominated')
   assert.equal(above.dominated[0].by, 'p/deepseek-strong')
+})
+
+/** A 100-model pool whose legacy risk floors sat at the documented shares. */
+const LEGACY_SHAPED = [
+  ...Array(4).fill(30), ...Array(8).fill(40), ...Array(8).fill(50),
+  ...Array(26).fill(60), ...Array(45).fill(70), ...Array(9).fill(80),
+]
+const shareBelow = (values, floor) => values.filter((value) => value < floor).length / values.length
+
+test('a pool-derived risk floor reproduces the legacy share of the pool', () => {
+  // 45/54/63/72 had 12/20/46/91% of the legacy distribution below them. On the
+  // aligned axis the numbers change but the policy must not.
+  for (const [risk, target] of [[1, 0.12], [2, 0.2], [3, 0.46], [4, 0.91]]) {
+    const plan = qualityFloorPlan({ risk }, { basis: LEGACY_SHAPED, mode: 'pool' })
+    assert.equal(plan.mode, 'pool')
+    assert.equal(plan.sample, LEGACY_SHAPED.length)
+    assert.ok(Math.abs(shareBelow(LEGACY_SHAPED, plan.floor) - target) <= 0.02, `risk ${risk}: floor ${plan.floor} leaves ${shareBelow(LEGACY_SHAPED, plan.floor)} below, target ${target}`)
+    assert.ok(plan.percentile > 0 && plan.percentile < 100)
+    assert.equal(plan.note, null)
+  }
+  // Risk 0 keeps the old ladder's top-end spacing: just below risk 1.
+  const easy = qualityFloorPlan({ risk: 0 }, { basis: LEGACY_SHAPED, mode: 'pool' })
+  assert.ok(easy.floor < qualityFloorPlan({ risk: 1 }, { basis: LEGACY_SHAPED, mode: 'pool' }).floor)
+})
+
+test('a pool too small for a quantile falls back to the explicit ladder and says so', () => {
+  const plan = qualityFloorPlan({ risk: 2 }, { basis: [40, 50, 60, 70], mode: 'pool' })
+  assert.equal(plan.mode, 'absolute')
+  assert.equal(plan.floor, 54, 'the authored 36 + 9 x risk ladder')
+  assert.match(plan.note, /pool too small/)
+  // Asking for the ladder outright is a choice, not a fallback: no note.
+  const absolute = qualityFloorPlan({ risk: 2 }, { basis: LEGACY_SHAPED, mode: 'absolute' })
+  assert.equal(absolute.mode, 'absolute')
+  assert.equal(absolute.floor, 54)
+  assert.equal(absolute.note, null)
+  // The number-returning form keeps the old contract.
+  assert.equal(qualityFloor({ risk: 2 }), 54)
+})
+
+test('the pool floor is a quantile of the same weighted quality scoreCandidate compares against', () => {
+  const profile = { shape: 'implement', depth: 2, breadth: 2, risk: 2 }
+  const { weights } = profileWeights(profile)
+  const candidates = Array.from({ length: 12 }, (_, position) => {
+    const value = 35 + position * 3
+    return candidate(`model-${position}`, rankedInfo(rankedDims({
+      overall: [value, 10], coding: [value], reasoning: [value], math: [value], knowledge: [value], agentic: [value],
+      longContext: [50, 0], vision: [0, 0], speed: [50, 1],
+    })))
+  })
+  const expectedBasis = candidates.map((entry) => capabilityQuality(entry.info, weights))
+  const expectedPlan = qualityFloorPlan(profile, { basis: expectedBasis, mode: 'pool' })
+  const { ranked, floor, floorPlan } = rankModels(profile, candidates, { floorMode: 'pool' })
+  assert.equal(floorPlan.mode, 'pool')
+  assert.equal(floor, expectedPlan.floor, 'the floor is a quantile of the reported quality values')
+  for (const row of ranked) {
+    assert.ok(Math.abs(row.quality - Math.round(capabilityQuality(candidates.find((entry) => entry.model === row.model).info, weights) * 10) / 10) <= 0.11)
+    const gap = Math.max(0, floor - row.quality)
+    const expectedPenalty = Math.round(gap * (1.5 + 0.8 * 2) * 10) / 10
+    assert.ok(Math.abs(row.floorPenalty - expectedPenalty) <= 0.2, `${row.model}: floorPenalty ${row.floorPenalty} vs ${expectedPenalty}`)
+  }
+})
+
+test('one pool floor is derived for the run, not re-derived per tier', () => {
+  const profile = { shape: 'implement', depth: 2, breadth: 2, risk: 2 }
+  const candidates = Array.from({ length: 12 }, (_, position) => {
+    const value = 35 + position * 3
+    return candidate(`model-${position}`, rankedInfo(rankedDims({
+      overall: [value, 10], coding: [value], reasoning: [value], math: [value], knowledge: [value], agentic: [value],
+      longContext: [50, 0], vision: [0, 0], speed: [50, 1],
+    })))
+  })
+  const result = selectForTier(profile, candidates, ROUTES, { defaultRoute: 'balanced', floorMode: 'pool' })
+  assert.equal(result.floorPlan.mode, 'pool')
+  assert.equal(result.floorPlan.sample, candidates.length, 'the plan saw the whole pool')
+  assert.equal(result.ranking.floorPlan.floor, result.floorPlan.floor, 'the tier ranked against that one floor')
 })
