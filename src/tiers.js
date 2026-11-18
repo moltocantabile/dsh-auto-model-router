@@ -17,6 +17,35 @@ import { costIndex, withinEnvelope } from './select.js'
 /** How much cheaper a model must be to justify a lower quality by "dominance". */
 const DOMINANCE_COST_MARGIN = 10
 
+/** Reseller prefixes a model id may carry in front of its real name. */
+const RESELLER_PREFIXES = ['cmaas', 'vanchin', 'siliconflow']
+
+/**
+ * The model family a key belongs to, for comparing like with like.
+ *
+ * `deepseek-v4-pro` and `deepseek-v4.1-flash` are alternatives to each other;
+ * `qwen3.8-flash` is not, even when it happens to be cheaper and stronger. A
+ * router that disables DeepSeek because one Qwen beats one DeepSeek is ranking
+ * vendors, not models -- and a profile that serves several vendors needs the
+ * choice to stay open.
+ *
+ * @param {string} key - `provider/model` or a bare model id
+ * @returns {string}
+ */
+export function familyOf(key) {
+  let id = String(key ?? '').toLowerCase()
+  const slash = id.lastIndexOf('/')
+  if (slash >= 0) id = id.slice(slash + 1)
+  for (const prefix of RESELLER_PREFIXES) {
+    if (id.startsWith(`${prefix}-`)) {
+      id = id.slice(prefix.length + 1)
+      break
+    }
+  }
+  const word = /^[a-z]+/.exec(id)
+  return word === null ? id : word[0]
+}
+
 /** Measured quality of a candidate, 0 when nothing measured it. */
 const qualityOf = (info) => {
   const quality = Number(info?.quality ?? info?.scores?.composite)
@@ -138,7 +167,7 @@ export function assignTiers(pool, routes, config = {}) {
     }
     groups[tier].push(key)
     tierOf[key] = tier
-    placed.push({ key, tier, quality: qualityOf(candidate.info), cost: costIndex(candidate.info) })
+    placed.push({ key, tier, quality: qualityOf(candidate.info), cost: costIndex(candidate.info), family: familyOf(key) })
   }
 
   // A model that another one beats on both axes is not worth routing: it pays
@@ -150,6 +179,9 @@ export function assignTiers(pool, routes, config = {}) {
       const winner = placed.find(
         (other) =>
           other.key !== candidate.key &&
+          // Same family only: a cheaper, stronger model from another vendor is a
+          // different product line, not a replacement for this one.
+          other.family === candidate.family &&
           other.quality > candidate.quality &&
           other.cost <= candidate.cost - DOMINANCE_COST_MARGIN,
       )

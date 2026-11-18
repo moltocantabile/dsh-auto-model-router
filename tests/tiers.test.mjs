@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { TIER_IDS, assignTiers, autoTierFor, membershipOf } from '../src/tiers.js'
+import { TIER_IDS, assignTiers, autoTierFor, familyOf, membershipOf } from '../src/tiers.js'
 import { selectForTier, tierFor } from '../src/select.js'
 
 const ROUTES = {
@@ -163,13 +163,14 @@ const priced = (id, quality, price) => ({
 test('a model beaten on quality and price lands off, with the winner named', () => {
   // Same work, more than ten cost-index points dearer, measurably worse: paying
   // more for less. Automatic placement alone would keep it, so it is switched off.
-  // Both fit `balanced`; only the price/quality comparison separates them.
-  const assigned = assignTiers([priced('bad', 60, 10), priced('good', 62, 1)], ROUTES, {})
-  assert.equal(assigned.tierOf['p/bad'], 'off')
-  assert.ok(assigned.groups.off.includes('p/bad'))
-  const record = assigned.dominated.find((entry) => entry.key === 'p/bad')
-  assert.equal(record.by, 'p/good')
-  assert.ok(assigned.groups[assigned.tierOf['p/good']].includes('p/good'), 'the winner keeps its tier')
+  // Both fit `balanced` and both are DeepSeek: only the price/quality comparison
+  // separates them, which is exactly when the rule should act.
+  const assigned = assignTiers([priced('deepseek-slow', 60, 10), priced('deepseek-fast', 62, 1)], ROUTES, {})
+  assert.equal(assigned.tierOf['p/deepseek-slow'], 'off')
+  assert.ok(assigned.groups.off.includes('p/deepseek-slow'))
+  const record = assigned.dominated.find((entry) => entry.key === 'p/deepseek-slow')
+  assert.equal(record.by, 'p/deepseek-fast')
+  assert.ok(assigned.groups[assigned.tierOf['p/deepseek-fast']].includes('p/deepseek-fast'), 'the winner keeps its tier')
 })
 
 test('a dearer model is not "dominated" just for being dearer', () => {
@@ -182,7 +183,33 @@ test('a dearer model is not "dominated" just for being dearer', () => {
 })
 
 test('a hand-assigned model is never pruned by dominance', () => {
-  const assigned = assignTiers([priced('bad', 60, 10), priced('good', 62, 1)], ROUTES, { overrides: { 'p/bad': 'deep' } })
-  assert.equal(assigned.tierOf['p/bad'], 'deep', 'the override outranks the automated rule')
-  assert.ok(assigned.groups.deep.includes('p/bad'))
+  const assigned = assignTiers([priced('deepseek-slow', 60, 10), priced('deepseek-fast', 62, 1)], ROUTES, { overrides: { 'p/deepseek-slow': 'deep' } })
+  assert.equal(assigned.tierOf['p/deepseek-slow'], 'deep', 'the override outranks the automated rule')
+  assert.ok(assigned.groups.deep.includes('p/deepseek-slow'))
+})
+
+test('families come from the model name, not the provider or reseller', () => {
+  assert.equal(familyOf('bailian-aliyun/deepseek-v4-pro'), 'deepseek')
+  assert.equal(familyOf('vanchin/deepseek-v4.1-flash-1017'), 'deepseek')
+  assert.equal(familyOf('cmaas-glm-5.3'), 'glm')
+  assert.equal(familyOf('ZHIPU/GLM-5.3'), 'glm')
+  assert.equal(familyOf('kimi/kimi-k3.1-pro'), 'kimi')
+  assert.equal(familyOf('bailian-tokenplan/qwen3.8-flash'), 'qwen')
+  assert.equal(familyOf('MiniMax/MiniMax-M3'), 'minimax')
+})
+
+test('a better model elsewhere does not disable a family', () => {
+  // Qwen beating a DeepSeek on both axes is a vendor comparison, not a reason to
+  // take DeepSeek off the board: the profile serves several vendors on purpose.
+  const assigned = assignTiers([priced('qwen-strong', 78, 1), priced('deepseek-weak', 60, 10)], ROUTES, {})
+  assert.deepEqual(assigned.dominated, [])
+  assert.ok(['fast', 'balanced', 'deep'].includes(assigned.tierOf['p/deepseek-weak']))
+})
+
+test('a model is compared only with its own family members', () => {
+  // Within DeepSeek the cheaper+stronger one wins; the Qwen next to it is irrelevant.
+  const pool = [priced('qwen-strong', 90, 0.5), priced('deepseek-slow', 60, 10), priced('deepseek-fast', 62, 1)]
+  const assigned = assignTiers(pool, ROUTES, {})
+  assert.deepEqual(assigned.dominated.map((entry) => entry.key), ['p/deepseek-slow'])
+  assert.ok(!assigned.dominated.some((entry) => entry.key === 'p/qwen-strong'))
 })

@@ -266,6 +266,13 @@ The settings page shows the assignment as a board of **capsules**:
 | "Reset board to automatic" | drop every override and every disabled model |
 | the **Providers** menu | tick one or more catalogs to show; nothing ticked shows all |
 
+A model is switched off automatically when another model **of the same family**
+(`deepseek*`, `qwen*`, `glm*`, `kimi*`, …) is measurably stronger *and* at least
+ten cost-index points cheaper. The comparison is deliberately inside a family: a
+cheaper Qwen is not a replacement for a DeepSeek, and disabling one vendor because
+another vendor's model wins would turn a router into a vendor ranking. Reseller
+prefixes (`cmaas-`, `vanchin/`, `siliconflow/`) resolve to the family underneath.
+
 `tiers.mode: manual` routes only what is assigned explicitly — an unassigned model
 stays out rather than being guessed at. The same data is on the `model_router`
 tool (`status` prints the lanes; `configure` accepts `tiers`).
