@@ -214,6 +214,8 @@ window.__ModuleLoader__.load({
         modelRequestConfidence: 'Model request confidence',
         modelRequestHint: 'How sure it must be that a named model is a request rather than a mention in a log or config.',
         switchConfidence: 'Switch confidence',
+        switchingAuto: 'Re-route every step (auto switch)',
+        switchingHint: 'Off by default: a session keeps the model it started on. The decision is still logged, and naming a model or using `force` always moves it.',
         logDecisions: 'Log every decision at info level',
         observability: 'Observability',
         stats: 'Stats',
@@ -333,6 +335,8 @@ window.__ModuleLoader__.load({
         modelRequestConfidence: '点名模型置信度',
         modelRequestHint: '判定模型有多确定「点名的模型是请求」而非日志、配置里的提及。',
         switchConfidence: '切换置信度',
+        switchingAuto: '每步重新路由（自动切换）',
+        switchingHint: '默认关闭：会话沿用开场选定的模型。决策仍会记录；用户点名模型或使用 `force` 时照常切换。',
         logDecisions: '在 info 级别记录每次决策',
         observability: '运行观测',
         stats: '统计',
@@ -613,7 +617,7 @@ window.__ModuleLoader__.load({
      * step with `DEFAULT_SUMMARIZER` in src/summarize.js; the host is the
      * authority, this only keeps the form from rendering blanks.
      */
-    const SUMMARIZER_DEFAULTS = { enabled: true, model: 'qwen3.8-flash', timeoutMs: 8000, maxChars: 900, minMessages: 6, refreshEvery: 6 }
+    const SUMMARIZER_DEFAULTS = { enabled: true, model: '', timeoutMs: 8000, maxChars: 900, minMessages: 6, refreshEvery: 6 }
 
     const SCORE_DIMS = [
       ['cod', 'coding'],
@@ -1304,6 +1308,17 @@ window.__ModuleLoader__.load({
               onChange: (next) => edit((config) => { config.policy.modelRequestConfidence = next }),
             })),
           ),
+          h(
+            'label',
+            { className: 'amr-check' },
+            h('input', {
+              type: 'checkbox',
+              checked: draft.switching === 'auto',
+              onChange: (event) => edit((config) => { config.switching = event.target.checked ? 'auto' : 'sticky' }),
+            }),
+            t('switchingAuto'),
+          ),
+          h('p', { className: 'amr-cardHint' }, t('switchingHint')),
           h(
             'label',
             { className: 'amr-check' },

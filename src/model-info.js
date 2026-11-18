@@ -94,10 +94,30 @@ export function saveRuntimeDataset(dataset) {
 const RUNTIME = loadRuntime()
 if (RUNTIME !== null) applyDataset(RUNTIME)
 
-/** Provider ids that differ only by deployment, never by model identity. */
-const PROVIDER_ALIASES = {
-  'bailian-aliyun': 'bailian-tokenplan',
-  'deepseek-official': 'deepseek-account',
+/**
+ * Provider ids that differ only by deployment, never by model identity.
+ *
+ * Operator config, not an opinion about vendors: two provider entries that serve
+ * the same catalog should share one knowledge entry, and which entries those are
+ * depends on the profile, so `knowledgeProviderAliases` in the plugin config
+ * extends this map.
+ */
+const PROVIDER_ALIASES = {}
+
+/** The alias map plus whatever the operator configured. */
+function providerAliases() {
+  const configured = getAliases()
+  return { ...PROVIDER_ALIASES, ...configured }
+}
+
+let configuredAliases = {}
+/** Replace the operator-supplied alias map (called from the plugin config). */
+export function applyProviderAliases(aliases) {
+  configuredAliases = aliases !== null && typeof aliases === 'object' ? { ...aliases } : {}
+}
+
+function getAliases() {
+  return configuredAliases
 }
 
 /** Canonical model key: drop a provider prefix, lowercase, trim. */
@@ -105,7 +125,11 @@ export function modelKey(provider, modelId) {
   let id = String(modelId ?? '').trim()
   if (id.includes('/')) {
     const [head, ...rest] = id.split('/')
-    if (rest.length > 0 && (head === provider || head.startsWith('bailian') || head.startsWith('deepseek'))) id = rest.join('/')
+    // Only strip a prefix that is the provider itself or one of its documented
+    // aliases — a slash inside a model name is part of the name.
+    const aliases = providerAliases()
+    const known = head === provider || aliases[head] === provider || Object.values(aliases).includes(head)
+    if (rest.length > 0 && known) id = rest.join('/')
   }
   if (id.includes(':')) id = id.slice(id.indexOf(':') + 1)
   return id.toLowerCase()
@@ -113,7 +137,7 @@ export function modelKey(provider, modelId) {
 
 /**
  * Look up the knowledge entry for one provider/model pair.
- * @param {string} provider - provider route id, e.g. `bailian-tokenplan`.
+ * @param {string} provider - provider route id as the harness reports it.
  * @param {string} modelId - model id as the provider advertises it.
  * @returns {object | null} detached entry with a `key`, or null when unknown.
  */
@@ -130,7 +154,8 @@ export function infoFor(provider, modelId) {
 
 /** Provider id used for knowledge lookups (deployments share one catalog). */
 export function knowledgeProvider(provider) {
-  return PROVIDER_ALIASES[String(provider ?? '')] ?? String(provider ?? '')
+  const aliases = providerAliases()
+  return aliases[String(provider ?? '')] ?? String(provider ?? '')
 }
 
 const money = (value) => {

@@ -26,8 +26,10 @@ import { messageText, NOISE_SOURCE_KINDS } from './decision.js'
 
 export const DEFAULT_SUMMARIZER = {
   enabled: true,
-  // A flash model with a 1M window: this is a reading task, not a reasoning one.
-  model: 'qwen3.8-flash',
+  // Empty means "the cheapest routable model": summarizing is reading, not
+  // reasoning, and naming a vendor here would make the generic default a
+  // vendor default.
+  model: '',
   timeoutMs: 12_000,
   maxChars: 900,
   // Below this many messages the transcript is already shorter than the digest

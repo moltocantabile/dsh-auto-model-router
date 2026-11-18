@@ -142,6 +142,7 @@ test('callDecisionModel posts the System One body and normalizes typed answers',
   const body = await callDecisionModel({
     baseURL: 'https://example.test/compatible-mode/v1/',
     apiKey: 'sk-test',
+    model: 'decision-model-preview',
     state: 'refactor the parser',
     timeoutMs: 2000,
     signal: undefined,
@@ -163,6 +164,7 @@ test('callDecisionModel rejects an HTTP error', async () => {
     callDecisionModel({
       baseURL: 'https://example.test/v1',
       apiKey: 'sk-test',
+      model: 'decision-model-preview',
       state: 'x',
       timeoutMs: 1000,
       fetchImpl: async () => new Response('quota exceeded', { status: 429 }),
@@ -206,6 +208,7 @@ test('callDecisionModel sends the model question when a pool is supplied', async
   await callDecisionModel({
     baseURL: 'https://x/v1',
     apiKey: 'k',
+    model: 'decision-model-preview',
     state: 'user: use qwen3.7-max for this',
     models: ['qwen3.7-max', 'qwen3.8-flash'],
     fetchImpl: async (_url, init) => {
@@ -221,7 +224,7 @@ test('callDecisionModel sends the model question when a pool is supplied', async
 test('no pool means no model question', async () => {
   let sent = null
   await callDecisionModel({
-    baseURL: 'https://x/v1', apiKey: 'k', state: 'user: hi',
+    baseURL: 'https://x/v1', apiKey: 'k', model: 'decision-model-preview', state: 'user: hi',
     fetchImpl: async (_url, init) => {
       sent = JSON.parse(init.body)
       return { ok: true, status: 200, async text() { return JSON.stringify({ answers: {} }) } }
@@ -282,4 +285,28 @@ test('a request inside the window is not duplicated', () => {
   const ask = { role: 'user', source: { kind: 'user' }, content: [{ type: 'text', text: 'rename the field' }] }
   const state = buildState([ask], [], {}, {})
   assert.equal((state.text.match(/rename the field/g) ?? []).length, 1)
+})
+
+test('the decision endpoint is operator config, not a vendor constant', async () => {
+  // No hard-coded host: an unconfigured client says so instead of calling one.
+  await assert.rejects(
+    callDecisionModel({ state: 'x', fetchImpl: async () => new Response('{}') }),
+    /decision endpoint not configured/,
+  )
+  await assert.rejects(
+    callDecisionModel({ baseURL: 'https://example.test/v1', state: 'x', fetchImpl: async () => new Response('{}') }),
+    /decision model not configured/,
+  )
+  // A local server that wants no credential gets no authorization header.
+  let sent = null
+  await callDecisionModel({
+    baseURL: 'https://example.test/v1',
+    model: 'm',
+    state: 'x',
+    fetchImpl: async (_url, init) => {
+      sent = init
+      return new Response(JSON.stringify({ answers: {} }), { status: 200 })
+    },
+  })
+  assert.equal(sent.headers.authorization, undefined)
 })

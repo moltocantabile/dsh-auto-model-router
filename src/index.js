@@ -41,16 +41,18 @@ import {
   callDecisionModel,
   parseDecision,
 } from './decision.js'
-import { infoFor, knowledgeProvider, routingNote, applyDataset, saveRuntimeDataset, MODEL_INFO, RUNTIME_DATA_URL } from './model-info.js'
+import { infoFor, knowledgeProvider, routingNote, applyDataset, applyProviderAliases, saveRuntimeDataset, MODEL_INFO, RUNTIME_DATA_URL } from './model-info.js'
 import { refreshCatalog } from './refresh.js'
 import { DEFAULT_SUMMARIZER, buildDigestPrompt, callChatModel, createDigestCache } from './summarize.js'
-import { selectForTier, describeRanking } from './select.js'
+import { selectForTier, describeRanking, costIndex } from './select.js'
 import { selectRoute as recordSelection } from './route.js'
 
 export const name = '@dsh-external/dsh-auto-model-router'
 export const inject = ['tools']
 
 const RECENT_LIMIT = 40
+/** How many model ids the decision model may be offered as a named choice. */
+const MODEL_CHOICE_LIMIT = 40
 const KEY_CACHE_MS = 60_000
 const DECISION_REUSE_MS = 120_000
 /**
@@ -91,12 +93,22 @@ function mergeConfig(input) {
     decision: { ...DEFAULT_DECISION, ...(provided.decision ?? {}) },
     policy: { ...DEFAULT_POLICY, ...(provided.policy ?? {}) },
     selection: { costWeight: 0.35, tierCostFactor: undefined, ...(provided.selection ?? {}) },
+    // How long a session keeps the route it started on. `sticky` chooses once per
+    // session and then only moves when the user asks (a named model, `force`);
+    // `auto` re-decides at every step. Sticky is the default because switching
+    // models mid-task throws away the prompt cache and the style the turn began
+    // in, and a session that keeps changing models is harder to reason about.
+    switching: provided.switching === 'auto' ? 'auto' : 'sticky',
+    knowledgeProviderAliases: provided.knowledgeProviderAliases ?? {},
     logDecisions: provided.logDecisions ?? false,
   }
 }
 
 export function apply(ctx, input) {
   const config = mergeConfig(input)
+  // Provider aliases decide which catalog entries share one knowledge entry, so
+  // they are per-profile config rather than a table of vendor names in here.
+  applyProviderAliases(config.knowledgeProviderAliases)
   const routes = config.routes
 
   let mode = config.mode
@@ -124,6 +136,54 @@ export function apply(ctx, input) {
   const decisions = []
   const stats = { requests: 0, decisions: 0, acknowledged: 0, applied: 0, switches: 0, fallbacks: 0, errors: 0, latencyTotal: 0, summaries: 0, digestChars: 0, digestFailures: 0 }
 
+  /**
+   * Whether a decision endpoint is configured. Routing needs an endpoint and a
+   * model; the credential is optional, because a local server may not want one.
+   */
+  const decisionConfigured = () =>
+    typeof config.decision.baseURL === 'string' && config.decision.baseURL.length > 0 &&
+    typeof config.decision.model === 'string' && config.decision.model.length > 0
+
+  let unconfiguredWarned = false
+  function warnUnconfigured() {
+    if (unconfiguredWarned) return
+    unconfiguredWarned = true
+    ctx.logger.warn('[model-router] no decision endpoint configured (decision.baseURL + decision.model); routing stays off until it is set')
+  }
+
+  /**
+   * Model ids offered to the decision model as a `model` choice.
+   *
+   * @param {Array<object>} pool
+   * @returns {Array<string>}
+   */
+  function offerModelIds(pool) {
+    const ranked = [...pool].sort((a, b) => (b.info?.quality ?? 0) - (a.info?.quality ?? 0))
+    const ids = []
+    const seen = new Set()
+    for (const candidate of ranked) {
+      if (seen.has(candidate.model)) continue
+      seen.add(candidate.model)
+      ids.push(candidate.model)
+      if (ids.length >= MODEL_CHOICE_LIMIT) break
+    }
+    return ids
+  }
+
+  /**
+   * The cheapest model the pool can call, used when no summarizer model is
+   * configured. Cost is the measured index, so an unpriced model does not win.
+   */
+  async function cheapestModel() {
+    const pool = await candidatePool()
+    let best = null
+    for (const candidate of pool) {
+      const cost = costIndex(candidate.info)
+      if (best === null || cost < best.cost) best = { cost, model: candidate.model }
+    }
+    return best?.model ?? null
+  }
+
   /** Summarizer settings, config over defaults. */
   const summarizerOptions = () => ({ ...DEFAULT_SUMMARIZER, ...(config.decision?.summarizer ?? {}) })
 
@@ -139,11 +199,15 @@ export function apply(ctx, input) {
     summarize: async ({ previous, transcript, messageCount, signal }) => {
       const options = summarizerOptions()
       if (options.enabled === false) return previous ?? ''
+      // Reading, not reasoning: with no model configured, use the cheapest one
+      // the pool can actually call rather than a vendor's flash model.
+      const model = options.model.length > 0 ? options.model : await cheapestModel()
+      if (model === null) return previous ?? ''
       const { system, user } = buildDigestPrompt({ previous, transcript, maxChars: options.maxChars, messageCount })
       const digest = await callChatModel({
         baseURL: config.decision.baseURL,
         apiKey: await resolveApiKey(),
-        model: options.model,
+        model,
         system,
         user,
         timeoutMs: options.timeoutMs,
@@ -359,8 +423,32 @@ export function apply(ctx, input) {
    * catalog is unavailable, so a provider outage degrades to the old behavior
    * instead of failing.
    */
+  /**
+   * Providers the pool may draw from.
+   *
+   * Routes are envelopes, so a default install names no provider: the pool is
+   * every provider the harness exposes, and the tiers pick from it. A route may
+   * still name one to pin its tier to a provider.
+   */
+  async function poolProviders() {
+    const named = Object.values(routes).map((route) => route.provider).filter((provider) => typeof provider === 'string' && provider.length > 0)
+    // A profile that pins its tiers to a deployment means it: the pool stays
+    // inside that provider rather than cataloguing every credential on the host.
+    if (named.length > 0) return [...new Set(named)]
+    let all = []
+    const llm = ctx.get('llm')
+    if (llm !== undefined && typeof llm.listProviders === 'function') {
+      try {
+        all = llm.listProviders().map((entry) => entry?.id).filter((id) => typeof id === 'string' && id.length > 0)
+      } catch {
+        all = []
+      }
+    }
+    return [...new Set([...named, ...all])]
+  }
+
   async function candidatePool() {
-    const providers = [...new Set(Object.values(routes).map((route) => route.provider))]
+    const providers = await poolProviders()
     const pooled = []
     const seen = new Set()
     for (const provider of providers) {
@@ -378,13 +466,15 @@ export function apply(ctx, input) {
       }
     }
     if (pooled.length > 0) return pooled
-    return Object.entries(routes).map(([id, route]) => ({
-      tier: id,
-      provider: route.provider,
-      model: route.model,
-      info: routeInfo(route),
-      configured: true,
-    }))
+    return Object.entries(routes)
+      .filter(([, route]) => typeof route.provider === 'string' && typeof route.model === 'string')
+      .map(([id, route]) => ({
+        tier: id,
+        provider: route.provider,
+        model: route.model,
+        info: routeInfo(route),
+        configured: true,
+      }))
   }
 
   async function routeUsable(route, signal) {
@@ -417,6 +507,13 @@ export function apply(ctx, input) {
     // gets a short budget so it cannot hold up a turn indefinitely, and whatever
     // arrives later still lands in the cache for the next decision.
     const messages = agent.session.deriveMessages()
+
+    // An unconfigured decision endpoint leaves routing inert instead of falling
+    // back to some vendor's service: the session keeps the model it started on.
+    if (!decisionConfigured()) {
+      warnUnconfigured()
+      return null
+    }
 
     // A step whose whole new input is harness-injected (a model-switch notice,
     // the environment block) is not a new request. Deciding from it would let
@@ -465,8 +562,12 @@ export function apply(ctx, input) {
         model: config.decision.model,
         state: state.text,
         timeoutMs: config.decision.timeoutMs,
-        // The model may only name something the router could actually call.
-        models: pool.map((candidate) => candidate.model),
+        // The model may only name something the router could actually call, and
+        // the list is bounded: a profile serving 200 models would otherwise put
+        // 200 choices in front of the decision model for a request that names
+        // none of them. Best-measured first, so the ids a user is likely to ask
+        // for are the ones offered.
+        models: offerModelIds(pool),
         signal,
       })
     } catch (error) {
@@ -592,6 +693,29 @@ export function apply(ctx, input) {
    *
    * @returns whether a selection was recorded (false when it was already set).
    */
+  /**
+   * The model this session is already committed to, or null when it is still
+   * the router's to choose.
+   *
+   * A deliberate choice is one written to the session as a `model/selection`
+   * event: this router's own decision, the UI's model picker, or an earlier run
+   * before a restart. The harness also writes one at startup for the configured
+   * default route, which is not a choice anyone made — comparing against the
+   * agent's own options tells the two apart. Without that comparison sticky
+   * routing would keep every session on its configured default and never route.
+   */
+  function committedSelection(agent) {
+    const inMemory = recorded.get(agent)
+    if (inMemory !== undefined) return inMemory
+    const model = agent?.model
+    if (model === undefined || typeof model.recordedSelection !== 'function') return null
+    const event = model.recordedSelection()
+    if (event === null || event === undefined) return null
+    const options = agent.options
+    if (options?.provider === event.provider && options?.model === event.model) return null
+    return { provider: event.provider, model: event.model }
+  }
+
   function selectRoute(agent, route) {
     const previous = recorded.get(agent) ?? null
     const selection = recordSelection(agent, route, previous)
@@ -666,11 +790,30 @@ export function apply(ctx, input) {
         if (route.id === fallback.id || !(await routeUsable(fallback, context.signal))) return resolved
         route = fallback
       }
+      stats.requests += 1
+      const switchesBefore = stats.switches
+
+      // Sticky sessions keep the route they started on. The decision is still
+      // computed and logged (so `status` explains what routing would have
+      // done), but the session only moves when the request itself asked for a
+      // model or a pin is in effect — a user naming a model is an instruction,
+      // a router second-guessing itself is not.
+      const kept = committedSelection(agent)
+      const keepSticky = config.switching !== 'auto' && kept !== null && kept !== undefined && decision.source !== 'requested' && decision.source !== 'pin'
+      if (keepSticky) {
+        // What routing would have chosen stays in the record, so `status` shows
+        // both the session's route and the router's opinion of this step.
+        decision.sticky = true
+        decision.proposed = { provider: decision.provider, model: decision.model, routeId: decision.routeId }
+        decision.provider = kept.provider
+        decision.model = kept.model
+        decision.routeId = current.get(agent) ?? decision.routeId
+        return resolved
+      }
+
       // The step being assembled already has its model; this selection applies
       // from the next step, and to the next turn's first step via the insert
       // hook above.
-      stats.requests += 1
-      const switchesBefore = stats.switches
       try {
         selectRoute(agent, route)
         decision.applied = true
@@ -687,8 +830,12 @@ export function apply(ctx, input) {
   // ── model-facing control surface ───────────────────────────────────────────
   function statusText(agent) {
     const lines = []
-    lines.push(`auto model router: mode=${mode} default=${config.defaultRoute} costWeight=${config.selection?.costWeight ?? 0.35}`)
-    lines.push(`decision model: ${config.decision.model} @ ${config.decision.baseURL}`)
+    lines.push(`auto model router: mode=${mode} switching=${config.switching} default=${config.defaultRoute} costWeight=${config.selection?.costWeight ?? 0.35}`)
+    lines.push(
+      decisionConfigured()
+        ? `decision model: ${config.decision.model} @ ${config.decision.baseURL}`
+        : 'decision model: not configured (routing inactive; set decision.baseURL + decision.model)',
+    )
     const describePin = (pin) => (pin === null || pin === undefined ? 'none' : pin.replace(/^model:/, 'model '))
     lines.push(`force: global=${describePin(globalForce)} thisAgent=${describePin(agent === undefined ? null : forced.get(agent) ?? null)}`)
     const summarizer = summarizerOptions()
@@ -736,7 +883,7 @@ export function apply(ctx, input) {
           ? ''
           : ` shape=${prof.shape} d${prof.depth} b${prof.breadth} r${prof.risk}${prof.vision === true ? ' vision' : ''}`
         lines.push(
-          `  ${time} ${record.agentId} [${record.agentKind}] turn=${record.turn ?? '-'} step=${record.step ?? '-'} -> ${record.model ?? record.routeId} conf=${Number(record.confidence ?? 0).toFixed(2)} src=${record.source}${shape} ${state} task="${task}"`,
+          `  ${time} ${record.agentId} [${record.agentKind}] turn=${record.turn ?? '-'} step=${record.step ?? '-'} -> ${record.model ?? record.routeId}${record.sticky === true ? ` (kept; routing proposed ${record.proposed?.model})` : ''} conf=${Number(record.confidence ?? 0).toFixed(2)} src=${record.source}${shape} ${state} task="${task}"`,
         )
       }
     }
@@ -854,13 +1001,18 @@ export function apply(ctx, input) {
   function sanitizeConfig(input) {
     const source = input ?? {}
     const routes = {}
-    for (const [id, route] of Object.entries(source.routes ?? {})) {
+    const providedRoutes = source.routes ?? {}
+    const userProvidedRoutes = Object.keys(providedRoutes).length > 0
+    for (const [id, route] of Object.entries(providedRoutes)) {
       if (typeof id !== 'string' || id.length === 0) continue
       if (route === null || typeof route !== 'object') continue
+      // A route is an envelope. Naming a provider and model pins its tier to one
+      // deployment; leaving them out is the default and the selector then chooses
+      // from the whole pool, so those fields are optional here.
       const provider = String(route.provider ?? '').trim()
       const model = String(route.model ?? '').trim()
-      if (provider.length === 0 || model.length === 0) continue
-      const clean = { provider, model }
+      const pinned = provider.length > 0 && model.length > 0
+      const clean = pinned ? { provider, model } : {}
       const envelope = {}
       const maxCost = Number(route.envelope?.maxCost)
       if (Number.isFinite(maxCost) && maxCost > 0) envelope.maxCost = Math.min(100, Math.round(maxCost))
@@ -871,10 +1023,13 @@ export function apply(ctx, input) {
       if (Object.keys(envelope).length > 0) clean.envelope = envelope
       const description = String(route.description ?? '').trim()
       if (description.length > 0) clean.description = description
+      if (!pinned && clean.envelope === undefined && clean.description === undefined) continue
       if (typeof route.reasoningEffort === 'string' && route.reasoningEffort.length > 0) clean.reasoningEffort = route.reasoningEffort
       routes[id] = clean
     }
-    if (Object.keys(routes).length === 0) throw new Error('configure requires at least one complete route')
+    // Only throw if the user explicitly provided routes that were all invalid;
+    // omitting routes entirely means "use the defaults", which mergeConfig handles.
+    if (userProvidedRoutes && Object.keys(routes).length === 0) throw new Error('configure requires at least one route with an envelope or a pinned provider/model')
     const decision = {}
     for (const key of ['baseURL', 'credentialRef', 'model']) {
       const value = String(source.decision?.[key] ?? '').trim()
@@ -910,6 +1065,7 @@ export function apply(ctx, input) {
     const requestedMode = source.mode
     return {
       mode: MODES.has(requestedMode) ? requestedMode : mode,
+      switching: source.switching === 'auto' ? 'auto' : 'sticky',
       defaultRoute: routes[source.defaultRoute] !== undefined ? source.defaultRoute : Object.keys(routes)[0],
       routes,
       decision,
@@ -937,6 +1093,7 @@ export function apply(ctx, input) {
         decision: { ...config.decision },
         policy: { ...config.policy },
         selection: { ...config.selection },
+        switching: config.switching,
         logDecisions: config.logDecisions,
       },
       stats: {
@@ -1073,6 +1230,7 @@ export function apply(ctx, input) {
         Object.assign(routes, merged.routes)
         config.decision = merged.decision
         config.policy = merged.policy
+        config.switching = merged.switching
         config.logDecisions = merged.logDecisions
         syncDigestOptions()
         mode = next.mode

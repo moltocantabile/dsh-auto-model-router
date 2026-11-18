@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import { test } from 'node:test'
 import {
   CHECKED_AT,
+  applyProviderAliases,
   MODEL_INFO,
   capabilityFragments,
   capabilitySummary,
@@ -12,11 +13,20 @@ import {
   routingNote,
 } from '../src/model-info.js'
 
-test('modelKey strips provider prefixes and provider aliases resolve to one catalog', () => {
-  assert.equal(modelKey('bailian-tokenplan', 'bailian-tokenplan/deepseek-v4.1-flash-1017'), 'deepseek-v4.1-flash-1017')
+test('modelKey strips the provider prefix and keeps an unrelated slash', () => {
+  assert.equal(modelKey('p-a', 'p-a/deepseek-v4.1-flash-1017'), 'deepseek-v4.1-flash-1017')
   assert.equal(modelKey('x', ' DeepSeek-V4.1-Flash '), 'deepseek-v4.1-flash')
-  assert.equal(knowledgeProvider('bailian-aliyun'), 'bailian-tokenplan')
-  assert.equal(knowledgeProvider('deepseek-official'), 'deepseek-account')
+  // A slash that is not a provider prefix belongs to the model name.
+  assert.equal(modelKey('x', 'vendor/model-name'), 'vendor/model-name')
+})
+
+test('provider aliases are operator config, empty by default', () => {
+  // Nothing baked in: two entries share a catalog only when the profile says so.
+  assert.equal(knowledgeProvider('p-a'), 'p-a')
+  applyProviderAliases({ 'p-a-aliyun': 'p-a' })
+  assert.equal(knowledgeProvider('p-a-aliyun'), 'p-a')
+  applyProviderAliases({})
+  assert.equal(knowledgeProvider('p-a-aliyun'), 'p-a-aliyun', 'resetting restores no aliases')
 })
 
 test('every knowledge entry carries the fields the routing prompt and the config page read', () => {

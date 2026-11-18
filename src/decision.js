@@ -2,11 +2,14 @@
  * System One decision client + routing policy for the auto model router.
  *
  * This module is dependency-free on purpose: it is loaded inside the DSH host
- * process, where the plugin package only has its own files. The decision model
- * is Alibaba Bailian's `decision-model-preview`, which speaks the TypeSafe
- * System One protocol: one forward pass over `state` plus typed `questions`
- * (choice / noul / score) returns typed answers and probabilities, never text.
- * Docs: https://docs.bailian.console.aliyun.com/zh/model-studio/decision-model-api
+ * process, where the plugin package only has its own files.
+ *
+ * The decision model is any HTTP endpoint that speaks the System One protocol:
+ * one forward pass over `state` plus typed `questions` (choice / noul / score)
+ * returns typed answers with probabilities, never free text. The endpoint, the
+ * model and the credential reference are operator config — nothing here names a
+ * vendor, because a router that only routes inside one catalog is a catalog
+ * feature, not a router.
  */
 
 import { DIMENSIONS, PROFILES, SHAPE_WEIGHTS } from './select.js'
@@ -14,22 +17,25 @@ import { DIMENSIONS, PROFILES, SHAPE_WEIGHTS } from './select.js'
 /** Default route catalog. All entries are provider/model ids already configured in the profile. */
 export const DEFAULT_ROUTES = {
   fast: {
-    provider: 'bailian-tokenplan',
-    model: 'qwen3.8-flash',
+    // None: the router fills this from the routable pool. A tier is an envelope,
+    // not a model, so naming one here would make the default route a vendor
+    // default.
+    provider: null,
+    model: null,
     envelope: { maxCost: 55, maxLatency: 'fast', minQuality: 40 },
     description:
       'Reading and reporting: a single known lookup or command, renames, formatting, an edit whose location is already known, short summaries. Not for multi-file changes, new features, or debugging unexplained behaviour.',
   },
   balanced: {
-    provider: 'bailian-tokenplan',
-    model: 'deepseek-v4.1-flash-1017',
+    provider: null,
+    model: null,
     envelope: { maxCost: 85, maxLatency: 'balanced', minQuality: 55 },
     description:
       'Implementing and fixing: code across a few files, adding a feature, standard debugging with a known reproduction, tests beside the change, tool-heavy multi-step work.',
   },
   deep: {
-    provider: 'bailian-tokenplan',
-    model: 'qwen3.7-max',
+    provider: null,
+    model: null,
     envelope: { maxCost: 100, maxLatency: 'slow', minQuality: 66 },
     description:
       'Design and hard problems: architecture, refactors across modules or layers, debugging without a known cause, migrations and other risky changes, reasoning over many constraints at once.',
@@ -53,9 +59,11 @@ export const MODEL_REQUEST_MIN_PROBABILITY = 0.5
 export const MODEL_REQUEST_MIN_CONFIDENCE = 0.5
 
 export const DEFAULT_DECISION = {
-  baseURL: 'https://token-plan.cn-beijing.maas.aliyuncs.com/compatible-mode/v1',
-  credentialRef: 'BAILIAN_TOKENPLAN_API_KEY',
-  model: 'decision-model-preview',
+  // Empty on purpose: an unconfigured decision endpoint must leave routing off
+  // rather than silently call one vendor's service. Set all three to enable.
+  baseURL: '',
+  credentialRef: '',
+  model: '',
   timeoutMs: 3500,
   maxMessages: 10,
   maxStateChars: 12000,
@@ -446,7 +454,8 @@ export function parseDecision(raw, routes, policy) {
 }
 
 export async function callDecisionModel({ baseURL, apiKey, model = DEFAULT_DECISION.model, state, timeoutMs = DEFAULT_DECISION.timeoutMs, signal, notes, models, fetchImpl }) {
-  if (!apiKey) throw new Error('apiKey not set')
+  if (!baseURL) throw new Error('decision endpoint not configured (decision.baseURL)')
+  if (!model) throw new Error('decision model not configured (decision.model)')
   const fetch = fetchImpl ?? globalThis.fetch
   if (typeof fetch !== 'function') throw new Error('fetch is not available in this runtime')
   const url = `${baseURL.replace(/\/$/, '')}/systemone`
@@ -454,7 +463,8 @@ export async function callDecisionModel({ baseURL, apiKey, model = DEFAULT_DECIS
   const requestSignal = signal === undefined ? timeout : AbortSignal.any([signal, timeout])
   const response = await fetch(url, {
     method: 'POST',
-    headers: { authorization: `Bearer ${apiKey}`, 'content-type': 'application/json' },
+    // An unauthenticated endpoint (a local model server) simply omits the header.
+    headers: { ...(apiKey ? { authorization: `Bearer ${apiKey}` } : {}), 'content-type': 'application/json' },
     body: JSON.stringify({ model, state, questions: buildQuestions({}, { notes, models }) }),
     signal: requestSignal,
   })

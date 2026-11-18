@@ -1,9 +1,9 @@
 # @dsh-external/dsh-auto-model-router
 
-Automatic model routing for DSH. Every model request is classified by the
-Bailian **System One** decision model (`decision-model-preview`), which returns a
-*capability profile* of the work, and the router then scores every model the
-provider serves against that profile. Subagents are routed the same way: a
+Automatic model routing for DSH. Every model request is classified by a
+**System One** decision model — any endpoint that speaks the protocol, configured
+per profile — which returns a *capability profile* of the work, and the router
+then scores every model the harness serves against that profile. Subagents are routed the same way: a
 child's first request is classified from its own delegated task, so it no longer
 inherits the parent's model just because it inherited the parent agent.
 
@@ -217,21 +217,52 @@ npm run build
 #   dev_inject_plugin <path-to-plugin>/dsh-auto-model-router
 ```
 
-Runtime config is passed by the loader; the defaults target the profile's
-`bailian-tokenplan` provider and `BAILIAN_TOKENPLAN_API_KEY`.
+Runtime config is passed by the loader. Nothing in the defaults names a vendor:
+`decision.baseURL`, `decision.model` and (optionally) `decision.credentialRef`
+start empty, and an unconfigured router stays inactive — it logs that once and
+leaves every agent on the model it started with instead of calling some
+service you did not ask for. Point it at any endpoint that speaks the protocol:
+
+```yaml
+decision:
+  baseURL: https://your-endpoint/v1   # POST {baseURL}/systemone
+  model: your-decision-model
+  credentialRef: YOUR_API_KEY_ENV     # omit for an endpoint that takes no key
+```
 
 Routes are the *pinning* frame, not the decision space. Three ship by default,
-and `defaultRoute` names the fallback; the selector itself ranks the whole
-provider catalog:
+each an envelope with no provider and no model; the selector picks the model and
+draws from every provider the harness exposes:
 
-| route      | default model | role |
-| ---------- | ------------- | ---- |
-| `fast`     | `bailian-tokenplan/qwen3.8-flash` | cheapest capable; the pool's floor |
-| `balanced` | `bailian-tokenplan/deepseek-v4.1-flash-1017` | strongest measured reasoning per yuan |
-| `deep`     | `bailian-tokenplan/qwen3.7-max` | evidence-backed ceiling |
+| route      | envelope (cost ≤ / latency ≤ / quality ≥) | role |
+| ---------- | ---------------------------------------- | ---- |
+| `fast`     | 55 / fast / 40   | cheapest capable; the pool's floor |
+| `balanced` | 85 / balanced / 55 | strongest measured reasoning per yuan |
+| `deep`     | 100 / slow / 66  | evidence-backed ceiling |
 
-Add, remove or repoint routes freely: they only matter for `force`, for
-`defaultRoute`, and for the degradation path when the catalog is unavailable.
+A route may name a `provider` and `model` to pin its tier to one deployment; that
+is what `force` and `defaultRoute` use. Leave them unset and the tier is decided
+purely by measurement — and the pool then spans every provider the harness
+exposes, because a router that only sees one catalog is a catalog feature. Pin
+any tier to a provider and the pool narrows to that provider: naming one
+deployment is an instruction, not a limitation of the selector.
+
+### Sticky by default
+
+A session routes once, at its start, and then keeps that model. `switching:
+sticky` is the default because a mid-task switch discards the prompt cache and
+the style the turn began in, and a session that keeps changing models is harder
+to reason about. The decision model still runs at every step — `status` shows
+both the session's route and what routing would have chosen (`applied` versus
+`decided` in the log) — but the selection only moves when the request itself asks
+for a model (`use X for this`) or when a pin is in effect (`force`). Set
+`switching: auto` to re-route every step.
+
+A session that was already placed on a model by hand keeps it, including after a
+restart: the commitment is the `model/selection` event on the session, compared
+against the agent's configured default so the startup write does not count as a
+choice. Switching models in the UI is therefore an instruction the router obeys
+instead of overrules on the next step.
 
 The previous defaults (`deepseek-v4-flash-0731`, `deepseek-v4-pro-0813`) are
 retired provider ids: the catalog no longer offers them, so the plugin ships
