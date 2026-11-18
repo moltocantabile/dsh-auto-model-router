@@ -1317,15 +1317,20 @@ export function apply(ctx, input) {
       }
       if (action === 'refresh') {
         const started = Date.now()
-        const result = await refreshCatalog({ base: MODEL_INFO, signal })
+        // The pool names the models the providers actually advertise, so the
+        // refresh can describe ones the shipped catalog has never covered.
+        const pool = await assignedTiers()
+        const wanted = pool.pool.map((candidate) => ({ model: candidate.model, provider: candidate.provider }))
+        const result = await refreshCatalog({ base: MODEL_INFO, wanted, signal })
         const summary = { ...result.summary, durationMs: Date.now() - started }
         // Persist first: if writing fails, the in-memory catalog stays as it was,
         // so the page never shows numbers that would disappear on restart.
         summary.path = saveRuntimeDataset(result.dataset)
         applyDataset(result.dataset, { checkedAt: summary.checkedAt })
         summary.file = RUNTIME_DATA_URL.pathname
+        const aa = summary.artificialAnalysis ?? {}
         const text = summary.errors.length === 0
-          ? `model data refreshed: ${summary.models} models (${summary.benchgecko} benchgecko, ${summary.compass} compassrank, ${summary.epoch} epoch, ${summary.llmLeaderboard} llmleaderboard) at ${summary.checkedAt}`
+          ? `model data refreshed: ${summary.models} models (${summary.benchgecko} benchgecko, ${summary.compass} compassrank, ${summary.epoch} epoch, ${summary.llmLeaderboard} llmleaderboard, ${aa.models ?? 0} artificialanalysis → ${aa.created ?? 0} new, ${aa.filledQuality ?? 0} measured, ${aa.filledPrice ?? 0} priced) at ${summary.checkedAt}`
           : `model data refreshed with ${summary.errors.length} source error(s): ${summary.errors.slice(0, 3).join('; ')}`
         return { ok: true, text, data: { summary } }
       }

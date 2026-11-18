@@ -103,6 +103,14 @@
           "livebench-2-reasoning": 89.1
         },
         "board": "https://llmleaderboard.com"
+      },
+      "artificialAnalysis": {
+        "intelligenceIndex": 28.6,
+        "priceIn": 0.3,
+        "priceOut": 1.2,
+        "ttft": 1.22758397302213,
+        "speed": 176.028865181495,
+        "source": "https://artificialanalysis.ai/leaderboards/models"
       }
     },
     "sources": [
@@ -331,14 +339,14 @@
     "mcp": false,
     "explicitCache": true,
     "latency": "fast",
-    "quality": null,
+    "quality": 30,
     "scores": {
       "coding": 45,
       "reasoning": 62,
       "math": 55,
       "knowledge": 50,
       "agentic": 42,
-      "overall": 51,
+      "overall": 30,
       "longContext": 100,
       "vision": 100,
       "speed": 75
@@ -380,6 +388,14 @@
           "gdp-pdf-aa": 10.8
         },
         "board": "https://llmleaderboard.com"
+      },
+      "artificialAnalysis": {
+        "intelligenceIndex": 0,
+        "priceIn": 0.44,
+        "priceOut": 1.32,
+        "ttft": 1.47010021696851,
+        "speed": 168.222346752084,
+        "source": "https://artificialanalysis.ai/leaderboards/models"
       }
     },
     "sources": [
@@ -497,6 +513,14 @@
           "gdp-pdf-aa": 11.4
         },
         "board": "https://llmleaderboard.com"
+      },
+      "artificialAnalysis": {
+        "intelligenceIndex": 12.6,
+        "priceIn": 1.32,
+        "priceOut": 3.96,
+        "ttft": 2.70451302031995,
+        "speed": 83.4140802491204,
+        "source": "https://artificialanalysis.ai/leaderboards/models"
       }
     },
     "sources": [
@@ -687,6 +711,14 @@
         "hle": 16.14,
         "evaluated": "2026-08-26",
         "board": "https://rank.opencompass.org.cn/leaderboard/llm"
+      },
+      "artificialAnalysis": {
+        "intelligenceIndex": 28.6,
+        "priceIn": 0.15,
+        "priceOut": 0.47,
+        "ttft": 2.48662810867524,
+        "speed": 83.0085931211919,
+        "source": "https://artificialanalysis.ai/leaderboards/models"
       }
     },
     "sources": [
@@ -939,6 +971,14 @@
           "gdp-pdf-aa": 26.2
         },
         "board": "https://llmleaderboard.com"
+      },
+      "artificialAnalysis": {
+        "intelligenceIndex": 42.9,
+        "priceIn": 1.5,
+        "priceOut": 4.5,
+        "ttft": 6.93474799002022,
+        "speed": 54.1159826621959,
+        "source": "https://artificialanalysis.ai/leaderboards/models"
       }
     },
     "sources": [
@@ -1129,6 +1169,14 @@
           "gdp-pdf-aa": 11.2
         },
         "board": "https://llmleaderboard.com"
+      },
+      "artificialAnalysis": {
+        "intelligenceIndex": 23.1,
+        "priceIn": 1.4,
+        "priceOut": 4.4,
+        "ttft": 2.79715708781037,
+        "speed": 70.0911527961211,
+        "source": "https://artificialanalysis.ai/leaderboards/models"
       }
     },
     "sources": [
@@ -1456,13 +1504,6 @@
     "distinguishing": [
       "cheapest multimodal entry with full agent skills"
     ],
-    "crossChecks": {
-      "epoch": {
-        "eci": 148,
-        "date": "2026-06-02",
-        "board": "https://epoch.ai/eci"
-      }
-    },
     "sources": [
       "https://help.aliyun.com/zh/model-studio/qwen3-7-plus",
       "https://benchgecko.ai/model/qwen3-7-plus"
@@ -1678,5 +1719,1730 @@
       "https://benchgecko.ai/model/glm-5-2"
     ],
     "notes": "Dominated by glm-5.3 at identical Bailian Beijing pricing."
+  },
+  "kimi-k3.1-pro": {
+    "label": "Kimi K3.1 Pro",
+    "provider": "bailian-aliyun",
+    "contextWindow": 1000000,
+    "price": {
+      "input": 14.4,
+      "output": 72
+    },
+    "modalities": [
+      "text"
+    ],
+    "toolCalling": true,
+    "reasoning": false,
+    "latency": "slow",
+    "quality": 75.8,
+    "scores": {
+      "overall": 75.8,
+      "coding": 75.8,
+      "reasoning": 75.8,
+      "math": 75.8,
+      "knowledge": 75.8,
+      "agentic": 75.8,
+      "longContext": 75.8,
+      "vision": 75.8,
+      "speed": 75.8
+    },
+    "evidence": {
+      "overall": 0,
+      "coding": 0,
+      "reasoning": 0,
+      "math": 0,
+      "knowledge": 0,
+      "agentic": 0,
+      "longContext": 0,
+      "vision": 0,
+      "speed": 0
+    },
+    "bestFor": [],
+    "weaknesses": [],
+    "sources": [
+      "https://artificialanalysis.ai/leaderboards/models"
+    ],
+    "checkedAt": "2026-11-18",
+    "crossChecks": {
+      "artificialAnalysis": {
+        "intelligenceIndex": 46.5,
+        "priceIn": 2,
+        "priceOut": 10,
+        "ttft": 3.36789028318509,
+        "speed": 31.3441495615139,
+        "source": "https://artificialanalysis.ai/leaderboards/models"
+      }
+    }
+  },
+  "vanchin/deepseek-v4.1-flash-1017": {
+    "label": "DeepSeek V4.1 Flash 1017 (Max)",
+    "provider": "bailian-aliyun",
+    "contextWindow": 1000000,
+    "price": {
+      "input": 2.2,
+      "output": 8.6
+    },
+    "modalities": [
+      "text"
+    ],
+    "toolCalling": true,
+    "reasoning": false,
+    "latency": "balanced",
+    "quality": 61.3,
+    "scores": {
+      "overall": 61.3,
+      "coding": 61.3,
+      "reasoning": 61.3,
+      "math": 61.3,
+      "knowledge": 61.3,
+      "agentic": 61.3,
+      "longContext": 61.3,
+      "vision": 61.3,
+      "speed": 61.3
+    },
+    "evidence": {
+      "overall": 0,
+      "coding": 0,
+      "reasoning": 0,
+      "math": 0,
+      "knowledge": 0,
+      "agentic": 0,
+      "longContext": 0,
+      "vision": 0,
+      "speed": 0
+    },
+    "bestFor": [],
+    "weaknesses": [],
+    "sources": [
+      "https://artificialanalysis.ai/leaderboards/models"
+    ],
+    "checkedAt": "2026-11-18",
+    "crossChecks": {
+      "artificialAnalysis": {
+        "intelligenceIndex": 32.6,
+        "priceIn": 0.3,
+        "priceOut": 1.2,
+        "ttft": 1.25942222469258,
+        "speed": 175.01153585358,
+        "source": "https://artificialanalysis.ai/leaderboards/models"
+      }
+    }
+  },
+  "kimi/kimi-k3.1-pro": {
+    "label": "Kimi K3.1 Pro",
+    "provider": "bailian-aliyun",
+    "contextWindow": 1000000,
+    "price": {
+      "input": 14.4,
+      "output": 72
+    },
+    "modalities": [
+      "text"
+    ],
+    "toolCalling": true,
+    "reasoning": false,
+    "latency": "slow",
+    "quality": 75.8,
+    "scores": {
+      "overall": 75.8,
+      "coding": 75.8,
+      "reasoning": 75.8,
+      "math": 75.8,
+      "knowledge": 75.8,
+      "agentic": 75.8,
+      "longContext": 75.8,
+      "vision": 75.8,
+      "speed": 75.8
+    },
+    "evidence": {
+      "overall": 0,
+      "coding": 0,
+      "reasoning": 0,
+      "math": 0,
+      "knowledge": 0,
+      "agentic": 0,
+      "longContext": 0,
+      "vision": 0,
+      "speed": 0
+    },
+    "bestFor": [],
+    "weaknesses": [],
+    "sources": [
+      "https://artificialanalysis.ai/leaderboards/models"
+    ],
+    "checkedAt": "2026-11-18",
+    "crossChecks": {
+      "artificialAnalysis": {
+        "intelligenceIndex": 46.5,
+        "priceIn": 2,
+        "priceOut": 10,
+        "ttft": 3.36789028318509,
+        "speed": 31.3441495615139,
+        "source": "https://artificialanalysis.ai/leaderboards/models"
+      },
+      "epoch": {
+        "eci": 161.4,
+        "date": "2026-10-23",
+        "board": "https://epoch.ai/eci"
+      },
+      "llmLeaderboard": {
+        "ttftSeconds": 2.683,
+        "tokensPerSecond": 76.9,
+        "provider": "Kimi High Speed",
+        "benchmarks": {
+          "livebench-2-agentic": 39.1,
+          "livebench-2-coding": 81.8,
+          "gdp-pdf-aa": 31.4,
+          "livebench-2-reasoning": 91.1
+        },
+        "board": "https://llmleaderboard.com"
+      }
+    }
+  },
+  "MiniMax/MiniMax-M3.1-Flash": {
+    "label": "MiniMax-M3.1-Flash",
+    "provider": "bailian-aliyun",
+    "contextWindow": 1000000,
+    "price": {
+      "input": 1.1,
+      "output": 4.3
+    },
+    "modalities": [
+      "text"
+    ],
+    "toolCalling": true,
+    "reasoning": false,
+    "latency": "balanced",
+    "quality": 57.7,
+    "scores": {
+      "overall": 57.7,
+      "coding": 57.7,
+      "reasoning": 57.7,
+      "math": 57.7,
+      "knowledge": 57.7,
+      "agentic": 57.7,
+      "longContext": 57.7,
+      "vision": 57.7,
+      "speed": 57.7
+    },
+    "evidence": {
+      "overall": 0,
+      "coding": 0,
+      "reasoning": 0,
+      "math": 0,
+      "knowledge": 0,
+      "agentic": 0,
+      "longContext": 0,
+      "vision": 0,
+      "speed": 0
+    },
+    "bestFor": [],
+    "weaknesses": [],
+    "sources": [
+      "https://artificialanalysis.ai/leaderboards/models"
+    ],
+    "checkedAt": "2026-11-18",
+    "crossChecks": {
+      "artificialAnalysis": {
+        "intelligenceIndex": 29.1,
+        "priceIn": 0.15,
+        "priceOut": 0.6,
+        "ttft": 1.29094969200771,
+        "speed": 133.826168739537,
+        "source": "https://artificialanalysis.ai/leaderboards/models"
+      },
+      "llmLeaderboard": {
+        "ttftSeconds": 1.403,
+        "tokensPerSecond": 812.6,
+        "provider": "Inco",
+        "benchmarks": {
+          "livebench-2-agentic": 28.8,
+          "livebench-2-coding": 83.9,
+          "gdp-pdf-aa": 20.8,
+          "livebench-2-reasoning": 82.9
+        },
+        "board": "https://llmleaderboard.com"
+      }
+    }
+  },
+  "stepfun/step-5-preview": {
+    "label": "Step 5 Preview",
+    "provider": "bailian-aliyun",
+    "contextWindow": 1000000,
+    "price": {
+      "input": 7.2,
+      "output": 19.4
+    },
+    "modalities": [
+      "text"
+    ],
+    "toolCalling": true,
+    "reasoning": false,
+    "latency": "fast",
+    "quality": 57.1,
+    "scores": {
+      "overall": 57.1,
+      "coding": 57.1,
+      "reasoning": 57.1,
+      "math": 57.1,
+      "knowledge": 57.1,
+      "agentic": 57.1,
+      "longContext": 57.1,
+      "vision": 57.1,
+      "speed": 57.1
+    },
+    "evidence": {
+      "overall": 0,
+      "coding": 0,
+      "reasoning": 0,
+      "math": 0,
+      "knowledge": 0,
+      "agentic": 0,
+      "longContext": 0,
+      "vision": 0,
+      "speed": 0
+    },
+    "bestFor": [],
+    "weaknesses": [],
+    "sources": [
+      "https://artificialanalysis.ai/leaderboards/models"
+    ],
+    "checkedAt": "2026-11-18",
+    "crossChecks": {
+      "artificialAnalysis": {
+        "intelligenceIndex": 28.5,
+        "priceIn": 1,
+        "priceOut": 2.7,
+        "ttft": 0.865189326438833,
+        "speed": 146.950672798065,
+        "source": "https://artificialanalysis.ai/leaderboards/models"
+      },
+      "llmLeaderboard": {
+        "ttftSeconds": null,
+        "tokensPerSecond": null,
+        "provider": null,
+        "benchmarks": {
+          "livebench-2-agentic": 19.4,
+          "livebench-2-coding": 85.6,
+          "gdp-pdf-aa": 14.8,
+          "livebench-2-reasoning": 83.8
+        },
+        "board": "https://llmleaderboard.com"
+      }
+    }
+  },
+  "ZHIPU/GLM-5.3-Flash": {
+    "label": "GLM-5.3-Flash",
+    "provider": "bailian-aliyun",
+    "contextWindow": 1000000,
+    "price": {
+      "input": 1.1,
+      "output": 3.6
+    },
+    "modalities": [
+      "text"
+    ],
+    "toolCalling": true,
+    "reasoning": false,
+    "latency": "slow",
+    "quality": 56.3,
+    "scores": {
+      "overall": 56.3,
+      "coding": 56.3,
+      "reasoning": 56.3,
+      "math": 56.3,
+      "knowledge": 56.3,
+      "agentic": 56.3,
+      "longContext": 56.3,
+      "vision": 56.3,
+      "speed": 56.3
+    },
+    "evidence": {
+      "overall": 0,
+      "coding": 0,
+      "reasoning": 0,
+      "math": 0,
+      "knowledge": 0,
+      "agentic": 0,
+      "longContext": 0,
+      "vision": 0,
+      "speed": 0
+    },
+    "bestFor": [],
+    "weaknesses": [],
+    "sources": [
+      "https://artificialanalysis.ai/leaderboards/models"
+    ],
+    "checkedAt": "2026-11-18",
+    "crossChecks": {
+      "artificialAnalysis": {
+        "intelligenceIndex": 27.8,
+        "priceIn": 0.15,
+        "priceOut": 0.5,
+        "ttft": 3.15645005597176,
+        "speed": 57.2071860121102,
+        "source": "https://artificialanalysis.ai/leaderboards/models"
+      },
+      "epoch": {
+        "eci": 153.8,
+        "date": "2026-08-20",
+        "board": "https://epoch.ai/eci"
+      },
+      "llmLeaderboard": {
+        "ttftSeconds": 1.546,
+        "tokensPerSecond": 75.2,
+        "provider": "Z.ai",
+        "benchmarks": {
+          "livebench-2-agentic": 19,
+          "livebench-2-coding": 80.6,
+          "gpqa-diamond-aa": 91.2,
+          "gdp-pdf-aa": 15.4,
+          "livebench-2-reasoning": 77.6
+        },
+        "board": "https://llmleaderboard.com"
+      }
+    }
+  },
+  "vanchin/deepseek-v4-pro-0813": {
+    "label": "DeepSeek V4 Pro 0813 (High)",
+    "provider": "bailian-aliyun",
+    "contextWindow": 1000000,
+    "price": {
+      "input": 9.5,
+      "output": 28.5
+    },
+    "modalities": [
+      "text"
+    ],
+    "toolCalling": true,
+    "reasoning": false,
+    "latency": "balanced",
+    "quality": 49,
+    "scores": {
+      "overall": 49,
+      "coding": 49,
+      "reasoning": 49,
+      "math": 49,
+      "knowledge": 49,
+      "agentic": 49,
+      "longContext": 49,
+      "vision": 49,
+      "speed": 49
+    },
+    "evidence": {
+      "overall": 0,
+      "coding": 0,
+      "reasoning": 0,
+      "math": 0,
+      "knowledge": 0,
+      "agentic": 0,
+      "longContext": 0,
+      "vision": 0,
+      "speed": 0
+    },
+    "bestFor": [],
+    "weaknesses": [],
+    "sources": [
+      "https://artificialanalysis.ai/leaderboards/models"
+    ],
+    "checkedAt": "2026-11-18",
+    "crossChecks": {
+      "artificialAnalysis": {
+        "intelligenceIndex": 20.8,
+        "priceIn": 1.32,
+        "priceOut": 3.96,
+        "ttft": 1.42835842196668,
+        "speed": 52.9463175479591,
+        "source": "https://artificialanalysis.ai/leaderboards/models"
+      }
+    }
+  },
+  "qwen3.8-27b": {
+    "label": "Qwen3.8 27B (Xhigh)",
+    "provider": "bailian-aliyun",
+    "contextWindow": 256000,
+    "price": {
+      "input": 3.6,
+      "output": 21.6
+    },
+    "modalities": [
+      "text"
+    ],
+    "toolCalling": true,
+    "reasoning": false,
+    "latency": "slow",
+    "quality": 48.3,
+    "scores": {
+      "overall": 48.3,
+      "coding": 48.3,
+      "reasoning": 48.3,
+      "math": 48.3,
+      "knowledge": 48.3,
+      "agentic": 48.3,
+      "longContext": 48.3,
+      "vision": 48.3,
+      "speed": 48.3
+    },
+    "evidence": {
+      "overall": 0,
+      "coding": 0,
+      "reasoning": 0,
+      "math": 0,
+      "knowledge": 0,
+      "agentic": 0,
+      "longContext": 0,
+      "vision": 0,
+      "speed": 0
+    },
+    "bestFor": [],
+    "weaknesses": [],
+    "sources": [
+      "https://artificialanalysis.ai/leaderboards/models"
+    ],
+    "checkedAt": "2026-11-18",
+    "crossChecks": {
+      "artificialAnalysis": {
+        "intelligenceIndex": 20.1,
+        "priceIn": 0.5,
+        "priceOut": 3,
+        "ttft": 5.54239843843791,
+        "speed": 47.306119156849,
+        "source": "https://artificialanalysis.ai/leaderboards/models"
+      },
+      "epoch": {
+        "eci": 152.7,
+        "date": "2026-08-14",
+        "board": "https://epoch.ai/eci"
+      },
+      "llmLeaderboard": {
+        "ttftSeconds": null,
+        "tokensPerSecond": null,
+        "provider": null,
+        "benchmarks": {
+          "livebench-2-agentic": 20.6,
+          "livebench-2-coding": 86.8,
+          "gdp-pdf-aa": 16.4,
+          "livebench-2-reasoning": 80
+        },
+        "board": "https://llmleaderboard.com"
+      }
+    }
+  },
+  "ZHIPU/GLM-5.3": {
+    "label": "GLM-5.3 (Max)",
+    "provider": "bailian-aliyun",
+    "contextWindow": 1000000,
+    "price": {
+      "input": 10.1,
+      "output": 31.7
+    },
+    "modalities": [
+      "text"
+    ],
+    "toolCalling": true,
+    "reasoning": false,
+    "latency": "balanced",
+    "quality": 60.4,
+    "scores": {
+      "overall": 60.4,
+      "coding": 60.4,
+      "reasoning": 60.4,
+      "math": 60.4,
+      "knowledge": 60.4,
+      "agentic": 60.4,
+      "longContext": 60.4,
+      "vision": 60.4,
+      "speed": 60.4
+    },
+    "evidence": {
+      "overall": 0,
+      "coding": 0,
+      "reasoning": 0,
+      "math": 0,
+      "knowledge": 0,
+      "agentic": 0,
+      "longContext": 0,
+      "vision": 0,
+      "speed": 0
+    },
+    "bestFor": [],
+    "weaknesses": [],
+    "sources": [
+      "https://artificialanalysis.ai/leaderboards/models"
+    ],
+    "checkedAt": "2026-11-18",
+    "crossChecks": {
+      "artificialAnalysis": {
+        "intelligenceIndex": 31.7,
+        "priceIn": 1.4,
+        "priceOut": 4.4,
+        "ttft": 2.58898845858205,
+        "speed": 88.9523010383275,
+        "source": "https://artificialanalysis.ai/leaderboards/models"
+      }
+    }
+  },
+  "qwen3.8-2.4t-a95b": {
+    "label": "Qwen3.8 2.4T A95B",
+    "provider": "bailian-aliyun",
+    "contextWindow": 262000,
+    "price": {
+      "input": 14.4,
+      "output": 43.2
+    },
+    "modalities": [
+      "text"
+    ],
+    "toolCalling": true,
+    "reasoning": false,
+    "latency": "slow",
+    "quality": 27.4,
+    "scores": {
+      "overall": 27.4,
+      "coding": 27.4,
+      "reasoning": 27.4,
+      "math": 27.4,
+      "knowledge": 27.4,
+      "agentic": 27.4,
+      "longContext": 27.4,
+      "vision": 27.4,
+      "speed": 27.4
+    },
+    "evidence": {
+      "overall": 0,
+      "coding": 0,
+      "reasoning": 0,
+      "math": 0,
+      "knowledge": 0,
+      "agentic": 0,
+      "longContext": 0,
+      "vision": 0,
+      "speed": 0
+    },
+    "bestFor": [],
+    "weaknesses": [],
+    "sources": [
+      "https://artificialanalysis.ai/leaderboards/models"
+    ],
+    "checkedAt": "2026-11-18",
+    "crossChecks": {
+      "artificialAnalysis": {
+        "intelligenceIndex": 0,
+        "priceIn": 2,
+        "priceOut": 6,
+        "ttft": 5.027468568828,
+        "speed": 40.6212091391937,
+        "source": "https://artificialanalysis.ai/leaderboards/models"
+      }
+    }
+  },
+  "MiniMax/MiniMax-M3": {
+    "label": "MiniMax-M3",
+    "provider": "bailian-aliyun",
+    "contextWindow": 1000000,
+    "price": {
+      "input": 2.2,
+      "output": 8.6
+    },
+    "modalities": [
+      "text"
+    ],
+    "toolCalling": true,
+    "reasoning": false,
+    "latency": "balanced",
+    "quality": 47.1,
+    "scores": {
+      "overall": 47.1,
+      "coding": 47.1,
+      "reasoning": 47.1,
+      "math": 47.1,
+      "knowledge": 47.1,
+      "agentic": 47.1,
+      "longContext": 47.1,
+      "vision": 47.1,
+      "speed": 47.1
+    },
+    "evidence": {
+      "overall": 0,
+      "coding": 0,
+      "reasoning": 0,
+      "math": 0,
+      "knowledge": 0,
+      "agentic": 0,
+      "longContext": 0,
+      "vision": 0,
+      "speed": 0
+    },
+    "bestFor": [],
+    "weaknesses": [],
+    "sources": [
+      "https://artificialanalysis.ai/leaderboards/models"
+    ],
+    "checkedAt": "2026-11-18",
+    "crossChecks": {
+      "artificialAnalysis": {
+        "intelligenceIndex": 18.9,
+        "priceIn": 0.3,
+        "priceOut": 1.2,
+        "ttft": 2.07105054380833,
+        "speed": 104.132552312836,
+        "source": "https://artificialanalysis.ai/leaderboards/models"
+      },
+      "epoch": {
+        "eci": 147.9,
+        "date": "2026-06-01",
+        "board": "https://epoch.ai/eci"
+      },
+      "llmLeaderboard": {
+        "ttftSeconds": 0.699,
+        "tokensPerSecond": 119.7,
+        "provider": "MiniMax",
+        "benchmarks": {
+          "gpqa-diamond-aa": 92.9,
+          "gdp-pdf-aa": 9.8
+        },
+        "board": "https://llmleaderboard.com"
+      }
+    }
+  },
+  "kimi/kimi-k2.7-code": {
+    "label": "Kimi K2.7 Code",
+    "provider": "bailian-aliyun",
+    "contextWindow": 256000,
+    "price": {
+      "input": 6.8,
+      "output": 28.8
+    },
+    "modalities": [
+      "text"
+    ],
+    "toolCalling": true,
+    "reasoning": false,
+    "latency": "slow",
+    "quality": 27.4,
+    "scores": {
+      "overall": 27.4,
+      "coding": 27.4,
+      "reasoning": 27.4,
+      "math": 27.4,
+      "knowledge": 27.4,
+      "agentic": 27.4,
+      "longContext": 27.4,
+      "vision": 27.4,
+      "speed": 27.4
+    },
+    "evidence": {
+      "overall": 0,
+      "coding": 0,
+      "reasoning": 0,
+      "math": 0,
+      "knowledge": 0,
+      "agentic": 0,
+      "longContext": 0,
+      "vision": 0,
+      "speed": 0
+    },
+    "bestFor": [],
+    "weaknesses": [],
+    "sources": [
+      "https://artificialanalysis.ai/leaderboards/models"
+    ],
+    "checkedAt": "2026-11-18",
+    "crossChecks": {
+      "artificialAnalysis": {
+        "intelligenceIndex": 0,
+        "priceIn": 0.95,
+        "priceOut": 4,
+        "ttft": 6.23111339845665,
+        "speed": 56.5758440847806,
+        "source": "https://artificialanalysis.ai/leaderboards/models"
+      }
+    }
+  },
+  "kimi-k2.7-code": {
+    "label": "Kimi K2.7 Code",
+    "provider": "bailian-aliyun",
+    "contextWindow": 256000,
+    "price": {
+      "input": 6.8,
+      "output": 28.8
+    },
+    "modalities": [
+      "text"
+    ],
+    "toolCalling": true,
+    "reasoning": false,
+    "latency": "slow",
+    "quality": 27.4,
+    "scores": {
+      "overall": 27.4,
+      "coding": 27.4,
+      "reasoning": 27.4,
+      "math": 27.4,
+      "knowledge": 27.4,
+      "agentic": 27.4,
+      "longContext": 27.4,
+      "vision": 27.4,
+      "speed": 27.4
+    },
+    "evidence": {
+      "overall": 0,
+      "coding": 0,
+      "reasoning": 0,
+      "math": 0,
+      "knowledge": 0,
+      "agentic": 0,
+      "longContext": 0,
+      "vision": 0,
+      "speed": 0
+    },
+    "bestFor": [],
+    "weaknesses": [],
+    "sources": [
+      "https://artificialanalysis.ai/leaderboards/models"
+    ],
+    "checkedAt": "2026-11-18",
+    "crossChecks": {
+      "artificialAnalysis": {
+        "intelligenceIndex": 0,
+        "priceIn": 0.95,
+        "priceOut": 4,
+        "ttft": 6.23111339845665,
+        "speed": 56.5758440847806,
+        "source": "https://artificialanalysis.ai/leaderboards/models"
+      },
+      "epoch": {
+        "eci": 151.2,
+        "date": "2026-06-12",
+        "board": "https://epoch.ai/eci"
+      }
+    }
+  },
+  "qwen3.7-plus-2026-05-26": {
+    "label": "Qwen3.7 Plus",
+    "provider": "bailian-aliyun",
+    "contextWindow": 1000000,
+    "price": {
+      "input": 2.9,
+      "output": 11.5
+    },
+    "modalities": [
+      "text"
+    ],
+    "toolCalling": true,
+    "reasoning": false,
+    "latency": "balanced",
+    "quality": 27.4,
+    "scores": {
+      "overall": 27.4,
+      "coding": 27.4,
+      "reasoning": 27.4,
+      "math": 27.4,
+      "knowledge": 27.4,
+      "agentic": 27.4,
+      "longContext": 27.4,
+      "vision": 27.4,
+      "speed": 27.4
+    },
+    "evidence": {
+      "overall": 0,
+      "coding": 0,
+      "reasoning": 0,
+      "math": 0,
+      "knowledge": 0,
+      "agentic": 0,
+      "longContext": 0,
+      "vision": 0,
+      "speed": 0
+    },
+    "bestFor": [],
+    "weaknesses": [],
+    "sources": [
+      "https://artificialanalysis.ai/leaderboards/models"
+    ],
+    "checkedAt": "2026-11-18",
+    "crossChecks": {
+      "artificialAnalysis": {
+        "intelligenceIndex": 0,
+        "priceIn": 0.4,
+        "priceOut": 1.6,
+        "ttft": 2.75423076326416,
+        "speed": 56.1271504088101,
+        "source": "https://artificialanalysis.ai/leaderboards/models"
+      },
+      "epoch": {
+        "eci": 148,
+        "date": "2026-06-02",
+        "board": "https://epoch.ai/eci"
+      }
+    }
+  },
+  "qwen3.6-35b-a3b": {
+    "label": "Qwen3.6 35B A3B (Reasoning)",
+    "provider": "bailian-aliyun",
+    "contextWindow": 262144,
+    "price": {
+      "input": 2.7,
+      "output": 16.2
+    },
+    "modalities": [
+      "text"
+    ],
+    "toolCalling": true,
+    "reasoning": false,
+    "latency": "slow",
+    "quality": 27.4,
+    "scores": {
+      "overall": 27.4,
+      "coding": 27.4,
+      "reasoning": 27.4,
+      "math": 27.4,
+      "knowledge": 27.4,
+      "agentic": 27.4,
+      "longContext": 27.4,
+      "vision": 27.4,
+      "speed": 27.4
+    },
+    "evidence": {
+      "overall": 0,
+      "coding": 0,
+      "reasoning": 0,
+      "math": 0,
+      "knowledge": 0,
+      "agentic": 0,
+      "longContext": 0,
+      "vision": 0,
+      "speed": 0
+    },
+    "bestFor": [],
+    "weaknesses": [],
+    "sources": [
+      "https://artificialanalysis.ai/leaderboards/models"
+    ],
+    "checkedAt": "2026-11-18",
+    "crossChecks": {
+      "artificialAnalysis": {
+        "intelligenceIndex": 0,
+        "priceIn": 0.375,
+        "priceOut": 2.25,
+        "ttft": 3.22111911504685,
+        "speed": 114.400917868922,
+        "source": "https://artificialanalysis.ai/leaderboards/models"
+      },
+      "epoch": {
+        "eci": 144.1,
+        "date": "2026-04-14",
+        "board": "https://epoch.ai/eci"
+      }
+    }
+  },
+  "qwen3.5-122b-a10b": {
+    "label": "Qwen3.5 122B A10B (Reasoning)",
+    "provider": "bailian-aliyun",
+    "contextWindow": 262144,
+    "price": {
+      "input": 2.9,
+      "output": 23
+    },
+    "modalities": [
+      "text"
+    ],
+    "toolCalling": true,
+    "reasoning": false,
+    "latency": "slow",
+    "quality": 27.4,
+    "scores": {
+      "overall": 27.4,
+      "coding": 27.4,
+      "reasoning": 27.4,
+      "math": 27.4,
+      "knowledge": 27.4,
+      "agentic": 27.4,
+      "longContext": 27.4,
+      "vision": 27.4,
+      "speed": 27.4
+    },
+    "evidence": {
+      "overall": 0,
+      "coding": 0,
+      "reasoning": 0,
+      "math": 0,
+      "knowledge": 0,
+      "agentic": 0,
+      "longContext": 0,
+      "vision": 0,
+      "speed": 0
+    },
+    "bestFor": [],
+    "weaknesses": [],
+    "sources": [
+      "https://artificialanalysis.ai/leaderboards/models"
+    ],
+    "checkedAt": "2026-11-18",
+    "crossChecks": {
+      "artificialAnalysis": {
+        "intelligenceIndex": 0,
+        "priceIn": 0.4,
+        "priceOut": 3.2,
+        "ttft": 4.45613650890117,
+        "speed": 104.334498756487,
+        "source": "https://artificialanalysis.ai/leaderboards/models"
+      }
+    }
+  },
+  "qwen3.5-397b-a17b": {
+    "label": "Qwen3.5 397B A17B (Non-reasoning)",
+    "provider": "bailian-aliyun",
+    "contextWindow": 262144,
+    "price": {
+      "input": 4.3,
+      "output": 25.9
+    },
+    "modalities": [
+      "text"
+    ],
+    "toolCalling": true,
+    "reasoning": false,
+    "latency": "balanced",
+    "quality": 27.4,
+    "scores": {
+      "overall": 27.4,
+      "coding": 27.4,
+      "reasoning": 27.4,
+      "math": 27.4,
+      "knowledge": 27.4,
+      "agentic": 27.4,
+      "longContext": 27.4,
+      "vision": 27.4,
+      "speed": 27.4
+    },
+    "evidence": {
+      "overall": 0,
+      "coding": 0,
+      "reasoning": 0,
+      "math": 0,
+      "knowledge": 0,
+      "agentic": 0,
+      "longContext": 0,
+      "vision": 0,
+      "speed": 0
+    },
+    "bestFor": [],
+    "weaknesses": [],
+    "sources": [
+      "https://artificialanalysis.ai/leaderboards/models"
+    ],
+    "checkedAt": "2026-11-18",
+    "crossChecks": {
+      "artificialAnalysis": {
+        "intelligenceIndex": 0,
+        "priceIn": 0.6,
+        "priceOut": 3.6,
+        "ttft": 2.45314882258812,
+        "speed": 48.8296122795713,
+        "source": "https://artificialanalysis.ai/leaderboards/models"
+      },
+      "epoch": {
+        "eci": 148,
+        "date": "2026-02-13",
+        "board": "https://epoch.ai/eci"
+      },
+      "llmLeaderboard": {
+        "ttftSeconds": null,
+        "tokensPerSecond": null,
+        "provider": null,
+        "benchmarks": {
+          "gdp-pdf-aa": 12.2
+        },
+        "board": "https://llmleaderboard.com"
+      }
+    }
+  },
+  "antdigital/Ling-3.1-flash": {
+    "label": "Ling 3.1 Flash 1019",
+    "provider": "bailian-aliyun",
+    "contextWindow": 1048576,
+    "price": {
+      "input": 2.2,
+      "output": 6.5
+    },
+    "modalities": [
+      "text"
+    ],
+    "toolCalling": true,
+    "reasoning": false,
+    "latency": "slow",
+    "quality": 60.4,
+    "scores": {
+      "overall": 60.4,
+      "coding": 60.4,
+      "reasoning": 60.4,
+      "math": 60.4,
+      "knowledge": 60.4,
+      "agentic": 60.4,
+      "longContext": 60.4,
+      "vision": 60.4,
+      "speed": 60.4
+    },
+    "evidence": {
+      "overall": 0,
+      "coding": 0,
+      "reasoning": 0,
+      "math": 0,
+      "knowledge": 0,
+      "agentic": 0,
+      "longContext": 0,
+      "vision": 0,
+      "speed": 0
+    },
+    "bestFor": [],
+    "weaknesses": [],
+    "sources": [
+      "https://artificialanalysis.ai/leaderboards/models"
+    ],
+    "checkedAt": "2026-11-18",
+    "crossChecks": {
+      "artificialAnalysis": {
+        "intelligenceIndex": 29.6,
+        "priceIn": 0.3,
+        "priceOut": 0.9,
+        "ttft": null,
+        "speed": null,
+        "source": "https://artificialanalysis.ai/leaderboards/models"
+      }
+    }
+  },
+  "cmaas-glm-5.3": {
+    "label": "GLM-5.3 (Max)",
+    "provider": "bailian-aliyun",
+    "contextWindow": 1000000,
+    "price": {
+      "input": 10.1,
+      "output": 31.7
+    },
+    "modalities": [
+      "text"
+    ],
+    "toolCalling": true,
+    "reasoning": false,
+    "latency": "balanced",
+    "quality": 62.6,
+    "scores": {
+      "overall": 62.6,
+      "coding": 62.6,
+      "reasoning": 62.6,
+      "math": 62.6,
+      "knowledge": 62.6,
+      "agentic": 62.6,
+      "longContext": 62.6,
+      "vision": 62.6,
+      "speed": 62.6
+    },
+    "evidence": {
+      "overall": 0,
+      "coding": 0,
+      "reasoning": 0,
+      "math": 0,
+      "knowledge": 0,
+      "agentic": 0,
+      "longContext": 0,
+      "vision": 0,
+      "speed": 0
+    },
+    "bestFor": [],
+    "weaknesses": [],
+    "sources": [
+      "https://artificialanalysis.ai/leaderboards/models"
+    ],
+    "checkedAt": "2026-11-18",
+    "crossChecks": {
+      "artificialAnalysis": {
+        "intelligenceIndex": 31.7,
+        "priceIn": 1.4,
+        "priceOut": 4.4,
+        "ttft": 2.58898845858205,
+        "speed": 88.9523010383275,
+        "source": "https://artificialanalysis.ai/leaderboards/models"
+      }
+    }
+  },
+  "kimi/kimi-k3.1-pro-highspeed": {
+    "label": "Kimi K3.1 Pro",
+    "provider": "bailian-aliyun",
+    "contextWindow": 1000000,
+    "price": {
+      "input": 14.4,
+      "output": 72
+    },
+    "modalities": [
+      "text"
+    ],
+    "toolCalling": true,
+    "reasoning": false,
+    "latency": "slow",
+    "quality": 78,
+    "scores": {
+      "overall": 78,
+      "coding": 78,
+      "reasoning": 78,
+      "math": 78,
+      "knowledge": 78,
+      "agentic": 78,
+      "longContext": 78,
+      "vision": 78,
+      "speed": 78
+    },
+    "evidence": {
+      "overall": 0,
+      "coding": 0,
+      "reasoning": 0,
+      "math": 0,
+      "knowledge": 0,
+      "agentic": 0,
+      "longContext": 0,
+      "vision": 0,
+      "speed": 0
+    },
+    "bestFor": [],
+    "weaknesses": [],
+    "sources": [
+      "https://artificialanalysis.ai/leaderboards/models"
+    ],
+    "checkedAt": "2026-11-18",
+    "crossChecks": {
+      "artificialAnalysis": {
+        "intelligenceIndex": 46.5,
+        "priceIn": 2,
+        "priceOut": 10,
+        "ttft": 3.36789028318509,
+        "speed": 31.3441495615139,
+        "source": "https://artificialanalysis.ai/leaderboards/models"
+      },
+      "epoch": {
+        "eci": 161.4,
+        "date": "2026-10-23",
+        "board": "https://epoch.ai/eci"
+      },
+      "llmLeaderboard": {
+        "ttftSeconds": 2.683,
+        "tokensPerSecond": 76.9,
+        "provider": "Kimi High Speed",
+        "benchmarks": {
+          "livebench-2-agentic": 39.1,
+          "livebench-2-coding": 81.8,
+          "gdp-pdf-aa": 31.4,
+          "livebench-2-reasoning": 91.1
+        },
+        "board": "https://llmleaderboard.com"
+      }
+    }
+  },
+  "xiaomi/mimo-v2.6-pro-ultraspeed": {
+    "label": "MiMo-V2.6-Pro",
+    "provider": "bailian-aliyun",
+    "contextWindow": 1000000,
+    "price": {
+      "input": 3.1,
+      "output": 6.3
+    },
+    "modalities": [
+      "text"
+    ],
+    "toolCalling": true,
+    "reasoning": false,
+    "latency": "slow",
+    "quality": 60.7,
+    "scores": {
+      "overall": 60.7,
+      "coding": 60.7,
+      "reasoning": 60.7,
+      "math": 60.7,
+      "knowledge": 60.7,
+      "agentic": 60.7,
+      "longContext": 60.7,
+      "vision": 60.7,
+      "speed": 60.7
+    },
+    "evidence": {
+      "overall": 0,
+      "coding": 0,
+      "reasoning": 0,
+      "math": 0,
+      "knowledge": 0,
+      "agentic": 0,
+      "longContext": 0,
+      "vision": 0,
+      "speed": 0
+    },
+    "bestFor": [],
+    "weaknesses": [],
+    "sources": [
+      "https://artificialanalysis.ai/leaderboards/models"
+    ],
+    "checkedAt": "2026-11-18",
+    "crossChecks": {
+      "artificialAnalysis": {
+        "intelligenceIndex": 29.9,
+        "priceIn": 0.435,
+        "priceOut": 0.87,
+        "ttft": 3.95443644408897,
+        "speed": 58.4343792525142,
+        "source": "https://artificialanalysis.ai/leaderboards/models"
+      },
+      "llmLeaderboard": {
+        "ttftSeconds": null,
+        "tokensPerSecond": null,
+        "provider": null,
+        "benchmarks": {
+          "livebench-2-agentic": 35.2,
+          "livebench-2-coding": 81.5,
+          "gdp-pdf-aa": 19.2,
+          "livebench-2-reasoning": 79.6
+        },
+        "board": "https://llmleaderboard.com"
+      }
+    }
+  },
+  "glm-5.3-prime": {
+    "label": "GLM-5.3 (Max)",
+    "provider": "bailian-aliyun",
+    "contextWindow": 1000000,
+    "price": {
+      "input": 10.1,
+      "output": 31.7
+    },
+    "modalities": [
+      "text"
+    ],
+    "toolCalling": true,
+    "reasoning": false,
+    "latency": "balanced",
+    "quality": 62.6,
+    "scores": {
+      "overall": 62.6,
+      "coding": 62.6,
+      "reasoning": 62.6,
+      "math": 62.6,
+      "knowledge": 62.6,
+      "agentic": 62.6,
+      "longContext": 62.6,
+      "vision": 62.6,
+      "speed": 62.6
+    },
+    "evidence": {
+      "overall": 0,
+      "coding": 0,
+      "reasoning": 0,
+      "math": 0,
+      "knowledge": 0,
+      "agentic": 0,
+      "longContext": 0,
+      "vision": 0,
+      "speed": 0
+    },
+    "bestFor": [],
+    "weaknesses": [],
+    "sources": [
+      "https://artificialanalysis.ai/leaderboards/models"
+    ],
+    "checkedAt": "2026-11-18",
+    "crossChecks": {
+      "artificialAnalysis": {
+        "intelligenceIndex": 31.7,
+        "priceIn": 1.4,
+        "priceOut": 4.4,
+        "ttft": 2.58898845858205,
+        "speed": 88.9523010383275,
+        "source": "https://artificialanalysis.ai/leaderboards/models"
+      }
+    }
+  },
+  "ZHIPU/GLM-5.3-FlashX": {
+    "label": "GLM-5.3 (Max)",
+    "provider": "bailian-aliyun",
+    "contextWindow": 1000000,
+    "price": {
+      "input": 10.1,
+      "output": 31.7
+    },
+    "modalities": [
+      "text"
+    ],
+    "toolCalling": true,
+    "reasoning": false,
+    "latency": "balanced",
+    "quality": 62.6,
+    "scores": {
+      "overall": 62.6,
+      "coding": 62.6,
+      "reasoning": 62.6,
+      "math": 62.6,
+      "knowledge": 62.6,
+      "agentic": 62.6,
+      "longContext": 62.6,
+      "vision": 62.6,
+      "speed": 62.6
+    },
+    "evidence": {
+      "overall": 0,
+      "coding": 0,
+      "reasoning": 0,
+      "math": 0,
+      "knowledge": 0,
+      "agentic": 0,
+      "longContext": 0,
+      "vision": 0,
+      "speed": 0
+    },
+    "bestFor": [],
+    "weaknesses": [],
+    "sources": [
+      "https://artificialanalysis.ai/leaderboards/models"
+    ],
+    "checkedAt": "2026-11-18",
+    "crossChecks": {
+      "artificialAnalysis": {
+        "intelligenceIndex": 31.7,
+        "priceIn": 1.4,
+        "priceOut": 4.4,
+        "ttft": 2.58898845858205,
+        "speed": 88.9523010383275,
+        "source": "https://artificialanalysis.ai/leaderboards/models"
+      }
+    }
+  },
+  "vanchin/deepseek-v4.1-flash": {
+    "label": "DeepSeek V4.1 Flash 1017 (Max)",
+    "provider": "bailian-aliyun",
+    "contextWindow": 1000000,
+    "price": {
+      "input": 2.2,
+      "output": 8.6
+    },
+    "modalities": [
+      "text"
+    ],
+    "toolCalling": true,
+    "reasoning": false,
+    "latency": "balanced",
+    "quality": 63.5,
+    "scores": {
+      "overall": 63.5,
+      "coding": 63.5,
+      "reasoning": 63.5,
+      "math": 63.5,
+      "knowledge": 63.5,
+      "agentic": 63.5,
+      "longContext": 63.5,
+      "vision": 63.5,
+      "speed": 63.5
+    },
+    "evidence": {
+      "overall": 0,
+      "coding": 0,
+      "reasoning": 0,
+      "math": 0,
+      "knowledge": 0,
+      "agentic": 0,
+      "longContext": 0,
+      "vision": 0,
+      "speed": 0
+    },
+    "bestFor": [],
+    "weaknesses": [],
+    "sources": [
+      "https://artificialanalysis.ai/leaderboards/models"
+    ],
+    "checkedAt": "2026-11-18",
+    "crossChecks": {
+      "artificialAnalysis": {
+        "intelligenceIndex": 32.6,
+        "priceIn": 0.3,
+        "priceOut": 1.2,
+        "ttft": 1.25942222469258,
+        "speed": 175.01153585358,
+        "source": "https://artificialanalysis.ai/leaderboards/models"
+      }
+    }
+  },
+  "vanchin/deepseek-v4-pro": {
+    "label": "DeepSeek V4 Pro 0813 (Max)",
+    "provider": "bailian-aliyun",
+    "contextWindow": 1000000,
+    "price": {
+      "input": 9.5,
+      "output": 28.5
+    },
+    "modalities": [
+      "text"
+    ],
+    "toolCalling": true,
+    "reasoning": false,
+    "latency": "balanced",
+    "quality": 53.7,
+    "scores": {
+      "overall": 53.7,
+      "coding": 53.7,
+      "reasoning": 53.7,
+      "math": 53.7,
+      "knowledge": 53.7,
+      "agentic": 53.7,
+      "longContext": 53.7,
+      "vision": 53.7,
+      "speed": 53.7
+    },
+    "evidence": {
+      "overall": 0,
+      "coding": 0,
+      "reasoning": 0,
+      "math": 0,
+      "knowledge": 0,
+      "agentic": 0,
+      "longContext": 0,
+      "vision": 0,
+      "speed": 0
+    },
+    "bestFor": [],
+    "weaknesses": [],
+    "sources": [
+      "https://artificialanalysis.ai/leaderboards/models"
+    ],
+    "checkedAt": "2026-11-18",
+    "crossChecks": {
+      "artificialAnalysis": {
+        "intelligenceIndex": 23.1,
+        "priceIn": 1.32,
+        "priceOut": 3.96,
+        "ttft": 2.46574294355001,
+        "speed": 94.7819149475167,
+        "source": "https://artificialanalysis.ai/leaderboards/models"
+      }
+    }
+  },
+  "kimi/kimi-k2.7-code-highspeed": {
+    "label": "Kimi K2.7 Code",
+    "provider": "bailian-aliyun",
+    "contextWindow": 256000,
+    "price": {
+      "input": 6.8,
+      "output": 28.8
+    },
+    "modalities": [
+      "text"
+    ],
+    "toolCalling": true,
+    "reasoning": false,
+    "latency": "slow",
+    "quality": 29.6,
+    "scores": {
+      "overall": 29.6,
+      "coding": 29.6,
+      "reasoning": 29.6,
+      "math": 29.6,
+      "knowledge": 29.6,
+      "agentic": 29.6,
+      "longContext": 29.6,
+      "vision": 29.6,
+      "speed": 29.6
+    },
+    "evidence": {
+      "overall": 0,
+      "coding": 0,
+      "reasoning": 0,
+      "math": 0,
+      "knowledge": 0,
+      "agentic": 0,
+      "longContext": 0,
+      "vision": 0,
+      "speed": 0
+    },
+    "bestFor": [],
+    "weaknesses": [],
+    "sources": [
+      "https://artificialanalysis.ai/leaderboards/models"
+    ],
+    "checkedAt": "2026-11-18",
+    "crossChecks": {
+      "artificialAnalysis": {
+        "intelligenceIndex": 0,
+        "priceIn": 0.95,
+        "priceOut": 4,
+        "ttft": 6.23111339845665,
+        "speed": 56.5758440847806,
+        "source": "https://artificialanalysis.ai/leaderboards/models"
+      },
+      "epoch": {
+        "eci": 151.2,
+        "date": "2026-06-12",
+        "board": "https://epoch.ai/eci"
+      }
+    }
+  },
+  "ZHIPU/GLM-5": {
+    "label": "GLM-5.3 (Max)",
+    "provider": "bailian-aliyun",
+    "contextWindow": 1000000,
+    "price": {
+      "input": 10.1,
+      "output": 31.7
+    },
+    "modalities": [
+      "text"
+    ],
+    "toolCalling": true,
+    "reasoning": false,
+    "latency": "balanced",
+    "quality": 62.6,
+    "scores": {
+      "overall": 62.6,
+      "coding": 62.6,
+      "reasoning": 62.6,
+      "math": 62.6,
+      "knowledge": 62.6,
+      "agentic": 62.6,
+      "longContext": 62.6,
+      "vision": 62.6,
+      "speed": 62.6
+    },
+    "evidence": {
+      "overall": 0,
+      "coding": 0,
+      "reasoning": 0,
+      "math": 0,
+      "knowledge": 0,
+      "agentic": 0,
+      "longContext": 0,
+      "vision": 0,
+      "speed": 0
+    },
+    "bestFor": [],
+    "weaknesses": [],
+    "sources": [
+      "https://artificialanalysis.ai/leaderboards/models"
+    ],
+    "checkedAt": "2026-11-18",
+    "crossChecks": {
+      "artificialAnalysis": {
+        "intelligenceIndex": 31.7,
+        "priceIn": 1.4,
+        "priceOut": 4.4,
+        "ttft": 2.58898845858205,
+        "speed": 88.9523010383275,
+        "source": "https://artificialanalysis.ai/leaderboards/models"
+      }
+    }
+  },
+  "glm-5": {
+    "label": "GLM-5.3 (Max)",
+    "provider": "bailian-aliyun",
+    "contextWindow": 1000000,
+    "price": {
+      "input": 10.1,
+      "output": 31.7
+    },
+    "modalities": [
+      "text"
+    ],
+    "toolCalling": true,
+    "reasoning": false,
+    "latency": "balanced",
+    "quality": 62.6,
+    "scores": {
+      "overall": 62.6,
+      "coding": 62.6,
+      "reasoning": 62.6,
+      "math": 62.6,
+      "knowledge": 62.6,
+      "agentic": 62.6,
+      "longContext": 62.6,
+      "vision": 62.6,
+      "speed": 62.6
+    },
+    "evidence": {
+      "overall": 0,
+      "coding": 0,
+      "reasoning": 0,
+      "math": 0,
+      "knowledge": 0,
+      "agentic": 0,
+      "longContext": 0,
+      "vision": 0,
+      "speed": 0
+    },
+    "bestFor": [],
+    "weaknesses": [],
+    "sources": [
+      "https://artificialanalysis.ai/leaderboards/models"
+    ],
+    "checkedAt": "2026-11-18",
+    "crossChecks": {
+      "artificialAnalysis": {
+        "intelligenceIndex": 31.7,
+        "priceIn": 1.4,
+        "priceOut": 4.4,
+        "ttft": 2.58898845858205,
+        "speed": 88.9523010383275,
+        "source": "https://artificialanalysis.ai/leaderboards/models"
+      },
+      "epoch": {
+        "eci": 146.5,
+        "date": "2026-02-11",
+        "board": "https://epoch.ai/eci"
+      }
+    }
+  },
+  "siliconflow/deepseek-v3-0324": {
+    "label": "DeepSeek V4.1 Flash 1017 (Max)",
+    "provider": "bailian-aliyun",
+    "contextWindow": 1000000,
+    "price": {
+      "input": 2.2,
+      "output": 8.6
+    },
+    "modalities": [
+      "text"
+    ],
+    "toolCalling": true,
+    "reasoning": false,
+    "latency": "balanced",
+    "quality": 63.5,
+    "scores": {
+      "overall": 63.5,
+      "coding": 63.5,
+      "reasoning": 63.5,
+      "math": 63.5,
+      "knowledge": 63.5,
+      "agentic": 63.5,
+      "longContext": 63.5,
+      "vision": 63.5,
+      "speed": 63.5
+    },
+    "evidence": {
+      "overall": 0,
+      "coding": 0,
+      "reasoning": 0,
+      "math": 0,
+      "knowledge": 0,
+      "agentic": 0,
+      "longContext": 0,
+      "vision": 0,
+      "speed": 0
+    },
+    "bestFor": [],
+    "weaknesses": [],
+    "sources": [
+      "https://artificialanalysis.ai/leaderboards/models"
+    ],
+    "checkedAt": "2026-11-18",
+    "crossChecks": {
+      "artificialAnalysis": {
+        "intelligenceIndex": 32.6,
+        "priceIn": 0.3,
+        "priceOut": 1.2,
+        "ttft": 1.25942222469258,
+        "speed": 175.01153585358,
+        "source": "https://artificialanalysis.ai/leaderboards/models"
+      }
+    }
   }
 }

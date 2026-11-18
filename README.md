@@ -269,6 +269,36 @@ The settings page shows the assignment as a board of **capsules**:
 stays out rather than being guessed at. The same data is on the `model_router`
 tool (`status` prints the lanes; `configure` accepts `tiers`).
 
+### Where the measurements come from
+
+`refresh` (the button on the config page, or `POST /dsh-auto-model-router-api`
+with `{"action":"refresh"}`) walks five sources and merges them into
+`data/model-info-runtime.json`:
+
+| source | what it contributes |
+|---|---|
+| CompassRank | benchmark spreads per capability dimension |
+| BenchGecko | per-model capability samples |
+| Epoch ECI | a fitted capability index, recorded as a cross-check |
+| llmleaderboard | measured serving speed and TTFT, independent benchmarks |
+| **Artificial Analysis** | an intelligence index, USD prices, TTFT/output speed, and per-benchmark scores for ~280 models |
+
+Artificial Analysis is scraped, not called through its API: the documented
+`/api/v2/*` endpoints now require a key, while `/leaderboards/models` ships the
+whole table inside its Next.js RSC stream. `scripts/scrape-artificialanalysis.mjs`
+decodes that stream with plain `fetch` — no browser — and `src/refresh.js` does
+the same at run time, which a Playwright dependency could not do inside the host.
+
+Two rules keep the merge honest. Its intelligence index is not a 0–100 score, so
+it is mapped through a linear fit against the models both sources measured; and
+the merge only fills what the catalog is missing — a measured quality or price is
+never overwritten. Models the catalog has never described but the provider
+advertises get an entry built from the AA row (dimensions mirroring the composite
+with evidence 0), which is how previously unroutable ids become placeable.
+
+Prices from AA are USD; the catalog stores CNY, so they convert at one stated
+rate (`CNY_PER_USD`, 7.2).
+
 ### The composer switch
 
 `Auto` sits in the chatbox tool row next to the model control. Clicking it opens

@@ -22,6 +22,7 @@
 
 import zlib from 'node:zlib'
 import { buildDataset, COMPASS_ID } from './model-data-build.js'
+import { DIMENSIONS } from './select.js'
 
 const CDN = 'https://cdn.opencompass.org.cn/assets/lm'
 export const COMPASS_ABILITY_URL = `${CDN}/data-lm-ability_official.json`
@@ -29,6 +30,15 @@ export const COMPASS_BENCH_URL = `${CDN}/data-lm-ability_benchmark.json`
 export const BENCHGECKO_MODEL_URL = (slug) => `https://benchgecko.ai/api/v1/models/${encodeURIComponent(slug)}`
 export const EPOCH_ECI_URL = 'https://epoch.ai/data/eci_scores.csv'
 export const LLM_LEADERBOARD = 'https://llmleaderboard.com'
+export const ARTIFICIAL_ANALYSIS_URL = 'https://artificialanalysis.ai/leaderboards/models'
+/**
+ * Yuan per US dollar, for sources that quote prices in USD.
+ *
+ * The catalog stores prices in the currency of the provider that bills for the
+ * models (CNY for the Bailian deployments this profile uses), so a USD source
+ * has to be converted at one stated rate instead of silently mixing units.
+ */
+export const CNY_PER_USD = 7.2
 export const LLM_COMPARISON_URL = `${LLM_LEADERBOARD}/api/models/comparison.csv`
 /**
  * Benchmark pages to read. Each board is server-rendered as table rows carrying
@@ -245,7 +255,7 @@ export function slugOf(entry) {
  * @param {AbortSignal} [input.signal]
  * @param {Date} [input.now]
  */
-export async function refreshCatalog({ base, fetchImpl = fetch, signal, now = new Date() }) {
+export async function refreshCatalog({ base, wanted = [], fetchImpl = fetch, signal, now = new Date() }) {
   const errors = []
   let ability = null
   let bench = null
@@ -319,6 +329,14 @@ export async function refreshCatalog({ base, fetchImpl = fetch, signal, now = ne
     }
   }
 
+  let analysis = {}
+  try {
+    const html = await fetchText(ARTIFICIAL_ANALYSIS_URL, { fetchImpl, signal })
+    analysis = extractArtificialAnalysis(html, index)
+  } catch (error) {
+    errors.push(`artificialanalysis: ${String(error?.message ?? error)}`)
+  }
+
   const dataset = buildDataset({
     base,
     benchgecko: extractions,
@@ -326,6 +344,7 @@ export async function refreshCatalog({ base, fetchImpl = fetch, signal, now = ne
     counts: countsOf(extractions, raws),
   })
   const attached = attachCrossChecks(dataset, { epoch, llm })
+  const artificialAnalysis = attachArtificialAnalysis(dataset, { base, analysis, wanted, now })
 
   return {
     dataset,
@@ -338,7 +357,8 @@ export async function refreshCatalog({ base, fetchImpl = fetch, signal, now = ne
       compass: Object.values(dataset).filter((entry) => entry?.crossChecks?.compassRank !== undefined).length,
       epoch: attached.epoch,
       llmLeaderboard: attached.llmLeaderboard,
-      sources: [COMPASS_ABILITY_URL, COMPASS_BENCH_URL, 'https://benchgecko.ai', EPOCH_ECI_URL, LLM_LEADERBOARD],
+      artificialAnalysis,
+      sources: [COMPASS_ABILITY_URL, COMPASS_BENCH_URL, 'https://benchgecko.ai', EPOCH_ECI_URL, LLM_LEADERBOARD, ARTIFICIAL_ANALYSIS_URL],
       errors,
     },
   }
@@ -407,6 +427,390 @@ export function nameIndex(base) {
     for (const alias of NAME_ALIASES[id] ?? []) index.set(normalizeName(alias), id)
   }
   return index
+}
+
+/** Decode every `self.__next_f.push([1, "…"])` string in a Next.js RSC page. */
+export function decodeFlightChunks(html) {
+  const marker = 'self.__next_f.push([1,'
+  const chunks = []
+  let start = 0
+  for (;;) {
+    const at = String(html ?? '').indexOf(marker, start)
+    if (at < 0) break
+    let index = at + marker.length
+    if (html[index] !== '"') {
+      start = index
+      continue
+    }
+    const begin = index
+    index += 1
+    let escaped = false
+    for (; index < html.length; index += 1) {
+      const char = html[index]
+      if (escaped) escaped = false
+      else if (char === '\\') escaped = true
+      else if (char === '"') break
+    }
+    try {
+      chunks.push(JSON.parse(html.slice(begin, index + 1)))
+    } catch {
+      // not a plain string literal: no table rows inside
+    }
+    start = index + 1
+  }
+  return chunks
+}
+
+/**
+ * Words that distinguish a variant from a different model: AA ships one row per
+ * reasoning effort, serving mode, or reseller, and all of them describe the same
+ * catalog model. A name difference made only of these is not a different model.
+ */
+const VARIANT_WORDS = new Set([
+  'max', 'high', 'low', 'medium', 'min', 'mini', 'thinking', 'nonreasoning', 'reasoning',
+  // Speed tiers and lightweight variants: the same weights, a different serving
+  // offer. They are only ignored when the base model name already lines up.
+  'flash', 'flashlite', 'turbo', 'air', 'speed', 'lite',
+  'default', 'fallback', 'preview', 'prime', 'highspeed', 'ultraspeed', 'vision', 'flashx',
+  'reasoningmedium', 'reasoninglow', 'reasoninghigh', 'cmaas', 'based', 'on', 'instruct',
+])
+
+/** Split a normalized name into its leading model tokens and variant tokens. */
+export function splitVariant(normalized) {
+  let index = normalized.length
+  for (;;) {
+    const digits = /(\d+)$/.exec(normalized.slice(0, index))
+    if (digits !== null) {
+      const head = normalized.slice(0, index - digits[1].length)
+      // Version numbers ("3.8" -> 38, "122B" -> 122) are part of the name; four
+      // or more digits are a date or a parameter count bolted on as a variant.
+      if (digits[1].length >= 4) {
+        index = head.length
+        continue
+      }
+      break
+    }
+    const word = /([a-z]+)$/.exec(normalized.slice(0, index))
+    if (word !== null && VARIANT_WORDS.has(word[1])) {
+      index = normalized.slice(0, index).length - word[1].length
+      continue
+    }
+    break
+  }
+  return { model: normalized.slice(0, index), variant: normalized.slice(index) }
+}
+
+/**
+ * Find the analysis row for one advertised id.
+ *
+ * Tries exact keys first, then a model-name prefix whose remainder is only
+ * variants. When several rows qualify (AA has one per reasoning effort) the row
+ * with the highest intelligence index wins: the variant that was actually
+ * evaluated is the one worth recording.
+ */
+export function matchAnalysisRow(keys, byName) {
+  for (const key of keys) {
+    const exact = byName.get(key)
+    if (exact !== undefined) return exact
+  }
+  // Four characters is the shortest useful stem ("glm5", "kimi"); shorter than
+  // that a prefix match would join unrelated models.
+  const wanted = keys.map((key) => splitVariant(key)).filter(({ model }) => model.length >= 4)
+  let best = null
+  for (const [name, row] of byName) {
+    const { model } = splitVariant(name)
+    for (const candidate of wanted) {
+      const shares = model === candidate.model || model.startsWith(candidate.model) || candidate.model.startsWith(model)
+      if (!shares) continue
+      const extra = model.length > candidate.model.length ? model.slice(candidate.model.length) : candidate.model.slice(model.length)
+      const extraOk = extra.length === 0 || VARIANT_WORDS.has(extra) || /^\d{1,2}$/.test(extra) || /-\d{4}-\d{2}-\d{2}$/.test(extra)
+      if (!extraOk) continue
+      const score = (Number.isFinite(row.intelligenceIndex) ? row.intelligenceIndex : 0) + (Number.isFinite(row.priceIn) ? 1 : 0)
+      if (best === null || score > best.score) best = { row, score }
+    }
+  }
+  return best === null ? undefined : best.row
+}
+
+/** Read one balanced `{…}` object at an offset, tolerating NaN/Infinity literals. */
+function readJsonObjectAt(text, at) {
+  let depth = 0
+  let inString = false
+  let escaped = false
+  for (let index = at; index < text.length; index += 1) {
+    const char = text[index]
+    if (inString) {
+      if (escaped) escaped = false
+      else if (char === '\\') escaped = true
+      else if (char === '"') inString = false
+      continue
+    }
+    if (char === '"') inString = true
+    else if (char === '{') depth += 1
+    else if (char === '}') {
+      depth -= 1
+      if (depth === 0) {
+        try {
+          return JSON.parse(text.slice(at, index + 1).replace(/\b(NaN|Infinity|-Infinity)\b/g, 'null'))
+        } catch {
+          return null
+        }
+      }
+    }
+  }
+  return null
+}
+
+const isArtificialAnalysisRow = (value) =>
+  value !== null &&
+  typeof value === 'object' &&
+  typeof value.name === 'string' &&
+  ('price1mInputTokens' in value || 'intelligenceIndex' in value || 'scores' in value)
+
+/**
+ * Artificial Analysis' public model table.
+ *
+ * The page is Next.js and ships its rows inside the RSC flight stream, so the
+ * table is readable without a browser — which is what makes it usable from the
+ * plugin at run time: a headless browser cannot run inside the host.
+ *
+ * Rows are matched to the catalog by name, tolerant of the qualifiers AA adds
+ * ("(Non-reasoning)", "(Medium, Default Fallback)").
+ *
+ * @param {string} html
+ * @param {Map<string, string>} index - normalized name -> catalog id
+ */
+export function extractArtificialAnalysis(html, index) {
+  const rows = new Map()
+  for (const text of decodeFlightChunks(html)) {
+    let at = text.indexOf('{"id":"')
+    while (at >= 0) {
+      const row = readJsonObjectAt(text, at)
+      if (isArtificialAnalysisRow(row)) {
+        const key = typeof row.id === 'string' && row.id.length > 0 ? row.id : String(row.name)
+        rows.set(key, { ...(rows.get(key) ?? {}), ...row })
+      }
+      at = text.indexOf('{"id":"', at + 1)
+    }
+  }
+
+  const out = {}
+  const byName = new Map()
+  const claim = (name) => {
+    const plain = normalizeName(name)
+    if (index.has(plain)) return index.get(plain)
+    // Drop AA's qualifier parenthesis, then trailing variant words.
+    const stripped = normalizeName(String(name).replace(/\([^)]*\)/g, ' '))
+    if (index.has(stripped)) return index.get(stripped)
+    const trimmed = stripped.replace(/(non)?reasoning$/, '')
+    if (index.has(trimmed)) return index.get(trimmed)
+    // Longest catalog key that prefixes the source name (dated ids, "-preview").
+    let best = null
+    for (const [key, id] of index) {
+      if (key.length >= 6 && trimmed.startsWith(key) && (best === null || key.length > best.length)) best = key
+    }
+    return best === null ? undefined : index.get(best)
+  }
+
+  for (const row of rows.values()) {
+    const value = { source: ARTIFICIAL_ANALYSIS_URL }
+    const index0 = Number(row.intelligenceIndex)
+    if (Number.isFinite(index0)) value.intelligenceIndex = round1(index0)
+    const priceIn = Number(row.price1mInputTokens)
+    const priceOut = Number(row.price1mOutputTokens)
+    if (Number.isFinite(priceIn)) value.priceIn = priceIn
+    if (Number.isFinite(priceOut)) value.priceOut = priceOut
+    const ttft = Number(row.timeToFirstToken)
+    if (Number.isFinite(ttft)) value.ttft = ttft
+    const speed = Number(row.outputSpeed)
+    if (Number.isFinite(speed)) value.speed = speed
+    const context = Number(row.contextWindowTokens)
+    if (Number.isFinite(context)) value.contextTokens = context
+    const scores = {}
+    for (const [benchmark, raw] of Object.entries(row.scores ?? {})) {
+      const number = Number(raw)
+      if (Number.isFinite(number)) scores[benchmark] = Math.round(number * 1000) / 10
+    }
+    if (Object.keys(scores).length > 0) value.benchmarks = scores
+    if (!(Number.isFinite(value.intelligenceIndex) || Object.keys(scores).length > 0 || Number.isFinite(priceIn))) continue
+    value.name = row.name
+    byName.set(normalizeName(row.name), value)
+    byName.set(normalizeName(String(row.name).replace(/\([^)]*\)/g, ' ')), value)
+    const id = claim(row.name)
+    if (id !== undefined) out[id] = value
+  }
+  return { byId: out, byName }
+}
+
+/**
+ * Fold Artificial Analysis into the catalog.
+ *
+ * Two rules keep this honest: it fills what the catalog is missing (quality,
+ * price, latency) and never overwrites a measured value that a primary source
+ * supplied; and its intelligence index is mapped through a fit to the models
+ * both sources know, because AA's index is its own scale, not a 0-100 score.
+ *
+ * @param {Record<string, object>} dataset
+ * @param {{base?: Record<string, object>, analysis: Record<string, object>}} input
+ */
+export function attachArtificialAnalysis(dataset, { base = {}, analysis = {}, wanted = [], now = new Date() } = {}) {
+  const byId = analysis.byId ?? {}
+  const byName = analysis.byName ?? new Map()
+  // Calibrate AA index -> catalog quality on the models measured by both.
+  const pairs = []
+  for (const [id, value] of Object.entries(byId)) {
+    if (!Number.isFinite(value.intelligenceIndex)) continue
+    const quality = Number(base[id]?.quality)
+    if (Number.isFinite(quality)) pairs.push([value.intelligenceIndex, quality])
+  }
+  let slope = 1.6
+  let intercept = 20
+  if (pairs.length >= 5) {
+    const meanX = pairs.reduce((sum, [x]) => sum + x, 0) / pairs.length
+    const meanY = pairs.reduce((sum, [, y]) => sum + y, 0) / pairs.length
+    let numerator = 0
+    let denominator = 0
+    for (const [x, y] of pairs) {
+      numerator += (x - meanX) * (y - meanY)
+      denominator += (x - meanX) ** 2
+    }
+    if (denominator > 0) {
+      slope = numerator / denominator
+      intercept = meanY - slope * meanX
+    }
+  }
+  const qualityOf = (value) => Math.max(0, Math.min(100, Math.round((slope * value.intelligenceIndex + intercept) * 10) / 10))
+
+  let filledQuality = 0
+  let filledPrice = 0
+  let filledLatency = 0
+  for (const [id, value] of Object.entries(byId)) {
+    const entry = dataset[id]
+    if (entry === undefined) continue
+    entry.crossChecks = { ...(entry.crossChecks ?? {}), artificialAnalysis: {
+      intelligenceIndex: value.intelligenceIndex ?? null,
+      priceIn: value.priceIn ?? null,
+      priceOut: value.priceOut ?? null,
+      ttft: value.ttft ?? null,
+      speed: value.speed ?? null,
+      source: ARTIFICIAL_ANALYSIS_URL,
+    } }
+
+    const hasQuality = Number.isFinite(Number(entry.quality)) && Number(entry.quality) > 0
+    if (!hasQuality && Number.isFinite(value.intelligenceIndex)) {
+      const quality = qualityOf(value)
+      entry.quality = quality
+      entry.scores = { ...(entry.scores ?? {}), overall: quality }
+      entry.evidence = { ...(entry.evidence ?? {}), overall: 0 }
+      filledQuality += 1
+    }
+    const hasPrice = Number.isFinite(Number(entry.price?.input)) && Number(entry.price.input) > 0
+    if (!hasPrice && Number.isFinite(value.priceIn)) {
+      entry.price = {
+        input: round1(value.priceIn * CNY_PER_USD),
+        output: round1((value.priceOut ?? value.priceIn) * CNY_PER_USD),
+        ...(entry.price?.cacheHitInput === undefined ? {} : { cacheHitInput: entry.price.cacheHitInput }),
+      }
+      filledPrice += 1
+    }
+    if (entry.latency === undefined && (Number.isFinite(value.ttft) || Number.isFinite(value.speed))) {
+      const ttft = Number.isFinite(value.ttft) ? value.ttft : 99
+      const speed = Number.isFinite(value.speed) ? value.speed : 0
+      entry.latency = ttft <= 1 && speed >= 100 ? 'fast' : ttft <= 3 ? 'balanced' : 'slow'
+      filledLatency += 1
+    }
+  }
+  // Models the provider advertises but the catalog has never described: AA is the
+  // only source that knows them, so they get an entry built from its row rather
+  // than staying invisible to the router forever.
+  let created = 0
+  const latencyOf = (value) => {
+    const ttft = Number.isFinite(value.ttft) ? value.ttft : 99
+    const speed = Number.isFinite(value.speed) ? value.speed : 0
+    return ttft <= 1 && speed >= 100 ? 'fast' : ttft <= 3 ? 'balanced' : 'slow'
+  }
+  for (const raw of wanted) {
+    const id = typeof raw === 'string' ? raw : raw?.model
+    if (typeof id !== 'string' || id.length === 0) continue
+    const bare = id.includes('/') ? id.slice(id.indexOf('/') + 1) : id
+    const provider = typeof raw?.provider === 'string' ? raw.provider : undefined
+    const lookupKeys = [
+      normalizeName(id),
+      normalizeName(bare),
+      normalizeName(bare.replace(/-\d{4}-\d{2}-\d{2}$/, '')),
+      normalizeName(bare.replace(/^cmaas-/, '')),
+    ]
+    const value = matchAnalysisRow(lookupKeys, byName)
+    if (value === undefined) continue
+    const existing = dataset[id]
+    if (existing !== undefined) continue
+    const quality = Number.isFinite(value.intelligenceIndex) ? qualityOf(value) : null
+    if (quality === null && !Number.isFinite(value.priceIn)) continue
+    const price = Number.isFinite(value.priceIn)
+      ? { input: round1(value.priceIn * CNY_PER_USD), output: round1((value.priceOut ?? value.priceIn) * CNY_PER_USD) }
+      : undefined
+    // Artificial Analysis measures a composite, not per-dimension scores. Every
+    // dimension is filled with that composite and evidence 0, so the entry is a
+    // complete prior the selector can rank instead of a partial one it would
+    // treat as an error; nothing claims a dimension was measured.
+    const scores = {}
+    const evidence = {}
+    for (const dim of DIMENSIONS) {
+      scores[dim] = quality ?? 0
+      evidence[dim] = 0
+    }
+    dataset[id] = {
+      label: value.name ?? bare,
+      ...(provider === undefined ? {} : { provider }),
+      contextWindow: Number.isFinite(value.contextTokens) ? value.contextTokens : 0,
+      ...(price === undefined ? {} : { price }),
+      modalities: ['text'],
+      toolCalling: true,
+      reasoning: value.reasoning === true,
+      latency: latencyOf(value),
+      ...(quality === null ? {} : { quality }),
+      scores,
+      evidence,
+      bestFor: [],
+      weaknesses: [],
+      sources: [ARTIFICIAL_ANALYSIS_URL],
+      checkedAt: now.toISOString().slice(0, 10),
+      crossChecks: { artificialAnalysis: {
+        intelligenceIndex: value.intelligenceIndex ?? null,
+        priceIn: value.priceIn ?? null,
+        priceOut: value.priceOut ?? null,
+        ttft: value.ttft ?? null,
+        speed: value.speed ?? null,
+        source: ARTIFICIAL_ANALYSIS_URL,
+      } },
+    }
+    created += 1
+  }
+
+  // Every entry leaves here complete: the selector scores all nine dimensions and
+  // the knowledge tests require integers for evidence. An AA-only model has no
+  // per-dimension measurement, so its dimensions mirror the composite with
+  // evidence 0 -- a prior the selector can rank, not a claim it was measured.
+  for (const entry of Object.values(dataset)) {
+    if (entry === null || typeof entry !== 'object') continue
+    const scores = { ...(entry.scores ?? {}) }
+    const evidence = { ...(entry.evidence ?? {}) }
+    for (const dim of DIMENSIONS) {
+      if (!Number.isFinite(Number(scores[dim]))) scores[dim] = Number(entry.quality) > 0 ? Number(entry.quality) : 0
+      if (!Number.isInteger(evidence[dim])) evidence[dim] = 0
+    }
+    entry.scores = scores
+    entry.evidence = evidence
+  }
+
+  return {
+    models: Object.keys(byId).length,
+    created,
+    filledQuality,
+    filledPrice,
+    filledLatency,
+    calibration: { pairs: pairs.length, slope: Math.round(slope * 100) / 100, intercept: Math.round(intercept * 100) / 100 },
+  }
 }
 
 /**
