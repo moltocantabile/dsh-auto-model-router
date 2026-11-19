@@ -73,6 +73,7 @@ test('parseDecision extracts a task profile from System One responses', () => {
       depth: { type: 'score', score: 3, confidence: 0.9 },
       breadth: { type: 'score', score: 2, confidence: 0.8 },
       risk: { type: 'score', score: 2, confidence: 0.9 },
+      intent: { type: 'choice', choice: 'work', confidence: 0.85 },
       vision: { type: 'noul', noul: 0.1 },
       tools: { type: 'noul', noul: 0.9 },
       latency: { type: 'noul', noul: 0.2 },
@@ -227,7 +228,7 @@ test('no pool means no model question', async () => {
     baseURL: 'https://x/v1', apiKey: 'k', model: 'decision-model-preview', state: 'user: hi',
     fetchImpl: async (_url, init) => {
       sent = JSON.parse(init.body)
-      return { ok: true, status: 200, async text() { return JSON.stringify({ answers: {} }) } }
+      return { ok: true, status: 200, async text() { return JSON.stringify({ answers: { latency: { type: 'noul', noul: 0.2 } } }) } }
     },
   })
   assert.equal(sent.questions.model, undefined)
@@ -305,8 +306,172 @@ test('the decision endpoint is operator config, not a vendor constant', async ()
     state: 'x',
     fetchImpl: async (_url, init) => {
       sent = init
-      return new Response(JSON.stringify({ answers: {} }), { status: 200 })
+      return new Response(JSON.stringify({ answers: { depth: { type: 'score', score: 2, confidence: 0.9 } } }), { status: 200 })
     },
   })
   assert.equal(sent.headers.authorization, undefined)
+})
+
+/**
+ * A complete System One reply: one typed answer per question the prompt always
+ * asks. Overrides replace individual answers; a test that removes a key is
+ * testing the partial-answer path.
+ */
+function completeReply(overrides = {}) {
+  return {
+    answers: {
+      shape: { type: 'choice', choice: 'implement', confidence: 0.9, probabilities: { implement: 0.9 } },
+      depth: { type: 'score', score: 2, confidence: 0.9 },
+      breadth: { type: 'score', score: 2, confidence: 0.9 },
+      risk: { type: 'score', score: 1.5, confidence: 0.9 },
+      intent: { type: 'choice', choice: 'work', confidence: 0.9, probabilities: { work: 0.9 } },
+      vision: { type: 'noul', noul: 0.1 },
+      tools: { type: 'noul', noul: 0.9 },
+      latency: { type: 'noul', noul: 0.2 },
+      ...overrides,
+    },
+  }
+}
+
+test('a reply that answers nothing is rejected instead of parsed into defaults', async () => {
+  // A 200 with no answers parsed into the default profile and reported
+  // `confidence: 1`, so the log showed the least evidence as the surest decision.
+  const noAnswers = async () => new Response(JSON.stringify({ answers: {} }), { status: 200 })
+  await assert.rejects(
+    callDecisionModel({ baseURL: 'https://x/v1', model: 'm', state: 's', fetchImpl: noAnswers }),
+    /returned no answers/,
+  )
+  await assert.rejects(
+    callDecisionModel({ baseURL: 'https://x/v1', model: 'm', state: 's', fetchImpl: async () => new Response('{}', { status: 200 }) }),
+    /returned no answers/,
+  )
+})
+
+test('a partial reply cannot report the confidence of a complete decision', () => {
+  const partial = completeReply()
+  delete partial.answers.intent
+  delete partial.answers.tools
+  const parsed = parseDecision(partial, DEFAULT_ROUTES)
+  // The fallbacks keep routing safe (work treated as the profile, no acknowledgement)
+  assert.equal(parsed.acknowledged, undefined)
+  assert.equal(parsed.profile.shape, 'implement')
+  // but the report says this was not a complete answer
+  assert.equal(parsed.confidence, 0)
+
+  const complete = parseDecision(completeReply(), DEFAULT_ROUTES)
+  assert.equal(complete.confidence, 0.8, 'a complete reply reports its weakest answer')
+})
+
+test('a choice with no stated confidence cannot acknowledge a turn', () => {
+  // The normalizer used to default a bare choice to 0.7, above the 0.6
+  // acknowledge floor, so `{choice:"acknowledge"}` priced the turn at zero
+  // without the endpoint stating any confidence at all.
+  const noEvidence = parseDecision(completeReply({ intent: { type: 'choice', choice: 'acknowledge' } }), DEFAULT_ROUTES)
+  assert.notEqual(noEvidence.acknowledged, true)
+  assert.equal(noEvidence.profile.depth, 2, 'the scored profile stands when the gate is not cleared')
+
+  const confident = parseDecision(
+    completeReply({ intent: { type: 'choice', choice: 'acknowledge', confidence: 0.95, probabilities: { acknowledge: 0.95 } } }),
+    DEFAULT_ROUTES,
+  )
+  assert.equal(confident.acknowledged, true)
+})
+
+test('a model name with no stated confidence is not an explicit request', () => {
+  const noEvidence = parseDecision(
+    completeReply({
+      model: { type: 'choice', choice: 'qwen3.7-max' },
+      modelRequest: { type: 'noul', noul: 0.95 },
+    }),
+    DEFAULT_ROUTES,
+  )
+  assert.equal(noEvidence.requestedModel, null, 'both halves need evidence, not just the request probability')
+
+  const confident = parseDecision(
+    completeReply({
+      model: { type: 'choice', choice: 'qwen3.7-max', confidence: 0.95, probabilities: { 'qwen3.7-max': 0.95 } },
+      modelRequest: { type: 'noul', noul: 0.95 },
+    }),
+    DEFAULT_ROUTES,
+  )
+  assert.equal(confident.requestedModel, 'qwen3.7-max')
+})
+
+test('an acknowledgement that names a model keeps the explicit request', () => {
+  // The acknowledgement branch returned before the model request was read, so
+  // "ok, use X for this" priced the turn cheap and dropped the name the user
+  // gave; the selection engine then overrode them with a heuristic.
+  const parsed = parseDecision(
+    completeReply({
+      intent: { type: 'choice', choice: 'acknowledge', confidence: 0.95, probabilities: { acknowledge: 0.95 } },
+      model: { type: 'choice', choice: 'qwen3.7-max', confidence: 0.95, probabilities: { 'qwen3.7-max': 0.95 } },
+      modelRequest: { type: 'noul', noul: 0.95 },
+    }),
+    DEFAULT_ROUTES,
+  )
+  assert.equal(parsed.acknowledged, true)
+  assert.equal(parsed.requestedModel, 'qwen3.7-max')
+})
+
+test('an unknown shape falls back to implement and reports no confidence', () => {
+  const parsed = parseDecision(completeReply({ shape: { type: 'choice', choice: 'not-a-shape', confidence: 0.9 } }), DEFAULT_ROUTES)
+  assert.equal(parsed.profile.shape, 'implement', 'the fallback is what the selector would have used anyway')
+  assert.equal(parsed.confidence, 0, 'a malformed answer is visible in the log')
+})
+
+test('the decision client exposes protocol usage in the fields the record reads', async () => {
+  const body = await callDecisionModel({
+    baseURL: 'https://x/v1',
+    model: 'm',
+    state: 's',
+    fetchImpl: async () => new Response(
+      JSON.stringify({ answers: { depth: { type: 'score', score: 2, confidence: 0.9 } }, usage: { input_tokens: 42 }, latency_ms: 51.2 }),
+      { status: 200 },
+    ),
+  })
+  // The record reads `inputTokens` and `serverLatencyMs`; the protocol reports
+  // them as `usage.input_tokens` and `latency_ms`, so the record logged
+  // undefined for both.
+  assert.equal(body.inputTokens, 42)
+  assert.equal(body.serverLatencyMs, 51.2)
+})
+
+test('a non-finite decision timeout falls back instead of failing before the request', async () => {
+  let called = false
+  const body = await callDecisionModel({
+    baseURL: 'https://x/v1',
+    model: 'm',
+    state: 's',
+    timeoutMs: Number.NaN,
+    fetchImpl: async () => {
+      called = true
+      return new Response(JSON.stringify({ answers: { depth: { type: 'score', score: 2, confidence: 0.9 } } }), { status: 200 })
+    },
+  })
+  assert.equal(called, true, 'the request is sent on the configured default deadline')
+  assert.ok(body.answers.depth)
+})
+
+test('the reuse signature follows the prompt text, not its size', () => {
+  // The signature was `${message count}:${task length}`: two different requests
+  // of the same length reused one decision for up to the reuse window.
+  const first = buildState([message('a', 'user', 'fix the tests')], [], {}, {})
+  const second = buildState([message('b', 'user', 'fix the docs!')], [], {}, {})
+  assert.notEqual(first.messageIds, second.messageIds)
+  const again = buildState([message('c', 'user', 'fix the tests')], [], {}, {})
+  assert.equal(first.messageIds, again.messageIds, 'the same prompt keeps the same signature')
+})
+
+test('injected notices do not spend the transcript window', () => {
+  // The window was sliced from the raw tail and then filtered, so ten injected
+  // notices pushed the real assistant turn out of a ten-message window.
+  const noise = Array.from({ length: 10 }, (_, index) => message(`n${index}`, 'user', `notice ${index}`, 'runtime-context'))
+  const state = buildState(
+    [message('a', 'user', 'migrate the session records'), message('b', 'assistant', 'converting callers'), ...noise],
+    [],
+    { maxMessages: 10, maxStateChars: 12000, maxMessageChars: 2000 },
+    {},
+  )
+  assert.ok(state.text.includes('converting callers'), 'the turn being routed keeps its context')
+  assert.ok(!state.text.includes('notice 9'), 'injected notices stay out')
 })

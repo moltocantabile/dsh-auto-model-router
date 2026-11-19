@@ -71,10 +71,9 @@ export const DEFAULT_DECISION = {
 }
 
 export const DEFAULT_POLICY = {
-  // A choice below either floor is treated as too weak to trust outright. Half
-  // the mass is the point where a choice stops being better than the score: on
-  // the decision model's short requests confidence clusters around 0.3-0.5, so
-  // a lower floor would let a coin flip outrank the complexity axis.
+  // Kept because the settings page and README expose the "confidence policy"
+  // fields: the ranked decision path reads only the two gates below. They stay
+  // here so an existing patch keeps them instead of showing undefined.
   minConfidence: 0.5,
   minProbability: 0.5,
   // How sure the decision model must be that a message only acknowledges before
@@ -84,7 +83,8 @@ export const DEFAULT_POLICY = {
   // `modelRequest` where the same ids quoted from logs score 0.20.
   acknowledgeConfidence: ACKNOWLEDGE_MIN_CONFIDENCE,
   modelRequestConfidence: MODEL_REQUEST_MIN_PROBABILITY,
-  // Changing the route mid-session needs at least this much confidence.
+  // Also kept for the config surface. The router switches via `agent.model.select`
+  // with sticky default, so no decision path compares against this value.
   switchConfidence: 0.4,
 }
 
@@ -142,6 +142,23 @@ function clip(text, max) {
   return text.length <= max ? text : `${text.slice(0, max)}…`
 }
 
+/**
+ * Short content fingerprint for the decision-reuse signature.
+ *
+ * The signature used to be built from message counts and lengths, so a new
+ * request of the same length as the previous one reused the previous decision
+ * for up to `DECISION_REUSE_MS` without asking the model. The identity of a
+ * prompt is its text, so the signature is derived from the text.
+ */
+function fingerprint(text) {
+  let hash = 0x811c9dc5
+  for (let index = 0; index < text.length; index += 1) {
+    hash ^= text.charCodeAt(index)
+    hash = Math.imul(hash, 0x01000193)
+  }
+  return (hash >>> 0).toString(16).padStart(8, '0')
+}
+
 /** Flatten one message's content blocks into a compact role-labelled line. */
 export function messageText(message, maxChars = 2000) {
   const parts = []
@@ -157,16 +174,19 @@ export function messageText(message, maxChars = 2000) {
 
 function stateFromMessages(messages, claimed, config, meta) {
   const { maxMessages = 10, maxStateChars = 12000, maxMessageChars = 2000 } = config.decision ?? config
-  const recent = Array.isArray(messages) ? messages.slice(-maxMessages) : []
-  const filtered = recent.filter(isContextMessage)
+  const whole = Array.isArray(messages) ? messages : []
+  // The window counts messages the decision model may read. Slicing the raw
+  // tail and filtering afterwards let injected notices (runtime context, the
+  // clock, the skill catalog) spend the window and push the real turns out of
+  // it, so the step was scored from a transcript missing the work it follows.
+  const recent = whole.filter(isContextMessage).slice(-maxMessages)
   const claimedList = Array.isArray(claimed) ? claimed.filter((m) => m !== null && m !== undefined && isRoutableMessage(m)) : []
   const claimedLines = claimedList.map((m) => messageText(m, maxMessageChars))
-  const windowLines = [...filtered.map((m) => messageText(m, maxMessageChars)), ...claimedLines]
+  const windowLines = [...recent.map((m) => messageText(m, maxMessageChars)), ...claimedLines]
 
   // The request being routed must be in the state even when it fell out of the
   // window: deep into a turn the window is mostly tool results, and scoring
   // those instead of the request is how a step inherits the wrong difficulty.
-  const whole = Array.isArray(messages) ? messages : []
   const lastUser = [...whole, ...claimedList].findLast(isRoutableMessage) ?? null
   const requestLine = lastUser === null ? null : `request: ${messageText(lastUser, maxMessageChars).replace(/^user: /, '')}`
   const lines = requestLine !== null && !windowLines.includes(messageText(lastUser, maxMessageChars))
@@ -214,8 +234,10 @@ function stateFromMessages(messages, claimed, config, meta) {
   const task = lastUser ? clip((lastUser.content ?? []).find((block) => block?.type === 'text')?.text ?? '', 100) : ''
 
 
-  // Build message IDs for signature
-  const messageIds = `${filtered.length}:${task.length}`
+  // The prompt's identity is its text: the caller reuses a decision only when
+  // this value and the text length agree, so a different request cannot inherit
+  // the previous one just because both were the same size.
+  const messageIds = fingerprint(`${text}\u0000${task}`)
 
   return { text, task, messageIds }
 }
@@ -235,7 +257,7 @@ export function buildState(messages, claimed, config, meta) {
  * probability and take no criteria.
  *
  * @param {object} routes - route catalog (unused; the profile names no model).
- * @param {{notes?: Record<string,string>}} options
+ * @param {{models?: string[]}} options - model ids the user may name.
  * @returns {object} questions object for the System One protocol.
  */
 export function buildQuestions(routes, options = {}) {
@@ -358,21 +380,27 @@ function normalizeAnswers(body) {
   const out = {}
   for (const [key, value] of Object.entries(answers)) {
     if (value === null || value === undefined) continue
+    // A bare value is an answer with no stated confidence. It is still usable
+    // as a profile field, but it is not evidence that the endpoint is sure, so
+    // it must not clear a confidence gate.
     if (typeof value === 'string' || typeof value === 'number') {
-      out[key] = { value, confidence: 1 }
+      out[key] = { value, confidence: 0 }
       continue
     }
     if (typeof value !== 'object') continue
     // Idempotent: a already-normalized answer ({ value, confidence }) passes through.
     if (value.value !== undefined) {
-      out[key] = { value: value.value, probability: value.probability, confidence: num(value.confidence, 1) }
+      out[key] = { value: value.value, probability: value.probability, confidence: num(value.confidence, 0) }
       continue
     }
     if (typeof value.choice === 'string') {
       const probabilities = value.probabilities ?? {}
-      out[key] = { value: value.choice, confidence: num(value.confidence, probabilities[value.choice] ?? 0.7) }
+      // The chosen option's probability is the evidence. A choice with no
+      // confidence and no mass on itself has none: defaulting it to 0.7 let a
+      // bare `{choice:"acknowledge"}` clear the acknowledgement gate.
+      out[key] = { value: value.choice, confidence: num(value.confidence, num(probabilities[value.choice], 0)) }
     } else if (typeof value.score === 'number') {
-      out[key] = { value: value.score, confidence: num(value.confidence, 1) }
+      out[key] = { value: value.score, confidence: num(value.confidence, 0) }
     } else if (typeof value.noul === 'number') {
       // Confidence in the derived boolean is how far the probability sits from a
       // coin flip, on the side it landed.
@@ -382,14 +410,29 @@ function normalizeAnswers(body) {
       const threshold = key === 'vision' ? 0.6 : 0.5
       out[key] = { value: value.noul >= threshold, probability: value.noul, confidence: Math.max(value.noul, 1 - value.noul) }
     } else if (typeof value.answer === 'string' || typeof value.answer === 'number') {
-      out[key] = { value: value.answer, confidence: num(value.confidence, 0.7) }
+      out[key] = { value: value.answer, confidence: num(value.confidence, 0) }
     }
   }
   return out
 }
 
 /**
+ * Answers every prompt asks for. A response that omits one still yields a
+ * profile, because the fallbacks below are the safe reading, but it cannot
+ * report the confidence of a complete decision.
+ */
+const REQUIRED_ANSWERS = ['shape', 'depth', 'breadth', 'risk', 'intent', 'vision', 'tools', 'latency']
+const SHAPE_IDS = new Set(PROFILES.map((profile) => profile.id))
+
+/**
  * Parse the decision model's reply into a task profile.
+ *
+ * A question the prompt asked but the reply did not answer is not a confident
+ * answer. The fallbacks (implement / depth 2 / breadth 2 / risk 1.5 / no pixels
+ * / no tools / not latency-critical) keep the router working, and the reported
+ * confidence drops to zero so a partial reply is visible in the decision log
+ * instead of reading as a full decision.
+ *
  * @param {object} raw - raw response body from System One.
  * @param {object} routes - current route catalog (unused, kept for compatibility).
  * @returns {{profile: import('./select.js').TaskProfile, confidence: number, source: string}}
@@ -405,7 +448,8 @@ export function parseDecision(raw, routes, policy) {
       : Object.fromEntries(
           Object.entries(raw ?? {}).filter(([, value]) => value !== null && typeof value === 'object' && 'value' in value),
         )
-  const shape = typeof normalized.shape?.value === 'string' ? normalized.shape.value : 'implement'
+  const rawShape = normalized.shape?.value
+  const shape = typeof rawShape === 'string' && SHAPE_IDS.has(rawShape) ? rawShape : 'implement'
   const clampScore = (value, fallback) => {
     const n = typeof value === 'number' ? value : fallback
     return Math.max(0, Math.min(4, Math.round(n * 10) / 10))
@@ -419,24 +463,22 @@ export function parseDecision(raw, routes, policy) {
     tools: normalized.tools?.value === true,
     latencyCritical: normalized.latency?.value === true,
   }
-  const confidences = Object.values(normalized).map((v) => v.confidence ?? 1)
-  const confidence = confidences.length > 0 ? Math.min(...confidences) : 1
+  // The weakest required answer, with a missing or malformed one counting as no
+  // confidence at all. An empty answer set used to score 1.0 here, which made a
+  // malformed reply look like the most certain decision in the log.
+  const confidence = Math.min(
+    ...REQUIRED_ANSWERS.map((id) => {
+      if (id === 'shape' && shape !== rawShape) return 0
+      return num(normalized[id]?.confidence, 0)
+    }),
+  )
 
   // What the message asks of the assistant. `acknowledge` is the only value that
   // prices a turn cheap, and only when the model is sure; a low-confidence answer
   // falls through to the profile's own scores, which err high.
   const intent = typeof normalized.intent?.value === 'string' ? normalized.intent.value : null
-  const intentConfidence = num(normalized.intent?.confidence, 1)
+  const intentConfidence = num(normalized.intent?.confidence, 0)
   const acknowledgeFloor = num(policy?.acknowledgeConfidence, ACKNOWLEDGE_MIN_CONFIDENCE)
-  if (intent === 'acknowledge' && intentConfidence >= acknowledgeFloor) {
-    return {
-      profile: { ...profile, depth: 0, breadth: 0, risk: 0, latencyCritical: true },
-      confidence,
-      intent,
-      acknowledged: true,
-      source: 'system-one',
-    }
-  }
 
   // A model the user asked for by name. Both halves must hold: the model must be
   // a real choice (not `auto`) and the message must be a request rather than a
@@ -450,22 +492,38 @@ export function parseDecision(raw, routes, policy) {
     ? requestedName
     : null
 
+  if (intent === 'acknowledge' && intentConfidence >= acknowledgeFloor) {
+    // The acknowledgement prices the scored work away, but an explicit model
+    // request still rides with it: dropping the name here let "ok, use X for
+    // this" fall through to a heuristic selection that overrode the user.
+    return {
+      profile: { ...profile, depth: 0, breadth: 0, risk: 0, latencyCritical: true },
+      confidence,
+      intent,
+      acknowledged: true,
+      requestedModel: modelRequest,
+      source: 'system-one',
+    }
+  }
+
   return { profile, confidence, intent, requestedModel: modelRequest, source: 'system-one' }
 }
 
-export async function callDecisionModel({ baseURL, apiKey, model = DEFAULT_DECISION.model, state, timeoutMs = DEFAULT_DECISION.timeoutMs, signal, notes, models, fetchImpl }) {
+export async function callDecisionModel({ baseURL, apiKey, model = DEFAULT_DECISION.model, state, timeoutMs = DEFAULT_DECISION.timeoutMs, signal, models, fetchImpl }) {
   if (!baseURL) throw new Error('decision endpoint not configured (decision.baseURL)')
   if (!model) throw new Error('decision model not configured (decision.model)')
   const fetch = fetchImpl ?? globalThis.fetch
   if (typeof fetch !== 'function') throw new Error('fetch is not available in this runtime')
   const url = `${baseURL.replace(/\/$/, '')}/systemone`
-  const timeout = AbortSignal.timeout(Math.max(50, timeoutMs))
+  // A non-finite deadline used to reach AbortSignal.timeout as NaN and throw
+  // before the request was even sent; the default is the honest fallback.
+  const timeout = AbortSignal.timeout(Math.max(50, num(timeoutMs, DEFAULT_DECISION.timeoutMs)))
   const requestSignal = signal === undefined ? timeout : AbortSignal.any([signal, timeout])
   const response = await fetch(url, {
     method: 'POST',
     // An unauthenticated endpoint (a local model server) simply omits the header.
     headers: { ...(apiKey ? { authorization: `Bearer ${apiKey}` } : {}), 'content-type': 'application/json' },
-    body: JSON.stringify({ model, state, questions: buildQuestions({}, { notes, models }) }),
+    body: JSON.stringify({ model, state, questions: buildQuestions({}, { models }) }),
     signal: requestSignal,
   })
   const text = await response.text()
@@ -478,5 +536,18 @@ export async function callDecisionModel({ baseURL, apiKey, model = DEFAULT_DECIS
   } catch {
     throw new Error(`decision model returned non-JSON body: ${clip(text, 300)}`)
   }
+  // An HTTP 200 with no answered question is not a decision: parsing it produced
+  // a full default profile, so it read in the log as a successful decision. A
+  // partial answer is still parsed (the parser reports zero confidence for it);
+  // an empty one is rejected here, where the caller already has an error path.
+  const answers = body?.answers
+  if (answers === null || typeof answers !== 'object' || Array.isArray(answers) || Object.keys(answers).length === 0) {
+    throw new Error(`decision model returned no answers: ${clip(text, 300)}`)
+  }
+  // The protocol reports these as `usage.input_tokens` and `latency_ms`; the
+  // decision record reads `inputTokens` and `serverLatencyMs`. Fill the names the
+  // record needs instead of logging two always-undefined fields.
+  if (typeof body.inputTokens !== 'number' && typeof body.usage?.input_tokens === 'number') body.inputTokens = body.usage.input_tokens
+  if (typeof body.serverLatencyMs !== 'number' && typeof body.latency_ms === 'number') body.serverLatencyMs = body.latency_ms
   return body
 }

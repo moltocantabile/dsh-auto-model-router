@@ -307,3 +307,98 @@ test('entries reports every held digest, newest first, with its session', async 
   assert.ok(list[0].digest.includes('GOAL: first'), 'each digest is returned in full')
   assert.equal(cache.peek(first).length, list[1].digest.length)
 })
+
+test('the summarizer accepts an unauthenticated endpoint', async () => {
+  // The same local model server that needs no credential for the decision
+  // request was rejected here with "apiKey not set", so an unauthenticated
+  // deployment silently ran without digests.
+  let headers = null
+  const digest = await callChatModel({
+    baseURL: 'https://x/v1', model: 'm', system: 's', user: 'u',
+    fetchImpl: async (_url, init) => {
+      headers = init.headers
+      return { ok: true, status: 200, async text() { return JSON.stringify({ choices: [{ message: { content: 'GOAL: a' } }] }) } }
+    },
+  })
+  assert.equal(headers.authorization, undefined, 'no credential means no authorization header')
+  assert.ok(digest.includes('GOAL: a'))
+})
+
+test('the digest token budget covers its character contract', async () => {
+  let body = null
+  await callChatModel({
+    baseURL: 'https://x/v1', apiKey: 'k', model: 'm', system: 's', user: 'u',
+    fetchImpl: async (_url, init) => {
+      body = JSON.parse(init.body)
+      return { ok: true, status: 200, async text() { return JSON.stringify({ choices: [{ message: { content: 'GOAL: a' } }] }) } }
+    },
+  })
+  // The prompt allows 900 characters. 400 tokens cannot express that in
+  // Chinese (roughly one token per character), so the last line (RISK) could be
+  // truncated by a cap that does not match the prompt's own limit.
+  assert.ok(body.max_tokens >= DEFAULT_SUMMARIZER.maxChars, `token cap ${body.max_tokens} must cover ${DEFAULT_SUMMARIZER.maxChars} characters`)
+})
+
+test('a refresh prompt names its transcript as the new messages', () => {
+  const refresh = buildDigestPrompt({ previous: 'GOAL: x', transcript: 'user: next step', messageCount: 2 })
+  assert.ok(refresh.user.includes('New messages since the previous digest (2)'))
+  assert.ok(!refresh.user.includes('last 2 messages'), 'a tail is not the whole session')
+  const first = buildDigestPrompt({ transcript: 'user: the original request', messageCount: 1 })
+  assert.ok(first.user.includes('Transcript (last 1 messages)'))
+})
+
+test('a refresh sends the messages since the last digest, and says how many', async () => {
+  const seen = []
+  const cache = createDigestCache({
+    summarize: async ({ previous, transcript, messageCount }) => {
+      seen.push({ transcript, messageCount })
+      return previous === null ? 'GOAL: g\nDONE: a\nNOW: b\nRISK: c' : `${previous}\nDONE: more`
+    },
+    refreshEvery: 2,
+    minMessages: 1,
+  })
+  const key = {}
+  const history = [message('user', 'one'), message('assistant', 'two')]
+  await cache.ensure(key, history, { waitForFirst: true })
+  const grown = [...history, message('user', 'three'), message('assistant', 'four')]
+  await cache.ensure(key, grown)
+  await new Promise((resolve) => setTimeout(resolve, 0))
+  assert.equal(seen.length, 2)
+  assert.equal(seen[1].messageCount, 2, 'two new messages, not the four-message session total')
+  assert.ok(seen[1].transcript.includes('three'))
+  assert.ok(!seen[1].transcript.includes('one'), 'covered messages are already in the previous digest')
+})
+
+test('a compacted transcript is not summarized as an empty one', async () => {
+  const seen = []
+  let clock = 0
+  const cache = createDigestCache({
+    summarize: async ({ previous, transcript }) => {
+      seen.push(transcript)
+      return previous ?? 'GOAL: stable\nDONE: a\nNOW: b\nRISK: c'
+    },
+    refreshEvery: 1,
+    minMessages: 2,
+    refreshMs: 0,
+    now: () => (clock += 1000),
+  })
+  const key = {}
+  const history = [message('user', 'a'), message('assistant', 'b'), message('user', 'c'), message('assistant', 'd')]
+  await cache.ensure(key, history, { waitForFirst: true })
+  assert.equal(seen.length, 1)
+  // The harness compacts the session to a checkpoint, leaving a transcript
+  // shorter than the digest's coverage mark. Summarizing what is left of the
+  // slice would send the model an empty transcript.
+  const compacted = [message('user', 'a'), message('assistant', 'b')]
+  const kept = await cache.ensure(key, compacted)
+  await new Promise((resolve) => setTimeout(resolve, 0))
+  assert.equal(seen.length, 1, 'no model call for an empty transcript')
+  assert.ok(String(kept).includes('GOAL: stable'), 'the digest survives compaction')
+
+  // The message that arrives after compaction is still summarized: the
+  // coverage mark must not move past the compacted transcript's new content.
+  await cache.ensure(key, [...compacted, message('user', 'e')])
+  await new Promise((resolve) => setTimeout(resolve, 0))
+  assert.equal(seen.length, 2, 'the first message after compaction reaches the summarizer')
+  assert.ok(seen[1].includes('user: e'))
+})

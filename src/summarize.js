@@ -66,7 +66,10 @@ export function transcriptOf(messages, maxChars = DEFAULT_SUMMARIZER.maxInputCha
  *
  * The previous digest is an *input* on refresh, so the model updates a document
  * instead of rewriting the session from scratch — that is what makes the digest
- * stable across steps rather than drifting each time it is regenerated.
+ * stable across steps rather than drifting each time it is regenerated. On a
+ * refresh the transcript is only the messages added since that digest, and the
+ * prompt says so: calling it "the last N messages" let the model read a
+ * three-message tail as if it were the whole session.
  *
  * @param {{previous?: string|null, transcript: string, maxChars?: number, messageCount?: number}} input
  */
@@ -84,10 +87,16 @@ export function buildDigestPrompt({ previous = null, transcript, maxChars = DEFA
   ].join('\n')
 
   const parts = []
-  if (typeof previous === 'string' && previous.trim().length > 0) {
+  const hasPrevious = typeof previous === 'string' && previous.trim().length > 0
+  if (hasPrevious) {
     parts.push('Previous digest (update it; keep what is still true):', previous.trim(), '')
   }
-  parts.push(`Transcript (last ${messageCount} messages):`, transcript)
+  parts.push(
+    hasPrevious
+      ? `New messages since the previous digest (${messageCount}):`
+      : `Transcript (last ${messageCount} messages):`,
+    transcript,
+  )
   return { system, user: parts.join('\n') }
 }
 
@@ -100,7 +109,6 @@ export function buildDigestPrompt({ previous = null, transcript, maxChars = DEFA
  * @returns {Promise<string>} the message content, trimmed
  */
 export async function callChatModel({ baseURL, apiKey, model, system, user, timeoutMs = DEFAULT_SUMMARIZER.timeoutMs, signal, fetchImpl }) {
-  if (!apiKey) throw new Error('apiKey not set')
   const fetch = fetchImpl ?? globalThis.fetch
   if (typeof fetch !== 'function') throw new Error('fetch is not available in this runtime')
   const url = `${String(baseURL).replace(/\/$/, '')}/chat/completions`
@@ -113,7 +121,11 @@ export async function callChatModel({ baseURL, apiKey, model, system, user, time
       { role: 'user', content: user },
     ],
     temperature: 0,
-    max_tokens: 400,
+    // The prompt allows `maxChars` characters of digest. 400 tokens could not
+    // express that in Chinese (roughly one token per character), so the last
+    // line — RISK — was liable to be cut off; the token cap now covers the
+    // character contract with headroom for the clip below.
+    max_tokens: Math.ceil(DEFAULT_SUMMARIZER.maxChars * 2),
     stream: false,
     // Summarizing is a reading task. With thinking on, a 46k-character
     // transcript spends its budget deliberating and misses the deadline; the
@@ -123,7 +135,9 @@ export async function callChatModel({ baseURL, apiKey, model, system, user, time
 
   const send = (thinkingOff) => fetch(url, {
     method: 'POST',
-    headers: { authorization: `Bearer ${apiKey}`, 'content-type': 'application/json' },
+    // An unauthenticated endpoint (a local model server) simply omits the
+    // header, exactly as the decision client does.
+    headers: { ...(apiKey ? { authorization: `Bearer ${apiKey}` } : {}), 'content-type': 'application/json' },
     body: payloadOf(thinkingOff),
     signal: requestSignal,
   })
@@ -179,11 +193,26 @@ export function createDigestCache({ summarize, refreshEvery = DEFAULT_SUMMARIZER
   const refresh = (key, messages) => {
     const state = stateOf(key)
     if (state.inflight !== null) return state.inflight
-    const transcript = transcriptOf(messages.slice(state.covered), limits.maxInputChars)
+    // Only the messages the digest has not covered, and only the ones the model
+    // will actually read. Counting every message made the prompt announce "N
+    // new messages" while the transcript below it held fewer (or none), and
+    // injected notices spent the refresh interval without changing the session.
+    const fresh = messages.slice(state.covered).filter((message) => !NOISE_SOURCE_KINDS.has(message?.source?.kind))
+    if (fresh.length === 0) {
+      // Nothing new to summarize: a noise-only step, or a transcript compacted
+      // below the coverage mark. Keep the digest and pull the mark back to the
+      // compacted length, never forward, so the next genuinely new message is
+      // still picked up; do not ask the model to summarize an empty transcript,
+      // which returned "unclear" or drifted a good digest.
+      state.covered = Math.min(state.covered, messages.length)
+      state.at = now()
+      return Promise.resolve(state.digest)
+    }
+    const transcript = transcriptOf(fresh, limits.maxInputChars)
     calls += 1
     const run = (async () => {
       try {
-        const digest = await summarize({ previous: state.digest, transcript, messageCount: messages.length })
+        const digest = await summarize({ previous: state.digest, transcript, messageCount: fresh.length })
         if (typeof digest === 'string' && digest.trim().length > 0) {
           state.digest = digest.trim()
           state.covered = messages.length
