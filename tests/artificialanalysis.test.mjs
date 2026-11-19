@@ -570,10 +570,11 @@ test('a page-created entry carries the capacity and serving facts the page publi
   assert.equal(value.speed, 64.7)
 })
 
-test('an alias is not labelled with a dated snapshot it does not pin', () => {
-  // `vanchin/deepseek-v4.1-flash` is a rolling alias; AA's only row for it is
-  // the "1017" snapshot. The alias label must not claim that date, while the id
-  // that does pin the snapshot keeps it.
+test('a dated snapshot only describes the id that pins it', () => {
+  // A snapshot date is part of the model identity. `vanchin/deepseek-v4.1-flash`
+  // and `...-1017` are advertised as two ids, so the 1017 row must not become the
+  // undated alias's measurements (both ids used to share one AA row, same price,
+  // same dimensions and same evidence).
   const rows = [{ id: 'r', name: 'DeepSeek V4.1 Flash 1017 (Max)', price1mInputTokens: 0.3, price1mOutputTokens: 1.2, intelligenceIndex: 40, scores: AA_FRACTIONS }]
   const analysis = extractArtificialAnalysis(page(rows), new Map())
   const dataset = {}
@@ -584,7 +585,7 @@ test('an alias is not labelled with a dated snapshot it does not pin', () => {
       { model: 'vanchin/deepseek-v4.1-flash-1017', provider: 'bailian-aliyun' },
     ],
   })
-  assert.equal(dataset['vanchin/deepseek-v4.1-flash'].label, 'DeepSeek V4.1 Flash', 'the effort qualifier and the unpinned date are both dropped')
+  assert.equal(dataset['vanchin/deepseek-v4.1-flash'], undefined, 'the undated alias is not the 1017 snapshot')
   assert.equal(dataset['vanchin/deepseek-v4.1-flash-1017'].label, 'DeepSeek V4.1 Flash 1017')
 })
 
@@ -604,11 +605,10 @@ test('an effort variant does not replace the model\'s own row as the name match'
   assert.equal(dataset['kimi/kimi-k3'].crossChecks.artificialAnalysis.intelligenceIndex, 55)
 })
 
-test('an advertised id with a date or serving suffix joins its model by name', () => {
-  // A source names the model, not the deployment. `qwen3.7-plus-2026-05-26` is
-  // "Qwen3.7 Plus" and `kimi/kimi-k3.1-pro-highspeed` is "Kimi K3.1 Pro"; the
-  // refresh creates those entries after the name-based source passes run, so the
-  // index must know their family spelling or the new entry loses its Epoch row.
+test('a serving suffix joins by name; a snapshot date does not', () => {
+  // Effort/serving qualifiers are the same model; a snapshot date is its own
+  // model. `kimi/kimi-k3.1-pro-highspeed` still finds "Kimi K3.1 Pro", while
+  // `qwen3.7-plus-2026-05-26` is not "Qwen3.7 Plus".
   const base = { 'qwen3.7-plus': { label: 'Qwen3.7-Plus' } }
   const advertised = [
     { model: 'qwen3.7-plus-2026-05-26', provider: 'p' },
@@ -617,18 +617,17 @@ test('an advertised id with a date or serving suffix joins its model by name', (
   const strict = nameIndexAll(base, advertised)
   assert.deepEqual(strict.get('qwen37plus'), ['qwen3.7-plus'], 'the Artificial Analysis join keeps the exact spelling')
   const index = nameIndexAll(base, advertised, { family: true })
-  assert.deepEqual((index.get('qwen37plus') ?? []).sort(), ['qwen3.7-plus', 'qwen3.7-plus-2026-05-26'])
+  assert.deepEqual(index.get('qwen37plus'), ['qwen3.7-plus'], 'the dated snapshot is not the undated model')
   assert.deepEqual(index.get('kimik31pro'), ['kimi/kimi-k3.1-pro-highspeed'])
   const epoch = extractEpochEci('Model,Display name,eci,eci_ci_low,eci_ci_high,date\nQwen3.7-Plus,Qwen3.7-Plus,147.95,146,149,2026-06-02', index, {})
-  assert.ok(epoch['qwen3.7-plus-2026-05-26'] !== undefined)
   assert.ok(epoch['qwen3.7-plus'] !== undefined)
+  assert.equal(epoch['qwen3.7-plus-2026-05-26'], undefined)
 })
 
-test('a parenthetical date in a source row selects that generation\'s row', () => {
-  // Epoch publishes both `DeepSeek-V3` (2024-12-26) and `DeepSeek-V3 (Mar 2025)`
-  // (2025-03-24). Without the parenthetical-free lookup the March checkpoint·id
-  // could only see the 2024 row, so the newer evaluation was unreachable and the
-  // entry would carry the older generation's ECI.
+test('a dated id never borrows an undated row (and vice versa)', () => {
+  // Epoch publishes `DeepSeek-V3` without a snapshot date. The dated catalog id
+  // `deepseek-v3-0324` is its own model, so neither that row nor the
+  // "(Mar 2025)" spelling may be attached to it by stripping the date.
   const advertised = [{ model: 'siliconflow/deepseek-v3-0324', provider: 'p' }]
   const index = nameIndexAll({}, advertised, { family: true })
   const csv = [
@@ -637,8 +636,7 @@ test('a parenthetical date in a source row selects that generation\'s row', () =
     'DeepSeek-V3 (Mar 2025),DeepSeek-V3 (Mar 2025),135.28,133.12,137.34,2025-03-24',
   ].join('\n')
   const epoch = extractEpochEci(csv, index, {})
-  assert.equal(epoch['siliconflow/deepseek-v3-0324'].eci, 135.3, 'the newer row wins')
-  assert.equal(epoch['siliconflow/deepseek-v3-0324'].date, '2025-03-24')
+  assert.equal(epoch['siliconflow/deepseek-v3-0324'], undefined, 'no cross-generation join')
 })
 
 test('the row naming the id exactly describes it, whatever the payload order', () => {

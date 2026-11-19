@@ -305,3 +305,29 @@ test('capability dominance is scoped to one tier; cost dominance is not', () => 
   const byCost = assignTiers(pool, routes, { criterion: 'cost' })
   assert.ok(byCost.groups.off.length >= 0)
 })
+
+test('a thin profile does not enter a capability band on a fragment', () => {
+  const ranked = (id, dims) => ({
+    model: id, key: `p/${id}`, provider: 'p',
+    info: {
+      ranking: { status: 'measured', rank: 1, composite: 55, low: 25, dims: Object.fromEntries(dims.map((dim) => [dim, { value: 55, evidence: 1 }])) },
+      price: { input: 1, output: 2 }, latency: 'fast', contextWindow: 200000, modalities: ['text'], toolCalling: true,
+    },
+  })
+  const full = ['coding', 'reasoning', 'math', 'knowledge', 'agentic']
+  const pool = [
+    ranked('full-a', full), ranked('full-b', full), ranked('full-c', full),
+    ranked('full-d', full), ranked('full-e', full), ranked('full-f', full),
+    ranked('thin', ['knowledge', 'agentic']),
+  ]
+  const routes = {
+    fast: { envelope: { maxCost: 55, maxLatency: 'fast', minQuality: 10 } },
+    balanced: { envelope: { maxCost: 85, maxLatency: 'balanced', minQuality: 10 } },
+    deep: { envelope: { maxCost: 100, maxLatency: 'slow', minQuality: 10 } },
+  }
+  const assigned = assignTiers(pool, routes, {})
+  assert.ok(assigned.unmeasured.includes('p/thin'), 'the two-dimension entry is listed, not banded')
+  assert.equal(assigned.unmeasuredReasons['p/thin'], 'insufficient-coverage')
+  assert.equal(assigned.tierOf['p/thin'], undefined)
+  assert.ok(!JSON.stringify(assigned.groups).includes('p/thin'))
+})

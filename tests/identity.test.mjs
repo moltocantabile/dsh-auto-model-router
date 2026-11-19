@@ -40,18 +40,26 @@ test('normalized spellings are stable and case/punctuation-blind', () => {
   assert.equal(idStem('vanchin/deepseek-v4.1-flash-1017'), idStem('deepseek-v4.1-flash-1017'))
 })
 
-test('the model core is equal, or the tail is only a date or a serving variant', () => {
-  // Same model: provider prefix, serving variant, effort qualifier, release date.
+test('the model core is equal, or the tail is only a serving variant', () => {
+  // Same model: provider prefix, serving/effort qualifier.
   for (const [id, name] of [
     ['glm-5.3', 'GLM-5.3'],
     ['ZHIPU/GLM-5.3', 'GLM-5.3 (Max)'],
     ['cmaas-glm-5.3', 'GLM-5.3'],
     ['kimi/kimi-k3.1-pro', 'Kimi K3.1 Pro'],
     ['kimi/kimi-k3.1-pro-highspeed', 'Kimi K3.1 Pro'],
-    ['qwen3.7-plus-2026-05-26', 'Qwen3.7 Plus'],
     ['deepseek-v4.1-flash-1017', 'DeepSeek V4.1 Flash 1017 (Max)'],
   ]) {
     assert.equal(sameModelName(id, name), true, `${id} names ${name}`)
+  }
+  // A snapshot date is part of the model: a provider advertising both an undated
+  // id and a dated id serves two models (they were previously given one row).
+  for (const [id, name] of [
+    ['deepseek-v4.1-flash', 'DeepSeek V4.1 Flash 1017'],
+    ['deepseek-v4.1-flash-1017', 'DeepSeek V4.1 Flash'],
+    ['qwen3.7-plus', 'Qwen3.7 Plus 2026-05-26'],
+  ]) {
+    assert.equal(sameModelName(id, name), false, `${id} must not take ${name}'s row`)
   }
   // Different model: a tier word, a version digit, or another family.
   for (const [id, name] of [
@@ -65,8 +73,9 @@ test('the model core is equal, or the tail is only a date or a serving variant',
   }
 })
 
-test('splitVariant and modelStem strip dates and effort, never tiers or versions', () => {
-  assert.deepEqual(splitVariant('deepseekv41flash1017'), { model: 'deepseekv41flash', variant: '1017' })
+test('splitVariant and modelStem strip effort only, never dates, tiers or versions', () => {
+  // The date is part of the core now: `flash` and `flash-1017` are two models.
+  assert.deepEqual(splitVariant('deepseekv41flash1017'), { model: 'deepseekv41flash1017', variant: '' })
   // `splitVariant` works on a punctuation-stripped spelling, so a serving variant
   // only reads as a suffix where a digit run separates it; `modelStem` is the
   // separator-aware rule the joins use for these.
@@ -74,7 +83,8 @@ test('splitVariant and modelStem strip dates and effort, never tiers or versions
   assert.deepEqual(splitVariant('qwen38max'), { model: 'qwen38max', variant: '' })
   assert.equal(modelStem('Kimi-K3.1-Pro-Highspeed'), 'kimik31pro')
   assert.equal(modelStem('qwen3.8-max'), 'qwen38max')
-  assert.equal(modelStem('deepseek-v4.1-flash-1017'), 'deepseekv41flash')
+  assert.equal(modelStem('deepseek-v4.1-flash-1017'), 'deepseekv41flash1017')
+  assert.equal(modelStem('qwen3.7-plus-2026-05-26'), 'qwen37plus20260526')
   // Tiers are not effort variants: they are different models.
   for (const tier of ['flash', 'max', 'mini', 'pro', 'turbo', 'lite', 'next', 'prime']) {
     assert.equal(EFFORT_VARIANTS.has(tier), false, `${tier} is a tier, not a serving variant`)

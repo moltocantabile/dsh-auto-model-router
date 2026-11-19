@@ -347,6 +347,12 @@ export async function refreshCatalog({
    * so the two policies can be built and compared before one is chosen.
    */
   joinFamilyForAnalysis = false,
+  /**
+   * BenchGecko's per-model API is occasionally slow (25s+ observed); the default
+   * 15s cap aborted whole rebuilds. This pass only, so a slow source cannot hold
+   * up the others.
+   */
+  benchgeckoTimeoutMs = 30_000,
 } = {}) {
   const errors = []
   let ability = null
@@ -374,7 +380,7 @@ export async function refreshCatalog({
   for (const [id, slug] of slugs) {
     if (signal?.aborted === true) throw new Error('refresh aborted')
     try {
-      const raw = await fetchJson(BENCHGECKO_MODEL_URL(slug), { fetchImpl, signal })
+      const raw = await fetchJson(BENCHGECKO_MODEL_URL(slug), { fetchImpl, signal, timeoutMs: benchgeckoTimeoutMs })
       const extraction = extractBenchGecko(raw)
       if (extraction !== null) {
         extractions[id] = extraction

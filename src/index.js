@@ -1203,7 +1203,11 @@ export function apply(ctx, input) {
         const rest = board.groups.off.length - shown.length
         lines.push(`  off: ${shown.join(', ')}${rest > 0 ? ` (+${rest} more)` : ''}`)
       }
-      if ((board.unmeasured ?? []).length > 0) lines.push(`  unmeasured: ${board.unmeasured.length} not routable (no quality measurement)`)
+      if ((board.unmeasured ?? []).length > 0) {
+        const reasons = board.unmeasuredReasons ?? {}
+        const thin = (board.unmeasured ?? []).filter((key) => reasons[key] === 'insufficient-coverage').length
+        lines.push(`  unmeasured: ${board.unmeasured.length} not routable (${thin} insufficient coverage, ${board.unmeasured.length - thin} no measurement)`)
+      }
       if ((board.dominated ?? []).length > 0) {
         lines.push(`  dominated: ${board.dominated.length} off (another model is cheaper and better)`)
       }

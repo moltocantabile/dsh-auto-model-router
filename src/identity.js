@@ -157,12 +157,6 @@ function familySpellings(id) {
   let text = String(id ?? '').replace(/^cmaas-/i, '')
   out.add(text)
   for (;;) {
-    const dated = text.replace(/-\d{4}-\d{2}-\d{2}$/, '').replace(/-\d{4,8}$/, '')
-    if (dated !== text) {
-      text = dated
-      out.add(text)
-      continue
-    }
     const variant = /[-_.]([a-z]+)$/.exec(text)
     if (variant !== null && EFFORT_VARIANTS.has(variant[1])) {
       text = text.slice(0, text.length - variant[1].length - 1)
@@ -227,7 +221,12 @@ function stemsAgree(ours, theirs) {
   if (ours === theirs) return true
   const [longer, shorter] = ours.length >= theirs.length ? [ours, theirs] : [theirs, ours]
   const extra = longer.slice(shorter.length)
-  return /^\d{4,8}$/.test(extra) || EFFORT_VARIANTS.has(extra)
+  // A snapshot date is part of the identity, not a variant: a provider that
+  // advertises `model` and `model-1017` as two ids is serving two models, and
+  // treating them as one gave both the same source rows (identical price,
+  // dimensions and evidence for `vanchin/deepseek-v4.1-flash` and its `-1017`
+  // id). Effort/serving qualifiers may still differ.
+  return EFFORT_VARIANTS.has(extra)
 }
 
 /**
@@ -305,12 +304,9 @@ export function splitVariant(normalized) {
     const digits = /(\d+)$/.exec(normalized.slice(0, index))
     if (digits !== null) {
       const head = normalized.slice(0, index - digits[1].length)
-      // Version numbers ("3.8" -> 38, "122B" -> 122) are part of the name; four
-      // or more digits are a date or a parameter count bolted on as a variant.
-      if (digits[1].length >= 4) {
-        index = head.length
-        continue
-      }
+      // Version numbers and snapshot dates are part of the name: `flash` and
+      // `flash-1017` are different models, so only effort words are stripped.
+      void head
       break
     }
     const word = /([a-z]+)$/.exec(normalized.slice(0, index))
@@ -338,7 +334,8 @@ export function modelStem(text) {
   const tokens = String(text ?? '').toLowerCase().split(/[^a-z0-9]+/).filter((token) => token.length > 0)
   while (tokens.length > 1) {
     const last = tokens[tokens.length - 1]
-    if (/^\d{4,8}$/.test(last) || EFFORT_VARIANTS.has(last)) {
+    // Dates stay: `-1017` and `-0731` are different snapshots (see `stemsAgree`).
+    if (EFFORT_VARIANTS.has(last)) {
       tokens.pop()
       continue
     }

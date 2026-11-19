@@ -303,6 +303,8 @@ window.__ModuleLoader__.load({
         rankPosition: 'rank #{rank}',
         rankUsage: 'usage {pct}th pct',
         unmeasuredModelHint: 'No quality measurement: it cannot be ranked automatically. Drag it into a tier to route it anyway.',
+        unmeasuredThin: 'Measured on too few dimensions to compare: it can be routed only if you assign it to a tier.',
+        unmeasuredNoMeasure: 'No measurement from any source: it can be routed only if you assign it to a tier.',
         dominatedHint: 'Off automatically: {by} is cheaper and scores higher. Drag it into a tier to use it anyway.',
         tierOff: 'off',
         laneEmpty: 'No model here yet.',
@@ -531,6 +533,8 @@ window.__ModuleLoader__.load({
         rankPosition: '排名 #{rank}',
         rankUsage: '使用度 {pct} 百分位',
         unmeasuredModelHint: '没有任何质量测量，无法自动排序。拖入某个档位即可强制纳入路由。',
+        unmeasuredThin: '测量维度太少，无法与其他模型比较；拖入档位后才能路由。',
+        unmeasuredNoMeasure: '任何来源都没有测量；拖入档位后才能路由。',
         dominatedHint: '已自动停用：{by} 更便宜且得分更高。仍可拖入档位强制使用。',
         tierOff: '停用',
         laneEmpty: '暂无模型。',
@@ -1273,7 +1277,10 @@ window.__ModuleLoader__.load({
                     .join(' · ')),
               laneId === 'off' && reasonText(board.offReasons?.[key]) !== null &&
                 h('p', { className: 'amr-note', 'data-tone': 'warn' }, reasonText(board.offReasons[key])),
-              laneId === 'unmeasured' && h('p', { className: 'amr-note' }, t('unmeasuredModelHint')),
+              laneId === 'unmeasured' && h('p', { className: 'amr-note' },
+                board.unmeasuredReasons?.[key] === 'insufficient-coverage' ? t('unmeasuredThin')
+                  : board.unmeasuredReasons?.[key] === 'no-measurement' ? t('unmeasuredNoMeasure')
+                    : t('unmeasuredModelHint')),
               dominatedBy.has(key) && h('p', { className: 'amr-note' }, t('dominatedHint').replace('{by}', dominatedBy.get(key))),
               editingKey === key && editDraft !== null
                 ? h(

@@ -13,7 +13,7 @@
  * tier, or switch it off. Those overrides are the only hand-made assignments.
  */
 import { boardMetaOf, hasMeasuredQuality, legacyQuality, qualityBasis } from './basis.js'
-import { familyOf } from './identity.js'
+import { bareId, familyOf } from './identity.js'
 import { costIndex, withinEnvelope } from './select.js'
 
 export { boardMetaOf } from './basis.js'
@@ -133,6 +133,29 @@ const capabilityOf = (info) => {
   return legacyQuality(info)
 }
 
+/** The five dimensions the composite is built from. */
+const CORE_DIMENSIONS = ['coding', 'reasoning', 'math', 'knowledge', 'agentic']
+
+/**
+ * How many of the composite's five dimensions an entry actually measured.
+ *
+ * A composite renormalised over two dimensions is not comparable with one over
+ * five: the two-dimension model can look strong while most of its profile is
+ * unknown (measured examples scored 55 with only knowledge+agentic). Band
+ * grouping only uses entries that cover at least three core dimensions; entries
+ * from a catalog with no ranking keep the legacy rule.
+ */
+function coreCoverage(info) {
+  const dims = info?.ranking?.dims
+  if (dims === null || dims === undefined) return null
+  let covered = 0
+  for (const dim of CORE_DIMENSIONS) {
+    const value = dims[dim]
+    if (value !== null && value !== undefined && Number.isFinite(Number(value.value))) covered += 1
+  }
+  return covered
+}
+
 /** Interpolated quantile over a sorted numeric list. */
 function quantileOf(values, p) {
   if (values.length === 0) return null
@@ -176,28 +199,68 @@ export function assignTiers(pool, routes, config = {}) {
    * model of its family is stronger and at least `DOMINANCE_COST_MARGIN` cheaper.
    */
   const offReasons = {}
+  /** Why an entry is in the unmeasured lane: no measurement, or too thin to compare. */
+  const unmeasuredReasons = {}
   const placed = []
 
-  // Capability bands are derived from the pool being assigned, so the thresholds
-  // follow the catalog instead of a written-in constant. Disabled models are
-  // excluded: an operator switch must not move the band edges for everything else.
-  const capabilityValues = criterion === 'capability'
-    ? (Array.isArray(pool) ? pool : [])
-        .filter((candidate) => candidate !== null && candidate !== undefined && !disabled.has(modelKeyOf(candidate)) && hasMeasuredQuality(candidate.info ?? null))
-        .map((candidate) => capabilityOf(candidate.info ?? null))
-        .filter((value) => value !== null)
-        .sort((a, b) => a - b)
-    : []
+  // Capability bands are derived from the pool being assigned, one entry per
+  // *model*: a model offered by several providers is one capability, and counting
+  // its endpoints separately pulled the band edges around and let two endpoints of
+  // the same model land in different tiers. Disabled models are excluded (an
+  // operator switch must not move the edges for everything else).
+  // The model behind the endpoint key: the provider segment and any vendor
+  // namespace are dropped, so `vanchin/deepseek-v4.1-flash` and
+  // `deepseek-v4.1-flash` are one model while `…-1017` stays its own (bareId keeps
+  // the date, which is part of the identity).
+  const canonicalOf = (candidate) => bareId(modelKeyOf(candidate)).toLowerCase()
+  const latencyRankOf = (info) => ({ fast: 0, balanced: 1, slow: 2 }[String(info?.latency ?? '')] ?? 3)
+  const models = new Map()
+  if (criterion === 'capability') {
+    for (const candidate of Array.isArray(pool) ? pool : []) {
+      if (candidate === null || candidate === undefined) continue
+      if (disabled.has(modelKeyOf(candidate))) continue
+      if (!hasMeasuredQuality(candidate.info ?? null)) continue
+      const coverage = coreCoverage(candidate.info ?? null)
+      if (coverage !== null && coverage < 3) continue
+      const capability = capabilityOf(candidate.info ?? null)
+      if (capability === null) continue
+      const canonical = canonicalOf(candidate)
+      const seen = models.get(canonical)
+      if (seen === undefined) {
+        models.set(canonical, { capability, latency: latencyRankOf(candidate.info ?? null) })
+        continue
+      }
+      // The best evidence across endpoints describes the model; the fastest
+      // serving class decides whether a tier may serve it at all.
+      seen.capability = Math.max(seen.capability, capability)
+      seen.latency = Math.min(seen.latency, latencyRankOf(candidate.info ?? null))
+    }
+  }
+  const capabilityValues = [...models.values()].map((model) => model.capability).sort((a, b) => a - b)
   const canUseCapability = criterion === 'capability' && capabilityValues.length >= 6
   const bandEdges = canUseCapability
     ? { fastMax: quantileOf(capabilityValues, 1 / 3), balancedMax: quantileOf(capabilityValues, 2 / 3) }
     : null
   /** The criterion actually in force: bands need enough measured models. */
   const effectiveCriterion = canUseCapability ? 'capability' : 'cost'
-  const bandOf = (capability) => {
-    if (bandEdges === null || capability === null) return 'fast'
-    if (capability <= bandEdges.fastMax) return 'fast'
-    if (capability <= bandEdges.balancedMax) return 'balanced'
+
+  /**
+   * Tier for one model: its capability band, decided from the best evidence
+   * across its endpoints, so every endpoint of that model follows.
+   *
+   * Placement uses capability only. Cost and latency are measurements the
+   * selector weighs inside a tier (and the old cost criterion remains available),
+   * but as placement gates they produced the artefact this criterion was meant to
+   * remove: `GLM-5.3-Flash` (capability 34.0) was pushed from `balanced` to `deep`
+   * by its serving class while `deepseek-v4.1-flash` (31.3) stayed `balanced`, so
+   * a faster classification read as a higher grade. A serving class is not a
+   * capability grade.
+   */
+  const tierForModel = (canonical) => {
+    const model = models.get(canonical)
+    if (model === undefined || bandEdges === null) return null
+    if (model.capability <= bandEdges.fastMax) return 'fast'
+    if (model.capability <= bandEdges.balancedMax) return 'balanced'
     return 'deep'
   }
 
@@ -230,6 +293,15 @@ export function assignTiers(pool, routes, config = {}) {
     const measured = hasMeasuredQuality(candidate.info ?? null)
     if (mode === 'auto' && !measured) {
       unmeasured.push(key)
+      unmeasuredReasons[key] = 'no-measurement'
+      continue
+    }
+    // Capability grouping needs a comparable profile; a thin entry is listed as
+    // unmeasured (with its own reason) instead of entering a band on a fragment.
+    const coverage = coreCoverage(candidate.info ?? null)
+    if (mode === 'auto' && canUseCapability && coverage !== null && coverage < 3) {
+      unmeasured.push(key)
+      unmeasuredReasons[key] = 'insufficient-coverage'
       continue
     }
     // `manual` means the operator has taken over: an unassigned model is not
@@ -238,20 +310,7 @@ export function assignTiers(pool, routes, config = {}) {
     if (mode === 'manual') {
       tier = null
     } else if (canUseCapability) {
-      // Start at the capability band, then walk upward until a tier's guardrails
-      // admit it: a cheap-capability model that is too expensive or too slow for
-      // `fast` belongs one band up, not in `fast` by accident. The guardrail is
-      // cost + latency only — the band is the quality decision, and the envelope's
-      // quality floor belongs to the cost criterion (keeping both made every
-      // fast-band model fall under the fast floor and end up off).
-      const start = TIER_IDS.indexOf(bandOf(capabilityOf(candidate.info ?? null)))
-      for (let position = Math.max(0, start); position < TIER_IDS.length; position += 1) {
-        const envelope = routes?.[TIER_IDS[position]]?.envelope
-        if (withinEnvelope(candidate.info ?? null, envelope === undefined ? envelope : { ...envelope, minQuality: undefined })) {
-          tier = TIER_IDS[position]
-          break
-        }
-      }
+      tier = tierForModel(canonicalOf(candidate))
     } else {
       tier = autoTierFor(candidate.info ?? null, routes)
     }
@@ -284,6 +343,7 @@ export function assignTiers(pool, routes, config = {}) {
           // where a cheaper-strength model anywhere makes the dearer one pointless,
           // so the original cross-tier rule stands.
           (effectiveCriterion !== 'capability' || other.tier === candidate.tier) &&
+          canonicalOf(other) !== canonicalOf(candidate) &&
           other.family === candidate.family &&
           other.quality > candidate.quality &&
           other.cost <= candidate.cost - DOMINANCE_COST_MARGIN,
@@ -315,10 +375,12 @@ export function assignTiers(pool, routes, config = {}) {
       fastMax: Math.round(bandEdges.fastMax * 10) / 10,
       balancedMax: Math.round(bandEdges.balancedMax * 10) / 10,
       sample: capabilityValues.length,
+      models: models.size,
     },
     disabled: [...disabled],
     unassigned,
     unmeasured,
+    unmeasuredReasons,
   }
 }
 

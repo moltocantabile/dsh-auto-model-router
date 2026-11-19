@@ -73,7 +73,7 @@ console.log(`base: ${Object.keys(base).length} entries (${basePath})`)
 console.log(`pool: ${wanted.length} advertised chat models (${poolPath})`)
 console.log('fetching the live sources ...')
 const started = Date.now()
-const result = await refreshCatalog({ base, wanted, joinFamilyForAnalysis: familyJoin })
+const result = await refreshCatalog({ base, wanted, joinFamilyForAnalysis: familyJoin, benchgeckoTimeoutMs: 45_000 })
 const { summary } = result
 
 // The diagnostics are recomputed from the written catalog: they are the audit

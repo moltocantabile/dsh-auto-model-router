@@ -365,6 +365,7 @@ test('OpenRouter task spend reduces to per-model task shares in rank order', () 
 
 test('task signals attach by identity and never to a different model', () => {
   const dataset = {
+    'vanchin/deepseek-v4.1-flash-1017': { label: 'DeepSeek V4.1 Flash 1017', crossChecks: {} },
     'vanchin/deepseek-v4.1-flash': { label: 'DeepSeek V4.1 Flash', crossChecks: {} },
     'glm-5.3': { label: 'GLM-5.3', crossChecks: {} },
     'glm-5.3-flash': { label: 'GLM-5.3-Flash', crossChecks: {} },
@@ -374,9 +375,12 @@ test('task signals attach by identity and never to a different model', () => {
     orBenchmarks: { 'gpqa-diamond': [{ name: 'DeepSeek: DeepSeek V4.1 Flash 1017', accuracy: 0.96, canonical: 'gpqa' }] },
     orTaskUsage: { windowDays: 30, models: { 'deepseek/deepseek-v4.1-flash-1017': [{ tag: 'software.implementation', macroCategory: 'software', share: 0.2, rank: 1 }] } },
   })
-  assert.equal(dataset['vanchin/deepseek-v4.1-flash'].crossChecks.taskIndexes.indexes.legal, 61.2)
-  assert.equal(dataset['vanchin/deepseek-v4.1-flash'].crossChecks.openrouterBenchmarks.accuracy.gpqa, 0.96)
-  assert.equal(dataset['vanchin/deepseek-v4.1-flash'].usage.tasks[0].tag, 'software.implementation')
+  assert.equal(dataset['vanchin/deepseek-v4.1-flash-1017'].crossChecks.taskIndexes.indexes.legal, 61.2)
+  assert.equal(dataset['vanchin/deepseek-v4.1-flash-1017'].crossChecks.openrouterBenchmarks.accuracy.gpqa, 0.96)
+  assert.equal(dataset['vanchin/deepseek-v4.1-flash-1017'].usage.tasks[0].tag, 'software.implementation')
+  // The undated alias is a different model and must not inherit the snapshot.
+  assert.equal(dataset['vanchin/deepseek-v4.1-flash'].crossChecks.taskIndexes, undefined)
+  assert.equal(dataset['vanchin/deepseek-v4.1-flash'].usage, undefined)
   assert.equal(dataset['glm-5.3'].crossChecks.taskIndexes, undefined, 'a different model is not matched')
   assert.equal(dataset['glm-5.3-flash'].crossChecks.openrouterBenchmarks, undefined)
   assert.deepEqual(summary, { indexModels: 1, benchmarkModels: 1, usageModels: 1 })
