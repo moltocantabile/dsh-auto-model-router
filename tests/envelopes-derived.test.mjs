@@ -90,3 +90,15 @@ test('explicit mode ignores the data and no data means no change', () => {
   assert.deepEqual(mergeEnvelopes(base, derived, 'explicit').fast.envelope, { maxCost: 5 })
   assert.deepEqual(mergeEnvelopes(base, null, 'merge').fast.envelope, { maxCost: 5 })
 })
+
+test('a translated operator floor is compared on the axis it was translated to', async () => {
+  const { withinEnvelope } = await import('../src/select.js')
+  // The operator wrote q>=55 for the legacy scale; the host translates it to the
+  // measured axis (~14). The envelope must carry provenance, otherwise the floor is
+  // compared against the legacy score and admits almost the whole catalog.
+  const stale = { price: { input: 2, output: 4 }, latency: 'balanced', contextWindow: 200000, modalities: ['text'], toolCalling: true, quality: 71.9, ranking: { status: 'measured', low: 14.5, composite: 45 } }
+  const translated = { maxCost: 85, minQuality: 20, maxLatency: 'balanced', derived: true, source: 'derived', operatorMinQuality: 55 }
+  assert.equal(withinEnvelope(stale, translated), false, 'the measured low bound misses the translated floor')
+  const handWritten = { maxCost: 85, minQuality: 20, maxLatency: 'balanced' }
+  assert.equal(withinEnvelope(stale, handWritten), true, 'the same number on the legacy scale admits it')
+})

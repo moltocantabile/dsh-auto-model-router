@@ -190,9 +190,23 @@ export function apply(ctx, input) {
         continue
       }
       const translated = alignedFloor(envelope.minQuality, legacy, aligned)
+      // The translated number lives on the measured axis, so it must say so:
+      // `withinEnvelope` compares a floor against the legacy score unless the floor
+      // carries its provenance, and a measured-axis floor compared to the legacy
+      // score empties or floods the tier (measured: `deep` admitted 60/69 models
+      // that way, against 29 on the measured basis).
       out[id] = translated === envelope.minQuality
         ? route
-        : { ...route, envelope: { ...envelope, minQuality: translated, operatorMinQuality: envelope.minQuality } }
+        : {
+            ...route,
+            envelope: {
+              ...envelope,
+              minQuality: translated,
+              operatorMinQuality: envelope.minQuality,
+              derived: true,
+              source: 'derived',
+            },
+          }
     }
     return out
   }
@@ -614,6 +628,12 @@ export function apply(ctx, input) {
     return candidates.filter((candidate) => TIER_IDS.includes(assigned.tierOf[candidate.key ?? candidate.model]))
   }
 
+  /** Whether a route names a model it can be forced to, rather than only an envelope. */
+  function forcesPin(routeId) {
+    const route = routes[routeId]
+    return typeof route?.model === 'string' && route.model.length > 0 && typeof route?.provider === 'string'
+  }
+
   /** Whether the llm runtime accepts this route; cached per route id. */
   /**
    * The set of models the selector may choose from.
@@ -827,9 +847,14 @@ export function apply(ctx, input) {
         source = 'requested'
       }
 
+      // A forced route can be a pinned model (model+provider) or a tier constraint
+      // (envelope only). The second form selected `undefined` and was therefore
+      // inert for the shipped envelope-only routes; it now constrains the selector
+      // to that tier instead.
+      const forceTier = forceId !== null && routes[forceId] !== undefined && !routes[forceId].model ? forceId : null
       if (selected !== null) {
         // a named model already decided this
-      } else if (forceId !== null && routes[forceId] !== undefined) {
+      } else if (forceId !== null && routes[forceId] !== undefined && forcesPin(forceId)) {
         selected = { provider: routes[forceId].provider, model: routes[forceId].model, tier: forceId }
         source = 'force'
       } else {
@@ -841,11 +866,12 @@ export function apply(ctx, input) {
           tierFactors: config.selection?.tierCostFactor,
           usageWeight: config.selection?.usageWeight,
           floorMode: config.selection?.floorMode,
-          defaultRoute: config.defaultRoute,
+          defaultRoute: forceTier ?? config.defaultRoute,
           membership,
         })
         tiersAssigned = assigned.groups
         selected = result.selected
+        if (selected !== null && forceTier !== null) source = 'force'
         ranking = result.ranking
         tierChosen = result.tier
         envelopeWidened = result.widened
@@ -1099,7 +1125,19 @@ export function apply(ctx, input) {
       lines.push(`plugin instance: ${INSTANCE}`)
     const envelopeMode = config.tiers?.envelopeMode ?? 'merge'
     const derivedSample = derivedEnvelopes === null || derivedEnvelopes === undefined ? 0 : (derivedEnvelopes.fast?.sample ?? 0)
-    lines.push(`envelopes: ${envelopeMode}${derivedEnvelopes === null ? ' (no derived cut-offs yet)' : ` (derived from ${derivedSample || 'measured'} models)`}`)
+    // Count fields where the effective envelope actually differs from the
+    // operator's: in `merge` mode the shipped defaults fill every field, so the
+    // derived cut-offs can be present and still unused, and saying only "derived
+    // from N models" implied they were in force.
+    let appliedFields = 0
+    for (const id of Object.keys(routingRoutes)) {
+      for (const field of ['maxCost', 'minQuality', 'maxLatency']) {
+        if (routingRoutes[id]?.envelope?.[field] !== operatorRoutes[id]?.envelope?.[field]) appliedFields += 1
+      }
+    }
+    lines.push(
+      `envelopes: ${envelopeMode}${derivedEnvelopes === null ? ' (no derived cut-offs yet)' : ` (derived from ${derivedSample || 'measured'} models, ${appliedFields} field(s) in force)`}`,
+    )
     lines.push(`tiers: ${board.mode}${board.overridden.length > 0 ? `, ${board.overridden.length} hand-assigned` : ''}`)
       for (const id of TIER_IDS) {
         const members = board.groups[id] ?? []

@@ -139,3 +139,11 @@ test('derived envelope values never reach the operator config', () => {
   assert.ok(!/routes\[id\]\.envelope\s*=/.test(source), 'the operator config is not mutated')
   assert.ok(source.includes('Object.assign(routingRoutes, JSON.parse(JSON.stringify(merged.routes)))'), 'configure syncs the routing copy')
 })
+
+test('a forced tier constrains the selector instead of pinning an absent model', () => {
+  const source = read('index.js')
+  // Shipped routes carry only envelopes: the old branch selected undefined
+  // provider/model and the force was inert.
+  assert.ok(source.includes('forcesPin(forceId)'), 'force distinguishes a pinned model from a tier')
+  assert.ok(source.includes('defaultRoute: forceTier ?? config.defaultRoute'), 'a tier force reaches the selector')
+})
