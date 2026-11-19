@@ -771,7 +771,7 @@ function sameModelName(id, name) {
   if (ours === theirs) return true
   const [longer, shorter] = ours.length >= theirs.length ? [ours, theirs] : [theirs, ours]
   const extra = longer.slice(shorter.length)
-  return /^\d{4,8}$/.test(extra) || VARIANT_WORDS.has(extra)
+  return /^\d{4,8}$/.test(extra) || EFFORT_VARIANTS.has(extra)
 }
 
 /** Decode every `self.__next_f.push([1, "…"])` string in a Next.js RSC page. */
@@ -807,17 +807,20 @@ export function decodeFlightChunks(html) {
 }
 
 /**
- * Words that distinguish a variant from a different model: AA ships one row per
- * reasoning effort, serving mode, or reseller, and all of them describe the same
- * catalog model. A name difference made only of these is not a different model.
+ * Words that describe an *inference variant* of one model: the same weights
+ * served with a different reasoning effort, instruction style or reseller prefix.
+ * AA publishes one row per effort, and all of them name the same catalog model.
+ *
+ * Deliberately excluded: model tiers (`flash`, `max`, `mini`, `pro`, `turbo`,
+ * `lite`, `air`, `next`, `prime`, `ultra*`). Those are different models with
+ * different weights and prices, and stripping them collapsed `Qwen3.8-Max` and
+ * `Qwen3.8-Flash` (or `GLM-5.3` and `GLM-5.3-Flash`) onto one name, so a matcher
+ * could attach one model's quality and price to the other.
  */
-const VARIANT_WORDS = new Set([
-  'max', 'high', 'low', 'medium', 'min', 'mini', 'thinking', 'nonreasoning', 'reasoning',
-  // Speed tiers and lightweight variants: the same weights, a different serving
-  // offer. They are only ignored when the base model name already lines up.
-  'flash', 'flashlite', 'turbo', 'air', 'speed', 'lite', 'next',
-  'default', 'fallback', 'preview', 'prime', 'highspeed', 'ultraspeed', 'vision', 'flashx',
-  'reasoningmedium', 'reasoninglow', 'reasoninghigh', 'cmaas', 'based', 'on', 'instruct',
+const EFFORT_VARIANTS = new Set([
+  'reasoning', 'nonreasoning', 'thinking', 'reasoninghigh', 'reasoningmedium', 'reasoninglow',
+  'instruct', 'default', 'based', 'on', 'cmaas',
+  'high', 'medium', 'low',
 ])
 
 /** Split a normalized name into its leading model tokens and variant tokens. */
@@ -836,7 +839,7 @@ export function splitVariant(normalized) {
       break
     }
     const word = /([a-z]+)$/.exec(normalized.slice(0, index))
-    if (word !== null && VARIANT_WORDS.has(word[1])) {
+    if (word !== null && EFFORT_VARIANTS.has(word[1])) {
       index = normalized.slice(0, index).length - word[1].length
       continue
     }
@@ -860,7 +863,7 @@ export function modelStem(text) {
   const tokens = String(text ?? '').toLowerCase().split(/[^a-z0-9]+/).filter((token) => token.length > 0)
   while (tokens.length > 1) {
     const last = tokens[tokens.length - 1]
-    if (/^\d{4,8}$/.test(last) || VARIANT_WORDS.has(last)) {
+    if (/^\d{4,8}$/.test(last) || EFFORT_VARIANTS.has(last)) {
       tokens.pop()
       continue
     }
@@ -892,7 +895,9 @@ export function matchAnalysisRow(keys, byName) {
       const shares = model === candidate.model || model.startsWith(candidate.model) || candidate.model.startsWith(model)
       if (!shares) continue
       const extra = model.length > candidate.model.length ? model.slice(candidate.model.length) : candidate.model.slice(model.length)
-      const extraOk = extra.length === 0 || VARIANT_WORDS.has(extra) || /^\d{1,2}$/.test(extra) || /-\d{4}-\d{2}-\d{2}$/.test(extra)
+      // Effort variants and release dates may differ; a model tier, or a version
+      // digit (`deepseek-v4` against `DeepSeek-V4.1`), may not.
+      const extraOk = extra.length === 0 || EFFORT_VARIANTS.has(extra) || /^\d{4,8}$/.test(extra)
       if (!extraOk) continue
       const score = (Number.isFinite(row.intelligenceIndex) ? row.intelligenceIndex : 0) + (Number.isFinite(row.priceIn) ? 1 : 0)
       if (best === null || score > best.score) best = { row, score }
@@ -1232,7 +1237,9 @@ export function attachArtificialAnalysis(dataset, { base = {}, analysis = {}, wa
       entry.evidence = { ...(entry.evidence ?? {}), overall: 0 }
       filledQuality += 1
     }
-    const hasPrice = Number.isFinite(Number(entry.price?.input)) && Number(entry.price.input) > 0
+    // A zero price is a real price (a free model), not a missing one; only a
+    // missing field may be filled from Artificial Analysis.
+    const hasPrice = Number.isFinite(Number(entry.price?.input)) && Number(entry.price.input) >= 0
     if (!hasPrice && Number.isFinite(value.priceIn)) {
       entry.price = {
         input: round1(value.priceIn * CNY_PER_USD),

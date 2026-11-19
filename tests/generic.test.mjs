@@ -128,3 +128,14 @@ test('a collapsed pool never becomes the published board', () => {
   assert.ok(source.includes('scheduleBoardRetry'), 'the board retries while providers register')
   assert.ok(source.includes("if (walked === null) return resolved"), 'no decision is taken without a board')
 })
+
+
+test('derived envelope values never reach the operator config', () => {
+  const source = read('index.js')
+  // The translated floor is written to the routing copy only: writing it into
+  // config.routes made a form round-trip persist a derived number as authored.
+  assert.ok(source.includes('const routingRoutes'), 'the routing copy exists')
+  assert.ok(source.includes('routingRoutes[id] = { ...routingRoutes[id], envelope: route.envelope }'))
+  assert.ok(!/routes\[id\]\.envelope\s*=/.test(source), 'the operator config is not mutated')
+  assert.ok(source.includes('Object.assign(routingRoutes, JSON.parse(JSON.stringify(merged.routes)))'), 'configure syncs the routing copy')
+})

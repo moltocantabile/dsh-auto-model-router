@@ -201,11 +201,14 @@ function compassDims(entry) {
   const b = entry.bench ?? {}
   return {
     coding: mean([positive(b['Programming.Average']), positive(b['Programming.SWE-bench Pro Verified'])]),
-    reasoning: mean([a.Reasoning, a.Abstraction]),
-    math: mean([a['QuantitativeReasoning']]),
-    knowledge: mean([a.Knowledge, positive(b['Science.Average'])]),
-    agentic: mean([a.Agent, positive(b['Programming.Terminal-Bench 4.0']), positive(b['KnowledgeWork.Average'])]),
-    overall: mean([a.Average]),
+    // `positive` everywhere: a zero ability field means "not measured" on the same
+    // table whose benchmark fields already use that rule, and an unguarded zero
+    // would halve a dimension.
+    reasoning: mean([positive(a.Reasoning), positive(a.Abstraction)]),
+    math: mean([positive(a['QuantitativeReasoning'])]),
+    knowledge: mean([positive(a.Knowledge), positive(b['Science.Average'])]),
+    agentic: mean([positive(a.Agent), positive(b['Programming.Terminal-Bench 4.0']), positive(b['KnowledgeWork.Average'])]),
+    overall: mean([positive(a.Average)]),
   }
 }
 

@@ -149,12 +149,41 @@ test('variant rows of one model resolve to the best-evaluated variant', () => {
   assert.equal(entry.crossChecks.artificialAnalysis.intelligenceIndex, 30, 'the evaluated variant is kept')
 })
 
-test('a reseller or speed suffix still matches its model', () => {
-  const rows = [{ id: 's1', name: 'GLM-5.3-Flash', price1mInputTokens: 0.2, price1mOutputTokens: 1, intelligenceIndex: 40 }]
+test('a reseller prefix matches the same model, a speed tier does not', () => {
+  const rows = [
+    { id: 's1', name: 'GLM-5.3', price1mInputTokens: 1.4, price1mOutputTokens: 4, intelligenceIndex: 40 },
+    { id: 's2', name: 'GLM-5.3-Flash', price1mInputTokens: 0.15, price1mOutputTokens: 0.5, intelligenceIndex: 30 },
+  ]
   const analysis = extractArtificialAnalysis(page(rows), new Map())
   const dataset = {}
   attachArtificialAnalysis(dataset, { base: {}, analysis, wanted: [{ model: 'cmaas-glm-5.3', provider: 'bailian-aliyun' }] })
   assert.ok(dataset['cmaas-glm-5.3'] !== undefined, 'the reseller prefix does not block the match')
+  assert.equal(dataset['cmaas-glm-5.3'].label, 'GLM-5.3', 'a reseller matches the base model')
+
+  // With only the Flash row on offer the base model must stay unmatched rather
+  // than borrow a different model's price and score.
+  const flashOnly = extractArtificialAnalysis(page([rows[1]]), new Map())
+  const other = {}
+  attachArtificialAnalysis(other, { base: {}, analysis: flashOnly, wanted: [{ model: 'cmaas-glm-5.3', provider: 'bailian-aliyun' }] })
+  assert.deepEqual(other, {}, 'a speed tier is a different model, not a variant of the base')
+})
+
+test('a version digit is not a variant tail', () => {
+  // `deepseek-v4` against `DeepSeek-V4.1` used to pass the one-or-two-digit rule.
+  const rows = [{ id: 'd1', name: 'DeepSeek-V4.1', price1mInputTokens: 0.3, price1mOutputTokens: 1.2, intelligenceIndex: 40 }]
+  const analysis = extractArtificialAnalysis(page(rows), new Map())
+  const dataset = {}
+  attachArtificialAnalysis(dataset, { base: {}, analysis, wanted: [{ model: 'deepseek-v4', provider: 'bailian-aliyun' }] })
+  assert.deepEqual(dataset, {}, 'a different version is a different model')
+})
+
+test('an effort variant still matches its base model', () => {
+  // AA publishes one row per reasoning effort; those describe one catalog model.
+  const rows = [{ id: 'g1', name: 'GLM-5.3 Reasoning', price1mInputTokens: 1.4, price1mOutputTokens: 4, intelligenceIndex: 40 }]
+  const analysis = extractArtificialAnalysis(page(rows), new Map())
+  const dataset = {}
+  attachArtificialAnalysis(dataset, { base: {}, analysis, wanted: [{ model: 'glm-5.3', provider: 'bailian-aliyun' }] })
+  assert.ok(dataset['glm-5.3'] !== undefined, 'effort variants are the same model')
 })
 
 test('every merged entry leaves complete, whatever route it took', () => {

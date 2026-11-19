@@ -322,7 +322,11 @@ export function alignedFloor(floor, legacyValues, alignedValues) {
  */
 export function costIndex(info) {
   const blended = blendedPrice(info)
-  if (blended === null || blended <= 0) return 55
+  // Unknown is not the same as free: an untagged price is mid-range so an unpriced
+  // model cannot win a cost comparison by accident, while a genuinely free model
+  // is the cheapest thing on the board.
+  if (blended === null) return 55
+  if (blended <= 0) return 0
   const lo = Math.log2(0.4)
   const hi = Math.log2(60)
   return Math.round(clamp(((Math.log2(blended) - lo) / (hi - lo)) * 100, 0, 100))
@@ -816,9 +820,14 @@ export function selectForTier(profile, candidates, routes, options = {}) {
   // the tier the selector walked into: deriving it per tier would make "good
   // enough" move when the tier choice moves. One plan, handed to every rank call.
   const { weights } = profileWeights(profile)
+  // Models the catalog can actually rank. The last-resort fallback below must not
+  // route on a prior: an unmeasured entry would be scored on the neutral 50 of
+  // every dimension and could win a cheap tier by accident.
+  const measuredPool = candidates.filter((candidate) => hasMeasuredQuality(candidate.info ?? null))
   // Only models that can actually serve the task describe "good enough for
   // these stakes"; the floor is derived from those before the tier filter.
-  const contenders = candidates.filter((candidate) => passesRequirements(candidate, profile, weights) === null)
+  const contenders = (measuredPool.length > 0 ? measuredPool : candidates)
+    .filter((candidate) => passesRequirements(candidate, profile, weights) === null)
   const floorPlan = options.floorPlan ?? qualityFloorPlan(profile, {
     basis: contenders.map((candidate) => capabilityQuality(candidate.info ?? null, weights)),
     mode: options.floorMode,
@@ -838,7 +847,9 @@ export function selectForTier(profile, candidates, routes, options = {}) {
     const eligible = allowed !== null && allowed !== undefined
       ? candidates.filter((candidate) => allowed.has(candidate.key ?? candidate.model))
       : envelope === null || envelope === undefined
-        ? candidates
+        // Widening never reaches a model the catalog has not measured: with no
+        // measured candidate the honest answer is no selection, not a prior.
+        ? measuredPool
         : candidates.filter((candidate) => withinEnvelope(candidate.info, envelope))
     if (eligible.length === 0) continue
     const ranking = rankModels(profile, eligible, scoped)

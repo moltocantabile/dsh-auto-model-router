@@ -4,7 +4,7 @@
   "envelopes": {
     "fast": {
       "maxCost": 67,
-      "minQuality": 16,
+      "minQuality": 15,
       "maxLatency": "fast",
       "derived": true,
       "sample": 66

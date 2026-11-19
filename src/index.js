@@ -157,6 +157,13 @@ export function apply(ctx, input) {
 
   /** Operator-authored envelopes, kept so a merge can be recomputed. */
   const operatorRoutes = JSON.parse(JSON.stringify(routes))
+  /**
+   * The routes the rules actually read. Envelope translation and derivation are
+   * written here, never into `config.routes`: writing derived numbers back into
+   * the operator's config made a form round-trip persist a translated floor as if
+   * the operator had authored it, and the next load translated it again.
+   */
+  const routingRoutes = JSON.parse(JSON.stringify(routes))
   let derivedEnvelopes = loadRuntimeDerived()
 
   /**
@@ -195,8 +202,8 @@ export function apply(ctx, input) {
     const operator = alignedOperatorFloors(operatorRoutes)
     const merged = mergeEnvelopes(operator, derivedEnvelopes, config.tiers?.envelopeMode ?? 'merge')
     for (const [id, route] of Object.entries(merged)) {
-      if (routes[id] === undefined) continue
-      routes[id].envelope = route.envelope
+      if (routingRoutes[id] === undefined) continue
+      routingRoutes[id] = { ...routingRoutes[id], envelope: route.envelope }
     }
   }
   applyEnvelopes()
@@ -383,7 +390,7 @@ export function apply(ctx, input) {
   /** Capability notes the decision prompt appends to each route description. */
   function routeNotes() {
     const notes = {}
-    for (const [id, route] of Object.entries(routes)) {
+    for (const [id, route] of Object.entries(routingRoutes)) {
       const note = routingNote(routeInfo(route))
       if (note.length > 0) notes[id] = note
     }
@@ -561,7 +568,7 @@ export function apply(ctx, input) {
         byModel: new Map(SHARED.pool.map((candidate) => [candidate.model, candidate])),
       }
     }
-    const assigned = assignTiers(pool, routes, config.tiers)
+    const assigned = assignTiers(pool, routingRoutes, config.tiers)
     // Rank and adoption travel with the board so the page can order a tier by
     // measured rank instead of insertion order, and show where a model sits.
     // The card reads `boardMetaOf`, the same helper the rules are described by,
@@ -829,7 +836,7 @@ export function apply(ctx, input) {
         const walked = await assignedTiers()
         if (walked === null) return null
         const { candidates, membership, assigned } = walked
-        const result = selectForTier(profile, candidates, routes, {
+        const result = selectForTier(profile, candidates, routingRoutes, {
           costWeight: config.selection?.costWeight,
           tierFactors: config.selection?.tierCostFactor,
           usageWeight: config.selection?.usageWeight,
@@ -1132,7 +1139,7 @@ export function apply(ctx, input) {
       lines.push('browser page: no report (bundle predates the report, or the page has not opened settings)')
     }
     lines.push('routes:')
-    for (const [id, route] of Object.entries(routes)) {
+    for (const [id, route] of Object.entries(routingRoutes)) {
       const marks = []
       if (id === config.defaultRoute) marks.push('default')
       if (id === pinOf(agent)) marks.push('forced')
@@ -1145,7 +1152,9 @@ export function apply(ctx, input) {
       const derivedFloor = envelope.derived === true || envelope.source === 'derived'
       const caps = [
         typeof envelope.maxCost === 'number' ? `cost≤${envelope.maxCost}` : null,
-        typeof envelope.minQuality === 'number' ? `q≥${envelope.minQuality}${derivedFloor ? ' low' : ''}` : null,
+        typeof envelope.minQuality === 'number'
+          ? `q≥${envelope.minQuality}${derivedFloor ? ' low' : ''}${typeof envelope.operatorMinQuality === 'number' ? ` (op ${envelope.operatorMinQuality})` : ''}`
+          : null,
         typeof envelope.maxLatency === 'string' ? `lat≤${envelope.maxLatency}` : null,
       ].filter((piece) => piece !== null)
       const suffix = caps.length === 0 ? '' : ` (${caps.join(' ')})`
@@ -1209,8 +1218,8 @@ export function apply(ctx, input) {
       source = 'requested'
       result = { tier: null, eligible: candidates.length, widened: false, ranking: null, selected: { ...requested, tier: 'requested' } }
     } else {
-      const assigned = assignTiers(candidates, routes, config.tiers)
-      result = selectForTier(profile, assignedMembers(candidates, assigned), routes, {
+      const assigned = assignTiers(candidates, routingRoutes, config.tiers)
+      result = selectForTier(profile, assignedMembers(candidates, assigned), routingRoutes, {
         costWeight: config.selection?.costWeight,
         tierFactors: config.selection?.tierCostFactor,
         usageWeight: config.selection?.usageWeight,
@@ -1587,6 +1596,11 @@ export function apply(ctx, input) {
         // baseline a merge is computed from.
         for (const key of Object.keys(operatorRoutes)) delete operatorRoutes[key]
         Object.assign(operatorRoutes, JSON.parse(JSON.stringify(merged.routes)))
+        // The routing copy carries the route targets the selector calls; leaving it
+        // at the old object made a runtime `configure` change a route's model in the
+        // config while routing kept calling the previous one.
+        for (const key of Object.keys(routingRoutes)) delete routingRoutes[key]
+        Object.assign(routingRoutes, JSON.parse(JSON.stringify(merged.routes)))
         applyEnvelopes()
         config.decision = merged.decision
         config.policy = merged.policy

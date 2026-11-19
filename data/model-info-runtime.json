@@ -153,8 +153,8 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 1,
-      "tokens": 62575080453834,
-      "share": 0.2359,
+      "tokens": 62599971999519,
+      "share": 0.2358,
       "percentile": 100
     },
     "ranking": {
@@ -315,15 +315,15 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 3,
-      "tokens": 16115853208795,
-      "share": 0.0608,
-      "percentile": 97.8
+      "tokens": 16121539049105,
+      "share": 0.0607,
+      "percentile": 97.7
     },
     "ranking": {
       "status": "measured",
       "composite": 46.4,
       "low": 34.8,
-      "rank": 9,
+      "rank": 10,
       "dims": {
         "coding": {
           "value": 45.5,
@@ -454,9 +454,9 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 19,
-      "tokens": 2898716978472,
+      "tokens": 2899817079198,
       "share": 0.0109,
-      "percentile": 84.8
+      "percentile": 83.7
     },
     "ranking": {
       "status": "measured",
@@ -515,14 +515,14 @@
     "mcp": false,
     "explicitCache": true,
     "latency": "fast",
-    "quality": 68.4,
+    "quality": null,
     "scores": {
       "coding": 45,
       "reasoning": 62,
       "math": 55,
       "knowledge": 50,
       "agentic": 42,
-      "overall": 68.4,
+      "overall": 51,
       "longContext": 100,
       "vision": 100,
       "speed": 75
@@ -564,51 +564,6 @@
           "gdp-pdf-aa": 10.8
         },
         "board": "https://llmleaderboard.com"
-      },
-      "artificialAnalysis": {
-        "intelligenceIndex": null,
-        "priceIn": 0.44,
-        "priceOut": 1.32,
-        "ttft": 1.52997192694065,
-        "speed": 166.805487509238,
-        "benchmarks": {
-          "automationbench-aa": 47.5,
-          "hle-diamond": 21.1,
-          "gdp-pdf": 12,
-          "terminalbench-4-0": 12.1,
-          "enterprise-ops-gym-aa": 47.1,
-          "mmmu-pro": 74.8,
-          "humanitys-last-exam": 34.5,
-          "artificial-analysis-long-context-reasoning": 81.3,
-          "scicode": 49.7,
-          "critpt": 10.9,
-          "terminalbench-2-1": 74.2,
-          "gpqa-diamond": 91.3,
-          "tau3-banking": 41
-        },
-        "rawScores": {
-          "aa-briefcase": 1418.08,
-          "automationbench-aa": 0.4747087040091967,
-          "hle-diamond": 0.211,
-          "gdp-pdf": 0.12,
-          "terminalbench-4-0": 0.121212121212121,
-          "enterprise-ops-gym-aa": 0.4709042076991943,
-          "gdpval-aa-normalized": 1554.95,
-          "mmmu-pro": 0.747976878612717,
-          "humanitys-last-exam": 0.344763670064875,
-          "artificial-analysis-long-context-reasoning": 0.813333333333333,
-          "scicode": 0.496527777777778,
-          "critpt": 0.108571428571429,
-          "terminalbench-2-1": 0.741573033707865,
-          "gpqa-diamond": 0.913131313131313,
-          "tau3-banking": 0.410309278350515
-        },
-        "contextTokens": 1000000,
-        "reasoning": true,
-        "openWeights": false,
-        "cacheHitPrice": 0.014,
-        "creator": "DeepSeek",
-        "source": "https://artificialanalysis.ai/leaderboards/models"
       }
     },
     "sources": [
@@ -618,44 +573,31 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 23,
-      "tokens": 2012213354674,
+      "tokens": 2013004617419,
       "share": 0.0076,
-      "percentile": 82.6
+      "percentile": 81.4
     },
     "ranking": {
       "status": "measured",
-      "composite": 46.8,
-      "low": 24.8,
-      "rank": 32,
-      "uncalibrated": 9,
+      "composite": 42.8,
+      "low": 4.8,
+      "rank": 65,
       "dims": {
-        "coding": {
-          "value": 49.9,
-          "evidence": 1
-        },
-        "reasoning": {
-          "value": 46.2,
-          "evidence": 1
-        },
         "knowledge": {
           "value": 42.8,
           "evidence": 1
         },
         "longContext": {
-          "value": 66.7,
-          "evidence": 1
+          "value": 100,
+          "evidence": 0
         },
         "vision": {
           "value": 100,
           "evidence": 0
         },
-        "speed": {
-          "value": 70.3,
-          "evidence": 1
-        },
         "overall": {
-          "value": 46.8,
-          "evidence": 3
+          "value": 42.8,
+          "evidence": 1
         }
       }
     }
@@ -825,9 +767,9 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 43,
-      "tokens": 742534899270,
+      "tokens": 742822217939,
       "share": 0.0028,
-      "percentile": 69.6
+      "percentile": 69.8
     },
     "ranking": {
       "status": "measured",
@@ -984,9 +926,9 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 49,
-      "tokens": 568493611399,
+      "tokens": 568717816876,
       "share": 0.0021,
-      "percentile": 65.2
+      "percentile": 65.1
     },
     "ranking": {
       "status": "measured",
@@ -1102,61 +1044,6 @@
         "hle": 16.14,
         "evaluated": "2026-08-26",
         "board": "https://rank.opencompass.org.cn/leaderboard/llm"
-      },
-      "artificialAnalysis": {
-        "intelligenceIndex": 28.6,
-        "priceIn": 0.15,
-        "priceOut": 0.47,
-        "ttft": 2.48306827957056,
-        "speed": 77.4703154574181,
-        "benchmarks": {
-          "omniscience-accuracy": 23.5,
-          "omniscience-non-hallucination": 53.2,
-          "automationbench-aa": 55.9,
-          "terminal-bench-science": 7.1,
-          "frontiercode-2-0": 27.1,
-          "hle-diamond": 16.3,
-          "gdp-pdf": 15.6,
-          "terminalbench-4-0": 25.3,
-          "critpt-v2-hard": 24.5,
-          "mlcr-aa": 20.6,
-          "mmmu-pro": 78.6,
-          "humanitys-last-exam": 38,
-          "artificial-analysis-long-context-reasoning": 79.7,
-          "scicode": 50.6,
-          "critpt": 11.1,
-          "terminalbench-2-1": 86.1,
-          "gpqa-diamond": 92.3,
-          "tau3-banking": 45.4
-        },
-        "rawScores": {
-          "aa-briefcase": 1571.51,
-          "omniscience-accuracy": 0.23533333333333334,
-          "omniscience-non-hallucination": 0.532258064516129,
-          "automationbench-aa": 0.559083218951688,
-          "terminal-bench-science": 0.0714285714285714,
-          "frontiercode-2-0": 0.271362121212121,
-          "hle-diamond": 0.163,
-          "gdp-pdf": 0.156,
-          "terminalbench-4-0": 0.252525252525253,
-          "critpt-v2-hard": 0.245,
-          "gdpval-aa-normalized": 1636.77,
-          "mlcr-aa": 0.205555555555556,
-          "mmmu-pro": 0.786127167630058,
-          "humanitys-last-exam": 0.380444856348471,
-          "artificial-analysis-long-context-reasoning": 0.796666666666667,
-          "scicode": 0.505787037037037,
-          "critpt": 0.111428571428571,
-          "terminalbench-2-1": 0.861423220973783,
-          "gpqa-diamond": 0.923232323232323,
-          "tau3-banking": 0.45360824742268
-        },
-        "contextTokens": 256000,
-        "reasoning": true,
-        "openWeights": true,
-        "cacheHitPrice": 0.016,
-        "creator": "Alibaba",
-        "source": "https://artificialanalysis.ai/leaderboards/models"
       }
     },
     "sources": [
@@ -1168,24 +1055,23 @@
     "notes": "Thinking mode supports 983K input and 131K output.",
     "usage": {
       "source": "openrouter-top-weekly",
-      "rank": 204,
-      "tokens": 12593478401,
-      "share": 0,
-      "percentile": 19.6
+      "rank": 30,
+      "tokens": 1336083163207,
+      "share": 0.005,
+      "percentile": 79.1
     },
     "ranking": {
       "status": "measured",
-      "composite": 49.7,
-      "low": 34.4,
-      "rank": 11,
-      "uncalibrated": 13,
+      "composite": 49.3,
+      "low": 36.5,
+      "rank": 8,
       "dims": {
         "coding": {
-          "value": 47,
-          "evidence": 2
+          "value": 45.8,
+          "evidence": 1
         },
         "reasoning": {
-          "value": 47,
+          "value": 46.8,
           "evidence": 3
         },
         "knowledge": {
@@ -1197,20 +1083,16 @@
           "evidence": 2
         },
         "longContext": {
-          "value": 58.8,
-          "evidence": 1
+          "value": 99,
+          "evidence": 0
         },
         "vision": {
           "value": 100,
           "evidence": 0
         },
-        "speed": {
-          "value": 55.3,
-          "evidence": 1
-        },
         "overall": {
-          "value": 49.7,
-          "evidence": 8
+          "value": 49.3,
+          "evidence": 7
         }
       }
     }
@@ -1290,15 +1172,15 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 53,
-      "tokens": 457997116974,
+      "tokens": 458147653191,
       "share": 0.0017,
-      "percentile": 63
+      "percentile": 62.8
     },
     "ranking": {
       "status": "measured",
       "composite": 44.7,
       "low": 24,
-      "rank": 37,
+      "rank": 36,
       "dims": {
         "reasoning": {
           "value": 31.4,
@@ -1415,10 +1297,10 @@
     "notes": "Explicit cache hit bills at 1.0; cache creation at 15.",
     "usage": {
       "source": "openrouter-top-weekly",
-      "rank": 204,
-      "tokens": 12593478401,
-      "share": 0,
-      "percentile": 19.6
+      "rank": 72,
+      "tokens": 205115389626,
+      "share": 0.0008,
+      "percentile": 53.5
     },
     "ranking": {
       "status": "measured",
@@ -1598,9 +1480,9 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 65,
-      "tokens": 285423599656,
+      "tokens": 286375745347,
       "share": 0.0011,
-      "percentile": 58.7
+      "percentile": 58.1
     },
     "ranking": {
       "status": "measured",
@@ -1896,9 +1778,9 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 12,
-      "tokens": 3454236822988,
+      "tokens": 3455612624960,
       "share": 0.013,
-      "percentile": 87
+      "percentile": 86
     },
     "ranking": {
       "status": "measured",
@@ -2081,9 +1963,9 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 31,
-      "tokens": 1207347484783,
-      "share": 0.0046,
-      "percentile": 78.3
+      "tokens": 1207748013281,
+      "share": 0.0045,
+      "percentile": 76.7
     },
     "ranking": {
       "status": "measured",
@@ -2233,9 +2115,9 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 229,
-      "tokens": 8541346670,
+      "tokens": 8542030401,
       "share": 0,
-      "percentile": 10.9
+      "percentile": 9.3
     },
     "ranking": {
       "status": "measured",
@@ -2433,9 +2315,9 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 133,
-      "tokens": 47086035077,
+      "tokens": 47098300873,
       "share": 0.0002,
-      "percentile": 43.5
+      "percentile": 41.9
     },
     "ranking": {
       "status": "measured",
@@ -2577,15 +2459,15 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 219,
-      "tokens": 10956068350,
+      "tokens": 10958048592,
       "share": 0,
-      "percentile": 15.2
+      "percentile": 14
     },
     "ranking": {
       "status": "measured",
       "composite": 49,
       "low": 35.2,
-      "rank": 8,
+      "rank": 9,
       "dims": {
         "coding": {
           "value": 55,
@@ -2742,15 +2624,15 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 35,
-      "tokens": 960172231451,
+      "tokens": 960749561854,
       "share": 0.0036,
-      "percentile": 76.1
+      "percentile": 74.4
     },
     "ranking": {
       "status": "measured",
       "composite": 55,
       "low": 34.6,
-      "rank": 10,
+      "rank": 11,
       "dims": {
         "coding": {
           "value": 59.3,
@@ -2916,9 +2798,9 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 11,
-      "tokens": 3576762030037,
+      "tokens": 3578212960614,
       "share": 0.0135,
-      "percentile": 89.1
+      "percentile": 88.4
     }
   },
   "vanchin/deepseek-v4.1-flash-1017": {
@@ -3045,8 +2927,8 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 1,
-      "tokens": 62575080453834,
-      "share": 0.2359,
+      "tokens": 62599971999519,
+      "share": 0.2358,
       "percentile": 100
     }
   },
@@ -3175,9 +3057,9 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 11,
-      "tokens": 3576762030037,
+      "tokens": 3578212960614,
       "share": 0.0135,
-      "percentile": 89.1
+      "percentile": 88.4
     }
   },
   "MiniMax/MiniMax-M3.1-Flash": {
@@ -3299,9 +3181,9 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 10,
-      "tokens": 3701660669906,
+      "tokens": 3703368692646,
       "share": 0.014,
-      "percentile": 91.3
+      "percentile": 90.7
     }
   },
   "stepfun/step-5-preview": {
@@ -3420,9 +3302,9 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 8,
-      "tokens": 6413464739196,
+      "tokens": 6420253726280,
       "share": 0.0242,
-      "percentile": 93.5
+      "percentile": 93
     }
   },
   "ZHIPU/GLM-5.3-Flash": {
@@ -3554,9 +3436,9 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 5,
-      "tokens": 10951465411789,
+      "tokens": 10956510608331,
       "share": 0.0413,
-      "percentile": 95.7
+      "percentile": 95.3
     }
   },
   "vanchin/deepseek-v4-pro-0813": {
@@ -3677,9 +3559,9 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 43,
-      "tokens": 742534899270,
+      "tokens": 742822217939,
       "share": 0.0028,
-      "percentile": 69.6
+      "percentile": 69.8
     }
   },
   "qwen3.8-27b": {
@@ -3808,7 +3690,7 @@
       "status": "measured",
       "composite": 46.5,
       "low": 24.5,
-      "rank": 34,
+      "rank": 33,
       "uncalibrated": 18,
       "dims": {
         "coding": {
@@ -3844,9 +3726,9 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 41,
-      "tokens": 820084038447,
+      "tokens": 820893167711,
       "share": 0.0031,
-      "percentile": 71.7
+      "percentile": 72.1
     }
   },
   "ZHIPU/GLM-5.3": {
@@ -3976,9 +3858,9 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 12,
-      "tokens": 3454236822988,
+      "tokens": 3455612624960,
       "share": 0.013,
-      "percentile": 87
+      "percentile": 86
     }
   },
   "qwen3.8-2.4t-a95b": {
@@ -4079,7 +3961,7 @@
       "status": "measured",
       "composite": 49.4,
       "low": 19.4,
-      "rank": 45,
+      "rank": 44,
       "uncalibrated": 10,
       "dims": {
         "coding": {
@@ -4111,9 +3993,9 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 170,
-      "tokens": 25000032532,
+      "tokens": 25018543773,
       "share": 0.0001,
-      "percentile": 30.4
+      "percentile": 27.9
     }
   },
   "MiniMax/MiniMax-M3": {
@@ -4243,154 +4125,12 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 48,
-      "tokens": 569810346466,
+      "tokens": 570040034189,
       "share": 0.0021,
       "percentile": 67.4
     }
   },
   "kimi/kimi-k2.7-code": {
-    "label": "Kimi K2.7 Code",
-    "provider": "bailian-aliyun",
-    "contextWindow": 256000,
-    "price": {
-      "input": 6.8,
-      "output": 28.8
-    },
-    "modalities": [
-      "text"
-    ],
-    "toolCalling": true,
-    "reasoning": false,
-    "latency": "slow",
-    "quality": 27.4,
-    "scores": {
-      "overall": 27.4,
-      "coding": 27.4,
-      "reasoning": 27.4,
-      "math": 27.4,
-      "knowledge": 27.4,
-      "agentic": 27.4,
-      "longContext": 27.4,
-      "vision": 27.4,
-      "speed": 27.4
-    },
-    "evidence": {
-      "overall": 0,
-      "coding": 0,
-      "reasoning": 0,
-      "math": 0,
-      "knowledge": 0,
-      "agentic": 0,
-      "longContext": 0,
-      "vision": 0,
-      "speed": 0
-    },
-    "bestFor": [],
-    "weaknesses": [],
-    "sources": [
-      "https://artificialanalysis.ai/leaderboards/models"
-    ],
-    "checkedAt": "2026-11-18",
-    "crossChecks": {
-      "artificialAnalysis": {
-        "intelligenceIndex": null,
-        "priceIn": 0.95,
-        "priceOut": 4,
-        "ttft": 6.26718359879146,
-        "speed": 56.2397043659002,
-        "benchmarks": {
-          "automationbench-aa": 24.5,
-          "hle-diamond": 14.8,
-          "gdp-pdf": 11.2,
-          "terminalbench-4-0": 1,
-          "enterprise-ops-gym-aa": 40.2,
-          "mlcr-aa": 12.2,
-          "humanitys-last-exam": 35,
-          "artificial-analysis-long-context-reasoning": 79.3,
-          "scicode": 47.8,
-          "critpt": 10,
-          "terminalbench-hard": 44.7,
-          "terminalbench-2-1": 67.4,
-          "tau2-bench": 90.1,
-          "gpqa-diamond": 89.6,
-          "ifbench": 63.1,
-          "tau3-banking": 20.2
-        },
-        "rawScores": {
-          "aa-briefcase": 858.25,
-          "automationbench-aa": 0.24454304615216713,
-          "hle-diamond": 0.148,
-          "gdp-pdf": 0.112,
-          "terminalbench-4-0": 0.0101010101010101,
-          "enterprise-ops-gym-aa": 0.40226797970754996,
-          "gdpval-aa-normalized": 1045.88,
-          "mlcr-aa": 0.122222222222222,
-          "humanitys-last-exam": 0.35032437442076,
-          "artificial-analysis-long-context-reasoning": 0.793333333333333,
-          "scicode": 0.478009259259259,
-          "critpt": 0.1,
-          "terminalbench-hard": 0.446969696969697,
-          "terminalbench-2-1": 0.674157303370786,
-          "tau2-bench": 0.900584795321637,
-          "gpqa-diamond": 0.895959595959596,
-          "ifbench": 0.631292517006803,
-          "tau3-banking": 0.202061855670103
-        },
-        "contextTokens": 256000,
-        "reasoning": true,
-        "openWeights": true,
-        "cacheHitPrice": 0.19,
-        "creator": "Kimi",
-        "source": "https://artificialanalysis.ai/leaderboards/models"
-      },
-      "epoch": {
-        "eci": 151.2,
-        "date": "2026-06-12",
-        "board": "https://epoch.ai/eci"
-      }
-    },
-    "ranking": {
-      "status": "measured",
-      "composite": 47.3,
-      "low": 17.3,
-      "rank": 47,
-      "uncalibrated": 11,
-      "dims": {
-        "coding": {
-          "value": 49.3,
-          "evidence": 1
-        },
-        "reasoning": {
-          "value": 45.3,
-          "evidence": 1
-        },
-        "longContext": {
-          "value": 57.4,
-          "evidence": 1
-        },
-        "vision": {
-          "value": 0,
-          "evidence": 0
-        },
-        "speed": {
-          "value": 42.4,
-          "evidence": 1
-        },
-        "overall": {
-          "value": 47.3,
-          "evidence": 2
-        }
-      }
-    },
-    "usage": {
-      "source": "openrouter-top-weekly",
-      "rank": 116,
-      "tokens": 67542761742,
-      "share": 0.0003,
-      "percentile": 47.8
-    }
-  },
-  "kimi-k2.7-code": {
     "label": "Kimi K2.7 Code",
     "provider": "bailian-aliyun",
     "contextWindow": 256000,
@@ -4527,9 +4267,151 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 116,
-      "tokens": 67542761742,
+      "tokens": 67581518868,
       "share": 0.0003,
-      "percentile": 47.8
+      "percentile": 46.5
+    }
+  },
+  "kimi-k2.7-code": {
+    "label": "Kimi K2.7 Code",
+    "provider": "bailian-aliyun",
+    "contextWindow": 256000,
+    "price": {
+      "input": 6.8,
+      "output": 28.8
+    },
+    "modalities": [
+      "text"
+    ],
+    "toolCalling": true,
+    "reasoning": false,
+    "latency": "slow",
+    "quality": 27.4,
+    "scores": {
+      "overall": 27.4,
+      "coding": 27.4,
+      "reasoning": 27.4,
+      "math": 27.4,
+      "knowledge": 27.4,
+      "agentic": 27.4,
+      "longContext": 27.4,
+      "vision": 27.4,
+      "speed": 27.4
+    },
+    "evidence": {
+      "overall": 0,
+      "coding": 0,
+      "reasoning": 0,
+      "math": 0,
+      "knowledge": 0,
+      "agentic": 0,
+      "longContext": 0,
+      "vision": 0,
+      "speed": 0
+    },
+    "bestFor": [],
+    "weaknesses": [],
+    "sources": [
+      "https://artificialanalysis.ai/leaderboards/models"
+    ],
+    "checkedAt": "2026-11-18",
+    "crossChecks": {
+      "artificialAnalysis": {
+        "intelligenceIndex": null,
+        "priceIn": 0.95,
+        "priceOut": 4,
+        "ttft": 6.26718359879146,
+        "speed": 56.2397043659002,
+        "benchmarks": {
+          "automationbench-aa": 24.5,
+          "hle-diamond": 14.8,
+          "gdp-pdf": 11.2,
+          "terminalbench-4-0": 1,
+          "enterprise-ops-gym-aa": 40.2,
+          "mlcr-aa": 12.2,
+          "humanitys-last-exam": 35,
+          "artificial-analysis-long-context-reasoning": 79.3,
+          "scicode": 47.8,
+          "critpt": 10,
+          "terminalbench-hard": 44.7,
+          "terminalbench-2-1": 67.4,
+          "tau2-bench": 90.1,
+          "gpqa-diamond": 89.6,
+          "ifbench": 63.1,
+          "tau3-banking": 20.2
+        },
+        "rawScores": {
+          "aa-briefcase": 858.25,
+          "automationbench-aa": 0.24454304615216713,
+          "hle-diamond": 0.148,
+          "gdp-pdf": 0.112,
+          "terminalbench-4-0": 0.0101010101010101,
+          "enterprise-ops-gym-aa": 0.40226797970754996,
+          "gdpval-aa-normalized": 1045.88,
+          "mlcr-aa": 0.122222222222222,
+          "humanitys-last-exam": 0.35032437442076,
+          "artificial-analysis-long-context-reasoning": 0.793333333333333,
+          "scicode": 0.478009259259259,
+          "critpt": 0.1,
+          "terminalbench-hard": 0.446969696969697,
+          "terminalbench-2-1": 0.674157303370786,
+          "tau2-bench": 0.900584795321637,
+          "gpqa-diamond": 0.895959595959596,
+          "ifbench": 0.631292517006803,
+          "tau3-banking": 0.202061855670103
+        },
+        "contextTokens": 256000,
+        "reasoning": true,
+        "openWeights": true,
+        "cacheHitPrice": 0.19,
+        "creator": "Kimi",
+        "source": "https://artificialanalysis.ai/leaderboards/models"
+      },
+      "epoch": {
+        "eci": 151.2,
+        "date": "2026-06-12",
+        "board": "https://epoch.ai/eci"
+      }
+    },
+    "ranking": {
+      "status": "measured",
+      "composite": 47.3,
+      "low": 17.3,
+      "rank": 45,
+      "uncalibrated": 11,
+      "dims": {
+        "coding": {
+          "value": 49.3,
+          "evidence": 1
+        },
+        "reasoning": {
+          "value": 45.3,
+          "evidence": 1
+        },
+        "longContext": {
+          "value": 57.4,
+          "evidence": 1
+        },
+        "vision": {
+          "value": 0,
+          "evidence": 0
+        },
+        "speed": {
+          "value": 42.4,
+          "evidence": 1
+        },
+        "overall": {
+          "value": 47.3,
+          "evidence": 2
+        }
+      }
+    },
+    "usage": {
+      "source": "openrouter-top-weekly",
+      "rank": 116,
+      "tokens": 67581518868,
+      "share": 0.0003,
+      "percentile": 46.5
     }
   },
   "qwen3.7-plus-2026-05-26": {
@@ -4641,7 +4523,7 @@
       "status": "measured",
       "composite": 47,
       "low": 17,
-      "rank": 49,
+      "rank": 48,
       "uncalibrated": 13,
       "dims": {
         "coding": {
@@ -4774,7 +4656,7 @@
       "status": "measured",
       "composite": 43.7,
       "low": 13.7,
-      "rank": 55,
+      "rank": 54,
       "uncalibrated": 10,
       "dims": {
         "coding": {
@@ -4806,9 +4688,9 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 67,
-      "tokens": 262795005041,
+      "tokens": 262897280127,
       "share": 0.001,
-      "percentile": 56.5
+      "percentile": 55.8
     }
   },
   "qwen3.5-122b-a10b": {
@@ -4909,7 +4791,7 @@
       "status": "measured",
       "composite": 44.5,
       "low": 14.5,
-      "rank": 52,
+      "rank": 51,
       "uncalibrated": 10,
       "dims": {
         "coding": {
@@ -4941,9 +4823,9 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 233,
-      "tokens": 7899777935,
+      "tokens": 7904978312,
       "share": 0,
-      "percentile": 6.5
+      "percentile": 4.7
     }
   },
   "qwen3.5-397b-a17b": {
@@ -5041,7 +4923,7 @@
       "status": "measured",
       "composite": 43.5,
       "low": 13.5,
-      "rank": 56,
+      "rank": 55,
       "uncalibrated": 6,
       "dims": {
         "reasoning": {
@@ -5073,9 +4955,9 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 165,
-      "tokens": 26856503628,
+      "tokens": 26878242564,
       "share": 0.0001,
-      "percentile": 34.8
+      "percentile": 32.6
     }
   },
   "antdigital/Ling-3.1-flash": {
@@ -5145,7 +5027,7 @@
       "status": "measured",
       "composite": 51.9,
       "low": 21.9,
-      "rank": 42,
+      "rank": 41,
       "uncalibrated": 6,
       "dims": {
         "coding": {
@@ -5173,9 +5055,9 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 120,
-      "tokens": 64531100761,
+      "tokens": 64559352556,
       "share": 0.0002,
-      "percentile": 45.7
+      "percentile": 44.2
     }
   },
   "cmaas-glm-5.3": {
@@ -5541,12 +5423,119 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 232,
-      "tokens": 8219087479,
+      "tokens": 8221184675,
       "share": 0,
-      "percentile": 8.7
+      "percentile": 7
     }
   },
   "glm-5.3-prime": {
+    "label": "GLM-5.3 (Max)",
+    "provider": "bailian-aliyun",
+    "contextWindow": 1000000,
+    "price": {
+      "input": 10.1,
+      "output": 31.7
+    },
+    "modalities": [
+      "text"
+    ],
+    "toolCalling": true,
+    "reasoning": false,
+    "latency": "balanced",
+    "quality": 62.6,
+    "scores": {
+      "overall": 62.6,
+      "coding": 62.6,
+      "reasoning": 62.6,
+      "math": 62.6,
+      "knowledge": 62.6,
+      "agentic": 62.6,
+      "longContext": 62.6,
+      "vision": 62.6,
+      "speed": 62.6
+    },
+    "evidence": {
+      "overall": 0,
+      "coding": 0,
+      "reasoning": 0,
+      "math": 0,
+      "knowledge": 0,
+      "agentic": 0,
+      "longContext": 0,
+      "vision": 0,
+      "speed": 0
+    },
+    "bestFor": [],
+    "weaknesses": [],
+    "sources": [
+      "https://artificialanalysis.ai/leaderboards/models"
+    ],
+    "checkedAt": "2026-11-18",
+    "crossChecks": {
+      "artificialAnalysis": {
+        "intelligenceIndex": null,
+        "priceIn": 1.4,
+        "priceOut": 4.4,
+        "ttft": null,
+        "speed": null,
+        "benchmarks": {
+          "gpqa": 91.7,
+          "hle": 42.3,
+          "terminalBench21": 83.9,
+          "terminalBench40": 41.9,
+          "terminalBenchScience": 9.5,
+          "scicode": 59,
+          "itBenchSre": 46.1,
+          "tauBanking": 50.3,
+          "critpt": 19.1,
+          "analystAgent": 38.8,
+          "automationBenchPartialScore": 62.2,
+          "frontierCode": 40.1,
+          "frontierCode20": 21.6,
+          "healthbench": 54.5,
+          "omniscienceAccuracy": 32.3
+        },
+        "source": "https://artificialanalysis.ai/leaderboards/models"
+      }
+    },
+    "ranking": {
+      "status": "measured",
+      "composite": 52.1,
+      "low": 22.1,
+      "rank": 39,
+      "uncalibrated": 11,
+      "dims": {
+        "coding": {
+          "value": 53,
+          "evidence": 1
+        },
+        "reasoning": {
+          "value": 51.1,
+          "evidence": 1
+        },
+        "longContext": {
+          "value": 99,
+          "evidence": 0
+        },
+        "vision": {
+          "value": 0,
+          "evidence": 0
+        },
+        "overall": {
+          "value": 52.1,
+          "evidence": 2
+        }
+      }
+    },
+    "usage": {
+      "source": "openrouter-top-weekly",
+      "rank": 168,
+      "tokens": 25979882645,
+      "share": 0.0001,
+      "percentile": 30.2
+    }
+  },
+  "ZHIPU/GLM-5.3-FlashX": {
     "label": "GLM-5.3 (Max)",
     "provider": "bailian-aliyun",
     "contextWindow": 1000000,
@@ -5647,117 +5636,10 @@
     },
     "usage": {
       "source": "openrouter-top-weekly",
-      "rank": 168,
-      "tokens": 25956827856,
-      "share": 0.0001,
-      "percentile": 32.6
-    }
-  },
-  "ZHIPU/GLM-5.3-FlashX": {
-    "label": "GLM-5.3 (Max)",
-    "provider": "bailian-aliyun",
-    "contextWindow": 1000000,
-    "price": {
-      "input": 10.1,
-      "output": 31.7
-    },
-    "modalities": [
-      "text"
-    ],
-    "toolCalling": true,
-    "reasoning": false,
-    "latency": "balanced",
-    "quality": 62.6,
-    "scores": {
-      "overall": 62.6,
-      "coding": 62.6,
-      "reasoning": 62.6,
-      "math": 62.6,
-      "knowledge": 62.6,
-      "agentic": 62.6,
-      "longContext": 62.6,
-      "vision": 62.6,
-      "speed": 62.6
-    },
-    "evidence": {
-      "overall": 0,
-      "coding": 0,
-      "reasoning": 0,
-      "math": 0,
-      "knowledge": 0,
-      "agentic": 0,
-      "longContext": 0,
-      "vision": 0,
-      "speed": 0
-    },
-    "bestFor": [],
-    "weaknesses": [],
-    "sources": [
-      "https://artificialanalysis.ai/leaderboards/models"
-    ],
-    "checkedAt": "2026-11-18",
-    "crossChecks": {
-      "artificialAnalysis": {
-        "intelligenceIndex": null,
-        "priceIn": 1.4,
-        "priceOut": 4.4,
-        "ttft": null,
-        "speed": null,
-        "benchmarks": {
-          "gpqa": 91.7,
-          "hle": 42.3,
-          "terminalBench21": 83.9,
-          "terminalBench40": 41.9,
-          "terminalBenchScience": 9.5,
-          "scicode": 59,
-          "itBenchSre": 46.1,
-          "tauBanking": 50.3,
-          "critpt": 19.1,
-          "analystAgent": 38.8,
-          "automationBenchPartialScore": 62.2,
-          "frontierCode": 40.1,
-          "frontierCode20": 21.6,
-          "healthbench": 54.5,
-          "omniscienceAccuracy": 32.3
-        },
-        "source": "https://artificialanalysis.ai/leaderboards/models"
-      }
-    },
-    "ranking": {
-      "status": "measured",
-      "composite": 52.1,
-      "low": 22.1,
-      "rank": 41,
-      "uncalibrated": 11,
-      "dims": {
-        "coding": {
-          "value": 53,
-          "evidence": 1
-        },
-        "reasoning": {
-          "value": 51.1,
-          "evidence": 1
-        },
-        "longContext": {
-          "value": 99,
-          "evidence": 0
-        },
-        "vision": {
-          "value": 0,
-          "evidence": 0
-        },
-        "overall": {
-          "value": 52.1,
-          "evidence": 2
-        }
-      }
-    },
-    "usage": {
-      "source": "openrouter-top-weekly",
       "rank": 84,
-      "tokens": 144124263538,
+      "tokens": 144240680658,
       "share": 0.0005,
-      "percentile": 52.2
+      "percentile": 51.2
     }
   },
   "vanchin/deepseek-v4.1-flash": {
@@ -5881,9 +5763,9 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 3,
-      "tokens": 16115853208795,
-      "share": 0.0608,
-      "percentile": 97.8
+      "tokens": 16121539049105,
+      "share": 0.0607,
+      "percentile": 97.7
     }
   },
   "vanchin/deepseek-v4-pro": {
@@ -5962,7 +5844,7 @@
       "status": "measured",
       "composite": 50.5,
       "low": 20.5,
-      "rank": 44,
+      "rank": 43,
       "uncalibrated": 9,
       "dims": {
         "coding": {
@@ -5990,9 +5872,9 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 49,
-      "tokens": 568493611399,
+      "tokens": 568717816876,
       "share": 0.0021,
-      "percentile": 65.2
+      "percentile": 65.1
     }
   },
   "kimi/kimi-k2.7-code-highspeed": {
@@ -6100,7 +5982,7 @@
       "status": "measured",
       "composite": 47.3,
       "low": 17.3,
-      "rank": 48,
+      "rank": 47,
       "uncalibrated": 11,
       "dims": {
         "coding": {
@@ -6210,10 +6092,10 @@
     },
     "usage": {
       "source": "openrouter-top-weekly",
-      "rank": 294,
-      "tokens": 2761990736,
-      "share": 0,
-      "percentile": 0
+      "rank": 144,
+      "tokens": 39498332404,
+      "share": 0.0001,
+      "percentile": 39.5
     }
   },
   "glm-5": {
@@ -6303,7 +6185,7 @@
       "status": "measured",
       "composite": 52.1,
       "low": 22.1,
-      "rank": 39,
+      "rank": 38,
       "uncalibrated": 11,
       "dims": {
         "coding": {
@@ -6330,10 +6212,10 @@
     },
     "usage": {
       "source": "openrouter-top-weekly",
-      "rank": 294,
-      "tokens": 2761990736,
-      "share": 0,
-      "percentile": 0
+      "rank": 144,
+      "tokens": 39498332404,
+      "share": 0.0001,
+      "percentile": 39.5
     }
   },
   "siliconflow/deepseek-v3-0324": {
@@ -6418,7 +6300,7 @@
       "status": "measured",
       "composite": 51.7,
       "low": 21.7,
-      "rank": 43,
+      "rank": 42,
       "uncalibrated": 9,
       "dims": {
         "coding": {
@@ -6524,7 +6406,7 @@
       "status": "measured",
       "composite": 46.1,
       "low": 16.1,
-      "rank": 51,
+      "rank": 50,
       "uncalibrated": 8,
       "dims": {
         "coding": {
@@ -6548,9 +6430,9 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 200,
-      "tokens": 13799117150,
+      "tokens": 13807882583,
       "share": 0.0001,
-      "percentile": 23.9
+      "percentile": 20.9
     }
   },
   "kimi/kimi-k3": {
@@ -6685,9 +6567,9 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 31,
-      "tokens": 1207347484783,
-      "share": 0.0046,
-      "percentile": 78.3
+      "tokens": 1207748013281,
+      "share": 0.0045,
+      "percentile": 76.7
     }
   },
   "zhipu/glm-5.2": {
@@ -6809,9 +6691,9 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 35,
-      "tokens": 960172231451,
+      "tokens": 960749561854,
       "share": 0.0036,
-      "percentile": 76.1
+      "percentile": 74.4
     }
   },
   "zhipu/glm-5.1": {
@@ -6899,7 +6781,7 @@
       "status": "measured",
       "composite": 46.3,
       "low": 24.3,
-      "rank": 36,
+      "rank": 35,
       "uncalibrated": 9,
       "dims": {
         "coding": {
@@ -6927,9 +6809,9 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 178,
-      "tokens": 21872657830,
+      "tokens": 21889515803,
       "share": 0.0001,
-      "percentile": 26.1
+      "percentile": 23.3
     }
   },
   "kimi/kimi-k2.6": {
@@ -7060,9 +6942,9 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 98,
-      "tokens": 98238952714,
+      "tokens": 98264634116,
       "share": 0.0004,
-      "percentile": 50
+      "percentile": 48.8
     }
   },
   "qwen3.6-27b": {
@@ -7151,7 +7033,7 @@
       "status": "measured",
       "composite": 46.2,
       "low": 16.2,
-      "rank": 50,
+      "rank": 49,
       "uncalibrated": 8,
       "dims": {
         "coding": {
@@ -7175,9 +7057,9 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 207,
-      "tokens": 12189869831,
+      "tokens": 12194129180,
       "share": 0,
-      "percentile": 17.4
+      "percentile": 16.3
     }
   },
   "kimi-k2.6": {
@@ -7308,9 +7190,9 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 98,
-      "tokens": 98238952714,
+      "tokens": 98264634116,
       "share": 0.0004,
-      "percentile": 50
+      "percentile": 48.8
     }
   },
   "glm-5.1": {
@@ -7398,7 +7280,7 @@
       "status": "measured",
       "composite": 46.3,
       "low": 24.3,
-      "rank": 35,
+      "rank": 34,
       "uncalibrated": 9,
       "dims": {
         "coding": {
@@ -7426,448 +7308,12 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 178,
-      "tokens": 21872657830,
+      "tokens": 21889515803,
       "share": 0.0001,
-      "percentile": 26.1
+      "percentile": 23.3
     }
   },
   "vanchin/deepseek-v3.1-terminus": {
-    "label": "DeepSeek V3.1 Terminus (Reasoning)",
-    "provider": "bailian-aliyun",
-    "contextWindow": 0,
-    "price": {
-      "input": 11.8,
-      "output": 19.8
-    },
-    "modalities": [
-      "text"
-    ],
-    "toolCalling": true,
-    "reasoning": false,
-    "latency": "slow",
-    "quality": 66.8,
-    "scores": {
-      "overall": 66.8,
-      "coding": 66.8,
-      "reasoning": 66.8,
-      "math": 66.8,
-      "knowledge": 66.8,
-      "agentic": 66.8,
-      "longContext": 66.8,
-      "vision": 66.8,
-      "speed": 66.8
-    },
-    "evidence": {
-      "overall": 0,
-      "coding": 0,
-      "reasoning": 0,
-      "math": 0,
-      "knowledge": 0,
-      "agentic": 0,
-      "longContext": 0,
-      "vision": 0,
-      "speed": 0
-    },
-    "bestFor": [],
-    "weaknesses": [],
-    "sources": [
-      "https://artificialanalysis.ai/leaderboards/models"
-    ],
-    "checkedAt": "2026-11-18",
-    "crossChecks": {
-      "artificialAnalysis": {
-        "intelligenceIndex": null,
-        "priceIn": 1.635,
-        "priceOut": 2.75,
-        "ttft": null,
-        "speed": null,
-        "benchmarks": {
-          "gpqa": 79.2,
-          "hle": 16.4,
-          "terminalbenchHard": 30.3,
-          "terminalBench21": 44.9,
-          "terminalBench40": 0,
-          "terminalBenchScience": 0,
-          "livecodebench": 79.8,
-          "scicode": 38,
-          "tau2": 37.1,
-          "itBenchSre": 0,
-          "tauBanking": 21,
-          "mmmuPro": 0,
-          "aime25": 89.7,
-          "critpt": 1.7,
-          "analystAgent": 0,
-          "automationBenchPartialScore": 2.7,
-          "frontierCode": 0,
-          "frontierCode20": 0,
-          "ifbench": 57,
-          "mkaClimbWsr": 0,
-          "vialsScore": 0,
-          "healthbench": 0
-        },
-        "source": "https://artificialanalysis.ai/leaderboards/models"
-      }
-    },
-    "ranking": {
-      "status": "measured",
-      "composite": 44.2,
-      "low": 14.2,
-      "rank": 54,
-      "uncalibrated": 9,
-      "dims": {
-        "coding": {
-          "value": 46,
-          "evidence": 1
-        },
-        "reasoning": {
-          "value": 42.4,
-          "evidence": 1
-        },
-        "vision": {
-          "value": 0,
-          "evidence": 0
-        },
-        "overall": {
-          "value": 44.2,
-          "evidence": 2
-        }
-      }
-    },
-    "usage": {
-      "source": "openrouter-top-weekly",
-      "rank": 261,
-      "tokens": 4975958203,
-      "share": 0,
-      "percentile": 2.2
-    }
-  },
-  "qwen3.6-plus-2026-04-02": {
-    "label": "Qwen3.6 Plus",
-    "provider": "bailian-aliyun",
-    "contextWindow": 0,
-    "price": {
-      "input": 3.6,
-      "output": 21.6
-    },
-    "modalities": [
-      "text"
-    ],
-    "toolCalling": true,
-    "reasoning": false,
-    "latency": "slow",
-    "quality": 70.6,
-    "scores": {
-      "overall": 70.6,
-      "coding": 70.6,
-      "reasoning": 70.6,
-      "math": 70.6,
-      "knowledge": 70.6,
-      "agentic": 70.6,
-      "longContext": 70.6,
-      "vision": 70.6,
-      "speed": 70.6
-    },
-    "evidence": {
-      "overall": 0,
-      "coding": 0,
-      "reasoning": 0,
-      "math": 0,
-      "knowledge": 0,
-      "agentic": 0,
-      "longContext": 0,
-      "vision": 0,
-      "speed": 0
-    },
-    "bestFor": [],
-    "weaknesses": [],
-    "sources": [
-      "https://artificialanalysis.ai/leaderboards/models"
-    ],
-    "checkedAt": "2026-11-18",
-    "crossChecks": {
-      "artificialAnalysis": {
-        "intelligenceIndex": null,
-        "priceIn": 0.5,
-        "priceOut": 3,
-        "ttft": null,
-        "speed": null,
-        "benchmarks": {
-          "gpqa": 88.2,
-          "hle": 27.8,
-          "terminalbenchHard": 43.9,
-          "terminalBench21": 61.4,
-          "terminalBench40": 0,
-          "terminalBenchScience": 0,
-          "livecodebench": 0,
-          "scicode": 0,
-          "tau2": 97.7,
-          "itBenchSre": 0,
-          "tauBanking": 20.8,
-          "mmmuPro": 78,
-          "aime25": 0,
-          "critpt": 2.9,
-          "analystAgent": 0,
-          "frontierCode": 0,
-          "frontierCode20": 0,
-          "ifbench": 75.2,
-          "mkaClimbWsr": 0,
-          "vialsScore": 0,
-          "healthbench": 0
-        },
-        "source": "https://artificialanalysis.ai/leaderboards/models"
-      },
-      "epoch": {
-        "eci": 148.9,
-        "date": "2026-03-31",
-        "board": "https://epoch.ai/eci"
-      }
-    },
-    "ranking": {
-      "status": "measured",
-      "composite": 46.2,
-      "low": 8.2,
-      "rank": 58,
-      "uncalibrated": 7,
-      "dims": {
-        "reasoning": {
-          "value": 46.2,
-          "evidence": 1
-        },
-        "vision": {
-          "value": 0,
-          "evidence": 0
-        },
-        "overall": {
-          "value": 46.2,
-          "evidence": 1
-        }
-      }
-    }
-  },
-  "qwen3.6-plus": {
-    "label": "Qwen3.6 Plus",
-    "provider": "bailian-aliyun",
-    "contextWindow": 0,
-    "price": {
-      "input": 3.6,
-      "output": 21.6
-    },
-    "modalities": [
-      "text"
-    ],
-    "toolCalling": true,
-    "reasoning": false,
-    "latency": "slow",
-    "quality": 70.6,
-    "scores": {
-      "overall": 70.6,
-      "coding": 70.6,
-      "reasoning": 70.6,
-      "math": 70.6,
-      "knowledge": 70.6,
-      "agentic": 70.6,
-      "longContext": 70.6,
-      "vision": 70.6,
-      "speed": 70.6
-    },
-    "evidence": {
-      "overall": 0,
-      "coding": 0,
-      "reasoning": 0,
-      "math": 0,
-      "knowledge": 0,
-      "agentic": 0,
-      "longContext": 0,
-      "vision": 0,
-      "speed": 0
-    },
-    "bestFor": [],
-    "weaknesses": [],
-    "sources": [
-      "https://artificialanalysis.ai/leaderboards/models"
-    ],
-    "checkedAt": "2026-11-18",
-    "crossChecks": {
-      "artificialAnalysis": {
-        "intelligenceIndex": null,
-        "priceIn": 0.5,
-        "priceOut": 3,
-        "ttft": null,
-        "speed": null,
-        "benchmarks": {
-          "gpqa": 88.2,
-          "hle": 27.8,
-          "terminalbenchHard": 43.9,
-          "terminalBench21": 61.4,
-          "terminalBench40": 0,
-          "terminalBenchScience": 0,
-          "livecodebench": 0,
-          "scicode": 0,
-          "tau2": 97.7,
-          "itBenchSre": 0,
-          "tauBanking": 20.8,
-          "mmmuPro": 78,
-          "aime25": 0,
-          "critpt": 2.9,
-          "analystAgent": 0,
-          "frontierCode": 0,
-          "frontierCode20": 0,
-          "ifbench": 75.2,
-          "mkaClimbWsr": 0,
-          "vialsScore": 0,
-          "healthbench": 0
-        },
-        "source": "https://artificialanalysis.ai/leaderboards/models"
-      },
-      "epoch": {
-        "eci": 148.9,
-        "date": "2026-03-31",
-        "board": "https://epoch.ai/eci"
-      }
-    },
-    "ranking": {
-      "status": "measured",
-      "composite": 46.2,
-      "low": 8.2,
-      "rank": 57,
-      "uncalibrated": 7,
-      "dims": {
-        "reasoning": {
-          "value": 46.2,
-          "evidence": 1
-        },
-        "vision": {
-          "value": 0,
-          "evidence": 0
-        },
-        "overall": {
-          "value": 46.2,
-          "evidence": 1
-        }
-      }
-    },
-    "usage": {
-      "source": "openrouter-top-weekly",
-      "rank": 221,
-      "tokens": 10363955145,
-      "share": 0,
-      "percentile": 13
-    }
-  },
-  "minimax/minimax-m2.7": {
-    "label": "MiniMax-M2.7",
-    "provider": "bailian-aliyun",
-    "contextWindow": 0,
-    "price": {
-      "input": 2.2,
-      "output": 8.6
-    },
-    "modalities": [
-      "text"
-    ],
-    "toolCalling": true,
-    "reasoning": false,
-    "latency": "slow",
-    "quality": 66.2,
-    "scores": {
-      "overall": 66.2,
-      "coding": 66.2,
-      "reasoning": 66.2,
-      "math": 66.2,
-      "knowledge": 66.2,
-      "agentic": 66.2,
-      "longContext": 66.2,
-      "vision": 66.2,
-      "speed": 66.2
-    },
-    "evidence": {
-      "overall": 0,
-      "coding": 0,
-      "reasoning": 0,
-      "math": 0,
-      "knowledge": 0,
-      "agentic": 0,
-      "longContext": 0,
-      "vision": 0,
-      "speed": 0
-    },
-    "bestFor": [],
-    "weaknesses": [],
-    "sources": [
-      "https://artificialanalysis.ai/leaderboards/models"
-    ],
-    "checkedAt": "2026-11-18",
-    "crossChecks": {
-      "artificialAnalysis": {
-        "intelligenceIndex": null,
-        "priceIn": 0.3,
-        "priceOut": 1.2,
-        "ttft": null,
-        "speed": null,
-        "benchmarks": {
-          "gpqa": 87.4,
-          "hle": 29.6,
-          "terminalbenchHard": 39.4,
-          "terminalBench21": 55.4,
-          "scicode": 50.1,
-          "tau2": 84.8,
-          "itBenchSre": 26.5,
-          "tauBanking": 9.9,
-          "critpt": 0.6,
-          "analystAgent": 11.3,
-          "automationBenchPartialScore": 4.4,
-          "ifbench": 75.7
-        },
-        "source": "https://artificialanalysis.ai/leaderboards/models"
-      },
-      "llmLeaderboard": {
-        "ttftSeconds": null,
-        "tokensPerSecond": null,
-        "provider": null,
-        "benchmarks": {
-          "gdp-pdf-aa": 6
-        },
-        "board": "https://llmleaderboard.com"
-      }
-    },
-    "ranking": {
-      "status": "measured",
-      "composite": 46.7,
-      "low": 24.7,
-      "rank": 33,
-      "uncalibrated": 8,
-      "dims": {
-        "coding": {
-          "value": 50,
-          "evidence": 1
-        },
-        "reasoning": {
-          "value": 46.8,
-          "evidence": 1
-        },
-        "knowledge": {
-          "value": 41.2,
-          "evidence": 1
-        },
-        "vision": {
-          "value": 0,
-          "evidence": 0
-        },
-        "overall": {
-          "value": 46.7,
-          "evidence": 3
-        }
-      }
-    },
-    "usage": {
-      "source": "openrouter-top-weekly",
-      "rank": 154,
-      "tokens": 31807609234,
-      "share": 0.0001,
-      "percentile": 37
-    }
-  },
-  "siliconflow/deepseek-v3.1-terminus": {
     "label": "DeepSeek V3.1 Terminus (Reasoning)",
     "provider": "bailian-aliyun",
     "contextWindow": 0,
@@ -7971,10 +7417,446 @@
     },
     "usage": {
       "source": "openrouter-top-weekly",
-      "rank": 261,
-      "tokens": 4975958203,
+      "rank": 260,
+      "tokens": 4977627927,
       "share": 0,
-      "percentile": 2.2
+      "percentile": 0
+    }
+  },
+  "qwen3.6-plus-2026-04-02": {
+    "label": "Qwen3.6 Plus",
+    "provider": "bailian-aliyun",
+    "contextWindow": 0,
+    "price": {
+      "input": 3.6,
+      "output": 21.6
+    },
+    "modalities": [
+      "text"
+    ],
+    "toolCalling": true,
+    "reasoning": false,
+    "latency": "slow",
+    "quality": 70.6,
+    "scores": {
+      "overall": 70.6,
+      "coding": 70.6,
+      "reasoning": 70.6,
+      "math": 70.6,
+      "knowledge": 70.6,
+      "agentic": 70.6,
+      "longContext": 70.6,
+      "vision": 70.6,
+      "speed": 70.6
+    },
+    "evidence": {
+      "overall": 0,
+      "coding": 0,
+      "reasoning": 0,
+      "math": 0,
+      "knowledge": 0,
+      "agentic": 0,
+      "longContext": 0,
+      "vision": 0,
+      "speed": 0
+    },
+    "bestFor": [],
+    "weaknesses": [],
+    "sources": [
+      "https://artificialanalysis.ai/leaderboards/models"
+    ],
+    "checkedAt": "2026-11-18",
+    "crossChecks": {
+      "artificialAnalysis": {
+        "intelligenceIndex": null,
+        "priceIn": 0.5,
+        "priceOut": 3,
+        "ttft": null,
+        "speed": null,
+        "benchmarks": {
+          "gpqa": 88.2,
+          "hle": 27.8,
+          "terminalbenchHard": 43.9,
+          "terminalBench21": 61.4,
+          "terminalBench40": 0,
+          "terminalBenchScience": 0,
+          "livecodebench": 0,
+          "scicode": 0,
+          "tau2": 97.7,
+          "itBenchSre": 0,
+          "tauBanking": 20.8,
+          "mmmuPro": 78,
+          "aime25": 0,
+          "critpt": 2.9,
+          "analystAgent": 0,
+          "frontierCode": 0,
+          "frontierCode20": 0,
+          "ifbench": 75.2,
+          "mkaClimbWsr": 0,
+          "vialsScore": 0,
+          "healthbench": 0
+        },
+        "source": "https://artificialanalysis.ai/leaderboards/models"
+      },
+      "epoch": {
+        "eci": 148.9,
+        "date": "2026-03-31",
+        "board": "https://epoch.ai/eci"
+      }
+    },
+    "ranking": {
+      "status": "measured",
+      "composite": 46.2,
+      "low": 8.2,
+      "rank": 57,
+      "uncalibrated": 7,
+      "dims": {
+        "reasoning": {
+          "value": 46.2,
+          "evidence": 1
+        },
+        "vision": {
+          "value": 0,
+          "evidence": 0
+        },
+        "overall": {
+          "value": 46.2,
+          "evidence": 1
+        }
+      }
+    }
+  },
+  "qwen3.6-plus": {
+    "label": "Qwen3.6 Plus",
+    "provider": "bailian-aliyun",
+    "contextWindow": 0,
+    "price": {
+      "input": 3.6,
+      "output": 21.6
+    },
+    "modalities": [
+      "text"
+    ],
+    "toolCalling": true,
+    "reasoning": false,
+    "latency": "slow",
+    "quality": 70.6,
+    "scores": {
+      "overall": 70.6,
+      "coding": 70.6,
+      "reasoning": 70.6,
+      "math": 70.6,
+      "knowledge": 70.6,
+      "agentic": 70.6,
+      "longContext": 70.6,
+      "vision": 70.6,
+      "speed": 70.6
+    },
+    "evidence": {
+      "overall": 0,
+      "coding": 0,
+      "reasoning": 0,
+      "math": 0,
+      "knowledge": 0,
+      "agentic": 0,
+      "longContext": 0,
+      "vision": 0,
+      "speed": 0
+    },
+    "bestFor": [],
+    "weaknesses": [],
+    "sources": [
+      "https://artificialanalysis.ai/leaderboards/models"
+    ],
+    "checkedAt": "2026-11-18",
+    "crossChecks": {
+      "artificialAnalysis": {
+        "intelligenceIndex": null,
+        "priceIn": 0.5,
+        "priceOut": 3,
+        "ttft": null,
+        "speed": null,
+        "benchmarks": {
+          "gpqa": 88.2,
+          "hle": 27.8,
+          "terminalbenchHard": 43.9,
+          "terminalBench21": 61.4,
+          "terminalBench40": 0,
+          "terminalBenchScience": 0,
+          "livecodebench": 0,
+          "scicode": 0,
+          "tau2": 97.7,
+          "itBenchSre": 0,
+          "tauBanking": 20.8,
+          "mmmuPro": 78,
+          "aime25": 0,
+          "critpt": 2.9,
+          "analystAgent": 0,
+          "frontierCode": 0,
+          "frontierCode20": 0,
+          "ifbench": 75.2,
+          "mkaClimbWsr": 0,
+          "vialsScore": 0,
+          "healthbench": 0
+        },
+        "source": "https://artificialanalysis.ai/leaderboards/models"
+      },
+      "epoch": {
+        "eci": 148.9,
+        "date": "2026-03-31",
+        "board": "https://epoch.ai/eci"
+      }
+    },
+    "ranking": {
+      "status": "measured",
+      "composite": 46.2,
+      "low": 8.2,
+      "rank": 56,
+      "uncalibrated": 7,
+      "dims": {
+        "reasoning": {
+          "value": 46.2,
+          "evidence": 1
+        },
+        "vision": {
+          "value": 0,
+          "evidence": 0
+        },
+        "overall": {
+          "value": 46.2,
+          "evidence": 1
+        }
+      }
+    },
+    "usage": {
+      "source": "openrouter-top-weekly",
+      "rank": 221,
+      "tokens": 10366245794,
+      "share": 0,
+      "percentile": 11.6
+    }
+  },
+  "minimax/minimax-m2.7": {
+    "label": "MiniMax-M2.7",
+    "provider": "bailian-aliyun",
+    "contextWindow": 0,
+    "price": {
+      "input": 2.2,
+      "output": 8.6
+    },
+    "modalities": [
+      "text"
+    ],
+    "toolCalling": true,
+    "reasoning": false,
+    "latency": "slow",
+    "quality": 66.2,
+    "scores": {
+      "overall": 66.2,
+      "coding": 66.2,
+      "reasoning": 66.2,
+      "math": 66.2,
+      "knowledge": 66.2,
+      "agentic": 66.2,
+      "longContext": 66.2,
+      "vision": 66.2,
+      "speed": 66.2
+    },
+    "evidence": {
+      "overall": 0,
+      "coding": 0,
+      "reasoning": 0,
+      "math": 0,
+      "knowledge": 0,
+      "agentic": 0,
+      "longContext": 0,
+      "vision": 0,
+      "speed": 0
+    },
+    "bestFor": [],
+    "weaknesses": [],
+    "sources": [
+      "https://artificialanalysis.ai/leaderboards/models"
+    ],
+    "checkedAt": "2026-11-18",
+    "crossChecks": {
+      "artificialAnalysis": {
+        "intelligenceIndex": null,
+        "priceIn": 0.3,
+        "priceOut": 1.2,
+        "ttft": null,
+        "speed": null,
+        "benchmarks": {
+          "gpqa": 87.4,
+          "hle": 29.6,
+          "terminalbenchHard": 39.4,
+          "terminalBench21": 55.4,
+          "scicode": 50.1,
+          "tau2": 84.8,
+          "itBenchSre": 26.5,
+          "tauBanking": 9.9,
+          "critpt": 0.6,
+          "analystAgent": 11.3,
+          "automationBenchPartialScore": 4.4,
+          "ifbench": 75.7
+        },
+        "source": "https://artificialanalysis.ai/leaderboards/models"
+      },
+      "llmLeaderboard": {
+        "ttftSeconds": null,
+        "tokensPerSecond": null,
+        "provider": null,
+        "benchmarks": {
+          "gdp-pdf-aa": 6
+        },
+        "board": "https://llmleaderboard.com"
+      }
+    },
+    "ranking": {
+      "status": "measured",
+      "composite": 46.7,
+      "low": 24.7,
+      "rank": 32,
+      "uncalibrated": 8,
+      "dims": {
+        "coding": {
+          "value": 50,
+          "evidence": 1
+        },
+        "reasoning": {
+          "value": 46.8,
+          "evidence": 1
+        },
+        "knowledge": {
+          "value": 41.2,
+          "evidence": 1
+        },
+        "vision": {
+          "value": 0,
+          "evidence": 0
+        },
+        "overall": {
+          "value": 46.7,
+          "evidence": 3
+        }
+      }
+    },
+    "usage": {
+      "source": "openrouter-top-weekly",
+      "rank": 154,
+      "tokens": 31812220294,
+      "share": 0.0001,
+      "percentile": 34.9
+    }
+  },
+  "siliconflow/deepseek-v3.1-terminus": {
+    "label": "DeepSeek V3.1 Terminus (Reasoning)",
+    "provider": "bailian-aliyun",
+    "contextWindow": 0,
+    "price": {
+      "input": 11.8,
+      "output": 19.8
+    },
+    "modalities": [
+      "text"
+    ],
+    "toolCalling": true,
+    "reasoning": false,
+    "latency": "slow",
+    "quality": 66.8,
+    "scores": {
+      "overall": 66.8,
+      "coding": 66.8,
+      "reasoning": 66.8,
+      "math": 66.8,
+      "knowledge": 66.8,
+      "agentic": 66.8,
+      "longContext": 66.8,
+      "vision": 66.8,
+      "speed": 66.8
+    },
+    "evidence": {
+      "overall": 0,
+      "coding": 0,
+      "reasoning": 0,
+      "math": 0,
+      "knowledge": 0,
+      "agentic": 0,
+      "longContext": 0,
+      "vision": 0,
+      "speed": 0
+    },
+    "bestFor": [],
+    "weaknesses": [],
+    "sources": [
+      "https://artificialanalysis.ai/leaderboards/models"
+    ],
+    "checkedAt": "2026-11-18",
+    "crossChecks": {
+      "artificialAnalysis": {
+        "intelligenceIndex": null,
+        "priceIn": 1.635,
+        "priceOut": 2.75,
+        "ttft": null,
+        "speed": null,
+        "benchmarks": {
+          "gpqa": 79.2,
+          "hle": 16.4,
+          "terminalbenchHard": 30.3,
+          "terminalBench21": 44.9,
+          "terminalBench40": 0,
+          "terminalBenchScience": 0,
+          "livecodebench": 79.8,
+          "scicode": 38,
+          "tau2": 37.1,
+          "itBenchSre": 0,
+          "tauBanking": 21,
+          "mmmuPro": 0,
+          "aime25": 89.7,
+          "critpt": 1.7,
+          "analystAgent": 0,
+          "automationBenchPartialScore": 2.7,
+          "frontierCode": 0,
+          "frontierCode20": 0,
+          "ifbench": 57,
+          "mkaClimbWsr": 0,
+          "vialsScore": 0,
+          "healthbench": 0
+        },
+        "source": "https://artificialanalysis.ai/leaderboards/models"
+      }
+    },
+    "ranking": {
+      "status": "measured",
+      "composite": 44.2,
+      "low": 14.2,
+      "rank": 52,
+      "uncalibrated": 9,
+      "dims": {
+        "coding": {
+          "value": 46,
+          "evidence": 1
+        },
+        "reasoning": {
+          "value": 42.4,
+          "evidence": 1
+        },
+        "vision": {
+          "value": 0,
+          "evidence": 0
+        },
+        "overall": {
+          "value": 44.2,
+          "evidence": 2
+        }
+      }
+    },
+    "usage": {
+      "source": "openrouter-top-weekly",
+      "rank": 260,
+      "tokens": 4977627927,
+      "share": 0,
+      "percentile": 0
     }
   },
   "vanchin/deepseek-v3": {
@@ -8062,7 +7944,7 @@
       "status": "measured",
       "composite": 45.2,
       "low": 7.2,
-      "rank": 60,
+      "rank": 59,
       "uncalibrated": 8,
       "dims": {
         "reasoning": {
@@ -8145,7 +8027,7 @@
       "status": "measured",
       "composite": 43.8,
       "low": 5.8,
-      "rank": 64,
+      "rank": 63,
       "uncalibrated": 5,
       "dims": {
         "reasoning": {
@@ -8248,15 +8130,15 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 146,
-      "tokens": 34780035229,
+      "tokens": 34781224645,
       "share": 0.0001,
-      "percentile": 39.1
+      "percentile": 37.2
     },
     "ranking": {
       "status": "measured",
       "composite": 44,
       "low": 6,
-      "rank": 63,
+      "rank": 62,
       "uncalibrated": 7,
       "dims": {
         "reasoning": {
@@ -8354,15 +8236,15 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 202,
-      "tokens": 13408460224,
+      "tokens": 13410197824,
       "share": 0.0001,
-      "percentile": 21.7
+      "percentile": 18.6
     },
     "ranking": {
       "status": "measured",
       "composite": 44.9,
       "low": 6.9,
-      "rank": 61,
+      "rank": 60,
       "uncalibrated": 7,
       "dims": {
         "reasoning": {
@@ -8447,7 +8329,7 @@
       "status": "measured",
       "composite": 44.7,
       "low": 6.7,
-      "rank": 62,
+      "rank": 61,
       "uncalibrated": 7,
       "dims": {
         "reasoning": {
@@ -8529,15 +8411,15 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 241,
-      "tokens": 6953129895,
+      "tokens": 6953439838,
       "share": 0,
-      "percentile": 4.3
+      "percentile": 2.3
     },
     "ranking": {
       "status": "measured",
       "composite": 43.8,
       "low": 5.8,
-      "rank": 65,
+      "rank": 64,
       "uncalibrated": 5,
       "dims": {
         "reasoning": {
@@ -8648,15 +8530,15 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 172,
-      "tokens": 24658837955,
+      "tokens": 24669595917,
       "share": 0.0001,
-      "percentile": 28.3
+      "percentile": 25.6
     },
     "ranking": {
       "status": "measured",
       "composite": 53,
       "low": 23,
-      "rank": 38,
+      "rank": 37,
       "uncalibrated": 7,
       "dims": {
         "reasoning": {
@@ -8762,15 +8644,15 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 62,
-      "tokens": 309806720860,
+      "tokens": 309933964145,
       "share": 0.0012,
-      "percentile": 60.9
+      "percentile": 60.5
     },
     "ranking": {
       "status": "measured",
       "composite": 45.2,
       "low": 7.2,
-      "rank": 59,
+      "rank": 58,
       "uncalibrated": 8,
       "dims": {
         "reasoning": {

@@ -428,3 +428,19 @@ test('one pool floor is derived for the run, not re-derived per tier', () => {
   assert.equal(result.floorPlan.sample, candidates.length, 'the plan saw the whole pool')
   assert.equal(result.ranking.floorPlan.floor, result.floorPlan.floor, 'the tier ranked against that one floor')
 })
+
+test('a free model is priced as free, an untagged one as unknown', () => {
+  assert.equal(costIndex({ price: { input: 0, output: 0 } }), 0, 'free is the cheapest, not mid-range')
+  assert.equal(costIndex({}), 55, 'unknown prices stay mid-range so they cannot win on cost')
+})
+
+test('the last-resort widening never selects an unmeasured model', () => {
+  // Every candidate here has a ranking that says unmeasured: the selector must
+  // report no selection rather than route on the neutral prior.
+  const unmeasured = (model) => ({
+    provider: 'p', model, configured: true,
+    info: { label: model, ranking: { status: 'unmeasured', composite: null, low: null, dims: {} }, price: { input: 1, output: 2 }, latency: 'balanced', contextWindow: 200000, modalities: ['text'], toolCalling: true },
+  })
+  const result = selectForTier({ shape: 'edit', depth: 1, breadth: 1, risk: 1, vision: false, tools: true }, [unmeasured('a'), unmeasured('b')], ROUTES, { defaultRoute: 'balanced' })
+  assert.equal(result.selected, null)
+})
