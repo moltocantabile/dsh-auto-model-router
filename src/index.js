@@ -44,7 +44,7 @@ import {
 import { infoFor, knowledgeProvider, routingNote, applyDataset, applyProviderAliases, saveRuntimeDataset, saveRuntimeDerived, loadRuntimeDerived, MODEL_INFO, RUNTIME_DATA_URL } from './model-info.js'
 import { refreshCatalog } from './refresh.js'
 import { DEFAULT_SUMMARIZER, buildDigestPrompt, callChatModel, createDigestCache } from './summarize.js'
-import { derivedRouteEnvelopes, mergeEnvelopes } from './refresh.js'
+import { derivedRouteEnvelopes, effectiveEnvelopes } from './refresh.js'
 import { selectForTier, describeRanking, costIndex, modelsByQuality, alignedFloor } from './select.js'
 import { selectRoute as recordSelection } from './route.js'
 import { TIER_IDS, assignTiers, boardMetaOf, membershipOf } from './tiers.js'
@@ -117,6 +117,13 @@ function mergeConfig(input) {
   for (const [id, route] of Object.entries(DEFAULT_ROUTES)) routes[id] = { ...route }
   if (provided.routes !== undefined && provided.routes !== null) {
     for (const [id, route] of Object.entries(provided.routes)) routes[id] = { ...(routes[id] ?? {}), ...route }
+    // The shipped ceilings are a fallback, not the operator's claim: keeping them
+    // in the merged config made every field look hand-written, so the derived
+    // cut-offs could never take effect in `merge` mode. A route's envelope is the
+    // operator's only when the config provides it.
+    for (const [id, route] of Object.entries(routes)) {
+      if (provided.routes?.[id]?.envelope === undefined) delete route.envelope
+    }
   }
   const defaultRoute =
     routes[provided.defaultRoute] !== undefined
@@ -182,6 +189,10 @@ export function apply(ctx, input) {
    * the operator had authored it, and the next load translated it again.
    */
   const routingRoutes = JSON.parse(JSON.stringify(routes))
+  /** The shipped ceilings, used only to complete fields nobody supplied. */
+  const defaultEnvelopes = Object.fromEntries(
+    Object.entries(DEFAULT_ROUTES).map(([id, route]) => [id, { envelope: { ...(route.envelope ?? {}) }, description: route.description }]),
+  )
   let derivedEnvelopes = loadRuntimeDerived()
 
   /**
@@ -232,7 +243,7 @@ export function apply(ctx, input) {
   /** Recompute tier envelopes from the operator config plus the derived cut-offs. */
   function applyEnvelopes() {
     const operator = alignedOperatorFloors(operatorRoutes)
-    const merged = mergeEnvelopes(operator, derivedEnvelopes, config.tiers?.envelopeMode ?? 'merge')
+    const merged = effectiveEnvelopes(operator, derivedEnvelopes, defaultEnvelopes, config.tiers?.envelopeMode ?? 'merge')
     for (const [id, route] of Object.entries(merged)) {
       if (routingRoutes[id] === undefined) continue
       routingRoutes[id] = { ...routingRoutes[id], envelope: route.envelope }

@@ -160,3 +160,11 @@ test('the shadow decision record carries the evidence an audit needs', () => {
   assert.ok(source.includes('offerModelIds(pool, routes)'))
   assert.ok(source.includes('offerModelIds(candidates, routes)'))
 })
+
+test('the shipped defaults are not merged into the operator config', () => {
+  const source = read('index.js')
+  // Keeping them made every field look hand-written; the fallback completes
+  // missing fields at apply time instead.
+  assert.ok(source.includes("if (provided.routes?.[id]?.envelope === undefined) delete route.envelope"))
+  assert.ok(source.includes('effectiveEnvelopes(operator, derivedEnvelopes, defaultEnvelopes'))
+})

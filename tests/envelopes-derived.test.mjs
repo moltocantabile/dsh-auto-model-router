@@ -102,3 +102,28 @@ test('a translated operator floor is compared on the axis it was translated to',
   const handWritten = { maxCost: 85, minQuality: 20, maxLatency: 'balanced' }
   assert.equal(withinEnvelope(stale, handWritten), true, 'the same number on the legacy scale admits it')
 })
+
+test('derived ceilings are in force in merge mode when the operator wrote no envelope', async () => {
+  const { effectiveEnvelopes } = await import('../src/refresh.js')
+  const fallback = {
+    fast: { envelope: { maxCost: 55, maxLatency: 'fast', minQuality: 40 } },
+    balanced: { envelope: { maxCost: 85, maxLatency: 'balanced', minQuality: 55 } },
+    deep: { envelope: { maxCost: 100, maxLatency: 'slow', minQuality: 66 } },
+  }
+  const derived = {
+    fast: { maxCost: 67, minQuality: 22, maxLatency: 'fast' },
+    balanced: { maxCost: 79, minQuality: 26, maxLatency: 'balanced' },
+    deep: { maxCost: 100, minQuality: 29, maxLatency: 'slow' },
+  }
+  const merged = effectiveEnvelopes({ fast: {}, balanced: {}, deep: {} }, derived, fallback, 'merge')
+  assert.equal(merged.fast.envelope.maxCost, 67, 'the measured cut-off, not the shipped 55')
+  assert.equal(merged.fast.envelope.minQuality, 22)
+  // A hand-written field still wins.
+  const explicit = effectiveEnvelopes({ fast: { envelope: { maxCost: 30 } } }, derived, fallback, 'merge')
+  assert.equal(explicit.fast.envelope.maxCost, 30)
+  assert.equal(explicit.fast.envelope.minQuality, 22, 'the omitted field comes from the data')
+  // Explicit mode trusts the operator and completes from the shipped defaults.
+  const absolute = effectiveEnvelopes({ fast: {} }, derived, fallback, 'explicit')
+  assert.equal(absolute.fast.envelope.maxCost, 55)
+})
+

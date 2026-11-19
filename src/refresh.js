@@ -557,6 +557,39 @@ export function mergeEnvelopes(routes, derived, mode = 'merge') {
 }
 
 /**
+ * The envelopes the rules should actually read.
+ *
+ * Three sources can supply a field, and the operator is the only one that may
+ * claim precedence: `merge` lets a hand-written field win and fills the rest from
+ * the derived cut-offs; `explicit` trusts the operator and completes it from the
+ * shipped defaults; `derived` takes the measured cut-offs and keeps only the
+ * operator's packet policy (latency), which is a choice, not a measurement.
+ *
+ * The shipped defaults must not pre-fill the operator's config before this runs:
+ * doing so made every field look hand-written, so the derived ceilings were never
+ * in force while the status claimed they were.
+ *
+ * @param {Record<string, {envelope?: object}>} operatorRoutes
+ * @param {Record<string, object>|null} derived
+ * @param {Record<string, object>} fallback - shipped defaults, envelope only
+ * @param {'explicit'|'merge'|'derived'} mode
+ * @returns {Record<string, {envelope?: object}>}
+ */
+export function effectiveEnvelopes(operatorRoutes, derived, fallback, mode = 'merge') {
+  const base = mode === 'explicit' ? fallback : (derived ?? fallback)
+  const merged = mergeEnvelopes(operatorRoutes, base, mode)
+  const out = {}
+  for (const id of new Set([...Object.keys(operatorRoutes ?? {}), ...Object.keys(fallback ?? {})])) {
+    const defaultEnvelope = fallback?.[id]?.envelope ?? {}
+    const route = merged[id] ?? operatorRoutes?.[id] ?? {}
+    // Complete whatever is still missing so a field an operator omitted can never
+    // make an envelope permissive by accident.
+    out[id] = { ...route, envelope: { ...defaultEnvelope, ...(route.envelope ?? {}) } }
+  }
+  return out
+}
+
+/**
  * Match OpenRouter's weekly usage rows onto the catalog and record the rank.
  *
  * A usage row is `author/model`. The catalog id may be that, or the bare model

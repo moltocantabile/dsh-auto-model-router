@@ -460,3 +460,19 @@ reconstruction steps above; none of them is a prerequisite for these three.
 - Force: traced `pinTarget` → `decideFor` forced-route branch → `routeOf` →
   `routeUsable` against `DEFAULT_ROUTES`.
 - Test baseline: `npm test` (237 pass) on the clean snapshot.
+
+## Post-audit actions (Lead, same session)
+
+| Finding | Status |
+|---|---|
+| C1 floor-axis mix | Fixed: a translated operator floor carries `derived: true, source: 'derived'`, so `withinEnvelope` compares it on the measured axis. Regression test added. |
+| C2 partial refresh overwrites | Fixed by the database reconstruction: `scripts/refresh-database.mjs` refuses to write on any source error. |
+| H1 `force <tier>` inert | Fixed: a route without a pinned model constrains the selector to that tier instead of selecting an absent model. |
+| H2 derived ceilings inert | Fixed: the shipped defaults are no longer merged into the operator config; `effectiveEnvelopes(operator, derived, defaults, mode)` fills absent fields from the data (merge), from the defaults (explicit), or from the data with the operator's latency policy (derived). Status now reports how many fields are actually in force. |
+| H3 persisted wrong-model labels | Fixed by the database pass (identity guard on every join + rebuild); the six mislabelled entries are gone. |
+| H4 card basis ≠ lane basis | Fixed by C1: lane and card now read the same basis. |
+| H5 coverage/status integrity | Partly: the refresh report carries coverage, uncalibrated counts and unknown benchmarks; the board still shows only "N unmeasured". Remaining: surface per-dimension evidence coverage on the card. |
+| M1 duplicate tier planners | Not yet: `rank.planTiers` remains test-only. |
+| M2 identity policy fragmentation | Not yet: the suggested `src/identity.js` extraction. |
+
+Remaining reconstruction order (unchanged): `src/basis.js` → identity module + refresh reconciliation → delete or wire the duplicate planner → per-source refresh merge.
