@@ -3,6 +3,7 @@ import { test } from 'node:test'
 import zlib from 'node:zlib'
 
 import {
+  attachUsage,
   extractBenchGecko,
   extractCompass,
   extractEpochEci,
@@ -202,4 +203,102 @@ test('extractLlmBenchmarkPage keeps only the named track', () => {
   ].join('\n')
   assert.deepEqual(extractLlmBenchmarkPage(html, 'terminal-bench-4-0', index), { 'qwen4-max': 41.2 })
   assert.deepEqual(extractLlmBenchmarkPage(html, null, index), {})
+})
+
+test('usage percentiles describe the ranks the catalog actually carries', () => {
+  // Two rows can match one catalog key (an exact id, then a reseller spelling);
+  // the last write wins. The percentile used to be computed over every fetched
+  // row, so a rank no entry ended up carrying widened the denominator and every
+  // entry's percentile was understated.
+  const dataset = { 'p/glm-5.3': { label: 'GLM-5.3' }, 'p/other': { label: 'Other' } }
+  const result = attachUsage(dataset, [
+    { id: 'zhipu/glm-5.3', weeklyRank: 1 },
+    { id: 'reseller/glm-5.3', weeklyRank: 9 },
+    { id: 'someone/other', weeklyRank: 2 },
+  ])
+  assert.equal(dataset['p/glm-5.3'].usage.rank, 9, 'the last matching row wins')
+  assert.equal(result.uniqueRanks, 2, 'the stale rank is not part of the ranking')
+  assert.equal(dataset['p/glm-5.3'].usage.percentile, 0)
+  assert.equal(dataset['p/other'].usage.percentile, 100)
+})
+
+test('a model created from an AA row still receives its Epoch and llmleaderboard cross-checks', async () => {
+  // The entry-creation pass is part of the same refresh: name-based source passes
+  // run before it, so unless the advertised ids are in the name index too, a
+  // newly created entry silently loses the rows Epoch and llmleaderboard published
+  // for it.
+  const rows = [{
+    id: 'r',
+    name: 'Kimi K3.1 Pro',
+    price1mInputTokens: 1,
+    price1mOutputTokens: 2,
+    intelligenceIndex: 50,
+    scores: { gpqa: 0.7, hle: 0.4, livecodebench: 0.5, 'terminalbench-hard': 0.3 },
+  }]
+  const flight = `<script>self.__next_f.push([1,${JSON.stringify(JSON.stringify(rows))}])</script>`
+  const fetchImpl = async (url) => {
+    const href = String(url)
+    if (href.includes('ability_official')) return gzipResponse({ OverallTable: [] })
+    if (href.includes('ability_benchmark')) throw new Error('no benchmark board')
+    if (href.includes('epoch.ai')) return jsonResponseText('Model,Display name,eci,eci_ci_low,eci_ci_high,date\nKimi K3.1 Pro,Kimi K3.1 Pro,161.36,158,164,2026-10-23\n')
+    if (href.includes('comparison.csv')) return jsonResponseText('model,provider,configuration,ttft_seconds,output_tokens_per_second\n"Kimi K3.1 Pro",Kimi,default,0.8,120\n')
+    if (href.includes('llmleaderboard.com/benchmarks/')) return jsonResponseText('<tr data-benchmark-track="terminal-bench-4-0" data-benchmark-model="Kimi K3.1 Pro" data-score="60">')
+    if (href.includes('artificialanalysis.ai')) return jsonResponseText(flight)
+    throw new Error(`unexpected ${href}`)
+  }
+  const result = await refreshCatalog({ base: {}, wanted: [{ model: 'kimi-k3.1-pro', provider: 'p' }], fetchImpl })
+  const entry = result.dataset['kimi-k3.1-pro']
+  assert.ok(entry !== undefined, 'AA created the entry')
+  assert.equal(entry.crossChecks.epoch.eci, 161.4)
+  assert.equal(entry.crossChecks.epoch.date, '2026-10-23')
+  assert.equal(entry.crossChecks.llmLeaderboard.tokensPerSecond, 120)
+})
+
+test('a BenchGecko zero is "not run": no mean, no leaf score, no evidence', () => {
+  // The publisher writes 0 for a benchmark it has no sample for. Averaging it
+  // into a category mean understated the dimension, storing it in the leaf map
+  // made a non-measurement look like a score, and counting it inflated evidence.
+  const raw = {
+    slug: 'm',
+    name: 'M',
+    avg_score: 50,
+    scores: [
+      { benchmark: 'A', score: 80, category: 'math' },
+      { benchmark: 'B', score: 0, category: 'math' },
+      { benchmark: 'C', score: 60, category: 'knowledge' },
+    ],
+  }
+  const extracted = extractBenchGecko(raw)
+  assert.equal(extracted.scores.math, 80, 'the zero is not averaged in')
+  assert.equal(extracted.benchmarks.B, undefined, 'the zero is not stored as a score')
+  assert.equal(extracted.benchmarks.A, 80)
+  assert.deepEqual(countsOf({ m: extracted }, { m: raw }), { m: { math: 1, knowledge: 1 } })
+})
+
+test('a model page does not overwrite the leaderboard row for a model it happens to embed', async () => {
+  // AA model pages embed rows for other models too. Those rows lack the published
+  // index and used to replace the table row of a model that was already matched,
+  // erasing its index (and, before the label fix, its name).
+  const table = `<script>self.__next_f.push([1,${JSON.stringify(JSON.stringify([
+    { id: 'k3', name: 'Kimi K3', price1mInputTokens: 1, price1mOutputTokens: 2, intelligenceIndex: 55, contextWindowTokens: 100000, scores: { gpqa: 0.7, hle: 0.4, livecodebench: 0.5, 'terminalbench-hard': 0.3 } },
+  ]))}])</script>`
+  const otherPage = `<script>self.__next_f.push([1,${JSON.stringify(JSON.stringify([
+    { id: 'p', name: 'Kimi K3', price1mInputTokens: 1, price1mOutputTokens: 2, intelligenceIndex: null, contextWindowTokens: 200000, scores: { gpqa: 0.6, hle: 0.3, livecodebench: 0.4, 'terminalbench-hard': 0.2 } },
+    { id: 'p2', name: 'Other Model', price1mInputTokens: 1, price1mOutputTokens: 2, intelligenceIndex: null, scores: { gpqa: 0.6, hle: 0.3, livecodebench: 0.4, 'terminalbench-hard': 0.2 } },
+  ]))}])</script>`
+  const fetchImpl = async (url) => {
+    const href = String(url)
+    if (href.includes('epoch.ai') || href.includes('comparison.csv') || href.includes('llmleaderboard.com/benchmarks/')) throw new Error('unavailable')
+    if (href.includes('openrouter')) throw new Error('unavailable')
+    if (href.includes('ability_official') || href.includes('ability_benchmark')) throw new Error('unavailable')
+    if (href.endsWith('/leaderboards/models')) return jsonResponseText(table)
+    if (href.includes('/models/')) return jsonResponseText(otherPage)
+    throw new Error(`unexpected ${href}`)
+  }
+  const result = await refreshCatalog({
+    base: {},
+    wanted: [{ model: 'kimi-k3', provider: 'p' }, { model: 'other-model', provider: 'p' }],
+    fetchImpl,
+  })
+  assert.equal(result.dataset['kimi-k3'].crossChecks.artificialAnalysis.intelligenceIndex, 55, 'the table row keeps the index')
 })

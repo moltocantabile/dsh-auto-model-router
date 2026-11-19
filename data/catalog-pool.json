@@ -1,0 +1,834 @@
+{
+  "capturedAt": "2026-11-19",
+  "source": "llm.listModels for the providers of llm-pi-ai in the profile (captured from cordis.patch.yml); ids stored unfiltered",
+  "wanted": [
+    {
+      "model": "qwen4-max",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "Xing/Xing4.1-Preview",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "kimi-k3.1-pro",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "antdigital/Ling-3.1-flash",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "vanchin/deepseek-v4.1-flash-1017",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen-audio-3.1-realtime-flash",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "cmaas-glm-5.3",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "kimi/kimi-k3.1-pro-highspeed",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "kimi/kimi-k3.1-pro",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "MiniMax/MiniMax-M3.1-Flash",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "xiaomi/mimo-v2.6-pro-ultraspeed",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "deepseek-v4.1-flash-1017",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "cmaas-qwen3.8-flash",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen-image-2.1-pro",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen3.8-omni-flash-realtime",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "stepfun/step-5-preview",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "glm-5.3-prime",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "ZHIPU/GLM-5.3-FlashX",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "vanchin/deepseek-v4.1-flash",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen-audio-3.1-realtime-plus",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen-mt-uni",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen3.8-omni-flash",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen3.8-livetranslate-flash-realtime",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "kimi/kimi-k2.8-preview",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "glm-5.3",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "deepseek-v4.1-flash",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen3.8-max-0902",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen3.7-text-embedding-flash",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen3.7-text-rerank",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "ZHIPU/GLM-5.3-Flash",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "stepfun/step-3.7-flash",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "vanchin/deepseek-v4-pro",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "unisound/unisound-u2",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "vanchin/deepseek-v4-pro-0813",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen3.8-flash",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "kimi-k3",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen3.8-27b",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "ZHIPU/GLM-5.3",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "deepseek-v4-pro-0813",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen3.8-2.4t-a95b",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen-image-3.0-pro",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen-image-3.0",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen3.8-max",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "deepseek-v4-flash-0731",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen-audio-3.0-asr-flash",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen3.7-flash-2026-07-15",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen3.7-flash",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "kimi/kimi-k3",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen3.7-text-embedding",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen-audio-3.0-realtime-flash",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen-audio-3.0-realtime-plus",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "glm-5.2-fast-preview",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "kimi/kimi-k2.7-code-highspeed",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "MiniMax/MiniMax-M3",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "ZHIPU/GLM-5.2",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen-image-2.0-pro-2026-06-22",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "fun-asr-flash-2026-06-15",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "glm-5.2",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "kimi/kimi-k2.7-code",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "kimi-k2.7-code",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen3.7-max-2026-06-08",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen3.5-ocr",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen3.7-plus-2026-05-26",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen3.7-plus",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen3.7-max-2026-05-17",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen3.7-max-preview",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "ZHIPU/GLM-5",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen3.7-max-2026-05-20",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen3.7-max",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen3.5-livetranslate-flash-realtime-2026-05-19",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen3.5-livetranslate-flash-realtime",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "ZHIPU/GLM-5.1",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "kimi/kimi-k2.6",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "deepseek-v4-pro",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen-image-2.0-pro-2026-04-22",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen3.5-plus-2026-04-20",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen3.6-27b",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "kimi-k2.6",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen3.6-35b-a3b",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen3.6-flash-2026-04-16",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen3.6-flash",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "glm-5.1",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "vanchin/deepseek-v3.1-terminus",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "vanchin/deepseek-v3",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "vanchin/deepseek-r1",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "vanchin/deepseek-ocr",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "vanchin/deepseek-v3.2-think",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen3.5-omni-plus-realtime-2026-03-15",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen3.5-omni-plus-realtime",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen3.5-omni-plus-2026-03-15",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen3.5-omni-plus",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen3.5-omni-flash-realtime-2026-03-15",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen3.5-omni-flash-realtime",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen3.5-omni-flash-2026-03-15",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen3.5-omni-flash",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen3.6-plus-2026-04-02",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen3.6-plus",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "wan2.7-image-pro",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "wan2.7-image",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "MiniMax/MiniMax-M2.7",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "MiniMax/speech-2.8-hd",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "MiniMax/speech-2.8-turbo",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "MiniMax/speech-02-turbo",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "MiniMax/speech-02-hd",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen-deep-research-2025-12-15",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen-image-2.0-2026-03-03",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen-image-2.0-pro",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen-image-2.0-pro-2026-03-03",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen-image-2.0",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "glm-5",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen-flash-character-2026-02-26",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "MiniMax-M2.5",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen3.5-flash-2026-02-23",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen3.5-flash",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen3.5-122b-a10b",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen3.5-35b-a3b",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen3.5-27b",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen3.5-397b-a17b",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen3.5-plus-2026-02-15",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen3.5-plus",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "MiniMax/MiniMax-M2.1",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "MiniMax/MiniMax-M2.5",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "kimi-k2.5",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "tongyi-xiaomi-analysis-flash",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "tongyi-xiaomi-analysis-pro",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "siliconflow/deepseek-v3.2",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "siliconflow/deepseek-v3.1-terminus",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "siliconflow/deepseek-v3-0324",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "siliconflow/deepseek-r1-0528",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen-flash-character",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen-flash",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "z-image-turbo",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen3-livetranslate-flash-2025-12-01",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen3-livetranslate-flash",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen-plus-2025-12-01",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen-plus-2025-11-05",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen-mt-lite",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen-vl-ocr-2025-11-20",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen-mt-flash",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "gui-plus",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen-deep-search-planning",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen3-asr-flash-realtime",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen3-tts-flash",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen3-tts-flash-realtime",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen3-omni-flash",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen3-omni-flash-realtime-2025-09-15",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen3-s2s-flash-realtime-2025-09-22",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen-turbo-2024-11-01",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen-plus-2025-01-25",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen-plus-2025-04-28",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen3-coder-flash",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen3-vl-plus",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen-plus-2025-07-14",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen-mt-plus",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "deepseek-r1-distill-llama-70b",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "deepseek-r1-distill-qwen-1.5b",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen1.5-7b-chat",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen-vl-ocr",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen-plus-latest",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen2.5-0.5b-instruct",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen2.5-1.5b-instruct",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen-turbo-0919",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen2.5-math-1.5b-instruct",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen2-0.5b-instruct",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen2-57b-a14b-instruct",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen2-1.5b-instruct",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen2-7b-instruct",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen-long",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen1.5-110b-chat",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen-14b-chat",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen-1.8b-chat",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen-1.8b-longcontext-chat",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen-7b-chat",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen-72b-chat",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen1.5-0.5b-chat",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen1.5-1.8b-chat",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen-max-1201",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen1.5-32b-chat",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen1.5-72b-chat",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen-max-longcontext",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen1.5-14b-chat",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen-max",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen-max-0107",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen-plus",
+      "provider": "bailian-aliyun"
+    },
+    {
+      "model": "qwen3.7-max",
+      "provider": "bailian-tokenplan"
+    },
+    {
+      "model": "qwen3.7-plus",
+      "provider": "bailian-tokenplan"
+    },
+    {
+      "model": "qwen3.6-flash",
+      "provider": "bailian-tokenplan"
+    },
+    {
+      "model": "glm-5.2",
+      "provider": "bailian-tokenplan"
+    },
+    {
+      "model": "deepseek-v4-pro",
+      "provider": "bailian-tokenplan"
+    },
+    {
+      "model": "wan2.7-image",
+      "provider": "bailian-tokenplan"
+    },
+    {
+      "model": "wan2.7-image-pro",
+      "provider": "bailian-tokenplan"
+    },
+    {
+      "model": "qwen-audio-3.0-tts-plus",
+      "provider": "bailian-tokenplan"
+    },
+    {
+      "model": "deepseek-v4-flash-0731",
+      "provider": "bailian-tokenplan"
+    },
+    {
+      "model": "qwen3.8-max",
+      "provider": "bailian-tokenplan"
+    },
+    {
+      "model": "qwen-audio-3.0-realtime-plus",
+      "provider": "bailian-tokenplan"
+    },
+    {
+      "model": "deepseek-v4-pro-0813",
+      "provider": "bailian-tokenplan"
+    },
+    {
+      "model": "qwen3.8-flash",
+      "provider": "bailian-tokenplan"
+    },
+    {
+      "model": "deepseek-v4.1-flash",
+      "provider": "bailian-tokenplan"
+    },
+    {
+      "model": "glm-5.3",
+      "provider": "bailian-tokenplan"
+    },
+    {
+      "model": "auto",
+      "provider": "bailian-tokenplan"
+    },
+    {
+      "model": "decision-model-preview",
+      "provider": "bailian-tokenplan"
+    },
+    {
+      "model": "wan3.0-video",
+      "provider": "bailian-tokenplan"
+    },
+    {
+      "model": "deepseek-v4.1-flash-1017",
+      "provider": "bailian-tokenplan"
+    },
+    {
+      "model": "qwen-image-3.0-pro",
+      "provider": "bailian-tokenplan"
+    },
+    {
+      "model": "qwen-audio-3.0-asr-flash",
+      "provider": "bailian-tokenplan"
+    },
+    {
+      "model": "qwen4-max-preview",
+      "provider": "bailian-tokenplan"
+    },
+    {
+      "model": "qwen4-max",
+      "provider": "bailian-tokenplan"
+    }
+  ]
+}

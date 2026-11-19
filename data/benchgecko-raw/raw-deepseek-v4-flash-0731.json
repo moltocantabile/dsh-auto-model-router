@@ -1,1 +1,569 @@
-{"source":"BenchGecko","url":"https://benchgecko.ai/model/deepseek-v4-flash-0731","as_of":"2026-11-17","license":"BenchGecko collected data (prices, provider offers, Gecko Tests) is CC BY 4.0 · https://creativecommons.org/licenses/by/4.0/. Benchmark scores belong to their original publishers (see sources) and are aggregated with attribution. Attribution required: \"Source: BenchGecko\" with a link.","attribution":"Source: BenchGecko · https://benchgecko.ai/model/deepseek-v4-flash-0731","cite":"DeepSeek V4 Flash 0731 · benchmarks, pricing and providers. BenchGecko, data as of 2026-11-17. https://benchgecko.ai/model/deepseek-v4-flash-0731","slug":"deepseek-v4-flash-0731","name":"DeepSeek V4 Flash 0731","provider":{"name":"DeepSeek","slug":"deepseek"},"model_type":"text","release_date":"2026-07-31","is_open_source":false,"status":"active","context_window":1048576,"description":"DeepSeek V4 Flash 0731 is a sparse mixture-of-experts model from DeepSeek, with 13B active parameters out of 284B total. This re-post-trained revision is suited for coding, reasoning, and agent workflows....","benchgecko_score":{"value":58,"rank":101,"of":327,"method":"Normalized average of public benchmark scores","method_url":"https://benchgecko.ai/methodology"},"avg_score":58,"list_price":{"input_usd_per_m":0.06,"output_usd_per_m":0.18,"source":"OpenRouter models API (checked daily)","as_of":"2026-11-17"},"pricing":{"input":0.06,"output":0.18},"providers":[{"provider":"Wafer","endpoint":"wafer/us","quantization":"nvfp4","context_tokens":1048576,"input_usd_per_m":0.0434,"output_usd_per_m":0.3,"cache_read_usd_per_m":0.035,"uptime_1d_pct":100,"as_of":"2026-11-17"},{"provider":"DeepInfra","endpoint":"deepinfra/fp8/flex","quantization":"fp8","context_tokens":1048576,"input_usd_per_m":0.048,"output_usd_per_m":0.144,"cache_read_usd_per_m":0.012,"uptime_1d_pct":97.4,"as_of":"2026-11-17"},{"provider":"DeepInfra","endpoint":"deepinfra/fp8","quantization":"fp8","context_tokens":1048576,"input_usd_per_m":0.06,"output_usd_per_m":0.18,"cache_read_usd_per_m":0.015,"uptime_1d_pct":100,"as_of":"2026-11-17"},{"provider":"Relace","endpoint":"relace/fp4","quantization":"fp4","context_tokens":1048576,"input_usd_per_m":0.07,"output_usd_per_m":0.14,"cache_read_usd_per_m":0.014,"uptime_1d_pct":99.79,"as_of":"2026-11-17"},{"provider":"DeepInfra","endpoint":"deepinfra/fp8/priority","quantization":"fp8","context_tokens":1048576,"input_usd_per_m":0.09,"output_usd_per_m":0.27,"cache_read_usd_per_m":0.0225,"uptime_1d_pct":100,"as_of":"2026-11-17"},{"provider":"Reka","endpoint":"reka","quantization":null,"context_tokens":262144,"input_usd_per_m":0.1,"output_usd_per_m":0.42,"cache_read_usd_per_m":0.06,"uptime_1d_pct":100,"as_of":"2026-11-17"},{"provider":"DigitalOcean","endpoint":"digitalocean","quantization":null,"context_tokens":1048576,"input_usd_per_m":0.119,"output_usd_per_m":0.238,"cache_read_usd_per_m":0.0238,"uptime_1d_pct":100,"as_of":"2026-11-17"},{"provider":"BaseTen","endpoint":"baseten/fp32","quantization":"fp32","context_tokens":1048576,"input_usd_per_m":0.13,"output_usd_per_m":0.26,"cache_read_usd_per_m":0.028,"uptime_1d_pct":100,"as_of":"2026-11-17"},{"provider":"BaseTen","endpoint":"baseten/fp8","quantization":"fp8","context_tokens":1048576,"input_usd_per_m":0.13,"output_usd_per_m":0.26,"cache_read_usd_per_m":0.028,"uptime_1d_pct":100,"as_of":"2026-11-17"},{"provider":"CoreWeave","endpoint":"coreweave/fp8","quantization":"fp8","context_tokens":262144,"input_usd_per_m":0.13,"output_usd_per_m":0.27,"cache_read_usd_per_m":0.05,"uptime_1d_pct":100,"as_of":"2026-11-17"},{"provider":"Inceptron","endpoint":"inceptron/fp4","quantization":"fp4","context_tokens":1048576,"input_usd_per_m":0.13,"output_usd_per_m":0.495,"cache_read_usd_per_m":0.027,"uptime_1d_pct":99.86,"as_of":"2026-11-17"},{"provider":"Venice","endpoint":"venice","quantization":null,"context_tokens":1000000,"input_usd_per_m":0.13,"output_usd_per_m":0.26,"cache_read_usd_per_m":0.028,"uptime_1d_pct":99.93,"as_of":"2026-11-17"},{"provider":"StreamLake","endpoint":"streamlake/fp8","quantization":"fp8","context_tokens":1024000,"input_usd_per_m":0.132,"output_usd_per_m":0.396,"cache_read_usd_per_m":0.0042,"uptime_1d_pct":100,"as_of":"2026-11-17"},{"provider":"Cohere","endpoint":"cohere/fp8","quantization":"fp8","context_tokens":1048576,"input_usd_per_m":0.14,"output_usd_per_m":0.28,"cache_read_usd_per_m":0.07,"uptime_1d_pct":99.93,"as_of":"2026-11-17"},{"provider":"Parasail","endpoint":"parasail/fp8","quantization":"fp8","context_tokens":1048576,"input_usd_per_m":0.14,"output_usd_per_m":0.28,"cache_read_usd_per_m":0.05,"uptime_1d_pct":98.47,"as_of":"2026-11-17"},{"provider":"Wafer","endpoint":"wafer/fast","quantization":"nvfp4","context_tokens":1048576,"input_usd_per_m":0.14,"output_usd_per_m":0.23,"cache_read_usd_per_m":0.135,"uptime_1d_pct":100,"as_of":"2026-11-17"},{"provider":"Mancer 2","endpoint":"mancer/fp8","quantization":"fp8","context_tokens":1048576,"input_usd_per_m":0.15,"output_usd_per_m":0.5,"cache_read_usd_per_m":0.075,"uptime_1d_pct":98.21,"as_of":"2026-11-17"},{"provider":"Sail Research","endpoint":"sail-research/fp4","quantization":"fp4","context_tokens":1048576,"input_usd_per_m":0.15,"output_usd_per_m":0.3,"cache_read_usd_per_m":0.042,"uptime_1d_pct":98.93,"as_of":"2026-11-17"},{"provider":"Sail Research","endpoint":"sail-research/us","quantization":"fp4","context_tokens":1048576,"input_usd_per_m":0.15,"output_usd_per_m":0.3,"cache_read_usd_per_m":0.042,"uptime_1d_pct":99.3,"as_of":"2026-11-17"},{"provider":"SiliconFlow","endpoint":"siliconflow/fp8","quantization":"fp8","context_tokens":1048576,"input_usd_per_m":0.22,"output_usd_per_m":0.66,"cache_read_usd_per_m":0.028,"uptime_1d_pct":99.51,"as_of":"2026-11-17"},{"provider":"GMICloud","endpoint":"gmicloud/fp8","quantization":"fp8","context_tokens":1048575,"input_usd_per_m":0.286,"output_usd_per_m":0.858,"cache_read_usd_per_m":0.0091,"uptime_1d_pct":100,"as_of":"2026-11-17"},{"provider":"Alibaba","endpoint":"alibaba","quantization":null,"context_tokens":1000000,"input_usd_per_m":0.352,"output_usd_per_m":1.056,"cache_read_usd_per_m":0.0352,"uptime_1d_pct":99.9,"as_of":"2026-11-17"},{"provider":"Alibaba","endpoint":"alibaba/us-east-1","quantization":null,"context_tokens":1000000,"input_usd_per_m":0.374,"output_usd_per_m":1.122,"cache_read_usd_per_m":0.0374,"uptime_1d_pct":100,"as_of":"2026-11-17"},{"provider":"Novita","endpoint":"novita/fp8","quantization":"fp8","context_tokens":1048576,"input_usd_per_m":0.4092,"output_usd_per_m":1.2276,"cache_read_usd_per_m":0.02604,"uptime_1d_pct":100,"as_of":"2026-11-17"},{"provider":"AtlasCloud","endpoint":"atlas-cloud/fp4","quantization":"fp4","context_tokens":1048576,"input_usd_per_m":0.44,"output_usd_per_m":1.32,"cache_read_usd_per_m":0.028,"uptime_1d_pct":100,"as_of":"2026-11-17"},{"provider":"Baidu","endpoint":"baidu/fp8","quantization":"fp8","context_tokens":1048576,"input_usd_per_m":0.44,"output_usd_per_m":1.32,"cache_read_usd_per_m":0.014,"uptime_1d_pct":100,"as_of":"2026-11-17"},{"provider":"Chutes","endpoint":"chutes/fp8","quantization":"fp8","context_tokens":1048576,"input_usd_per_m":0.44,"output_usd_per_m":1.32,"cache_read_usd_per_m":0.044,"uptime_1d_pct":null,"as_of":"2026-11-17"},{"provider":"Cloudflare","endpoint":"cloudflare","quantization":null,"context_tokens":1048576,"input_usd_per_m":0.44,"output_usd_per_m":1.32,"cache_read_usd_per_m":0.014,"uptime_1d_pct":99.93,"as_of":"2026-11-17"},{"provider":"PrimeIntellect","endpoint":"primeintellect/fp4","quantization":"fp4","context_tokens":1048576,"input_usd_per_m":0.44,"output_usd_per_m":1.32,"cache_read_usd_per_m":0.014,"uptime_1d_pct":100,"as_of":"2026-11-17"}],"cheapest_provider":{"provider":"Wafer","endpoint":"wafer/us","quantization":"nvfp4","context_tokens":1048576,"input_usd_per_m":0.0434,"output_usd_per_m":0.3,"cache_read_usd_per_m":0.035,"uptime_1d_pct":100,"as_of":"2026-11-17"},"providers_source":"OpenRouter endpoints API, one row per provider, refreshed daily","scores":[{"benchmark":"OTIS Mock AIME 2024-2025","benchmark_slug":"otis-mock-aime-2024-2025","score":94.44,"unit":"%","category":"math","source":"Epoch AI Benchmarking Hub","source_url":"https://epoch.ai/data/ai-benchmarking-dashboard","benchmark_url":"https://benchgecko.ai/benchmark/otis-mock-aime-2024-2025"},{"benchmark":"GPQA diamond","benchmark_slug":"gpqa-diamond","score":91.72,"unit":"%","category":"knowledge","source":"Epoch AI Benchmarking Hub","source_url":"https://epoch.ai/data/ai-benchmarking-dashboard","benchmark_url":"https://benchgecko.ai/benchmark/gpqa-diamond"},{"benchmark":"ARC-AGI","benchmark_slug":"arc-agi","score":89,"unit":"%","category":"reasoning","source":"Epoch AI Benchmarking Hub","source_url":"https://epoch.ai/data/ai-benchmarking-dashboard","benchmark_url":"https://benchgecko.ai/benchmark/arc-agi"},{"benchmark":"Dtbench","benchmark_slug":"dtbench","score":84.88,"unit":"%","category":"general","source":"Epoch AI Benchmarking Hub","source_url":"https://epoch.ai/data/ai-benchmarking-dashboard","benchmark_url":"https://benchgecko.ai/benchmark/dtbench"},{"benchmark":"WeirdML","benchmark_slug":"weirdml","score":62.96,"unit":"%","category":"coding","source":"Epoch AI Benchmarking Hub","source_url":"https://epoch.ai/data/ai-benchmarking-dashboard","benchmark_url":"https://benchgecko.ai/benchmark/weirdml"},{"benchmark":"ARC-AGI-2","benchmark_slug":"arc-agi-2","score":61.39,"unit":"%","category":"reasoning","source":"Epoch AI Benchmarking Hub","source_url":"https://epoch.ai/data/ai-benchmarking-dashboard","benchmark_url":"https://benchgecko.ai/benchmark/arc-agi-2"},{"benchmark":"FrontierMath-Tiers-1-3-v2-Private","benchmark_slug":"frontiermath-tiers-1-3-v2-private","score":60.57,"unit":"%","category":"math","source":"Epoch AI Benchmarking Hub","source_url":"https://epoch.ai/data/ai-benchmarking-dashboard","benchmark_url":"https://benchgecko.ai/benchmark/frontiermath-tiers-1-3-v2-private"},{"benchmark":"Proofbench","benchmark_slug":"proofbench","score":56,"unit":"%","category":"general","source":"Epoch AI Benchmarking Hub","source_url":"https://epoch.ai/data/ai-benchmarking-dashboard","benchmark_url":"https://benchgecko.ai/benchmark/proofbench"},{"benchmark":"SimpleBench","benchmark_slug":"simplebench","score":53.32,"unit":"%","category":"reasoning","source":"Epoch AI Benchmarking Hub","source_url":"https://epoch.ai/data/ai-benchmarking-dashboard","benchmark_url":"https://benchgecko.ai/benchmark/simplebench"},{"benchmark":"Lmca","benchmark_slug":"lmca","score":49.09,"unit":"%","category":"general","source":"Epoch AI Benchmarking Hub","source_url":"https://epoch.ai/data/ai-benchmarking-dashboard","benchmark_url":"https://benchgecko.ai/benchmark/lmca"},{"benchmark":"SimpleQA Verified","benchmark_slug":"simpleqa-verified","score":33.63,"unit":"%","category":"knowledge","source":"Epoch AI Benchmarking Hub","source_url":"https://epoch.ai/data/ai-benchmarking-dashboard","benchmark_url":"https://benchgecko.ai/benchmark/simpleqa-verified"},{"benchmark":"Chess Puzzles","benchmark_slug":"chess-puzzles","score":28.45,"unit":"%","category":"knowledge","source":"Epoch AI Benchmarking Hub","source_url":"https://epoch.ai/data/ai-benchmarking-dashboard","benchmark_url":"https://benchgecko.ai/benchmark/chess-puzzles"},{"benchmark":"Mystery Game Puzzles","benchmark_slug":"mystery-game-puzzles","score":27.3,"unit":"%","category":"general","source":"Epoch AI Benchmarking Hub","source_url":"https://epoch.ai/data/ai-benchmarking-dashboard","benchmark_url":"https://benchgecko.ai/benchmark/mystery-game-puzzles"},{"benchmark":"FrontierMath-Tier-4-v2-Private","benchmark_slug":"frontiermath-tier-4-v2-private","score":24.39,"unit":"%","category":"math","source":"Epoch AI Benchmarking Hub","source_url":"https://epoch.ai/data/ai-benchmarking-dashboard","benchmark_url":"https://benchgecko.ai/benchmark/frontiermath-tier-4-v2-private"},{"benchmark":"Frontiercode","benchmark_slug":"frontiercode","score":18.8,"unit":"%","category":"coding","source":"Epoch AI Benchmarking Hub","source_url":"https://epoch.ai/data/ai-benchmarking-dashboard","benchmark_url":"https://benchgecko.ai/benchmark/frontiercode"}],"gecko_tests":{"gecko_score":24,"rank":54,"tests_taken":4,"tests":[{"test":"who-are-you","name":"Who Are You","grade":"E","value":66.7,"verdict":"Sometimes says it is Google or Anthropic","url":"https://benchgecko.ai/gecko-tests/who-are-you"},{"test":"censorship-index","name":"Censorship Index","grade":"D","value":95,"verdict":"Refuses or dodges 5%","url":"https://benchgecko.ai/gecko-tests/censorship-index"},{"test":"knowledge-horizon","name":"Knowledge Horizon","grade":"D","value":35,"verdict":"Knows news up to Jun 2025","url":"https://benchgecko.ai/gecko-tests/knowledge-horizon"},{"test":"tokenizer-tax","name":"Tokenizer Tax","grade":"D","value":32,"verdict":"68% more tokens outside English","url":"https://benchgecko.ai/gecko-tests/tokenizer-tax"}],"scorecard_url":"https://benchgecko.ai/gecko-tests/scorecard"},"links":{"page":"https://benchgecko.ai/model/deepseek-v4-flash-0731","json":"https://benchgecko.ai/api/v1/models/deepseek-v4-flash-0731","price_history":"https://benchgecko.ai/api/v1/price-history/deepseek-v4-flash-0731","provider_prices":"https://benchgecko.ai/pricing/arbitrage/deepseek-v4-flash-0731"}}
+{
+  "source": "BenchGecko",
+  "url": "https://benchgecko.ai/model/deepseek-v4-flash-0731",
+  "as_of": "2026-11-18",
+  "license": "BenchGecko collected data (prices, provider offers, Gecko Tests) is CC BY 4.0 · https://creativecommons.org/licenses/by/4.0/. Benchmark scores belong to their original publishers (see sources) and are aggregated with attribution. Attribution required: \"Source: BenchGecko\" with a link.",
+  "attribution": "Source: BenchGecko · https://benchgecko.ai/model/deepseek-v4-flash-0731",
+  "cite": "DeepSeek V4 Flash 0731 · benchmarks, pricing and providers. BenchGecko, data as of 2026-11-18. https://benchgecko.ai/model/deepseek-v4-flash-0731",
+  "slug": "deepseek-v4-flash-0731",
+  "name": "DeepSeek V4 Flash 0731",
+  "provider": {
+    "name": "DeepSeek",
+    "slug": "deepseek"
+  },
+  "model_type": "text",
+  "release_date": "2026-07-31",
+  "is_open_source": false,
+  "status": "active",
+  "context_window": 1048576,
+  "description": "DeepSeek V4 Flash 0731 is a sparse mixture-of-experts model from DeepSeek, with 13B active parameters out of 284B total. This re-post-trained revision is suited for coding, reasoning, and agent workflows....",
+  "benchgecko_score": {
+    "value": 57.9,
+    "rank": 102,
+    "of": 328,
+    "method": "Normalized average of public benchmark scores",
+    "method_url": "https://benchgecko.ai/methodology"
+  },
+  "avg_score": 57.9,
+  "list_price": {
+    "input_usd_per_m": 0.06,
+    "output_usd_per_m": 0.18,
+    "source": "OpenRouter models API (checked daily)",
+    "as_of": "2026-11-18"
+  },
+  "pricing": {
+    "input": 0.06,
+    "output": 0.18
+  },
+  "providers": [
+    {
+      "provider": "Wafer",
+      "endpoint": "wafer/us",
+      "quantization": "nvfp4",
+      "context_tokens": 1048576,
+      "input_usd_per_m": 0.0434,
+      "output_usd_per_m": 0.3,
+      "cache_read_usd_per_m": 0.035,
+      "uptime_1d_pct": 100,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "DeepInfra",
+      "endpoint": "deepinfra/fp8/flex",
+      "quantization": "fp8",
+      "context_tokens": 1048576,
+      "input_usd_per_m": 0.048,
+      "output_usd_per_m": 0.144,
+      "cache_read_usd_per_m": 0.012,
+      "uptime_1d_pct": 94.28,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "DeepInfra",
+      "endpoint": "deepinfra/fp8",
+      "quantization": "fp8",
+      "context_tokens": 1048576,
+      "input_usd_per_m": 0.06,
+      "output_usd_per_m": 0.18,
+      "cache_read_usd_per_m": 0.015,
+      "uptime_1d_pct": 98.55,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "Relace",
+      "endpoint": "relace/fp4",
+      "quantization": "fp4",
+      "context_tokens": 1048576,
+      "input_usd_per_m": 0.07,
+      "output_usd_per_m": 0.14,
+      "cache_read_usd_per_m": 0.014,
+      "uptime_1d_pct": 100,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "DeepInfra",
+      "endpoint": "deepinfra/fp8/priority",
+      "quantization": "fp8",
+      "context_tokens": 1048576,
+      "input_usd_per_m": 0.09,
+      "output_usd_per_m": 0.27,
+      "cache_read_usd_per_m": 0.0225,
+      "uptime_1d_pct": 98.54,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "Reka",
+      "endpoint": "reka",
+      "quantization": null,
+      "context_tokens": 262144,
+      "input_usd_per_m": 0.1,
+      "output_usd_per_m": 0.42,
+      "cache_read_usd_per_m": 0.06,
+      "uptime_1d_pct": 100,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "DigitalOcean",
+      "endpoint": "digitalocean",
+      "quantization": null,
+      "context_tokens": 1048576,
+      "input_usd_per_m": 0.119,
+      "output_usd_per_m": 0.238,
+      "cache_read_usd_per_m": 0.0238,
+      "uptime_1d_pct": 100,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "BaseTen",
+      "endpoint": "baseten/fp32",
+      "quantization": "fp32",
+      "context_tokens": 1048576,
+      "input_usd_per_m": 0.13,
+      "output_usd_per_m": 0.26,
+      "cache_read_usd_per_m": 0.028,
+      "uptime_1d_pct": 100,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "BaseTen",
+      "endpoint": "baseten/fp8",
+      "quantization": "fp8",
+      "context_tokens": 1048576,
+      "input_usd_per_m": 0.13,
+      "output_usd_per_m": 0.26,
+      "cache_read_usd_per_m": 0.028,
+      "uptime_1d_pct": 100,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "CoreWeave",
+      "endpoint": "coreweave/fp8",
+      "quantization": "fp8",
+      "context_tokens": 262144,
+      "input_usd_per_m": 0.13,
+      "output_usd_per_m": 0.27,
+      "cache_read_usd_per_m": 0.05,
+      "uptime_1d_pct": 99.86,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "Inceptron",
+      "endpoint": "inceptron/fp4",
+      "quantization": "fp4",
+      "context_tokens": 1048576,
+      "input_usd_per_m": 0.13,
+      "output_usd_per_m": 0.495,
+      "cache_read_usd_per_m": 0.027,
+      "uptime_1d_pct": 100,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "Venice",
+      "endpoint": "venice",
+      "quantization": null,
+      "context_tokens": 1000000,
+      "input_usd_per_m": 0.13,
+      "output_usd_per_m": 0.26,
+      "cache_read_usd_per_m": 0.028,
+      "uptime_1d_pct": 100,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "StreamLake",
+      "endpoint": "streamlake/fp8",
+      "quantization": "fp8",
+      "context_tokens": 1024000,
+      "input_usd_per_m": 0.132,
+      "output_usd_per_m": 0.396,
+      "cache_read_usd_per_m": 0.0042,
+      "uptime_1d_pct": 99.58,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "Cohere",
+      "endpoint": "cohere/fp8",
+      "quantization": "fp8",
+      "context_tokens": 1048576,
+      "input_usd_per_m": 0.14,
+      "output_usd_per_m": 0.28,
+      "cache_read_usd_per_m": 0.07,
+      "uptime_1d_pct": 99.58,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "Parasail",
+      "endpoint": "parasail/fp8",
+      "quantization": "fp8",
+      "context_tokens": 1048576,
+      "input_usd_per_m": 0.14,
+      "output_usd_per_m": 0.28,
+      "cache_read_usd_per_m": 0.05,
+      "uptime_1d_pct": 99.17,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "Wafer",
+      "endpoint": "wafer/fast",
+      "quantization": "nvfp4",
+      "context_tokens": 1048576,
+      "input_usd_per_m": 0.14,
+      "output_usd_per_m": 0.23,
+      "cache_read_usd_per_m": 0.135,
+      "uptime_1d_pct": 100,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "Mancer 2",
+      "endpoint": "mancer/fp8",
+      "quantization": "fp8",
+      "context_tokens": 1048576,
+      "input_usd_per_m": 0.15,
+      "output_usd_per_m": 0.5,
+      "cache_read_usd_per_m": 0.075,
+      "uptime_1d_pct": 98.7,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "Sail Research",
+      "endpoint": "sail-research/fp4",
+      "quantization": "fp4",
+      "context_tokens": 1048576,
+      "input_usd_per_m": 0.15,
+      "output_usd_per_m": 0.3,
+      "cache_read_usd_per_m": 0.042,
+      "uptime_1d_pct": 99.01,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "Sail Research",
+      "endpoint": "sail-research/us",
+      "quantization": "fp4",
+      "context_tokens": 1048576,
+      "input_usd_per_m": 0.15,
+      "output_usd_per_m": 0.3,
+      "cache_read_usd_per_m": 0.042,
+      "uptime_1d_pct": 98.88,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "SiliconFlow",
+      "endpoint": "siliconflow/fp8",
+      "quantization": "fp8",
+      "context_tokens": 1048576,
+      "input_usd_per_m": 0.22,
+      "output_usd_per_m": 0.66,
+      "cache_read_usd_per_m": 0.028,
+      "uptime_1d_pct": 99.58,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "GMICloud",
+      "endpoint": "gmicloud/fp8",
+      "quantization": "fp8",
+      "context_tokens": 1048575,
+      "input_usd_per_m": 0.286,
+      "output_usd_per_m": 0.858,
+      "cache_read_usd_per_m": 0.0091,
+      "uptime_1d_pct": 100,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "Alibaba",
+      "endpoint": "alibaba",
+      "quantization": null,
+      "context_tokens": 1000000,
+      "input_usd_per_m": 0.352,
+      "output_usd_per_m": 1.056,
+      "cache_read_usd_per_m": 0.0352,
+      "uptime_1d_pct": 100,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "Alibaba",
+      "endpoint": "alibaba/us-east-1",
+      "quantization": null,
+      "context_tokens": 1000000,
+      "input_usd_per_m": 0.374,
+      "output_usd_per_m": 1.122,
+      "cache_read_usd_per_m": 0.0374,
+      "uptime_1d_pct": 100,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "Novita",
+      "endpoint": "novita/fp8",
+      "quantization": "fp8",
+      "context_tokens": 1048576,
+      "input_usd_per_m": 0.4092,
+      "output_usd_per_m": 1.2276,
+      "cache_read_usd_per_m": 0.02604,
+      "uptime_1d_pct": 100,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "AtlasCloud",
+      "endpoint": "atlas-cloud/fp4",
+      "quantization": "fp4",
+      "context_tokens": 1048576,
+      "input_usd_per_m": 0.44,
+      "output_usd_per_m": 1.32,
+      "cache_read_usd_per_m": 0.028,
+      "uptime_1d_pct": 100,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "Baidu",
+      "endpoint": "baidu/fp8",
+      "quantization": "fp8",
+      "context_tokens": 1048576,
+      "input_usd_per_m": 0.44,
+      "output_usd_per_m": 1.32,
+      "cache_read_usd_per_m": 0.014,
+      "uptime_1d_pct": 100,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "Chutes",
+      "endpoint": "chutes/fp8",
+      "quantization": "fp8",
+      "context_tokens": 1048576,
+      "input_usd_per_m": 0.44,
+      "output_usd_per_m": 1.32,
+      "cache_read_usd_per_m": 0.044,
+      "uptime_1d_pct": 100,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "Cloudflare",
+      "endpoint": "cloudflare",
+      "quantization": null,
+      "context_tokens": 1048576,
+      "input_usd_per_m": 0.44,
+      "output_usd_per_m": 1.32,
+      "cache_read_usd_per_m": 0.014,
+      "uptime_1d_pct": 100,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "PrimeIntellect",
+      "endpoint": "primeintellect/fp4",
+      "quantization": "fp4",
+      "context_tokens": 1048576,
+      "input_usd_per_m": 0.44,
+      "output_usd_per_m": 1.32,
+      "cache_read_usd_per_m": 0.014,
+      "uptime_1d_pct": 100,
+      "as_of": "2026-11-18"
+    }
+  ],
+  "cheapest_provider": {
+    "provider": "Wafer",
+    "endpoint": "wafer/us",
+    "quantization": "nvfp4",
+    "context_tokens": 1048576,
+    "input_usd_per_m": 0.0434,
+    "output_usd_per_m": 0.3,
+    "cache_read_usd_per_m": 0.035,
+    "uptime_1d_pct": 100,
+    "as_of": "2026-11-18"
+  },
+  "providers_source": "OpenRouter endpoints API, one row per provider, refreshed daily",
+  "scores": [
+    {
+      "benchmark": "OTIS Mock AIME 2024-2025",
+      "benchmark_slug": "otis-mock-aime-2024-2025",
+      "score": 94.44,
+      "unit": "%",
+      "category": "math",
+      "source": "Epoch AI Benchmarking Hub",
+      "source_url": "https://epoch.ai/data/ai-benchmarking-dashboard",
+      "benchmark_url": "https://benchgecko.ai/benchmark/otis-mock-aime-2024-2025"
+    },
+    {
+      "benchmark": "GPQA diamond",
+      "benchmark_slug": "gpqa-diamond",
+      "score": 91.72,
+      "unit": "%",
+      "category": "knowledge",
+      "source": "Epoch AI Benchmarking Hub",
+      "source_url": "https://epoch.ai/data/ai-benchmarking-dashboard",
+      "benchmark_url": "https://benchgecko.ai/benchmark/gpqa-diamond"
+    },
+    {
+      "benchmark": "ARC-AGI",
+      "benchmark_slug": "arc-agi",
+      "score": 89,
+      "unit": "%",
+      "category": "reasoning",
+      "source": "Epoch AI Benchmarking Hub",
+      "source_url": "https://epoch.ai/data/ai-benchmarking-dashboard",
+      "benchmark_url": "https://benchgecko.ai/benchmark/arc-agi"
+    },
+    {
+      "benchmark": "Dtbench",
+      "benchmark_slug": "dtbench",
+      "score": 84.88,
+      "unit": "%",
+      "category": "general",
+      "source": "Epoch AI Benchmarking Hub",
+      "source_url": "https://epoch.ai/data/ai-benchmarking-dashboard",
+      "benchmark_url": "https://benchgecko.ai/benchmark/dtbench"
+    },
+    {
+      "benchmark": "WeirdML",
+      "benchmark_slug": "weirdml",
+      "score": 62.96,
+      "unit": "%",
+      "category": "coding",
+      "source": "Epoch AI Benchmarking Hub",
+      "source_url": "https://epoch.ai/data/ai-benchmarking-dashboard",
+      "benchmark_url": "https://benchgecko.ai/benchmark/weirdml"
+    },
+    {
+      "benchmark": "ARC-AGI-2",
+      "benchmark_slug": "arc-agi-2",
+      "score": 61.39,
+      "unit": "%",
+      "category": "reasoning",
+      "source": "Epoch AI Benchmarking Hub",
+      "source_url": "https://epoch.ai/data/ai-benchmarking-dashboard",
+      "benchmark_url": "https://benchgecko.ai/benchmark/arc-agi-2"
+    },
+    {
+      "benchmark": "FrontierMath-Tiers-1-3-v2-Private",
+      "benchmark_slug": "frontiermath-tiers-1-3-v2-private",
+      "score": 60.57,
+      "unit": "%",
+      "category": "math",
+      "source": "Epoch AI Benchmarking Hub",
+      "source_url": "https://epoch.ai/data/ai-benchmarking-dashboard",
+      "benchmark_url": "https://benchgecko.ai/benchmark/frontiermath-tiers-1-3-v2-private"
+    },
+    {
+      "benchmark": "Proofbench",
+      "benchmark_slug": "proofbench",
+      "score": 56,
+      "unit": "%",
+      "category": "general",
+      "source": "Epoch AI Benchmarking Hub",
+      "source_url": "https://epoch.ai/data/ai-benchmarking-dashboard",
+      "benchmark_url": "https://benchgecko.ai/benchmark/proofbench"
+    },
+    {
+      "benchmark": "SimpleBench",
+      "benchmark_slug": "simplebench",
+      "score": 53.32,
+      "unit": "%",
+      "category": "reasoning",
+      "source": "Epoch AI Benchmarking Hub",
+      "source_url": "https://epoch.ai/data/ai-benchmarking-dashboard",
+      "benchmark_url": "https://benchgecko.ai/benchmark/simplebench"
+    },
+    {
+      "benchmark": "Lmca",
+      "benchmark_slug": "lmca",
+      "score": 49.09,
+      "unit": "%",
+      "category": "general",
+      "source": "Epoch AI Benchmarking Hub",
+      "source_url": "https://epoch.ai/data/ai-benchmarking-dashboard",
+      "benchmark_url": "https://benchgecko.ai/benchmark/lmca"
+    },
+    {
+      "benchmark": "SimpleQA Verified",
+      "benchmark_slug": "simpleqa-verified",
+      "score": 33.63,
+      "unit": "%",
+      "category": "knowledge",
+      "source": "Epoch AI Benchmarking Hub",
+      "source_url": "https://epoch.ai/data/ai-benchmarking-dashboard",
+      "benchmark_url": "https://benchgecko.ai/benchmark/simpleqa-verified"
+    },
+    {
+      "benchmark": "Chess Puzzles",
+      "benchmark_slug": "chess-puzzles",
+      "score": 28.45,
+      "unit": "%",
+      "category": "knowledge",
+      "source": "Epoch AI Benchmarking Hub",
+      "source_url": "https://epoch.ai/data/ai-benchmarking-dashboard",
+      "benchmark_url": "https://benchgecko.ai/benchmark/chess-puzzles"
+    },
+    {
+      "benchmark": "Mystery Game Puzzles",
+      "benchmark_slug": "mystery-game-puzzles",
+      "score": 27.3,
+      "unit": "%",
+      "category": "general",
+      "source": "Epoch AI Benchmarking Hub",
+      "source_url": "https://epoch.ai/data/ai-benchmarking-dashboard",
+      "benchmark_url": "https://benchgecko.ai/benchmark/mystery-game-puzzles"
+    },
+    {
+      "benchmark": "FrontierMath-Tier-4-v2-Private",
+      "benchmark_slug": "frontiermath-tier-4-v2-private",
+      "score": 24.39,
+      "unit": "%",
+      "category": "math",
+      "source": "Epoch AI Benchmarking Hub",
+      "source_url": "https://epoch.ai/data/ai-benchmarking-dashboard",
+      "benchmark_url": "https://benchgecko.ai/benchmark/frontiermath-tier-4-v2-private"
+    },
+    {
+      "benchmark": "Frontiercode",
+      "benchmark_slug": "frontiercode",
+      "score": 18.8,
+      "unit": "%",
+      "category": "coding",
+      "source": "Epoch AI Benchmarking Hub",
+      "source_url": "https://epoch.ai/data/ai-benchmarking-dashboard",
+      "benchmark_url": "https://benchgecko.ai/benchmark/frontiercode"
+    }
+  ],
+  "gecko_tests": {
+    "gecko_score": 24,
+    "rank": 54,
+    "tests_taken": 4,
+    "tests": [
+      {
+        "test": "who-are-you",
+        "name": "Who Are You",
+        "grade": "E",
+        "value": 66.7,
+        "verdict": "Sometimes says it is Google or Anthropic",
+        "url": "https://benchgecko.ai/gecko-tests/who-are-you"
+      },
+      {
+        "test": "censorship-index",
+        "name": "Censorship Index",
+        "grade": "D",
+        "value": 95,
+        "verdict": "Refuses or dodges 5%",
+        "url": "https://benchgecko.ai/gecko-tests/censorship-index"
+      },
+      {
+        "test": "knowledge-horizon",
+        "name": "Knowledge Horizon",
+        "grade": "D",
+        "value": 35,
+        "verdict": "Knows news up to Jun 2025",
+        "url": "https://benchgecko.ai/gecko-tests/knowledge-horizon"
+      },
+      {
+        "test": "tokenizer-tax",
+        "name": "Tokenizer Tax",
+        "grade": "D",
+        "value": 32,
+        "verdict": "68% more tokens outside English",
+        "url": "https://benchgecko.ai/gecko-tests/tokenizer-tax"
+      }
+    ],
+    "scorecard_url": "https://benchgecko.ai/gecko-tests/scorecard"
+  },
+  "links": {
+    "page": "https://benchgecko.ai/model/deepseek-v4-flash-0731",
+    "json": "https://benchgecko.ai/api/v1/models/deepseek-v4-flash-0731",
+    "price_history": "https://benchgecko.ai/api/v1/price-history/deepseek-v4-flash-0731",
+    "provider_prices": "https://benchgecko.ai/pricing/arbitrage/deepseek-v4-flash-0731"
+  }
+}

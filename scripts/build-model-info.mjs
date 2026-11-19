@@ -10,9 +10,19 @@ import { buildDataset } from '../src/model-data-build.js'
 
 const read = (path) => JSON.parse(fs.readFileSync(new URL(path, import.meta.url), 'utf8'))
 
+/** The newest `data/compass-rank-<date>.json` capture. */
+function newestCompassCapture() {
+  const dir = new URL('../data/', import.meta.url)
+  const names = fs.readdirSync(dir)
+    .filter((name) => /^compass-rank-\d{4}-\d{2}-\d{2}\.json$/.test(name))
+    .sort()
+  if (names.length === 0) throw new Error('no data/compass-rank-<date>.json capture; run scripts/fetch-compass-rank.mjs')
+  return names[names.length - 1]
+}
+
 const base = read('../src/model-info-data.json')
 const benchgecko = read('../data/benchgecko-extracted.json')
-const compass = read('../data/compass-rank-2026-11-18.json')
+const compass = read(`../data/${newestCompassCapture()}`)
 
 /** Sample counts per slug and category, from the raw BenchGecko responses. */
 const counts = {}

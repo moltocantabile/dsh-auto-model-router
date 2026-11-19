@@ -1,1 +1,107 @@
-{"source":"BenchGecko","url":"https://benchgecko.ai/model/qwen3-8-flash","as_of":"2026-11-17","license":"BenchGecko collected data (prices, provider offers, Gecko Tests) is CC BY 4.0 · https://creativecommons.org/licenses/by/4.0/. Benchmark scores belong to their original publishers (see sources) and are aggregated with attribution. Attribution required: \"Source: BenchGecko\" with a link.","attribution":"Source: BenchGecko · https://benchgecko.ai/model/qwen3-8-flash","cite":"Qwen3.8 Flash · benchmarks, pricing and providers. BenchGecko, data as of 2026-11-17. https://benchgecko.ai/model/qwen3-8-flash","slug":"qwen3-8-flash","name":"Qwen3.8 Flash","provider":{"name":"Alibaba Qwen","slug":"alibaba"},"model_type":"multimodal","release_date":"2026-08-26","is_open_source":false,"status":"active","context_window":1000000,"description":"Qwen3.8 Flash is a multimodal reasoning model from Alibaba. It is suited for coding assistance, agentic workflows, visual understanding, document and codebase analysis, desktop interaction, chart analysis, and long-video analysis.","benchgecko_score":null,"avg_score":0,"list_price":{"input_usd_per_m":0.15,"output_usd_per_m":0.47,"source":"OpenRouter models API (checked daily)","as_of":"2026-11-17"},"pricing":{"input":0.15,"output":0.47},"providers":[{"provider":"Alibaba","endpoint":"alibaba","quantization":null,"context_tokens":1000000,"input_usd_per_m":0.15,"output_usd_per_m":0.47,"cache_read_usd_per_m":0.016,"uptime_1d_pct":99.86,"as_of":"2026-11-17"},{"provider":"Alibaba","endpoint":"alibaba/us-east-1","quantization":null,"context_tokens":1000000,"input_usd_per_m":0.15,"output_usd_per_m":0.47,"cache_read_usd_per_m":0.016,"uptime_1d_pct":99.58,"as_of":"2026-11-17"}],"cheapest_provider":{"provider":"Alibaba","endpoint":"alibaba","quantization":null,"context_tokens":1000000,"input_usd_per_m":0.15,"output_usd_per_m":0.47,"cache_read_usd_per_m":0.016,"uptime_1d_pct":99.86,"as_of":"2026-11-17"},"providers_source":"OpenRouter endpoints API, one row per provider, refreshed daily","scores":[],"gecko_tests":{"gecko_score":67,"rank":8,"tests_taken":3,"tests":[{"test":"who-are-you","name":"Who Are You","grade":"B","value":100,"verdict":"Knows who made it","url":"https://benchgecko.ai/gecko-tests/who-are-you"},{"test":"knowledge-horizon","name":"Knowledge Horizon","grade":"C","value":50,"verdict":"Knows news up to Oct 2025","url":"https://benchgecko.ai/gecko-tests/knowledge-horizon"},{"test":"tokenizer-tax","name":"Tokenizer Tax","grade":"A","value":64.6,"verdict":"35% more tokens outside English","url":"https://benchgecko.ai/gecko-tests/tokenizer-tax"}],"scorecard_url":"https://benchgecko.ai/gecko-tests/scorecard"},"links":{"page":"https://benchgecko.ai/model/qwen3-8-flash","json":"https://benchgecko.ai/api/v1/models/qwen3-8-flash","price_history":"https://benchgecko.ai/api/v1/price-history/qwen3-8-flash","provider_prices":"https://benchgecko.ai/pricing/arbitrage/qwen3-8-flash"}}
+{
+  "source": "BenchGecko",
+  "url": "https://benchgecko.ai/model/qwen3-8-flash",
+  "as_of": "2026-11-18",
+  "license": "BenchGecko collected data (prices, provider offers, Gecko Tests) is CC BY 4.0 · https://creativecommons.org/licenses/by/4.0/. Benchmark scores belong to their original publishers (see sources) and are aggregated with attribution. Attribution required: \"Source: BenchGecko\" with a link.",
+  "attribution": "Source: BenchGecko · https://benchgecko.ai/model/qwen3-8-flash",
+  "cite": "Qwen3.8 Flash · benchmarks, pricing and providers. BenchGecko, data as of 2026-11-18. https://benchgecko.ai/model/qwen3-8-flash",
+  "slug": "qwen3-8-flash",
+  "name": "Qwen3.8 Flash",
+  "provider": {
+    "name": "Alibaba Qwen",
+    "slug": "alibaba"
+  },
+  "model_type": "multimodal",
+  "release_date": "2026-08-26",
+  "is_open_source": false,
+  "status": "active",
+  "context_window": 1000000,
+  "description": "Qwen3.8 Flash is a multimodal reasoning model from Alibaba. It is suited for coding assistance, agentic workflows, visual understanding, document and codebase analysis, desktop interaction, chart analysis, and long-video analysis.",
+  "benchgecko_score": null,
+  "avg_score": 0,
+  "list_price": {
+    "input_usd_per_m": 0.15,
+    "output_usd_per_m": 0.47,
+    "source": "OpenRouter models API (checked daily)",
+    "as_of": "2026-11-18"
+  },
+  "pricing": {
+    "input": 0.15,
+    "output": 0.47
+  },
+  "providers": [
+    {
+      "provider": "Alibaba",
+      "endpoint": "alibaba",
+      "quantization": null,
+      "context_tokens": 1000000,
+      "input_usd_per_m": 0.15,
+      "output_usd_per_m": 0.47,
+      "cache_read_usd_per_m": 0.016,
+      "uptime_1d_pct": 100,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "Alibaba",
+      "endpoint": "alibaba/us-east-1",
+      "quantization": null,
+      "context_tokens": 1000000,
+      "input_usd_per_m": 0.15,
+      "output_usd_per_m": 0.47,
+      "cache_read_usd_per_m": 0.016,
+      "uptime_1d_pct": 100,
+      "as_of": "2026-11-18"
+    }
+  ],
+  "cheapest_provider": {
+    "provider": "Alibaba",
+    "endpoint": "alibaba",
+    "quantization": null,
+    "context_tokens": 1000000,
+    "input_usd_per_m": 0.15,
+    "output_usd_per_m": 0.47,
+    "cache_read_usd_per_m": 0.016,
+    "uptime_1d_pct": 100,
+    "as_of": "2026-11-18"
+  },
+  "providers_source": "OpenRouter endpoints API, one row per provider, refreshed daily",
+  "scores": [],
+  "gecko_tests": {
+    "gecko_score": 67,
+    "rank": 8,
+    "tests_taken": 3,
+    "tests": [
+      {
+        "test": "who-are-you",
+        "name": "Who Are You",
+        "grade": "B",
+        "value": 100,
+        "verdict": "Knows who made it",
+        "url": "https://benchgecko.ai/gecko-tests/who-are-you"
+      },
+      {
+        "test": "knowledge-horizon",
+        "name": "Knowledge Horizon",
+        "grade": "C",
+        "value": 50,
+        "verdict": "Knows news up to Oct 2025",
+        "url": "https://benchgecko.ai/gecko-tests/knowledge-horizon"
+      },
+      {
+        "test": "tokenizer-tax",
+        "name": "Tokenizer Tax",
+        "grade": "A",
+        "value": 64.6,
+        "verdict": "35% more tokens outside English",
+        "url": "https://benchgecko.ai/gecko-tests/tokenizer-tax"
+      }
+    ],
+    "scorecard_url": "https://benchgecko.ai/gecko-tests/scorecard"
+  },
+  "links": {
+    "page": "https://benchgecko.ai/model/qwen3-8-flash",
+    "json": "https://benchgecko.ai/api/v1/models/qwen3-8-flash",
+    "price_history": "https://benchgecko.ai/api/v1/price-history/qwen3-8-flash",
+    "provider_prices": "https://benchgecko.ai/pricing/arbitrage/qwen3-8-flash"
+  }
+}

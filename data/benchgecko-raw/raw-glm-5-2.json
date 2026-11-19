@@ -1,0 +1,816 @@
+{
+  "source": "BenchGecko",
+  "url": "https://benchgecko.ai/model/glm-5-2",
+  "as_of": "2026-11-18",
+  "license": "BenchGecko collected data (prices, provider offers, Gecko Tests) is CC BY 4.0 · https://creativecommons.org/licenses/by/4.0/. Benchmark scores belong to their original publishers (see sources) and are aggregated with attribution. Attribution required: \"Source: BenchGecko\" with a link.",
+  "attribution": "Source: BenchGecko · https://benchgecko.ai/model/glm-5-2",
+  "cite": "GLM 5.2 · benchmarks, pricing and providers. BenchGecko, data as of 2026-11-18. https://benchgecko.ai/model/glm-5-2",
+  "slug": "glm-5-2",
+  "name": "GLM 5.2",
+  "provider": {
+    "name": "z-ai",
+    "slug": "z-ai"
+  },
+  "model_type": "text",
+  "release_date": "2026-06-16",
+  "is_open_source": true,
+  "status": "active",
+  "context_window": 1048576,
+  "description": "GLM 5.2 is a large-scale reasoning model from Z.ai. It supports text input and output with a 1M-token context window, and is suited for long-horizon agent workflows, project-level software engineering,...",
+  "benchgecko_score": {
+    "value": 62.5,
+    "rank": 74,
+    "of": 328,
+    "method": "Normalized average of public benchmark scores",
+    "method_url": "https://benchgecko.ai/methodology"
+  },
+  "avg_score": 62.5,
+  "list_price": {
+    "input_usd_per_m": 0.007,
+    "output_usd_per_m": 6.8,
+    "source": "OpenRouter models API (checked daily)",
+    "as_of": "2026-11-18"
+  },
+  "pricing": {
+    "input": 0.007,
+    "output": 6.8
+  },
+  "providers": [
+    {
+      "provider": "Relace",
+      "endpoint": "relace/fp4",
+      "quantization": "fp4",
+      "context_tokens": 1048576,
+      "input_usd_per_m": 0.0066,
+      "output_usd_per_m": 7.9833,
+      "cache_read_usd_per_m": 0.0066,
+      "uptime_1d_pct": 100,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "Wafer",
+      "endpoint": "wafer/us",
+      "quantization": "fp4",
+      "context_tokens": 1048576,
+      "input_usd_per_m": 0.007,
+      "output_usd_per_m": 6.8,
+      "cache_read_usd_per_m": 0.006,
+      "uptime_1d_pct": 100,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "Cloudflare",
+      "endpoint": "cloudflare",
+      "quantization": null,
+      "context_tokens": 262144,
+      "input_usd_per_m": 0.19,
+      "output_usd_per_m": 8,
+      "cache_read_usd_per_m": 0.19,
+      "uptime_1d_pct": 100,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "Wafer",
+      "endpoint": "wafer",
+      "quantization": "fp4",
+      "context_tokens": 1048576,
+      "input_usd_per_m": 0.19,
+      "output_usd_per_m": 8,
+      "cache_read_usd_per_m": 0.18,
+      "uptime_1d_pct": 100,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "DeepInfra",
+      "endpoint": "deepinfra/fp4/flex",
+      "quantization": "fp4",
+      "context_tokens": 1048576,
+      "input_usd_per_m": 0.45,
+      "output_usd_per_m": 1.44,
+      "cache_read_usd_per_m": 0.084,
+      "uptime_1d_pct": 100,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "DeepInfra",
+      "endpoint": "deepinfra/fp4",
+      "quantization": "fp4",
+      "context_tokens": 1048576,
+      "input_usd_per_m": 0.5625,
+      "output_usd_per_m": 1.8,
+      "cache_read_usd_per_m": 0.105,
+      "uptime_1d_pct": 99.36,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "Ambient",
+      "endpoint": "ambient/fp8",
+      "quantization": "fp8",
+      "context_tokens": 202752,
+      "input_usd_per_m": 0.6,
+      "output_usd_per_m": 2,
+      "cache_read_usd_per_m": 0.15,
+      "uptime_1d_pct": 86.1,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "StreamLake",
+      "endpoint": "streamlake/fp8",
+      "quantization": "fp8",
+      "context_tokens": 1024000,
+      "input_usd_per_m": 0.61306,
+      "output_usd_per_m": 1.92676,
+      "cache_read_usd_per_m": 0.113854,
+      "uptime_1d_pct": 100,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "CoreWeave",
+      "endpoint": "coreweave/fp4",
+      "quantization": "fp4",
+      "context_tokens": 1048576,
+      "input_usd_per_m": 0.62,
+      "output_usd_per_m": 2.42,
+      "cache_read_usd_per_m": 0.14,
+      "uptime_1d_pct": 97.15,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "Morph",
+      "endpoint": "morph/fp8",
+      "quantization": "fp8",
+      "context_tokens": 1048576,
+      "input_usd_per_m": 0.643,
+      "output_usd_per_m": 1.978,
+      "cache_read_usd_per_m": 0.217,
+      "uptime_1d_pct": 100,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "Novita",
+      "endpoint": "novita/fp8",
+      "quantization": "fp8",
+      "context_tokens": 1048576,
+      "input_usd_per_m": 0.6496,
+      "output_usd_per_m": 2.0416,
+      "cache_read_usd_per_m": 0.12064,
+      "uptime_1d_pct": 100,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "SiliconFlow",
+      "endpoint": "siliconflow/fp8",
+      "quantization": "fp8",
+      "context_tokens": 1048576,
+      "input_usd_per_m": 0.651,
+      "output_usd_per_m": 2.046,
+      "cache_read_usd_per_m": 0.13,
+      "uptime_1d_pct": 99.93,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "DigitalOcean",
+      "endpoint": "digitalocean",
+      "quantization": null,
+      "context_tokens": 1048576,
+      "input_usd_per_m": 0.7,
+      "output_usd_per_m": 2.2,
+      "cache_read_usd_per_m": 0.105,
+      "uptime_1d_pct": 99.9,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "DeepInfra",
+      "endpoint": "deepinfra/fp4/priority",
+      "quantization": "fp4",
+      "context_tokens": 1048576,
+      "input_usd_per_m": 0.84375,
+      "output_usd_per_m": 2.7,
+      "cache_read_usd_per_m": 0.1575,
+      "uptime_1d_pct": 96.64,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "AtlasCloud",
+      "endpoint": "atlas-cloud/fp8",
+      "quantization": "fp8",
+      "context_tokens": 1048576,
+      "input_usd_per_m": 0.938,
+      "output_usd_per_m": 2.948,
+      "cache_read_usd_per_m": 0.1742,
+      "uptime_1d_pct": 100,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "Alibaba",
+      "endpoint": "alibaba/fp8",
+      "quantization": "fp8",
+      "context_tokens": 1000000,
+      "input_usd_per_m": 0.966,
+      "output_usd_per_m": 3.036,
+      "cache_read_usd_per_m": 0.1932,
+      "uptime_1d_pct": 98.37,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "Alibaba",
+      "endpoint": "alibaba/fp8/us-east-1",
+      "quantization": "fp8",
+      "context_tokens": 1000000,
+      "input_usd_per_m": 1.12,
+      "output_usd_per_m": 3.52,
+      "cache_read_usd_per_m": 0.224,
+      "uptime_1d_pct": 100,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "Baidu",
+      "endpoint": "baidu/fp8",
+      "quantization": "fp8",
+      "context_tokens": 1048576,
+      "input_usd_per_m": 1.4,
+      "output_usd_per_m": 4.4,
+      "cache_read_usd_per_m": 0.26,
+      "uptime_1d_pct": null,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "BaseTen",
+      "endpoint": "baseten/fp8",
+      "quantization": "fp8",
+      "context_tokens": 1048576,
+      "input_usd_per_m": 1.4,
+      "output_usd_per_m": 4.4,
+      "cache_read_usd_per_m": 0.14,
+      "uptime_1d_pct": 100,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "BaseTen",
+      "endpoint": "baseten/fp8/us",
+      "quantization": "fp8",
+      "context_tokens": 1048576,
+      "input_usd_per_m": 1.4,
+      "output_usd_per_m": 4.4,
+      "cache_read_usd_per_m": 0.14,
+      "uptime_1d_pct": 100,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "Friendli",
+      "endpoint": "friendli",
+      "quantization": null,
+      "context_tokens": 1048576,
+      "input_usd_per_m": 1.4,
+      "output_usd_per_m": 4.4,
+      "cache_read_usd_per_m": 0.26,
+      "uptime_1d_pct": 99.37,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "GMICloud",
+      "endpoint": "gmicloud/fp8",
+      "quantization": "fp8",
+      "context_tokens": 1048576,
+      "input_usd_per_m": 1.4,
+      "output_usd_per_m": 4.4,
+      "cache_read_usd_per_m": 0.26,
+      "uptime_1d_pct": 100,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "Inceptron",
+      "endpoint": "inceptron/fp4",
+      "quantization": "fp4",
+      "context_tokens": 1048576,
+      "input_usd_per_m": 1.4,
+      "output_usd_per_m": 4.4,
+      "cache_read_usd_per_m": 0.26,
+      "uptime_1d_pct": 100,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "Mistral",
+      "endpoint": "mistral/zdr",
+      "quantization": null,
+      "context_tokens": 1048576,
+      "input_usd_per_m": 1.4,
+      "output_usd_per_m": 4.4,
+      "cache_read_usd_per_m": 0.14,
+      "uptime_1d_pct": 97.98,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "Nebius",
+      "endpoint": "nebius/fp4",
+      "quantization": "fp4",
+      "context_tokens": 1048576,
+      "input_usd_per_m": 1.4,
+      "output_usd_per_m": 4.4,
+      "cache_read_usd_per_m": 0.14,
+      "uptime_1d_pct": 100,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "Parasail",
+      "endpoint": "parasail/fp4",
+      "quantization": "fp4",
+      "context_tokens": 262144,
+      "input_usd_per_m": 1.4,
+      "output_usd_per_m": 4.4,
+      "cache_read_usd_per_m": 0.26,
+      "uptime_1d_pct": 99.46,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "Together",
+      "endpoint": "together",
+      "quantization": null,
+      "context_tokens": 1048575,
+      "input_usd_per_m": 1.4,
+      "output_usd_per_m": 4.4,
+      "cache_read_usd_per_m": 0.26,
+      "uptime_1d_pct": 100,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "Venice",
+      "endpoint": "venice/fp8",
+      "quantization": "fp8",
+      "context_tokens": 1000000,
+      "input_usd_per_m": 1.4,
+      "output_usd_per_m": 4.4,
+      "cache_read_usd_per_m": 0.26,
+      "uptime_1d_pct": 100,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "Z.AI",
+      "endpoint": "z-ai/fp8",
+      "quantization": "fp8",
+      "context_tokens": 1048576,
+      "input_usd_per_m": 1.4,
+      "output_usd_per_m": 4.4,
+      "cache_read_usd_per_m": 0.26,
+      "uptime_1d_pct": 100,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "Mistral",
+      "endpoint": "mistral/eu",
+      "quantization": null,
+      "context_tokens": 1048576,
+      "input_usd_per_m": 1.54,
+      "output_usd_per_m": 4.84,
+      "cache_read_usd_per_m": 0.154,
+      "uptime_1d_pct": 99.66,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "BaseTen",
+      "endpoint": "baseten/fast",
+      "quantization": "fp8",
+      "context_tokens": 1048576,
+      "input_usd_per_m": 2.1,
+      "output_usd_per_m": 6.6,
+      "cache_read_usd_per_m": 0.21,
+      "uptime_1d_pct": 100,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "BaseTen",
+      "endpoint": "baseten/us/fast",
+      "quantization": "fp8",
+      "context_tokens": 1048576,
+      "input_usd_per_m": 2.1,
+      "output_usd_per_m": 6.6,
+      "cache_read_usd_per_m": 0.21,
+      "uptime_1d_pct": 100,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "Baidu",
+      "endpoint": "baidu/fast",
+      "quantization": "fp4",
+      "context_tokens": 1048576,
+      "input_usd_per_m": 2.25,
+      "output_usd_per_m": 7.88,
+      "cache_read_usd_per_m": 0.56,
+      "uptime_1d_pct": 99.72,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "Alibaba",
+      "endpoint": "alibaba/fast",
+      "quantization": "fp8",
+      "context_tokens": 1000000,
+      "input_usd_per_m": 2.31,
+      "output_usd_per_m": 7.26,
+      "cache_read_usd_per_m": 0.462,
+      "uptime_1d_pct": 92.86,
+      "as_of": "2026-11-18"
+    }
+  ],
+  "cheapest_provider": {
+    "provider": "Relace",
+    "endpoint": "relace/fp4",
+    "quantization": "fp4",
+    "context_tokens": 1048576,
+    "input_usd_per_m": 0.0066,
+    "output_usd_per_m": 7.9833,
+    "cache_read_usd_per_m": 0.0066,
+    "uptime_1d_pct": 100,
+    "as_of": "2026-11-18"
+  },
+  "providers_source": "OpenRouter endpoints API, one row per provider, refreshed daily",
+  "scores": [
+    {
+      "benchmark": "Chatbot Arena Elo · Coding",
+      "benchmark_slug": "arena-elo-coding",
+      "score": 1593.25,
+      "unit": "elo",
+      "category": "arena",
+      "source": "LMArena",
+      "source_url": "https://lmarena.ai/leaderboard",
+      "benchmark_url": "https://benchgecko.ai/benchmark/arena-elo-coding"
+    },
+    {
+      "benchmark": "Chatbot Arena Elo · Overall",
+      "benchmark_slug": "arena-elo-overall",
+      "score": 1470.99,
+      "unit": "elo",
+      "category": "arena",
+      "source": "LMArena",
+      "source_url": "https://lmarena.ai/leaderboard",
+      "benchmark_url": "https://benchgecko.ai/benchmark/arena-elo-overall"
+    },
+    {
+      "benchmark": "GPQA diamond",
+      "benchmark_slug": "gpqa-diamond",
+      "score": 92.86,
+      "unit": "%",
+      "category": "knowledge",
+      "source": "Epoch AI Benchmarking Hub",
+      "source_url": "https://epoch.ai/data/ai-benchmarking-dashboard",
+      "benchmark_url": "https://benchgecko.ai/benchmark/gpqa-diamond"
+    },
+    {
+      "benchmark": "LiveBench · Mathematics",
+      "benchmark_slug": "livebench-mathematics",
+      "score": 89.78,
+      "unit": "%",
+      "category": "math",
+      "source": "LiveBench",
+      "source_url": "https://livebench.ai",
+      "benchmark_url": "https://benchgecko.ai/benchmark/livebench-mathematics"
+    },
+    {
+      "benchmark": "Dtbench",
+      "benchmark_slug": "dtbench",
+      "score": 89.33,
+      "unit": "%",
+      "category": "general",
+      "source": "Epoch AI Benchmarking Hub",
+      "source_url": "https://epoch.ai/data/ai-benchmarking-dashboard",
+      "benchmark_url": "https://benchgecko.ai/benchmark/dtbench"
+    },
+    {
+      "benchmark": "OTIS Mock AIME 2024-2025",
+      "benchmark_slug": "otis-mock-aime-2024-2025",
+      "score": 86.38,
+      "unit": "%",
+      "category": "math",
+      "source": "Epoch AI Benchmarking Hub",
+      "source_url": "https://epoch.ai/data/ai-benchmarking-dashboard",
+      "benchmark_url": "https://benchgecko.ai/benchmark/otis-mock-aime-2024-2025"
+    },
+    {
+      "benchmark": "LiveBench · Coding",
+      "benchmark_slug": "livebench-coding",
+      "score": 79.65,
+      "unit": "%",
+      "category": "coding",
+      "source": "LiveBench",
+      "source_url": "https://livebench.ai",
+      "benchmark_url": "https://benchgecko.ai/benchmark/livebench-coding"
+    },
+    {
+      "benchmark": "SWE-Bench verified",
+      "benchmark_slug": "swe-bench-verified",
+      "score": 78.7,
+      "unit": "%",
+      "category": "coding",
+      "source": "Epoch AI Benchmarking Hub",
+      "source_url": "https://epoch.ai/data/ai-benchmarking-dashboard",
+      "benchmark_url": "https://benchgecko.ai/benchmark/swe-bench-verified"
+    },
+    {
+      "benchmark": "LiveBench · Reasoning",
+      "benchmark_slug": "livebench-reasoning",
+      "score": 78.63,
+      "unit": "%",
+      "category": "reasoning",
+      "source": "LiveBench",
+      "source_url": "https://livebench.ai",
+      "benchmark_url": "https://benchgecko.ai/benchmark/livebench-reasoning"
+    },
+    {
+      "benchmark": "ARC-AGI",
+      "benchmark_slug": "arc-agi",
+      "score": 77,
+      "unit": "%",
+      "category": "reasoning",
+      "source": "Epoch AI Benchmarking Hub",
+      "source_url": "https://epoch.ai/data/ai-benchmarking-dashboard",
+      "benchmark_url": "https://benchgecko.ai/benchmark/arc-agi"
+    },
+    {
+      "benchmark": "LiveBench · Language",
+      "benchmark_slug": "livebench-language",
+      "score": 76.24,
+      "unit": "%",
+      "category": "language",
+      "source": "LiveBench",
+      "source_url": "https://livebench.ai",
+      "benchmark_url": "https://benchgecko.ai/benchmark/livebench-language"
+    },
+    {
+      "benchmark": "LiveBench · Overall",
+      "benchmark_slug": "livebench-overall",
+      "score": 76.24,
+      "unit": "%",
+      "category": "knowledge",
+      "source": "LiveBench",
+      "source_url": "https://livebench.ai",
+      "benchmark_url": "https://benchgecko.ai/benchmark/livebench-overall"
+    },
+    {
+      "benchmark": "LiveBench · Data Analysis",
+      "benchmark_slug": "livebench-data-analysis",
+      "score": 73.74,
+      "unit": "%",
+      "category": "reasoning",
+      "source": "LiveBench",
+      "source_url": "https://livebench.ai",
+      "benchmark_url": "https://benchgecko.ai/benchmark/livebench-data-analysis"
+    },
+    {
+      "benchmark": "LiveBench · Agentic Coding",
+      "benchmark_slug": "livebench-agentic-coding",
+      "score": 73.33,
+      "unit": "%",
+      "category": "coding",
+      "source": "LiveBench",
+      "source_url": "https://livebench.ai",
+      "benchmark_url": "https://benchgecko.ai/benchmark/livebench-agentic-coding"
+    },
+    {
+      "benchmark": "WeirdML",
+      "benchmark_slug": "weirdml",
+      "score": 70.12,
+      "unit": "%",
+      "category": "coding",
+      "source": "Epoch AI Benchmarking Hub",
+      "source_url": "https://epoch.ai/data/ai-benchmarking-dashboard",
+      "benchmark_url": "https://benchgecko.ai/benchmark/weirdml"
+    },
+    {
+      "benchmark": "Artificial Analysis · Coding Index",
+      "benchmark_slug": "aa-coding-index",
+      "score": 68.76,
+      "unit": "index",
+      "category": "speed",
+      "source": "Artificial Analysis",
+      "source_url": "https://artificialanalysis.ai",
+      "benchmark_url": "https://benchgecko.ai/benchmark/aa-coding-index"
+    },
+    {
+      "benchmark": "FrontierMath-Tiers-1-3-v2-Private",
+      "benchmark_slug": "frontiermath-tiers-1-3-v2-private",
+      "score": 62.32,
+      "unit": "%",
+      "category": "math",
+      "source": "Epoch AI Benchmarking Hub",
+      "source_url": "https://epoch.ai/data/ai-benchmarking-dashboard",
+      "benchmark_url": "https://benchgecko.ai/benchmark/frontiermath-tiers-1-3-v2-private"
+    },
+    {
+      "benchmark": "LiveBench · If",
+      "benchmark_slug": "livebench-if",
+      "score": 62.29,
+      "unit": "%",
+      "category": "language",
+      "source": "LiveBench",
+      "source_url": "https://livebench.ai",
+      "benchmark_url": "https://benchgecko.ai/benchmark/livebench-if"
+    },
+    {
+      "benchmark": "Surface Evolver Bench",
+      "benchmark_slug": "surface-evolver-bench",
+      "score": 55.63,
+      "unit": "%",
+      "category": "general",
+      "source": "Epoch AI Benchmarking Hub",
+      "source_url": "https://epoch.ai/data/ai-benchmarking-dashboard",
+      "benchmark_url": "https://benchgecko.ai/benchmark/surface-evolver-bench"
+    },
+    {
+      "benchmark": "Lmca",
+      "benchmark_slug": "lmca",
+      "score": 53.91,
+      "unit": "%",
+      "category": "general",
+      "source": "Epoch AI Benchmarking Hub",
+      "source_url": "https://epoch.ai/data/ai-benchmarking-dashboard",
+      "benchmark_url": "https://benchgecko.ai/benchmark/lmca"
+    },
+    {
+      "benchmark": "Artificial Analysis · Quality Index",
+      "benchmark_slug": "aa-quality-index",
+      "score": 51.09,
+      "unit": "index",
+      "category": "speed",
+      "source": "Artificial Analysis",
+      "source_url": "https://artificialanalysis.ai",
+      "benchmark_url": "https://benchgecko.ai/benchmark/aa-quality-index"
+    },
+    {
+      "benchmark": "SimpleBench",
+      "benchmark_slug": "simplebench",
+      "score": 50.56,
+      "unit": "%",
+      "category": "reasoning",
+      "source": "Epoch AI Benchmarking Hub",
+      "source_url": "https://epoch.ai/data/ai-benchmarking-dashboard",
+      "benchmark_url": "https://benchgecko.ai/benchmark/simplebench"
+    },
+    {
+      "benchmark": "APEX-Agents",
+      "benchmark_slug": "apex-agents",
+      "score": 45.2,
+      "unit": "%",
+      "category": "agentic",
+      "source": "Epoch AI Benchmarking Hub",
+      "source_url": "https://epoch.ai/data/ai-benchmarking-dashboard",
+      "benchmark_url": "https://benchgecko.ai/benchmark/apex-agents"
+    },
+    {
+      "benchmark": "Deepswe",
+      "benchmark_slug": "deepswe",
+      "score": 43.78,
+      "unit": "%",
+      "category": "coding",
+      "source": "Epoch AI Benchmarking Hub",
+      "source_url": "https://epoch.ai/data/ai-benchmarking-dashboard",
+      "benchmark_url": "https://benchgecko.ai/benchmark/deepswe"
+    },
+    {
+      "benchmark": "Artificial Analysis · Agentic Index",
+      "benchmark_slug": "aa-agentic-index",
+      "score": 43.06,
+      "unit": "index",
+      "category": "speed",
+      "source": "Artificial Analysis",
+      "source_url": "https://artificialanalysis.ai",
+      "benchmark_url": "https://benchgecko.ai/benchmark/aa-agentic-index"
+    },
+    {
+      "benchmark": "Mirrorcode",
+      "benchmark_slug": "mirrorcode",
+      "score": 36.67,
+      "unit": "%",
+      "category": "coding",
+      "source": "Epoch AI Benchmarking Hub",
+      "source_url": "https://epoch.ai/data/ai-benchmarking-dashboard",
+      "benchmark_url": "https://benchgecko.ai/benchmark/mirrorcode"
+    },
+    {
+      "benchmark": "Proofbench",
+      "benchmark_slug": "proofbench",
+      "score": 35,
+      "unit": "%",
+      "category": "general",
+      "source": "Epoch AI Benchmarking Hub",
+      "source_url": "https://epoch.ai/data/ai-benchmarking-dashboard",
+      "benchmark_url": "https://benchgecko.ai/benchmark/proofbench"
+    },
+    {
+      "benchmark": "SimpleQA Verified",
+      "benchmark_slug": "simpleqa-verified",
+      "score": 34.2,
+      "unit": "%",
+      "category": "knowledge",
+      "source": "Epoch AI Benchmarking Hub",
+      "source_url": "https://epoch.ai/data/ai-benchmarking-dashboard",
+      "benchmark_url": "https://benchgecko.ai/benchmark/simpleqa-verified"
+    },
+    {
+      "benchmark": "PostTrainBench",
+      "benchmark_slug": "posttrainbench",
+      "score": 30.4,
+      "unit": "%",
+      "category": "knowledge",
+      "source": "Epoch AI Benchmarking Hub",
+      "source_url": "https://epoch.ai/data/ai-benchmarking-dashboard",
+      "benchmark_url": "https://benchgecko.ai/benchmark/posttrainbench"
+    },
+    {
+      "benchmark": "FrontierMath-Tier-4-v2-Private",
+      "benchmark_slug": "frontiermath-tier-4-v2-private",
+      "score": 29.27,
+      "unit": "%",
+      "category": "math",
+      "source": "Epoch AI Benchmarking Hub",
+      "source_url": "https://epoch.ai/data/ai-benchmarking-dashboard",
+      "benchmark_url": "https://benchgecko.ai/benchmark/frontiermath-tier-4-v2-private"
+    },
+    {
+      "benchmark": "Frontiercode",
+      "benchmark_slug": "frontiercode",
+      "score": 24.5,
+      "unit": "%",
+      "category": "coding",
+      "source": "Epoch AI Benchmarking Hub",
+      "source_url": "https://epoch.ai/data/ai-benchmarking-dashboard",
+      "benchmark_url": "https://benchgecko.ai/benchmark/frontiercode"
+    },
+    {
+      "benchmark": "ARC-AGI-2",
+      "benchmark_slug": "arc-agi-2",
+      "score": 22.78,
+      "unit": "%",
+      "category": "reasoning",
+      "source": "Epoch AI Benchmarking Hub",
+      "source_url": "https://epoch.ai/data/ai-benchmarking-dashboard",
+      "benchmark_url": "https://benchgecko.ai/benchmark/arc-agi-2"
+    },
+    {
+      "benchmark": "Chess Puzzles",
+      "benchmark_slug": "chess-puzzles",
+      "score": 17.93,
+      "unit": "%",
+      "category": "knowledge",
+      "source": "Epoch AI Benchmarking Hub",
+      "source_url": "https://epoch.ai/data/ai-benchmarking-dashboard",
+      "benchmark_url": "https://benchgecko.ai/benchmark/chess-puzzles"
+    },
+    {
+      "benchmark": "Mystery Game Puzzles",
+      "benchmark_slug": "mystery-game-puzzles",
+      "score": 10.77,
+      "unit": "%",
+      "category": "general",
+      "source": "Epoch AI Benchmarking Hub",
+      "source_url": "https://epoch.ai/data/ai-benchmarking-dashboard",
+      "benchmark_url": "https://benchgecko.ai/benchmark/mystery-game-puzzles"
+    },
+    {
+      "benchmark": "Ebr Bench",
+      "benchmark_slug": "ebr-bench",
+      "score": 9.52,
+      "unit": "%",
+      "category": "general",
+      "source": "Epoch AI Benchmarking Hub",
+      "source_url": "https://epoch.ai/data/ai-benchmarking-dashboard",
+      "benchmark_url": "https://benchgecko.ai/benchmark/ebr-bench"
+    }
+  ],
+  "gecko_tests": {
+    "gecko_score": 23,
+    "rank": 55,
+    "tests_taken": 3,
+    "tests": [
+      {
+        "test": "who-are-you",
+        "name": "Who Are You",
+        "grade": "D",
+        "value": 83.3,
+        "verdict": "Sometimes says it is Google",
+        "url": "https://benchgecko.ai/gecko-tests/who-are-you"
+      },
+      {
+        "test": "knowledge-horizon",
+        "name": "Knowledge Horizon",
+        "grade": "D",
+        "value": 20,
+        "verdict": "Knows news up to Feb 2025",
+        "url": "https://benchgecko.ai/gecko-tests/knowledge-horizon"
+      },
+      {
+        "test": "tokenizer-tax",
+        "name": "Tokenizer Tax",
+        "grade": "D",
+        "value": 30.4,
+        "verdict": "70% more tokens outside English",
+        "url": "https://benchgecko.ai/gecko-tests/tokenizer-tax"
+      }
+    ],
+    "scorecard_url": "https://benchgecko.ai/gecko-tests/scorecard"
+  },
+  "links": {
+    "page": "https://benchgecko.ai/model/glm-5-2",
+    "json": "https://benchgecko.ai/api/v1/models/glm-5-2",
+    "price_history": "https://benchgecko.ai/api/v1/price-history/glm-5-2",
+    "provider_prices": "https://benchgecko.ai/pricing/arbitrage/glm-5-2"
+  }
+}

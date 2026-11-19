@@ -1,0 +1,766 @@
+{
+  "kimi-k3.1-pro": {
+    "name": "kimi-k3.1-pro",
+    "org": null,
+    "released": "2026-10-23",
+    "ability": {
+      "Average": 78.47,
+      "Knowledge": 72,
+      "Abstraction": 80,
+      "Reasoning": 87.5,
+      "Interaction": 75.86,
+      "Safety": 82.93,
+      "Agent": 72.53,
+      "thinkingTokenCost": 0,
+      "responseTokenCost": 6038.95
+    },
+    "bench": {
+      "KnowledgeWork.Average": 70.59,
+      "KnowledgeWork.OC-Turnkey": 76.83,
+      "KnowledgeWork.OC-WorkFlowBench": 90.28,
+      "KnowledgeWork.GDP.pdf": 32.2,
+      "Programming.Average": 60.41,
+      "Programming.SWE-bench Pro Verified": 58.78,
+      "Programming.Terminal-Bench 4.0": 62.85,
+      "Science.Average": 53.23,
+      "Science.Terminal-Bench-Science 0.1": 33.6,
+      "Science.EESE": 82.67,
+      "General.Average": 35.71,
+      "General.OC-KnowScope": 36.67,
+      "General.HLE-Diamond": 34.26
+    }
+  },
+  "claude-opus-5-5": {
+    "name": "claude-opus-5-5",
+    "org": null,
+    "released": "2026-09-22",
+    "ability": {
+      "Average": 78.25,
+      "Knowledge": 80,
+      "Abstraction": 75,
+      "Reasoning": 84.62,
+      "Interaction": 72.41,
+      "Safety": 85.37,
+      "Agent": 72.12,
+      "thinkingTokenCost": 0,
+      "responseTokenCost": 6887.41
+    },
+    "bench": {
+      "KnowledgeWork.Average": 75.98,
+      "KnowledgeWork.OC-Turnkey": 85.24,
+      "KnowledgeWork.OC-WorkFlowBench": 95.56,
+      "KnowledgeWork.GDP.pdf": 28.6,
+      "Programming.Average": 65.35,
+      "Programming.SWE-bench Pro Verified": 65.23,
+      "Programming.Terminal-Bench 4.0": 65.54,
+      "Science.Average": 70.73,
+      "Science.Terminal-Bench-Science 0.1": 58.1,
+      "Science.EESE": 89.67,
+      "General.Average": 52.31,
+      "General.OC-KnowScope": 40,
+      "General.HLE-Diamond": 70.77
+    }
+  },
+  "claude-sonnet-5-5": {
+    "name": "claude-sonnet-5-5",
+    "org": null,
+    "released": "2026-09-28",
+    "ability": {
+      "Average": 75.56,
+      "Knowledge": 76,
+      "Abstraction": 80,
+      "Reasoning": 79.49,
+      "Interaction": 71.43,
+      "Safety": 85.37,
+      "Agent": 61.1,
+      "thinkingTokenCost": 0,
+      "responseTokenCost": 10341.02
+    },
+    "bench": {
+      "KnowledgeWork.Average": 76.69,
+      "KnowledgeWork.OC-Turnkey": 87.83,
+      "KnowledgeWork.OC-WorkFlowBench": 90.56,
+      "KnowledgeWork.GDP.pdf": 29.4,
+      "Programming.Average": 59.1,
+      "Programming.SWE-bench Pro Verified": 57.52,
+      "Programming.Terminal-Bench 4.0": 61.46,
+      "Science.Average": 64.7,
+      "Science.Terminal-Bench-Science 0.1": 50.5,
+      "Science.EESE": 86,
+      "General.Average": 42.84,
+      "General.OC-KnowScope": 33.33,
+      "General.HLE-Diamond": 57.11
+    }
+  },
+  "gpt-6.1-sol": {
+    "name": "gpt-6.1-sol",
+    "org": null,
+    "released": "2026-09-29",
+    "ability": {
+      "Average": 75.19,
+      "Knowledge": 78,
+      "Abstraction": 85,
+      "Reasoning": 77.5,
+      "Interaction": 69.23,
+      "Safety": 73.68,
+      "Agent": 67.71,
+      "thinkingTokenCost": 0,
+      "responseTokenCost": 3406.21
+    },
+    "bench": {
+      "KnowledgeWork.Average": 79.16,
+      "KnowledgeWork.OC-Turnkey": 88.78,
+      "KnowledgeWork.OC-WorkFlowBench": 97.58,
+      "KnowledgeWork.GDP.pdf": 31.9,
+      "Programming.Average": 54.95,
+      "Programming.SWE-bench Pro Verified": 50.16,
+      "Programming.Terminal-Bench 4.0": 62.14,
+      "Science.Average": 64.61,
+      "Science.Terminal-Bench-Science 0.1": 54.8,
+      "Science.EESE": 79.33,
+      "General.Average": 50.79,
+      "General.OC-KnowScope": 46.67,
+      "General.HLE-Diamond": 56.98
+    }
+  },
+  "gpt-6-astra": {
+    "name": "gpt-6-astra",
+    "org": null,
+    "released": "2026-09-03",
+    "ability": {
+      "Average": 74.3,
+      "Knowledge": 72,
+      "Abstraction": 80,
+      "Reasoning": 82.5,
+      "Interaction": 62.07,
+      "Safety": 80.49,
+      "Agent": 68.72,
+      "thinkingTokenCost": 0,
+      "responseTokenCost": 696.76
+    },
+    "bench": {
+      "KnowledgeWork.Average": 70.02,
+      "KnowledgeWork.OC-Turnkey": 75.62,
+      "KnowledgeWork.OC-WorkFlowBench": 93.46,
+      "KnowledgeWork.GDP.pdf": 29.8,
+      "Programming.Average": 62.7,
+      "Programming.SWE-bench Pro Verified": 65.28,
+      "Programming.Terminal-Bench 4.0": 58.83,
+      "Science.Average": 73.68,
+      "Science.Terminal-Bench-Science 0.1": 66.8,
+      "Science.EESE": 84,
+      "General.Average": 55.11,
+      "General.OC-KnowScope": 48.33,
+      "General.HLE-Diamond": 65.29
+    }
+  },
+  "gemini-4-argon": {
+    "name": "gemini-4-argon",
+    "org": null,
+    "released": "2026-09-30",
+    "ability": {
+      "Average": 72.52,
+      "Knowledge": 66,
+      "Abstraction": 67.5,
+      "Reasoning": 80,
+      "Interaction": 79.31,
+      "Safety": 80.49,
+      "Agent": 61.79,
+      "thinkingTokenCost": 0,
+      "responseTokenCost": 4112.7
+    },
+    "bench": {
+      "KnowledgeWork.Average": 65.16,
+      "KnowledgeWork.OC-Turnkey": 73.56,
+      "KnowledgeWork.OC-WorkFlowBench": 87.02,
+      "KnowledgeWork.GDP.pdf": 18.1,
+      "Programming.Average": 61.83,
+      "Programming.SWE-bench Pro Verified": 66.67,
+      "Programming.Terminal-Bench 4.0": 54.56,
+      "Science.Average": 58.86,
+      "Science.Terminal-Bench-Science 0.1": 60.1,
+      "Science.EESE": 57,
+      "General.Average": 44.19,
+      "General.OC-KnowScope": 36.67,
+      "General.HLE-Diamond": 55.47
+    }
+  },
+  "qwen4-max": {
+    "name": "qwen4-max",
+    "org": null,
+    "released": "2026-11-16",
+    "ability": {
+      "Average": 71.82,
+      "Knowledge": 64,
+      "Abstraction": 67.5,
+      "Reasoning": 77.5,
+      "Interaction": 75.86,
+      "Safety": 78.05,
+      "Agent": 67.98,
+      "thinkingTokenCost": 0,
+      "responseTokenCost": 9337.49
+    },
+    "bench": {}
+  },
+  "doubao-seed-2-1-pro-260915": {
+    "name": "doubao-seed-2-1-pro-260915",
+    "org": null,
+    "released": "2026-09",
+    "ability": {
+      "Average": 71.8,
+      "Knowledge": 72,
+      "Abstraction": 72.5,
+      "Reasoning": 77.5,
+      "Interaction": 65.52,
+      "Safety": 78.05,
+      "Agent": 65.26,
+      "thinkingTokenCost": 0,
+      "responseTokenCost": 6935.79
+    },
+    "bench": {
+      "KnowledgeWork.Average": 64.26,
+      "KnowledgeWork.OC-Turnkey": 73,
+      "KnowledgeWork.OC-WorkFlowBench": 80.08,
+      "KnowledgeWork.GDP.pdf": 22.2,
+      "Programming.Average": 42.56,
+      "Programming.SWE-bench Pro Verified": 45.28,
+      "Programming.Terminal-Bench 4.0": 38.49,
+      "Science.Average": 55.17,
+      "Science.Terminal-Bench-Science 0.1": 52.4,
+      "Science.EESE": 59.33,
+      "General.Average": 23.98,
+      "General.OC-KnowScope": 26.67,
+      "General.HLE-Diamond": 19.95
+    }
+  },
+  "qwen3.8-max": {
+    "name": "qwen3.8-max",
+    "org": null,
+    "released": "2026-08-03",
+    "ability": {
+      "Average": 71.74,
+      "Knowledge": 78,
+      "Abstraction": 72.5,
+      "Reasoning": 77.5,
+      "Interaction": 65.52,
+      "Safety": 78.05,
+      "Agent": 58.9,
+      "thinkingTokenCost": 0,
+      "responseTokenCost": 14225.67
+    },
+    "bench": {
+      "KnowledgeWork.Average": 70.26,
+      "KnowledgeWork.OC-Turnkey": 81.24,
+      "KnowledgeWork.OC-WorkFlowBench": 82.26,
+      "KnowledgeWork.GDP.pdf": 25.3,
+      "Programming.Average": 49.59,
+      "Programming.SWE-bench Pro Verified": 59.65,
+      "Programming.Terminal-Bench 4.0": 34.49,
+      "Science.Average": 29.99,
+      "Science.Terminal-Bench-Science 0.1": 15.1,
+      "Science.EESE": 52.33,
+      "General.Average": 20.86,
+      "General.OC-KnowScope": 16.67,
+      "General.HLE-Diamond": 27.14
+    }
+  },
+  "grok-4.7": {
+    "name": "grok-4.7",
+    "org": null,
+    "released": "2026-09-21",
+    "ability": {
+      "Average": 71.48,
+      "Knowledge": 67.35,
+      "Abstraction": 71.05,
+      "Reasoning": 78.79,
+      "Interaction": 67.86,
+      "Safety": 75.61,
+      "Agent": 68.22,
+      "thinkingTokenCost": 0,
+      "responseTokenCost": 13549.46
+    },
+    "bench": {}
+  },
+  "glm-5.3": {
+    "name": "glm-5.3",
+    "org": null,
+    "released": "2026-08-14",
+    "ability": {
+      "Average": 71.45,
+      "Knowledge": 72,
+      "Abstraction": 65,
+      "Reasoning": 84.21,
+      "Interaction": 72.41,
+      "Safety": 73.17,
+      "Agent": 61.89,
+      "thinkingTokenCost": 0,
+      "responseTokenCost": 18582.81
+    },
+    "bench": {
+      "KnowledgeWork.Average": 67.13,
+      "KnowledgeWork.OC-Turnkey": 82.67,
+      "KnowledgeWork.OC-WorkFlowBench": 78.65,
+      "KnowledgeWork.GDP.pdf": 9,
+      "Programming.Average": 51.92,
+      "Programming.SWE-bench Pro Verified": 58.82,
+      "Programming.Terminal-Bench 4.0": 41.58,
+      "Science.Average": 24.77,
+      "Science.Terminal-Bench-Science 0.1": 8.4,
+      "Science.EESE": 49.33,
+      "General.Average": 16.14,
+      "General.OC-KnowScope": 16.67,
+      "General.HLE-Diamond": 15.34
+    }
+  },
+  "gemini-3.8-flash": {
+    "name": "gemini-3.8-flash",
+    "org": null,
+    "released": "2026-09-02",
+    "ability": {
+      "Average": 71.01,
+      "Knowledge": 70,
+      "Abstraction": 72.5,
+      "Reasoning": 80,
+      "Interaction": 72.41,
+      "Safety": 75.61,
+      "Agent": 55.55,
+      "thinkingTokenCost": 0,
+      "responseTokenCost": 3099.02
+    },
+    "bench": {
+      "KnowledgeWork.Average": 64.02,
+      "KnowledgeWork.OC-Turnkey": 77.85,
+      "KnowledgeWork.OC-WorkFlowBench": 66.67,
+      "KnowledgeWork.GDP.pdf": 19.9,
+      "Programming.Average": 45.24,
+      "Programming.SWE-bench Pro Verified": 53.28,
+      "Programming.Terminal-Bench 4.0": 33.18,
+      "Science.Average": 29.33,
+      "Science.Terminal-Bench-Science 0.1": 12,
+      "Science.EESE": 55.33,
+      "General.Average": 28.76,
+      "General.OC-KnowScope": 26.67,
+      "General.HLE-Diamond": 31.89
+    }
+  },
+  "hy4": {
+    "name": "hy4",
+    "org": null,
+    "released": "2026-11-04",
+    "ability": {
+      "Average": 70.65,
+      "Knowledge": 68,
+      "Abstraction": 69.23,
+      "Reasoning": 78.95,
+      "Interaction": 72.41,
+      "Safety": 73.17,
+      "Agent": 62.15,
+      "thinkingTokenCost": 0,
+      "responseTokenCost": 22407.91
+    },
+    "bench": {
+      "KnowledgeWork.Average": 69.98,
+      "KnowledgeWork.OC-Turnkey": 79.61,
+      "KnowledgeWork.OC-WorkFlowBench": 88.06,
+      "KnowledgeWork.GDP.pdf": 23,
+      "Programming.Average": 50.16,
+      "Programming.SWE-bench Pro Verified": 59.65,
+      "Programming.Terminal-Bench 4.0": 35.93,
+      "Science.Average": 39.11,
+      "Science.Terminal-Bench-Science 0.1": 14.3,
+      "Science.EESE": 76.33,
+      "General.Average": 22.64,
+      "General.OC-KnowScope": 16.67,
+      "General.HLE-Diamond": 31.6
+    }
+  },
+  "deepseek-flash": {
+    "name": "deepseek-flash",
+    "org": null,
+    "released": "2026-10-17",
+    "ability": {
+      "Average": 70.4,
+      "Knowledge": 68,
+      "Abstraction": 72.5,
+      "Reasoning": 82.5,
+      "Interaction": 62.07,
+      "Safety": 75.61,
+      "Agent": 61.73,
+      "thinkingTokenCost": 0,
+      "responseTokenCost": 18963.31
+    },
+    "bench": {
+      "KnowledgeWork.Average": 69.5,
+      "KnowledgeWork.OC-Turnkey": 79.87,
+      "KnowledgeWork.OC-WorkFlowBench": 92.5,
+      "KnowledgeWork.GDP.pdf": 15.4,
+      "Programming.Average": 49.83,
+      "Programming.SWE-bench Pro Verified": 57.86,
+      "Programming.Terminal-Bench 4.0": 37.78,
+      "Science.Average": 36.41,
+      "Science.Terminal-Bench-Science 0.1": 10.9,
+      "Science.EESE": 74.67,
+      "General.Average": 18.93,
+      "General.OC-KnowScope": 13.33,
+      "General.HLE-Diamond": 27.34
+    }
+  },
+  "hy4-preview": {
+    "name": "hy4-preview",
+    "org": null,
+    "released": "2026-08-28",
+    "ability": {
+      "Average": 68.63,
+      "Knowledge": 66,
+      "Abstraction": 77.5,
+      "Reasoning": 73.68,
+      "Interaction": 62.07,
+      "Safety": 78.05,
+      "Agent": 54.48,
+      "thinkingTokenCost": 0,
+      "responseTokenCost": 12758.47
+    },
+    "bench": {
+      "KnowledgeWork.Average": 69.67,
+      "KnowledgeWork.OC-Turnkey": 85.82,
+      "KnowledgeWork.OC-WorkFlowBench": 71.67,
+      "KnowledgeWork.GDP.pdf": 19.2,
+      "Programming.Average": 44.54,
+      "Programming.SWE-bench Pro Verified": 54.58,
+      "Programming.Terminal-Bench 4.0": 29.49,
+      "Science.Average": 34.08,
+      "Science.Terminal-Bench-Science 0.1": 14.8,
+      "Science.EESE": 63,
+      "General.Average": 17.23,
+      "General.OC-KnowScope": 10,
+      "General.HLE-Diamond": 28.07
+    }
+  },
+  "qwen3.8-flash": {
+    "name": "qwen3.8-flash",
+    "org": null,
+    "released": "2026-08-26",
+    "ability": {
+      "Average": 68.49,
+      "Knowledge": 66,
+      "Abstraction": 69.23,
+      "Reasoning": 75,
+      "Interaction": 68.97,
+      "Safety": 75.61,
+      "Agent": 56.12,
+      "thinkingTokenCost": 0,
+      "responseTokenCost": 18422.75
+    },
+    "bench": {
+      "KnowledgeWork.Average": 67.84,
+      "KnowledgeWork.OC-Turnkey": 82.14,
+      "KnowledgeWork.OC-WorkFlowBench": 80.56,
+      "KnowledgeWork.GDP.pdf": 12.2,
+      "Programming.Average": 47.36,
+      "Programming.SWE-bench Pro Verified": 53.28,
+      "Programming.Terminal-Bench 4.0": 38.47,
+      "Science.Average": 35.64,
+      "Science.Terminal-Bench-Science 0.1": 13.9,
+      "Science.EESE": 68.25,
+      "General.Average": 2.39,
+      "General.OC-KnowScope": -6.77,
+      "General.HLE-Diamond": 16.14
+    }
+  },
+  "glm-5.3-flash": {
+    "name": "glm-5.3-flash",
+    "org": null,
+    "released": "2026-08-26",
+    "ability": {
+      "Average": 68.46,
+      "Knowledge": 66,
+      "Abstraction": 73.68,
+      "Reasoning": 75.68,
+      "Interaction": 57.14,
+      "Safety": 78.05,
+      "Agent": 60.21,
+      "thinkingTokenCost": 0,
+      "responseTokenCost": 13968.87
+    },
+    "bench": {
+      "KnowledgeWork.Average": 70.43,
+      "KnowledgeWork.OC-Turnkey": 84.31,
+      "KnowledgeWork.OC-WorkFlowBench": 81.24,
+      "KnowledgeWork.GDP.pdf": 18,
+      "Programming.Average": 39.85,
+      "Programming.SWE-bench Pro Verified": 49.06,
+      "Programming.Terminal-Bench 4.0": 26.03,
+      "Science.Average": 35.71,
+      "Science.Terminal-Bench-Science 0.1": 15.3,
+      "Science.EESE": 66.33,
+      "General.Average": 8.68,
+      "General.OC-KnowScope": 0,
+      "General.HLE-Diamond": 21.7
+    }
+  },
+  "kimi-k3": {
+    "name": "kimi-k3",
+    "org": null,
+    "released": "2026-07-16",
+    "ability": {
+      "Average": 66.85,
+      "Knowledge": 70,
+      "Abstraction": 67.5,
+      "Reasoning": 72.5,
+      "Interaction": 65.52,
+      "Safety": 68.29,
+      "Agent": 57.31,
+      "thinkingTokenCost": 0,
+      "responseTokenCost": 9946.87
+    },
+    "bench": {
+      "KnowledgeWork.Average": 69.59,
+      "KnowledgeWork.OC-Turnkey": 80.82,
+      "KnowledgeWork.OC-WorkFlowBench": 83.58,
+      "KnowledgeWork.GDP.pdf": 21.9,
+      "Programming.Average": 49.71,
+      "Programming.SWE-bench Pro Verified": 62.93,
+      "Programming.Terminal-Bench 4.0": 29.87,
+      "Science.Average": 33.03,
+      "Science.Terminal-Bench-Science 0.1": 6.6,
+      "Science.EESE": 72.67,
+      "General.Average": 20.6,
+      "General.OC-KnowScope": 16.67,
+      "General.HLE-Diamond": 26.49
+    }
+  },
+  "deepseek-v4-pro-0813": {
+    "name": "deepseek-v4-pro-0813",
+    "org": null,
+    "released": "2026-08-13",
+    "ability": {
+      "Average": 66.38,
+      "Knowledge": 66,
+      "Abstraction": 72.5,
+      "Reasoning": 72.5,
+      "Interaction": 58.62,
+      "Safety": 68.29,
+      "Agent": 60.39,
+      "thinkingTokenCost": 0,
+      "responseTokenCost": 18048.23
+    },
+    "bench": {
+      "KnowledgeWork.Average": 71.69,
+      "KnowledgeWork.OC-Turnkey": 86.67,
+      "KnowledgeWork.OC-WorkFlowBench": 81.25,
+      "KnowledgeWork.GDP.pdf": 17.2,
+      "Programming.Average": 42.8,
+      "Programming.SWE-bench Pro Verified": 61.42,
+      "Programming.Terminal-Bench 4.0": 14.86,
+      "Science.Average": 30.88,
+      "Science.Terminal-Bench-Science 0.1": 6.8,
+      "Science.EESE": 67,
+      "General.Average": 0.45,
+      "General.OC-KnowScope": -13.33,
+      "General.HLE-Diamond": 21.13
+    }
+  },
+  "ling-3.2-flash": {
+    "name": "ling-3.2-flash",
+    "org": null,
+    "released": "2026-11-05",
+    "ability": {
+      "Average": 66.06,
+      "Knowledge": 68,
+      "Abstraction": 57.5,
+      "Reasoning": 75,
+      "Interaction": 62.07,
+      "Safety": 70.73,
+      "Agent": 63.04,
+      "thinkingTokenCost": 0,
+      "responseTokenCost": 25268.95
+    },
+    "bench": {
+      "KnowledgeWork.Average": 67.37,
+      "KnowledgeWork.OC-Turnkey": 82.24,
+      "KnowledgeWork.OC-WorkFlowBench": 78.82,
+      "KnowledgeWork.GDP.pdf": 11.3,
+      "Programming.Average": 37.73,
+      "Programming.SWE-bench Pro Verified": 52.26,
+      "Programming.Terminal-Bench 4.0": 15.93,
+      "Science.Average": 29.03,
+      "Science.Terminal-Bench-Science 0.1": 5.6,
+      "Science.EESE": 64.18,
+      "General.Average": -0.03,
+      "General.OC-KnowScope": -13.33,
+      "General.HLE-Diamond": 19.93
+    }
+  },
+  "mimo-v2.6-pro": {
+    "name": "mimo-v2.6-pro",
+    "org": null,
+    "released": "2026-09-22",
+    "ability": {
+      "Average": 64.72,
+      "Knowledge": 72,
+      "Abstraction": 62.5,
+      "Reasoning": 65,
+      "Interaction": 58.62,
+      "Safety": 75.61,
+      "Agent": 54.61,
+      "thinkingTokenCost": 0,
+      "responseTokenCost": 18123.15
+    },
+    "bench": {
+      "KnowledgeWork.Average": 71.56,
+      "KnowledgeWork.OC-Turnkey": 83.41,
+      "KnowledgeWork.OC-WorkFlowBench": 86.79,
+      "KnowledgeWork.GDP.pdf": 20.8,
+      "Programming.Average": 33.74,
+      "Programming.SWE-bench Pro Verified": 53.08,
+      "Programming.Terminal-Bench 4.0": 4.72,
+      "Science.Average": 21.01,
+      "Science.Terminal-Bench-Science 0.1": 4.8,
+      "Science.EESE": 45.33,
+      "General.Average": 5,
+      "General.OC-KnowScope": -3.33,
+      "General.HLE-Diamond": 17.49
+    }
+  },
+  "step-5-preview": {
+    "name": "step-5-preview",
+    "org": null,
+    "released": "2026-09-20",
+    "ability": {
+      "Average": 64.72,
+      "Knowledge": 64,
+      "Abstraction": 64.1,
+      "Reasoning": 70.27,
+      "Interaction": 64.29,
+      "Safety": 75.61,
+      "Agent": 50.05,
+      "thinkingTokenCost": 0,
+      "responseTokenCost": 9100.69
+    },
+    "bench": {
+      "KnowledgeWork.Average": 55.26,
+      "KnowledgeWork.OC-Turnkey": 68.88,
+      "KnowledgeWork.OC-WorkFlowBench": 52.56,
+      "KnowledgeWork.GDP.pdf": 17.1,
+      "Programming.Average": 37.35,
+      "Programming.SWE-bench Pro Verified": 59.86,
+      "Programming.Terminal-Bench 4.0": 3.58,
+      "Science.Average": 22.84,
+      "Science.Terminal-Bench-Science 0.1": 5.4,
+      "Science.EESE": 49,
+      "General.Average": 10.18,
+      "General.OC-KnowScope": 0,
+      "General.HLE-Diamond": 25.45
+    }
+  },
+  "hy3": {
+    "name": "hy3",
+    "org": null,
+    "released": "2026-07-06",
+    "ability": {
+      "Average": 64.45,
+      "Knowledge": 60,
+      "Abstraction": 75,
+      "Reasoning": 65,
+      "Interaction": 65.52,
+      "Safety": 70.73,
+      "Agent": 50.47,
+      "thinkingTokenCost": 0,
+      "responseTokenCost": 21656.43
+    },
+    "bench": {}
+  },
+  "ling-3.1-flash": {
+    "name": "ling-3.1-flash",
+    "org": null,
+    "released": "2026-09-30",
+    "ability": {
+      "Average": 63.17,
+      "Knowledge": 60,
+      "Abstraction": 58.97,
+      "Reasoning": 71.79,
+      "Interaction": 65.52,
+      "Safety": 70.73,
+      "Agent": 52,
+      "thinkingTokenCost": 0,
+      "responseTokenCost": 17883.41
+    },
+    "bench": {
+      "KnowledgeWork.Average": 57.07,
+      "KnowledgeWork.OC-Turnkey": 67.75,
+      "KnowledgeWork.OC-WorkFlowBench": 63.02,
+      "KnowledgeWork.GDP.pdf": 19.1,
+      "Programming.Average": 34.79,
+      "Programming.SWE-bench Pro Verified": 56.83,
+      "Programming.Terminal-Bench 4.0": 1.72,
+      "Science.Average": 23.18,
+      "Science.Terminal-Bench-Science 0.1": 6.9,
+      "Science.EESE": 47.59,
+      "General.Average": -0.11,
+      "General.OC-KnowScope": -13.33,
+      "General.HLE-Diamond": 19.71
+    }
+  },
+  "MiniMax-M3.1-Flash": {
+    "name": "MiniMax-M3.1-Flash",
+    "org": null,
+    "released": "2026-10-19",
+    "ability": {
+      "Average": 60.85,
+      "Knowledge": 56,
+      "Abstraction": 62.5,
+      "Reasoning": 75,
+      "Interaction": 58.62,
+      "Safety": 58.54,
+      "Agent": 54.46,
+      "thinkingTokenCost": 0,
+      "responseTokenCost": 10524.01
+    },
+    "bench": {
+      "KnowledgeWork.Average": 71.77,
+      "KnowledgeWork.OC-Turnkey": 86.99,
+      "KnowledgeWork.OC-WorkFlowBench": 80.26,
+      "KnowledgeWork.GDP.pdf": 17.6,
+      "Programming.Average": 28.65,
+      "Programming.SWE-bench Pro Verified": 46.05,
+      "Programming.Terminal-Bench 4.0": 2.54,
+      "Science.Average": 18.23,
+      "Science.Terminal-Bench-Science 0.1": 3.8,
+      "Science.EESE": 39.87,
+      "General.Average": 15.8,
+      "General.OC-KnowScope": 10,
+      "General.HLE-Diamond": 24.51
+    }
+  },
+  "MiniMax-M3": {
+    "name": "MiniMax-M3",
+    "org": null,
+    "released": "2026-06-01",
+    "ability": {
+      "Average": 60.4,
+      "Knowledge": 62,
+      "Abstraction": 55,
+      "Reasoning": 65,
+      "Interaction": 58.62,
+      "Safety": 70.73,
+      "Agent": 51.05,
+      "thinkingTokenCost": 0,
+      "responseTokenCost": 14885.93
+    },
+    "bench": {
+      "KnowledgeWork.Average": 67.57,
+      "KnowledgeWork.OC-Turnkey": 82.27,
+      "KnowledgeWork.OC-WorkFlowBench": 78.25,
+      "KnowledgeWork.GDP.pdf": 12.8,
+      "Programming.Average": 30.8,
+      "Programming.SWE-bench Pro Verified": 49.66,
+      "Programming.Terminal-Bench 4.0": 2.52,
+      "Science.Average": 17.3,
+      "Science.Terminal-Bench-Science 0.1": 4.2,
+      "Science.EESE": 36.96,
+      "General.Average": 18.23,
+      "General.OC-KnowScope": 16.67,
+      "General.HLE-Diamond": 20.58
+    }
+  }
+}

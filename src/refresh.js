@@ -196,6 +196,11 @@ export function extractBenchGecko(raw) {
   const benchmarks = {}
   for (const score of raw.scores ?? []) {
     if (typeof score?.score !== 'number' || !Number.isFinite(score.score)) continue
+    // A zero is "the benchmark did not run", not a score of zero: BenchGecko
+    // publishes it for a model it has no sample for. It must not enter a category
+    // mean (a math mean read 39.5 instead of 49.3 on one zero), and it is not
+    // stored in the leaf map either -- both consumers treat their maps as scores.
+    if (score.score <= 0) continue
     if (typeof score.category === 'string' && score.category.length > 0) {
       ;(byCategory[score.category] ??= []).push(score.score)
     }
@@ -206,6 +211,16 @@ export function extractBenchGecko(raw) {
     scores[category] = round1(values.reduce((sum, value) => sum + value, 0) / values.length)
   }
   const avg = typeof raw.avg_score === 'number' && raw.avg_score > 0 ? raw.avg_score : null
+  // The API also publishes the OpenRouter price it checked and its own small
+  // test battery. The compiled catalog does not read them, but they are part of
+  // the capture the committed `data/benchgecko-extracted.json` records, so the
+  // extractor keeps them and the capture stays reproducible.
+  const priceUsd = raw.pricing !== null && typeof raw.pricing === 'object'
+    ? {
+        input: typeof raw.pricing.input === 'number' && Number.isFinite(raw.pricing.input) ? raw.pricing.input : null,
+        output: typeof raw.pricing.output === 'number' && Number.isFinite(raw.pricing.output) ? raw.pricing.output : null,
+      }
+    : undefined
   return {
     slug: String(raw.slug ?? ''),
     name: String(raw.name ?? raw.slug ?? ''),
@@ -219,6 +234,8 @@ export function extractBenchGecko(raw) {
     of: typeof raw.benchgecko_score?.of === 'number' ? raw.benchgecko_score.of : null,
     scores,
     benchmarks,
+    ...(priceUsd === undefined ? {} : { priceUsd }),
+    ...(raw.gecko_tests !== null && typeof raw.gecko_tests === 'object' ? { geckoTests: raw.gecko_tests } : {}),
   }
 }
 
@@ -231,6 +248,8 @@ export function countsOf(extractions, raws) {
     const tally = {}
     for (const score of raw.scores ?? []) {
       if (typeof score?.category !== 'string' || typeof score?.score !== 'number') continue
+      // A zero sample is "not run", so it is not evidence either.
+      if (score.score <= 0) continue
       tally[score.category] = (tally[score.category] ?? 0) + 1
     }
     counts[extraction.slug] = tally
@@ -303,18 +322,23 @@ export async function refreshCatalog({ base, wanted = [], fetchImpl = fetch, sig
   // and llmleaderboard's measured serving data plus its benchmark boards.
   // Every name-based source pass resolves a row to all catalog ids that name the
   // model; the per-id passes (BenchGecko slugs, CompassRank's table) are unchanged.
-  const index = nameIndexAll(base)
+  const index = nameIndexAll(base, wanted)
+  // The two extra passes source a model by name and need the family spelling of
+  // an advertised id (see `nameIndexAll`); the Artificial Analysis join keeps
+  // the exact spelling so it does not change the observation set the ranking
+  // calibrates on.
+  const sourceIndex = nameIndexAll(base, wanted, { family: true })
   let epoch = {}
   let llm = {}
   try {
     const csv = await fetchText(EPOCH_ECI_URL, { fetchImpl, signal })
-    epoch = extractEpochEci(csv, index)
+    epoch = extractEpochEci(csv, sourceIndex, base)
   } catch (error) {
     errors.push(`epoch eci: ${String(error?.message ?? error)}`)
   }
   try {
     const comparison = await fetchText(LLM_COMPARISON_URL, { fetchImpl, signal })
-    llm = extractLlmComparison(comparison, index)
+    llm = extractLlmComparison(comparison, sourceIndex, base)
   } catch (error) {
     errors.push(`llmleaderboard comparison: ${String(error?.message ?? error)}`)
   }
@@ -323,7 +347,7 @@ export async function refreshCatalog({ base, wanted = [], fetchImpl = fetch, sig
     if (signal?.aborted === true) throw new Error('refresh aborted')
     try {
       const html = await fetchText(`${LLM_LEADERBOARD}/benchmarks/${page}`, { fetchImpl, signal })
-      boards.push({ page, dimension, track, scores: extractLlmBenchmarkPage(html, track, index) })
+      boards.push({ page, dimension, track, scores: extractLlmBenchmarkPage(html, track, sourceIndex, base) })
     } catch (error) {
       errors.push(`llmleaderboard ${page}: ${String(error?.message ?? error)}`)
     }
@@ -339,7 +363,7 @@ export async function refreshCatalog({ base, wanted = [], fetchImpl = fetch, sig
   let analysis = {}
   try {
     const html = await fetchText(ARTIFICIAL_ANALYSIS_URL, { fetchImpl, signal })
-    analysis = extractArtificialAnalysis(html, index)
+    analysis = extractArtificialAnalysis(html, index, base)
   } catch (error) {
     errors.push(`artificialanalysis: ${String(error?.message ?? error)}`)
   }
@@ -368,10 +392,17 @@ export async function refreshCatalog({ base, wanted = [], fetchImpl = fetch, sig
         const html = await fetchText(`${ARTIFICIAL_ANALYSIS_URL.replace('/leaderboards/models', '')}/models/${slug}`, { fetchImpl, signal })
         pageBudget.left -= 1
         pagesFetched += 1
-        const found = extractArtificialAnalysisModelPage(html, index)
+        const found = extractArtificialAnalysisModelPage(html, index, base)
         for (const [key, value] of Object.entries(found)) {
-          if (key.startsWith('\u0000page:')) analysis.byName.set(key.slice('\u0000page:'.length), value)
-          else analysis.byId[key] = value
+          // The leaderboard row is the primary record: a page embeds rows for many
+          // models, so an unconditional write replaced a table row that carries the
+          // published index with the page's index-less copy.
+          if (key.startsWith('\u0000page:')) {
+            const name = key.slice('\u0000page:'.length)
+            if (!analysis.byName.has(name)) analysis.byName.set(name, value)
+          } else if (analysis.byId[key] === undefined) {
+            analysis.byId[key] = value
+          }
         }
         if (matchAnalysisRow([normalizeName(id), normalizeName(bare)], analysis.byName) !== undefined) break
       } catch {
@@ -387,8 +418,12 @@ export async function refreshCatalog({ base, wanted = [], fetchImpl = fetch, sig
     compass,
     counts: countsOf(extractions, raws),
   })
+  // Artificial Analysis runs first because it is also the pass that creates an
+  // entry for an advertised model the catalog has never described. The joined
+  // cross-checks are keyed by catalog id, so they must run after that creation or
+  // a newly created entry silently loses its Epoch / llmleaderboard row.
+  const artificialAnalysis = attachArtificialAnalysis(dataset, { analysis, wanted, now })
   const attached = attachCrossChecks(dataset, { epoch, llm })
-  const artificialAnalysis = attachArtificialAnalysis(dataset, { base, analysis, wanted, now })
   // Real usage: OpenRouter's weekly ranking. Popularity is not capability, but at
   // equal measured quality it says which model is battle-tested in production.
   let openrouter = { matched: 0, rows: 0 }
@@ -544,14 +579,12 @@ export function attachUsage(dataset, usage) {
   }
   if (matches.length === 0) return { rows: Array.isArray(usage) ? usage.length : 0, matched: 0, uniqueRanks: 0 }
 
-  // Percentile from unique ranks: several catalog entries can be one OpenRouter
-  // model (same id through different providers), and counting the duplicates
-  // spread the percentiles over a list that was not the ranking.
-  const ranks = [...new Set(matches.map(({ row }) => row.weeklyRank))].sort((a, b) => a - b)
-  const percentileOf = (rank) => {
-    const position = ranks.indexOf(rank)
-    return ranks.length <= 1 ? 100 : Math.round((1 - position / (ranks.length - 1)) * 1000) / 10
-  }
+  // Write the rows first, without a percentile. Several catalog entries can be
+  // one OpenRouter model (the same id through different providers), and one
+  // catalog key can be matched by several rows (an exact id, then a reseller
+  // stem) where the last row wins -- so the list of fetched rows is not the set
+  // of ranks the catalog actually carries. The percentile is a property of the
+  // final per-entry ranks, computed after the writes.
   for (const { key, row } of matches) {
     dataset[key] = {
       ...dataset[key],
@@ -560,9 +593,21 @@ export function attachUsage(dataset, usage) {
         rank: row.weeklyRank,
         ...(row.weeklyTokens === undefined ? {} : { tokens: Math.round(row.weeklyTokens) }),
         ...(row.weeklyShare === undefined ? {} : { share: Math.round(row.weeklyShare * 10000) / 10000 }),
-        percentile: percentileOf(row.weeklyRank),
+        percentile: null,
       },
     }
+  }
+  // Percentile from unique ranks: several catalog entries can be one OpenRouter
+  // model, and counting the duplicates spread the percentiles over a list that
+  // was not the ranking.
+  const ranks = [...new Set(Object.values(dataset).map((entry) => entry?.usage?.rank).filter((rank) => Number.isInteger(rank)))].sort((a, b) => a - b)
+  const percentileOf = (rank) => {
+    const position = ranks.indexOf(rank)
+    return ranks.length <= 1 ? 100 : Math.round((1 - position / (ranks.length - 1)) * 1000) / 10
+  }
+  for (const key of new Set(matches.map(({ key }) => key))) {
+    const entry = dataset[key]
+    if (entry?.usage !== undefined) entry.usage.percentile = percentileOf(entry.usage.rank)
   }
   return { rows: Array.isArray(usage) ? usage.length : 0, matched: matches.length, uniqueRanks: ranks.length }
 }
@@ -706,9 +751,22 @@ export function nameIndex(base) {
  * untouched.
  *
  * @param {Record<string, object>} base
+ * @param {Array<{model?: string, provider?: string}|string>} [advertised] - models
+ *   the provider advertises, including ones the catalog will create during this
+ *   refresh. A name-based source pass runs before Artificial Analysis creates
+ *   those entries, so without them here a newly created entry loses its Epoch
+ *   and llmleaderboard rows.
+ * @param {{family?: boolean}} [options] - `family: true` also indexes each
+ *   advertised id under its family spelling (release date / effort variant
+ *   removed). Only the Epoch and llmleaderboard joins opt in: those sources name
+ *   the model, while the Artificial Analysis join feeds the ranking, and adding
+ *   the family spellings there changes which channel observations the engine
+ *   sees (it raised AA/axis overlap from 4 to 6 models and switched on the
+ *   dimension-level fallback for hundreds of observations).
  * @returns {Map<string, string[]>} normalized spelling -> catalog ids
  */
-export function nameIndexAll(base) {
+export function nameIndexAll(base, advertised = [], options = {}) {
+  const withFamily = options.family === true
   const index = new Map()
   const add = (name, id) => {
     const key = normalizeName(name)
@@ -725,7 +783,52 @@ export function nameIndexAll(base) {
     if (/^cmaas-/i.test(bare)) add(bare.replace(/^cmaas-/i, ''), id)
     for (const alias of NAME_ALIASES[id] ?? []) add(alias, id)
   }
+  for (const raw of advertised) {
+    const id = typeof raw === 'string' ? raw : raw?.model
+    if (typeof id !== 'string' || id.length === 0) continue
+    const key = id.toLowerCase()
+    add(id, key)
+    const bare = id.includes('/') ? id.slice(id.lastIndexOf('/') + 1) : id
+    add(bare, key)
+    if (/^cmaas-/i.test(bare)) add(bare.replace(/^cmaas-/i, ''), key)
+    if (withFamily) for (const spelling of familySpellings(bare)) add(spelling, key)
+  }
   return index
+}
+
+/**
+ * Spellings of an advertised id with its serving/date suffix removed.
+ *
+ * A source names the model, not the deployment: `kimi/kimi-k3.1-pro-highspeed`
+ * is "Kimi K3.1 Pro", `qwen3.7-plus-2026-05-26` is "Qwen3.7 Plus". Without these
+ * spellings the name index has no spelling a source row can hit, and the entry
+ * created during the refresh loses the measurement that names the same model.
+ * Only a release date or an effort/serving variant is removed; a version digit
+ * or a tier word stays part of the name.
+ *
+ * @param {string} id - advertised model id (provider prefix already removed)
+ * @returns {Set<string>}
+ */
+function familySpellings(id) {
+  const out = new Set()
+  let text = String(id ?? '').replace(/^cmaas-/i, '')
+  out.add(text)
+  for (;;) {
+    const dated = text.replace(/-\d{4}-\d{2}-\d{2}$/, '').replace(/-\d{4,8}$/, '')
+    if (dated !== text) {
+      text = dated
+      out.add(text)
+      continue
+    }
+    const variant = /[-_.]([a-z]+)$/.exec(text)
+    if (variant !== null && EFFORT_VARIANTS.has(variant[1])) {
+      text = text.slice(0, text.length - variant[1].length - 1)
+      out.add(text)
+      continue
+    }
+    break
+  }
+  return out
 }
 
 /**
@@ -742,6 +845,28 @@ function idsAt(index, key) {
   const hit = index?.get?.(key)
   if (hit === undefined) return []
   return Array.isArray(hit) ? hit : [hit]
+}
+
+/**
+ * Ids a source row's display name resolves to.
+ *
+ * Sources annotate the model name with a parenthetical the identity rule ignores
+ * (`DeepSeek-V3 (Mar 2025)` names the March-2025 V3 checkpoint). The index stores
+ * the bare spelling, so the exact name is tried first and a parenthetical-free
+ * spelling second; without the fallback the row is invisible and a *different*
+ * row of the same family (`DeepSeek-V3`, 2024) can be attached instead.
+ *
+ * @param {Map<string, string|string[]>} index
+ * @param {string} name
+ * @returns {string[]}
+ */
+function idsForName(index, name) {
+  const spellings = [normalizeName(name), normalizeName(String(name ?? '').replace(/\([^)]*\)/g, ' '))]
+  for (const spelling of new Set(spellings)) {
+    const ids = idsAt(index, spelling)
+    if (ids.length > 0) return ids
+  }
+  return []
 }
 
 /** Model stem of a catalog id, ignoring its provider and reseller prefixes. */
@@ -767,11 +892,46 @@ function sameModelName(id, name) {
   // AA's qualifier parenthesis can split one variant word across two tokens
   // ("(Non-reasoning)"), so drop it before taking the stem.
   const theirs = modelStem(String(name ?? '').replace(/\([^)]*\)/g, ' '))
+  return stemsAgree(ours, theirs)
+}
+
+/**
+ * Whether two model stems name the same model: equal, or one has only a date or
+ * an effort/serving variant left over. A version digit or a tier word is a
+ * different model, so it never passes (see `EFFORT_VARIANTS`).
+ */
+function stemsAgree(ours, theirs) {
   if (ours.length < 2 || theirs.length < 2) return false
   if (ours === theirs) return true
   const [longer, shorter] = ours.length >= theirs.length ? [ours, theirs] : [theirs, ours]
   const extra = longer.slice(shorter.length)
   return /^\d{4,8}$/.test(extra) || EFFORT_VARIANTS.has(extra)
+}
+
+/**
+ * Whether an entry's label names the same model a source row names.
+ *
+ * The catalog key is the identity and the label is the human-readable name; a
+ * name-based join should honour both. The shipped catalog carried entries whose
+ * label named a different generation from their id (`vanchin/deepseek-v3` was
+ * labelled "DeepSeek V3.2 (Reasoning)"), so the 2024 V3 row attached and the
+ * entry looked internally consistent. A row that names only one of the two is
+ * reported as ambiguous rather than attached: the id is the identity, but an
+ * entry that cannot state its own name cannot own someone else's measurement.
+ *
+ * Parenthetical qualifiers are dropped first: labels use them for annotations
+ * ("(latest alias)", "(retired)") and sources for reasoning effort.
+ *
+ * @param {Record<string, object>|null} base - catalog the id belongs to
+ * @param {string} id
+ * @param {string} name - source row's model name
+ */
+function labelAgrees(base, id, name) {
+  const label = base?.[id]?.label
+  if (typeof label !== 'string' || label.length === 0) return true
+  const ours = modelStem(String(label).replace(/\([^)]*\)/g, ' '))
+  const theirs = modelStem(String(name ?? '').replace(/\([^)]*\)/g, ' '))
+  return stemsAgree(ours, theirs)
 }
 
 /** Decode every `self.__next_f.push([1, "…"])` string in a Next.js RSC page. */
@@ -816,11 +976,15 @@ export function decodeFlightChunks(html) {
  * different weights and prices, and stripping them collapsed `Qwen3.8-Max` and
  * `Qwen3.8-Flash` (or `GLM-5.3` and `GLM-5.3-Flash`) onto one name, so a matcher
  * could attach one model's quality and price to the other.
+ *
+ * `highspeed`/`ultraspeed` are different: the provider serves the same weights
+ * with a faster endpoint, which is a serving variant, not a new model. A
+ * `kimi-k3.1-pro-highspeed` entry is the model "Kimi K3.1 Pro".
  */
 const EFFORT_VARIANTS = new Set([
   'reasoning', 'nonreasoning', 'thinking', 'reasoninghigh', 'reasoningmedium', 'reasoninglow',
   'instruct', 'default', 'based', 'on', 'cmaas',
-  'high', 'medium', 'low',
+  'high', 'medium', 'low', 'highspeed', 'ultraspeed',
 ])
 
 /** Split a normalized name into its leading model tokens and variant tokens. */
@@ -878,12 +1042,19 @@ export function modelStem(text) {
  * Tries exact keys first, then a model-name prefix whose remainder is only
  * variants. When several rows qualify (AA has one per reasoning effort) the row
  * with the highest intelligence index wins: the variant that was actually
- * evaluated is the one worth recording.
+ * evaluated is the one worth recording. Ties are broken deterministically --
+ * an unqualified name first, then more benchmarks, then the name -- because the
+ * payload order must not decide which effort variant a model is recorded from.
  */
 export function matchAnalysisRow(keys, byName) {
   for (const key of keys) {
     const exact = byName.get(key)
-    if (exact !== undefined) return exact
+    if (exact !== undefined) {
+      // An exact name is the model's own row; only look further when the caller's
+      // keys are aliases and no row carries the name.
+      const name = String(exact.name ?? key)
+      if (!/\([^)]*\)/.test(name)) return exact
+    }
   }
   // Four characters is the shortest useful stem ("glm5", "kimi"); shorter than
   // that a prefix match would join unrelated models.
@@ -899,8 +1070,18 @@ export function matchAnalysisRow(keys, byName) {
       // digit (`deepseek-v4` against `DeepSeek-V4.1`), may not.
       const extraOk = extra.length === 0 || EFFORT_VARIANTS.has(extra) || /^\d{4,8}$/.test(extra)
       if (!extraOk) continue
-      const score = (Number.isFinite(row.intelligenceIndex) ? row.intelligenceIndex : 0) + (Number.isFinite(row.priceIn) ? 1 : 0)
-      if (best === null || score > best.score) best = { row, score }
+      const rank = [
+        Number.isFinite(row.intelligenceIndex) ? row.intelligenceIndex : -1,
+        /\([^)]*\)/.test(name) ? 0 : 1,
+        Object.keys(row.benchmarks ?? {}).length,
+      ]
+      if (best !== null) {
+        let comparison = 0
+        for (let i = 0; i < rank.length && comparison === 0; i += 1) comparison = rank[i] - best.rank[i]
+        if (comparison === 0) comparison = String(name).localeCompare(String(best.name))
+        if (comparison <= 0) continue
+      }
+      best = { row, rank, name }
     }
   }
   return best === null ? undefined : best.row
@@ -953,8 +1134,9 @@ const isArtificialAnalysisRow = (value) =>
  *
  * @param {string} html
  * @param {Map<string, string>} index - normalized name -> catalog id
+ * @param {Record<string, object>|null} [base] - catalog, for the label check
  */
-export function extractArtificialAnalysis(html, index) {
+export function extractArtificialAnalysis(html, index, base = null) {
   const rows = new Map()
   for (const text of decodeFlightChunks(html)) {
     let at = text.indexOf('{"id":"')
@@ -969,7 +1151,16 @@ export function extractArtificialAnalysis(html, index) {
   }
 
   const out = {}
+  // Why a row, not just which: a catalog id can be claimed by a row that names
+  // it exactly and by a broader family row (`DeepSeek V4.1 Flash` claiming the
+  // `...-1017` snapshot). The exact spelling wins, then the higher index --
+  // payload order must not decide what a model is described by.
+  const outRank = new Map()
   const byName = new Map()
+  // Names that are a row's own name (not a qualifier-stripped alias). A stripped
+  // spelling is only a fallback: letting it overwrite the exact row turned the
+  // later-emitted effort variant into the model's name and measurements.
+  const exactNames = new Set()
   // One AA row names a model, not an endpoint: every catalog id whose name it
   // matches gets the row. `claim` used to return one id, so a twin entry (same
   // model behind another provider/reseller prefix) never saw the measurement.
@@ -1039,12 +1230,29 @@ export function extractArtificialAnalysis(html, index) {
     if (typeof row.modelCreatorName === 'string') value.creator = row.modelCreatorName
     if (!(Number.isFinite(value.intelligenceIndex) || Object.keys(scores).length > 0 || Number.isFinite(priceIn))) continue
     value.name = row.name
-    byName.set(normalizeName(row.name), value)
-    byName.set(normalizeName(String(row.name).replace(/\([^)]*\)/g, ' ')), value)
+    const exact = normalizeName(row.name)
+    byName.set(exact, value)
+    exactNames.add(exact)
+    const withoutQualifier = normalizeName(String(row.name).replace(/\([^)]*\)/g, ' '))
+    if (!exactNames.has(withoutQualifier)) byName.set(withoutQualifier, value)
     // A prefix match alone is not identity: the creation path refuses a row whose
-    // model stem disagrees, and the multi-id fill must apply the same guard.
+    // model stem disagrees, and the multi-id fill must apply the same guard. The
+    // label must name the same model too: a mislabelled entry (`deepseek-v3`
+    // called "V3.2") must not inherit the other generation's measurements.
+    const bareId = (id) => (id.includes('/') ? id.slice(id.lastIndexOf('/') + 1) : id)
+    const ownSpelling = normalizeName(row.name)
+    const aliasSpelling = normalizeName(String(row.name).replace(/\([^)]*\)/g, ' '))
     for (const id of claimAll(row.name)) {
-      if (sameModelName(id, row.name)) out[id] = value
+      if (!sameModelName(id, row.name)) continue
+      if (!labelAgrees(base, id, row.name)) continue
+      // 2 = the row's own name is the id, 1 = only the qualifier-free spelling is.
+      const idSpellings = [normalizeName(id), normalizeName(bareId(id))]
+      const exact = idSpellings.includes(ownSpelling) ? 2 : idSpellings.includes(aliasSpelling) ? 1 : 0
+      const rank = [exact, Number.isFinite(value.intelligenceIndex) ? value.intelligenceIndex : -1]
+      const previous = outRank.get(id)
+      if (previous !== undefined && (previous[0] > rank[0] || (previous[0] === rank[0] && previous[1] >= rank[1]))) continue
+      outRank.set(id, rank)
+      out[id] = value
     }
   }
   return { byId: out, byName }
@@ -1079,8 +1287,20 @@ export function aaSlugCandidates(id) {
   return [...new Set([dotted, flat, undotted])].filter((slug) => slug.length > 0)
 }
 
-/** Read the benchmark scores out of one AA model page. */
-export function extractArtificialAnalysisModelPage(html, index) {
+/**
+ * Read the benchmark scores out of one AA model page.
+ *
+ * The page row is richer than the leaderboard table row: it carries the capacity
+ * and serving facts under their own field names (`contextWindowTokens`,
+ * `headline.timeToFirstToken`, `headline.outputSpeed`) and the effort variant
+ * under `isReasoning`. Reading only the benchmark table left page-created
+ * entries claiming a context window of 0 and no latency measurement at all.
+ *
+ * @param {string} html
+ * @param {Map<string, string>} index
+ * @param {Record<string, object>|null} [base] - catalog, for the label check
+ */
+export function extractArtificialAnalysisModelPage(html, index, base = null) {
   const out = {}
   for (const text of decodeFlightChunks(html)) {
     let at = text.indexOf('{"id":"')
@@ -1100,10 +1320,22 @@ export function extractArtificialAnalysisModelPage(html, index) {
           const priceOut = Number(row.price1mOutputTokens)
           if (Number.isFinite(priceIn)) value.priceIn = priceIn
           if (Number.isFinite(priceOut)) value.priceOut = priceOut
-          const ttft = Number(row.timeToFirstToken)
+          const ttft = Number(row.timeToFirstToken ?? row.headline?.timeToFirstToken)
+          const speed = Number(row.outputSpeed ?? row.headline?.outputSpeed)
           if (Number.isFinite(ttft)) value.ttft = ttft
+          if (Number.isFinite(speed)) value.speed = speed
+          const context = Number(row.contextWindowTokens)
+          if (Number.isFinite(context) && context > 0) value.contextTokens = context
+          if (row.isReasoning === true || row.isReasoning === false) value.reasoning = row.isReasoning
+          const releaseDate = typeof row.releaseDate === 'string' ? row.releaseDate : row.release?.releaseDate
+          if (typeof releaseDate === 'string') value.releaseDate = releaseDate
+          const cacheHitPrice = Number(row.cacheHitPrice)
+          if (Number.isFinite(cacheHitPrice)) value.cacheHitPrice = cacheHitPrice
+          if (typeof row.creator === 'string') value.creator = row.creator
           for (const idFromIndex of idsAt(index, normalizeName(row.name))) {
-            if (sameModelName(idFromIndex, row.name)) out[idFromIndex] = value
+            if (!sameModelName(idFromIndex, row.name)) continue
+            if (!labelAgrees(base, idFromIndex, row.name)) continue
+            out[idFromIndex] = value
           }
           out[`\u0000page:${normalizeName(row.name)}`] = value
         }
@@ -1115,96 +1347,77 @@ export function extractArtificialAnalysisModelPage(html, index) {
 }
 
 /**
+ * Human label for a catalog id described by an Artificial Analysis row.
+ *
+ * The row's name is the best label, except when it carries a release-date token
+ * the id does not: `vanchin/deepseek-v4.1-flash` is a rolling alias, and AA's
+ * only measurement of it is the "1017" snapshot. Labelling the alias with the
+ * snapshot's date would state a version the id does not pin (the catalog once
+ * shipped `vanchin/deepseek-v3` labelled "V3.2"). An effort qualifier is kept:
+ * it says which inference variant was measured, and it is the same model.
+ *
+ * @param {string} id
+ * @param {string} name
+ * @returns {string}
+ */
+function labelForId(id, name) {
+  const bare = String(id ?? '')
+  const plain = bare.includes('/') ? bare.slice(bare.lastIndexOf('/') + 1) : bare
+  const dates = new Set(plain.toLowerCase().match(/\d{4,8}/g) ?? [])
+  // AA's trailing parenthesis names the inference setting ("(Max)",
+  // "(Non-reasoning)", "(Medium, Default Fallback)"), not the model. Effort
+  // variants are the same model, so a label taken wholesale from whichever
+  // variant won the row match would claim a setting the id does not pin.
+  let label = String(name ?? plain)
+  while (/\([^)]*\)\s*$/.test(label)) label = label.replace(/\s*\([^)]*\)\s*$/, '')
+  return label
+    .replace(/(^|[\s-])(\d{4,8})(?=[\s]|$)/g, (match, lead, digits) => (dates.has(digits) ? match : lead))
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
+/**
  * Fold Artificial Analysis into the catalog.
  *
- * Two rules keep this honest: it fills what the catalog is missing (quality,
- * price, latency) and never overwrites a measured value that a primary source
- * supplied; and its intelligence index is mapped through a fit to the models
- * both sources know, because AA's index is its own scale, not a 0-100 score.
+ * AA contributes three things the catalog cannot get elsewhere: the
+ * per-benchmark percentages the ranking engine reads as observations, a measured
+ * USD price for entries that have no catalog price (converted at one stated
+ * rate), and a serving measurement from which a latency class is derived. It
+ * writes no capability score: AA's intelligence index is its own scale, and
+ * `rank.js` already fits it onto the measured composite for entries with no
+ * dimension measurement (status `provisional`). A second fit here, against the
+ * demoted legacy `quality`, compared two bases and made an old, stale compiled
+ * score the yardstick for AA's numbers.
  *
  * @param {Record<string, object>} dataset
- * @param {{base?: Record<string, object>, analysis: Record<string, object>}} input
+ * @param {{base?: Record<string, object>, analysis: object, wanted?: Array, now?: Date}} input
  */
-export function attachArtificialAnalysis(dataset, { base = {}, analysis = {}, wanted = [], now = new Date() } = {}) {
+export function attachArtificialAnalysis(dataset, { analysis = {}, wanted = [], now = new Date() } = {}) {
   const byId = analysis.byId ?? {}
   const byName = analysis.byName ?? new Map()
-  // Calibrate AA index -> catalog quality on the models measured by both.
-  const pairs = []
-  for (const [id, value] of Object.entries(byId)) {
-    if (!Number.isFinite(value.intelligenceIndex)) continue
-    const quality = Number(base[id]?.quality)
-    if (Number.isFinite(quality)) pairs.push([value.intelligenceIndex, quality])
-  }
-  let slope = 1.6
-  let intercept = 20
-  if (pairs.length >= 5) {
-    const meanX = pairs.reduce((sum, [x]) => sum + x, 0) / pairs.length
-    const meanY = pairs.reduce((sum, [, y]) => sum + y, 0) / pairs.length
-    let numerator = 0
-    let denominator = 0
-    for (const [x, y] of pairs) {
-      numerator += (x - meanX) * (y - meanY)
-      denominator += (x - meanX) ** 2
-    }
-    if (denominator > 0) {
-      slope = numerator / denominator
-      intercept = meanY - slope * meanX
-    }
-  }
-  const qualityOf = (value) => Math.max(0, Math.min(100, Math.round((slope * value.intelligenceIndex + intercept) * 10) / 10))
 
-  // Not every model AA ran on benchmarks gets a published intelligence index, but
-  // the per-benchmark scores are there. A benchmark mean, calibrated against the
-  // rows that have both, is a real measurement of those models rather than a
-  // family guess -- 160 rows of the table were being stored and never used.
-  const fractionMean = (value) => {
-    // A zero is "the benchmark did not run", not "the model scored nothing" -- the
-    // same rule the BenchGecko extractor uses. Averaging zeros produced one floor
-    // value that seven unrelated models then shared as if it were a measurement.
-    const fractions = Object.values(value.benchmarks ?? {}).filter((score) => score > 0 && score <= 100)
-    if (fractions.length < 4) return null
-    return fractions.reduce((sum, score) => sum + score, 0) / fractions.length
-  }
-  // Calibrate on every row that has both, not only the rows this catalog matched:
-  // the fit is about AA's own scales, and restricting it to our ids throws away
-  // most of the evidence.
-  const benchPairs = []
-  for (const value of new Set(byName.values())) {
-    if (!Number.isFinite(value.intelligenceIndex)) continue
-    const mean = fractionMean(value)
-    if (mean !== null) benchPairs.push([mean, value.intelligenceIndex])
-  }
-  let benchSlope = 0
-  let benchIntercept = 0
-  if (benchPairs.length >= 8) {
-    const meanX = benchPairs.reduce((sum, [x]) => sum + x, 0) / benchPairs.length
-    const meanY = benchPairs.reduce((sum, [, y]) => sum + y, 0) / benchPairs.length
-    let numerator = 0
-    let denominator = 0
-    for (const [x, y] of benchPairs) {
-      numerator += (x - meanX) * (y - meanY)
-      denominator += (x - meanX) ** 2
-    }
-    if (denominator > 0) {
-      benchSlope = numerator / denominator
-      benchIntercept = meanY - benchSlope * meanX
-    }
-  }
-  /** AA quality for one row: its index when published, else its benchmark mean. */
-  const analysisQuality = (value) => {
-    if (Number.isFinite(value.intelligenceIndex)) return qualityOf(value)
-    const mean = fractionMean(value)
-    if (mean === null || benchPairs.length < 8) return null
-    const index = benchSlope * mean + benchIntercept
-    return Math.max(0, Math.min(100, Math.round((slope * index + intercept) * 10) / 10))
+  /** Latency class from whatever serving facts a row carries; null when unmeasured. */
+  const latencyOf = (value) => {
+    const ttft = Number.isFinite(value.ttft) ? value.ttft : null
+    const speed = Number.isFinite(value.speed) ? value.speed : null
+    if (ttft === null && speed === null) return null
+    const seconds = ttft ?? 99
+    const tokensPerSecond = speed ?? 0
+    return seconds <= 1 && tokensPerSecond >= 100 ? 'fast' : seconds <= 3 ? 'balanced' : 'slow'
   }
 
-  let filledQuality = 0
+  /** Whether a row carries a measurement the ranking or the tier board can use. */
+  const isMeasured = (value) =>
+    (Number.isFinite(value.intelligenceIndex) && value.intelligenceIndex > 0) ||
+    Object.keys(value.benchmarks ?? {}).length >= 4
+
+  let measuredCount = 0
   let filledPrice = 0
   let filledLatency = 0
   for (const [id, value] of Object.entries(byId)) {
     const entry = dataset[id] ?? dataset[id.toLowerCase()]
     if (entry === undefined) continue
+    if (isMeasured(value)) measuredCount += 1
     entry.crossChecks = { ...(entry.crossChecks ?? {}), artificialAnalysis: {
       intelligenceIndex: value.intelligenceIndex ?? null,
       priceIn: value.priceIn ?? null,
@@ -1228,15 +1441,6 @@ export function attachArtificialAnalysis(dataset, { base = {}, analysis = {}, wa
       source: ARTIFICIAL_ANALYSIS_URL,
     } }
 
-    const hasQuality = Number.isFinite(Number(entry.quality)) && Number(entry.quality) > 0
-    const derived = analysisQuality(value)
-    if (!hasQuality && derived !== null) {
-      const quality = derived
-      entry.quality = quality
-      entry.scores = { ...(entry.scores ?? {}), overall: quality }
-      entry.evidence = { ...(entry.evidence ?? {}), overall: 0 }
-      filledQuality += 1
-    }
     // A zero price is a real price (a free model), not a missing one; only a
     // missing field may be filled from Artificial Analysis.
     const hasPrice = Number.isFinite(Number(entry.price?.input)) && Number(entry.price.input) >= 0
@@ -1248,22 +1452,18 @@ export function attachArtificialAnalysis(dataset, { base = {}, analysis = {}, wa
       }
       filledPrice += 1
     }
-    if (entry.latency === undefined && (Number.isFinite(value.ttft) || Number.isFinite(value.speed))) {
-      const ttft = Number.isFinite(value.ttft) ? value.ttft : 99
-      const speed = Number.isFinite(value.speed) ? value.speed : 0
-      entry.latency = ttft <= 1 && speed >= 100 ? 'fast' : ttft <= 3 ? 'balanced' : 'slow'
-      filledLatency += 1
+    if (entry.latency === undefined) {
+      const latency = latencyOf(value)
+      if (latency !== null) {
+        entry.latency = latency
+        filledLatency += 1
+      }
     }
   }
   // Models the provider advertises but the catalog has never described: AA is the
   // only source that knows them, so they get an entry built from its row rather
   // than staying invisible to the router forever.
   let created = 0
-  const latencyOf = (value) => {
-    const ttft = Number.isFinite(value.ttft) ? value.ttft : 99
-    const speed = Number.isFinite(value.speed) ? value.speed : 0
-    return ttft <= 1 && speed >= 100 ? 'fast' : ttft <= 3 ? 'balanced' : 'slow'
-  }
   for (const raw of wanted) {
     const id = typeof raw === 'string' ? raw : raw?.model
     if (typeof id !== 'string' || id.length === 0) continue
@@ -1277,42 +1477,36 @@ export function attachArtificialAnalysis(dataset, { base = {}, analysis = {}, wa
     ]
     const value = matchAnalysisRow(lookupKeys, byName)
     if (value === undefined) continue
-    // The match decides the label and the numbers, so the model stems must agree:
-    // a name prefix alone joined `siliconflow/deepseek-v3-0324` to a V4.1 row and
-    // shipped its label and quality under the wrong id.
-    const ourStem = modelStem(bare.replace(/^cmaas-/i, ''))
-    const theirStem = modelStem(value.name ?? '')
-    if (!theirStem.startsWith(ourStem) && !ourStem.startsWith(theirStem)) continue
+    // The match decides the label and the numbers, so the identity rule must
+    // apply here too: a name prefix alone joined `vanchin/deepseek-v3` to a
+    // "DeepSeek V3.2 (Reasoning)" row and shipped that row's label under the
+    // V3 id, after which the id's own 2024 Epoch row made the entry look
+    // consistent while its label named the next generation.
+    if (!sameModelName(id, value.name)) continue
     const entryKey = id.toLowerCase()
     const existing = dataset[id] ?? dataset[entryKey]
     if (existing !== undefined) continue
-    const quality = analysisQuality(value)
-    if (quality === null && !Number.isFinite(value.priceIn)) continue
+    if (!isMeasured(value) && !Number.isFinite(value.priceIn)) continue
     const price = Number.isFinite(value.priceIn)
       ? { input: round1(value.priceIn * CNY_PER_USD), output: round1((value.priceOut ?? value.priceIn) * CNY_PER_USD) }
       : undefined
-    // Artificial Analysis measures a composite, not per-dimension scores. Every
-    // dimension is filled with that composite and evidence 0, so the entry is a
-    // complete prior the selector can rank instead of a partial one it would
-    // treat as an error; nothing claims a dimension was measured.
-    const scores = {}
-    const evidence = {}
-    for (const dim of DIMENSIONS) {
-      scores[dim] = quality ?? 0
-      evidence[dim] = 0
-    }
+    // A capacity AA never published is unknown, not zero: `0` read as a window
+    // that is too small for long-context work, while `null` is left to the
+    // selector's uncertainty penalty.
+    const contextWindow = Number.isFinite(value.contextTokens) && value.contextTokens > 0 ? value.contextTokens : null
     dataset[entryKey] = {
-      label: value.name ?? bare,
+      label: labelForId(id, value.name ?? bare),
       ...(provider === undefined ? {} : { provider }),
-      contextWindow: Number.isFinite(value.contextTokens) ? value.contextTokens : 0,
+      contextWindow,
       ...(price === undefined ? {} : { price }),
+      // AA does not publish modalities or tool support. These are stated
+      // assumptions for an entry AA is the only source for; the ranking is what
+      // measures the model, and `bestFor`/`weaknesses` stay empty rather than
+      // inventing a use case.
       modalities: ['text'],
       toolCalling: true,
       reasoning: value.reasoning === true,
-      latency: latencyOf(value),
-      ...(quality === null ? {} : { quality }),
-      scores,
-      evidence,
+      latency: latencyOf(value) ?? 'balanced',
       bestFor: [],
       weaknesses: [],
       sources: [ARTIFICIAL_ANALYSIS_URL],
@@ -1324,6 +1518,8 @@ export function attachArtificialAnalysis(dataset, { base = {}, analysis = {}, wa
         ttft: value.ttft ?? null,
         speed: value.speed ?? null,
         ...(value.benchmarks === undefined ? {} : { benchmarks: value.benchmarks }),
+        ...(value.contextTokens === undefined ? {} : { contextTokens: value.contextTokens }),
+        ...(value.reasoning === undefined ? {} : { reasoning: value.reasoning }),
         source: ARTIFICIAL_ANALYSIS_URL,
       } },
     }
@@ -1331,9 +1527,9 @@ export function attachArtificialAnalysis(dataset, { base = {}, analysis = {}, wa
   }
 
   // Every entry leaves here complete: the selector scores all nine dimensions and
-  // the knowledge tests require integers for evidence. An AA-only model has no
-  // per-dimension measurement, so its dimensions mirror the composite with
-  // evidence 0 -- a prior the selector can rank, not a claim it was measured.
+  // the knowledge tests require integers for evidence. Dimensions with nothing
+  // behind them are placeholders (0, evidence 0): the ranking carries the
+  // measured values, and a placeholder must never be read as a score.
   for (const entry of Object.values(dataset)) {
     if (entry === null || typeof entry !== 'object') continue
     const scores = { ...(entry.scores ?? {}) }
@@ -1349,15 +1545,13 @@ export function attachArtificialAnalysis(dataset, { base = {}, analysis = {}, wa
   return {
     models: Object.keys(byId).length,
     created,
-    filledQuality,
+    measured: measuredCount,
+    // The refresh status line prints this field as "measured"; since AA no longer
+    // fills a capability score, it counts the entries AA actually measured
+    // (a published index above zero, or enough benchmarks to be evidence).
+    filledQuality: measuredCount,
     filledPrice,
     filledLatency,
-    calibration: {
-      pairs: pairs.length,
-      slope: Math.round(slope * 100) / 100,
-      intercept: Math.round(intercept * 100) / 100,
-      benchmarkPairs: benchPairs.length,
-    },
   }
 }
 
@@ -1370,8 +1564,9 @@ export function attachArtificialAnalysis(dataset, { base = {}, analysis = {}, wa
  *
  * @param {string} csv
  * @param {Map<string, string>} index
+ * @param {Record<string, object>|null} [base] - catalog, for the label check
  */
-export function extractEpochEci(csv, index) {
+export function extractEpochEci(csv, index, base = null) {
   const rows = parseCsv(csv)
   const header = rows[0] ?? []
   const column = (name) => header.indexOf(name)
@@ -1385,8 +1580,11 @@ export function extractEpochEci(csv, index) {
     const eci = Number(row[eciAt])
     if (!Number.isFinite(eci)) continue
     const date = row[dateAt] ?? null
-    for (const id of idsAt(index, normalizeName(name))) {
+    for (const id of idsForName(index, name)) {
       if (!sameModelName(id, name)) continue
+      // A row only owns an entry whose label names the same model: a V3.2 label
+      // on a V3 id must not collect the 2024 V3 ECI.
+      if (!labelAgrees(base, id, name)) continue
       // One row per model; on duplicates keep the newer evaluation date.
       const previous = out[id]
       if (previous !== undefined && String(previous.date) > String(date)) continue
@@ -1406,8 +1604,9 @@ export function extractEpochEci(csv, index) {
  *
  * @param {string} csv
  * @param {Map<string, string>} index
+ * @param {Record<string, object>|null} [base] - catalog, for the label check
  */
-export function extractLlmComparison(csv, index) {
+export function extractLlmComparison(csv, index, base = null) {
   const rows = parseCsv(csv)
   const header = rows[0] ?? []
   const column = (name) => header.indexOf(name)
@@ -1423,8 +1622,9 @@ export function extractLlmComparison(csv, index) {
     const ttft = Number(row[ttftAt])
     const speed = Number(row[speedAt])
     if (!Number.isFinite(speed) || speed <= 0) continue
-    for (const id of idsAt(index, normalizeName(name))) {
+    for (const id of idsForName(index, name)) {
       if (!sameModelName(id, name)) continue
+      if (!labelAgrees(base, id, name)) continue
       const previous = out[id]
       if (previous !== undefined && previous.tokensPerSecond >= speed) continue
       out[id] = {
@@ -1450,8 +1650,9 @@ export function extractLlmComparison(csv, index) {
  * @param {string} html
  * @param {string} track - the track id to keep
  * @param {Map<string, string>} index - normalized name -> catalog id
+ * @param {Record<string, object>|null} [base] - catalog, for the label check
  */
-export function extractLlmBenchmarkPage(html, track, index) {
+export function extractLlmBenchmarkPage(html, track, index, base = null) {
   const out = {}
   if (track === null) return out
   const rowPattern = /<tr data-benchmark-track="([^"]+)" data-benchmark-model="([^"]+)" data-score="([^"]+)"/g
@@ -1460,8 +1661,9 @@ export function extractLlmBenchmarkPage(html, track, index) {
     const name = match[2]
     const score = Number(match[3])
     if (!Number.isFinite(score)) continue
-    for (const id of idsAt(index, normalizeName(name))) {
+    for (const id of idsForName(index, name)) {
       if (!sameModelName(id, name)) continue
+      if (!labelAgrees(base, id, name)) continue
       out[id] = round1(score)
     }
   }

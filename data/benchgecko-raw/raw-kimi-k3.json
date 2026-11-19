@@ -1,0 +1,718 @@
+{
+  "source": "BenchGecko",
+  "url": "https://benchgecko.ai/model/kimi-k3",
+  "as_of": "2026-11-18",
+  "license": "BenchGecko collected data (prices, provider offers, Gecko Tests) is CC BY 4.0 · https://creativecommons.org/licenses/by/4.0/. Benchmark scores belong to their original publishers (see sources) and are aggregated with attribution. Attribution required: \"Source: BenchGecko\" with a link.",
+  "attribution": "Source: BenchGecko · https://benchgecko.ai/model/kimi-k3",
+  "cite": "Kimi K3 · benchmarks, pricing and providers. BenchGecko, data as of 2026-11-18. https://benchgecko.ai/model/kimi-k3",
+  "slug": "kimi-k3",
+  "name": "Kimi K3",
+  "provider": {
+    "name": "moonshotai",
+    "slug": "moonshotai"
+  },
+  "model_type": "multimodal",
+  "release_date": "2026-07-16",
+  "is_open_source": false,
+  "status": "active",
+  "context_window": 1048576,
+  "description": "Kimi K3 is a 2.8T parameter open-weight multimodal reasoning model from Moonshot AI. It is suited for complex coding, knowledge work, and long-horizon agentic workflows, and is particularly strong at...",
+  "benchgecko_score": {
+    "value": 63.2,
+    "rank": 70,
+    "of": 328,
+    "method": "Normalized average of public benchmark scores",
+    "method_url": "https://benchgecko.ai/methodology"
+  },
+  "avg_score": 63.2,
+  "list_price": {
+    "input_usd_per_m": 0.192,
+    "output_usd_per_m": 16,
+    "source": "OpenRouter models API (checked daily)",
+    "as_of": "2026-11-18"
+  },
+  "pricing": {
+    "input": 0.192,
+    "output": 16
+  },
+  "providers": [
+    {
+      "provider": "Wafer",
+      "endpoint": "wafer/fast",
+      "quantization": "mxfp4",
+      "context_tokens": 1048576,
+      "input_usd_per_m": 0.153,
+      "output_usd_per_m": 16,
+      "cache_read_usd_per_m": 0.152,
+      "uptime_1d_pct": 100,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "Relace",
+      "endpoint": "relace/fp4",
+      "quantization": "fp4",
+      "context_tokens": 1048576,
+      "input_usd_per_m": 0.1824,
+      "output_usd_per_m": 11.0055,
+      "cache_read_usd_per_m": 0.18,
+      "uptime_1d_pct": 99.86,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "Wafer",
+      "endpoint": "wafer",
+      "quantization": "mxfp4",
+      "context_tokens": 1048576,
+      "input_usd_per_m": 0.192,
+      "output_usd_per_m": 16,
+      "cache_read_usd_per_m": 0.182,
+      "uptime_1d_pct": 100,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "InferenceNet",
+      "endpoint": "inference-net/fp4",
+      "quantization": "fp4",
+      "context_tokens": 1048576,
+      "input_usd_per_m": 0.234,
+      "output_usd_per_m": 15,
+      "cache_read_usd_per_m": 0.204,
+      "uptime_1d_pct": 100,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "InferenceNet",
+      "endpoint": "inference-net/us",
+      "quantization": "fp4",
+      "context_tokens": 1048576,
+      "input_usd_per_m": 0.234,
+      "output_usd_per_m": 15,
+      "cache_read_usd_per_m": 0.204,
+      "uptime_1d_pct": 100,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "Wafer",
+      "endpoint": "wafer/us",
+      "quantization": "mxfp4",
+      "context_tokens": 1048576,
+      "input_usd_per_m": 0.276,
+      "output_usd_per_m": 9.6,
+      "cache_read_usd_per_m": 0.13,
+      "uptime_1d_pct": 100,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "InferenceNet",
+      "endpoint": "inference-net/fast",
+      "quantization": "fp4",
+      "context_tokens": 1048576,
+      "input_usd_per_m": 0.45,
+      "output_usd_per_m": 18,
+      "cache_read_usd_per_m": 0.33,
+      "uptime_1d_pct": 100,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "InferenceNet",
+      "endpoint": "inference-net/us/fast",
+      "quantization": "fp4",
+      "context_tokens": 1048576,
+      "input_usd_per_m": 0.45,
+      "output_usd_per_m": 18,
+      "cache_read_usd_per_m": 0.33,
+      "uptime_1d_pct": 100,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "KT",
+      "endpoint": "kt",
+      "quantization": null,
+      "context_tokens": 1048576,
+      "input_usd_per_m": 0.45,
+      "output_usd_per_m": 15,
+      "cache_read_usd_per_m": 0.3,
+      "uptime_1d_pct": 100,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "Makora",
+      "endpoint": "makora/fp4",
+      "quantization": "fp4",
+      "context_tokens": 1048576,
+      "input_usd_per_m": 1.2,
+      "output_usd_per_m": 18,
+      "cache_read_usd_per_m": 0.5,
+      "uptime_1d_pct": 99.77,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "Chutes",
+      "endpoint": "chutes/mxfp4",
+      "quantization": "mxfp4",
+      "context_tokens": 1048576,
+      "input_usd_per_m": 1.85,
+      "output_usd_per_m": 9.5,
+      "cache_read_usd_per_m": 0.185,
+      "uptime_1d_pct": 100,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "Io Net",
+      "endpoint": "io-net/fp4",
+      "quantization": "fp4",
+      "context_tokens": 1048320,
+      "input_usd_per_m": 1.9,
+      "output_usd_per_m": 14,
+      "cache_read_usd_per_m": 0.19,
+      "uptime_1d_pct": 99.27,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "DigitalOcean",
+      "endpoint": "digitalocean",
+      "quantization": null,
+      "context_tokens": 1048576,
+      "input_usd_per_m": 2.55,
+      "output_usd_per_m": 12.95,
+      "cache_read_usd_per_m": 0.255,
+      "uptime_1d_pct": 100,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "DeepInfra",
+      "endpoint": "deepinfra/mxfp4",
+      "quantization": "mxfp4",
+      "context_tokens": 1048576,
+      "input_usd_per_m": 2.85,
+      "output_usd_per_m": 14.25,
+      "cache_read_usd_per_m": 0.285,
+      "uptime_1d_pct": 100,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "Alibaba",
+      "endpoint": "alibaba",
+      "quantization": null,
+      "context_tokens": 1000000,
+      "input_usd_per_m": 3,
+      "output_usd_per_m": 15,
+      "cache_read_usd_per_m": 0.3,
+      "uptime_1d_pct": 100,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "Amazon Bedrock",
+      "endpoint": "amazon-bedrock/us-east-2",
+      "quantization": null,
+      "context_tokens": 1048576,
+      "input_usd_per_m": 3,
+      "output_usd_per_m": 15,
+      "cache_read_usd_per_m": 0.3,
+      "uptime_1d_pct": 100,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "BaseTen",
+      "endpoint": "baseten/fp8",
+      "quantization": "fp8",
+      "context_tokens": 1048576,
+      "input_usd_per_m": 3,
+      "output_usd_per_m": 15,
+      "cache_read_usd_per_m": 0.3,
+      "uptime_1d_pct": 99.85,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "Fireworks",
+      "endpoint": "fireworks",
+      "quantization": null,
+      "context_tokens": 1048576,
+      "input_usd_per_m": 3,
+      "output_usd_per_m": 15,
+      "cache_read_usd_per_m": 0.3,
+      "uptime_1d_pct": 99.64,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "Modal",
+      "endpoint": "modal/mxfp4",
+      "quantization": "mxfp4",
+      "context_tokens": 1048576,
+      "input_usd_per_m": 3,
+      "output_usd_per_m": 15,
+      "cache_read_usd_per_m": 0.3,
+      "uptime_1d_pct": 100,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "Moonshot AI",
+      "endpoint": "moonshotai",
+      "quantization": null,
+      "context_tokens": 1048576,
+      "input_usd_per_m": 3,
+      "output_usd_per_m": 15,
+      "cache_read_usd_per_m": 0.3,
+      "uptime_1d_pct": 99.93,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "Nebius",
+      "endpoint": "nebius/fp4",
+      "quantization": "fp4",
+      "context_tokens": 1048576,
+      "input_usd_per_m": 3,
+      "output_usd_per_m": 15,
+      "cache_read_usd_per_m": 0.3,
+      "uptime_1d_pct": 100,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "Parasail",
+      "endpoint": "parasail/fp4",
+      "quantization": "fp4",
+      "context_tokens": 1048576,
+      "input_usd_per_m": 3,
+      "output_usd_per_m": 15,
+      "cache_read_usd_per_m": 0.3,
+      "uptime_1d_pct": 99.72,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "River",
+      "endpoint": "river",
+      "quantization": null,
+      "context_tokens": 1048576,
+      "input_usd_per_m": 3,
+      "output_usd_per_m": 15,
+      "cache_read_usd_per_m": 0.3,
+      "uptime_1d_pct": 99.93,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "Together",
+      "endpoint": "together",
+      "quantization": null,
+      "context_tokens": 1048576,
+      "input_usd_per_m": 3,
+      "output_usd_per_m": 15,
+      "cache_read_usd_per_m": 0.3,
+      "uptime_1d_pct": 99.34,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "Amazon Bedrock",
+      "endpoint": "amazon-bedrock/us-east-1",
+      "quantization": null,
+      "context_tokens": 1048576,
+      "input_usd_per_m": 3.3,
+      "output_usd_per_m": 16.5,
+      "cache_read_usd_per_m": 0.33,
+      "uptime_1d_pct": 66.36,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "Fireworks",
+      "endpoint": "fireworks/fast",
+      "quantization": null,
+      "context_tokens": 1048576,
+      "input_usd_per_m": 4.5,
+      "output_usd_per_m": 22.5,
+      "cache_read_usd_per_m": 0.45,
+      "uptime_1d_pct": 91.74,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "Fireworks",
+      "endpoint": "fireworks/us",
+      "quantization": null,
+      "context_tokens": 1048576,
+      "input_usd_per_m": 4.5,
+      "output_usd_per_m": 22.5,
+      "cache_read_usd_per_m": 0.45,
+      "uptime_1d_pct": 93.38,
+      "as_of": "2026-11-18"
+    },
+    {
+      "provider": "Parasail",
+      "endpoint": "parasail/fast",
+      "quantization": "fp4",
+      "context_tokens": 1048576,
+      "input_usd_per_m": 4.5,
+      "output_usd_per_m": 22.5,
+      "cache_read_usd_per_m": 0.45,
+      "uptime_1d_pct": 96.89,
+      "as_of": "2026-11-18"
+    }
+  ],
+  "cheapest_provider": {
+    "provider": "Wafer",
+    "endpoint": "wafer/fast",
+    "quantization": "mxfp4",
+    "context_tokens": 1048576,
+    "input_usd_per_m": 0.153,
+    "output_usd_per_m": 16,
+    "cache_read_usd_per_m": 0.152,
+    "uptime_1d_pct": 100,
+    "as_of": "2026-11-18"
+  },
+  "providers_source": "OpenRouter endpoints API, one row per provider, refreshed daily",
+  "scores": [
+    {
+      "benchmark": "OTIS Mock AIME 2024-2025",
+      "benchmark_slug": "otis-mock-aime-2024-2025",
+      "score": 97.22,
+      "unit": "%",
+      "category": "math",
+      "source": "Epoch AI Benchmarking Hub",
+      "source_url": "https://epoch.ai/data/ai-benchmarking-dashboard",
+      "benchmark_url": "https://benchgecko.ai/benchmark/otis-mock-aime-2024-2025"
+    },
+    {
+      "benchmark": "Surface Evolver Bench",
+      "benchmark_slug": "surface-evolver-bench",
+      "score": 95,
+      "unit": "%",
+      "category": "general",
+      "source": "Epoch AI Benchmarking Hub",
+      "source_url": "https://epoch.ai/data/ai-benchmarking-dashboard",
+      "benchmark_url": "https://benchgecko.ai/benchmark/surface-evolver-bench"
+    },
+    {
+      "benchmark": "GPQA diamond",
+      "benchmark_slug": "gpqa-diamond",
+      "score": 94.61,
+      "unit": "%",
+      "category": "knowledge",
+      "source": "Epoch AI Benchmarking Hub",
+      "source_url": "https://epoch.ai/data/ai-benchmarking-dashboard",
+      "benchmark_url": "https://benchgecko.ai/benchmark/gpqa-diamond"
+    },
+    {
+      "benchmark": "ARC-AGI",
+      "benchmark_slug": "arc-agi",
+      "score": 94.5,
+      "unit": "%",
+      "category": "reasoning",
+      "source": "Epoch AI Benchmarking Hub",
+      "source_url": "https://epoch.ai/data/ai-benchmarking-dashboard",
+      "benchmark_url": "https://benchgecko.ai/benchmark/arc-agi"
+    },
+    {
+      "benchmark": "Artificial Analysis · GPQA Diamond",
+      "benchmark_slug": "aa-gpqa-diamond",
+      "score": 93.5,
+      "unit": "%",
+      "category": "speed",
+      "source": "Artificial Analysis",
+      "source_url": "https://artificialanalysis.ai",
+      "benchmark_url": "https://benchgecko.ai/benchmark/aa-gpqa-diamond"
+    },
+    {
+      "benchmark": "Artificial Analysis · Long Context Reasoning",
+      "benchmark_slug": "aa-long-context-reasoning",
+      "score": 88.7,
+      "unit": "%",
+      "category": "speed",
+      "source": "Artificial Analysis",
+      "source_url": "https://artificialanalysis.ai",
+      "benchmark_url": "https://benchgecko.ai/benchmark/aa-long-context-reasoning"
+    },
+    {
+      "benchmark": "Proofbench",
+      "benchmark_slug": "proofbench",
+      "score": 87,
+      "unit": "%",
+      "category": "general",
+      "source": "Epoch AI Benchmarking Hub",
+      "source_url": "https://epoch.ai/data/ai-benchmarking-dashboard",
+      "benchmark_url": "https://benchgecko.ai/benchmark/proofbench"
+    },
+    {
+      "benchmark": "Dtbench",
+      "benchmark_slug": "dtbench",
+      "score": 85.33,
+      "unit": "%",
+      "category": "general",
+      "source": "Epoch AI Benchmarking Hub",
+      "source_url": "https://epoch.ai/data/ai-benchmarking-dashboard",
+      "benchmark_url": "https://benchgecko.ai/benchmark/dtbench"
+    },
+    {
+      "benchmark": "WeirdML",
+      "benchmark_slug": "weirdml",
+      "score": 82.57,
+      "unit": "%",
+      "category": "coding",
+      "source": "Epoch AI Benchmarking Hub",
+      "source_url": "https://epoch.ai/data/ai-benchmarking-dashboard",
+      "benchmark_url": "https://benchgecko.ai/benchmark/weirdml"
+    },
+    {
+      "benchmark": "Artificial Analysis · MMMU Pro",
+      "benchmark_slug": "aa-mmmu-pro",
+      "score": 80.5,
+      "unit": "%",
+      "category": "speed",
+      "source": "Artificial Analysis",
+      "source_url": "https://artificialanalysis.ai",
+      "benchmark_url": "https://benchgecko.ai/benchmark/aa-mmmu-pro"
+    },
+    {
+      "benchmark": "FrontierMath-Tiers-1-3-v2-Private",
+      "benchmark_slug": "frontiermath-tiers-1-3-v2-private",
+      "score": 75.98,
+      "unit": "%",
+      "category": "math",
+      "source": "Epoch AI Benchmarking Hub",
+      "source_url": "https://epoch.ai/data/ai-benchmarking-dashboard",
+      "benchmark_url": "https://benchgecko.ai/benchmark/frontiermath-tiers-1-3-v2-private"
+    },
+    {
+      "benchmark": "Deepswe",
+      "benchmark_slug": "deepswe",
+      "score": 68.51,
+      "unit": "%",
+      "category": "coding",
+      "source": "Epoch AI Benchmarking Hub",
+      "source_url": "https://epoch.ai/data/ai-benchmarking-dashboard",
+      "benchmark_url": "https://benchgecko.ai/benchmark/deepswe"
+    },
+    {
+      "benchmark": "Lmca",
+      "benchmark_slug": "lmca",
+      "score": 62.05,
+      "unit": "%",
+      "category": "general",
+      "source": "Epoch AI Benchmarking Hub",
+      "source_url": "https://epoch.ai/data/ai-benchmarking-dashboard",
+      "benchmark_url": "https://benchgecko.ai/benchmark/lmca"
+    },
+    {
+      "benchmark": "ARC-AGI-2",
+      "benchmark_slug": "arc-agi-2",
+      "score": 60.42,
+      "unit": "%",
+      "category": "reasoning",
+      "source": "Epoch AI Benchmarking Hub",
+      "source_url": "https://epoch.ai/data/ai-benchmarking-dashboard",
+      "benchmark_url": "https://benchgecko.ai/benchmark/arc-agi-2"
+    },
+    {
+      "benchmark": "Artificial Analysis · SciCode",
+      "benchmark_slug": "aa-scicode",
+      "score": 59.5,
+      "unit": "%",
+      "category": "speed",
+      "source": "Artificial Analysis",
+      "source_url": "https://artificialanalysis.ai",
+      "benchmark_url": "https://benchgecko.ai/benchmark/aa-scicode"
+    },
+    {
+      "benchmark": "Mirrorcode",
+      "benchmark_slug": "mirrorcode",
+      "score": 54.44,
+      "unit": "%",
+      "category": "coding",
+      "source": "Epoch AI Benchmarking Hub",
+      "source_url": "https://epoch.ai/data/ai-benchmarking-dashboard",
+      "benchmark_url": "https://benchgecko.ai/benchmark/mirrorcode"
+    },
+    {
+      "benchmark": "SimpleBench",
+      "benchmark_slug": "simplebench",
+      "score": 52.84,
+      "unit": "%",
+      "category": "reasoning",
+      "source": "Epoch AI Benchmarking Hub",
+      "source_url": "https://epoch.ai/data/ai-benchmarking-dashboard",
+      "benchmark_url": "https://benchgecko.ai/benchmark/simplebench"
+    },
+    {
+      "benchmark": "Artificial Analysis · GDPval",
+      "benchmark_slug": "aa-gdpval",
+      "score": 51.7,
+      "unit": "%",
+      "category": "speed",
+      "source": "Artificial Analysis",
+      "source_url": "https://artificialanalysis.ai",
+      "benchmark_url": "https://benchgecko.ai/benchmark/aa-gdpval"
+    },
+    {
+      "benchmark": "SimpleQA Verified",
+      "benchmark_slug": "simpleqa-verified",
+      "score": 50.6,
+      "unit": "%",
+      "category": "knowledge",
+      "source": "Epoch AI Benchmarking Hub",
+      "source_url": "https://epoch.ai/data/ai-benchmarking-dashboard",
+      "benchmark_url": "https://benchgecko.ai/benchmark/simpleqa-verified"
+    },
+    {
+      "benchmark": "APEX-Agents",
+      "benchmark_slug": "apex-agents",
+      "score": 47.8,
+      "unit": "%",
+      "category": "agentic",
+      "source": "Epoch AI Benchmarking Hub",
+      "source_url": "https://epoch.ai/data/ai-benchmarking-dashboard",
+      "benchmark_url": "https://benchgecko.ai/benchmark/apex-agents"
+    },
+    {
+      "benchmark": "Artificial Analysis · Humanity's Last Exam",
+      "benchmark_slug": "aa-humanitys-last-exam",
+      "score": 46.9,
+      "unit": "%",
+      "category": "speed",
+      "source": "Artificial Analysis",
+      "source_url": "https://artificialanalysis.ai",
+      "benchmark_url": "https://benchgecko.ai/benchmark/aa-humanitys-last-exam"
+    },
+    {
+      "benchmark": "Frontiercode",
+      "benchmark_slug": "frontiercode",
+      "score": 44.17,
+      "unit": "%",
+      "category": "coding",
+      "source": "Epoch AI Benchmarking Hub",
+      "source_url": "https://epoch.ai/data/ai-benchmarking-dashboard",
+      "benchmark_url": "https://benchgecko.ai/benchmark/frontiercode"
+    },
+    {
+      "benchmark": "Artificial Analysis · Quality Index",
+      "benchmark_slug": "aa-quality-index",
+      "score": 43.59,
+      "unit": "index",
+      "category": "speed",
+      "source": "Artificial Analysis",
+      "source_url": "https://artificialanalysis.ai",
+      "benchmark_url": "https://benchgecko.ai/benchmark/aa-quality-index"
+    },
+    {
+      "benchmark": "FrontierMath-Tier-4-v2-Private",
+      "benchmark_slug": "frontiermath-tier-4-v2-private",
+      "score": 39.02,
+      "unit": "%",
+      "category": "math",
+      "source": "Epoch AI Benchmarking Hub",
+      "source_url": "https://epoch.ai/data/ai-benchmarking-dashboard",
+      "benchmark_url": "https://benchgecko.ai/benchmark/frontiermath-tier-4-v2-private"
+    },
+    {
+      "benchmark": "Chess Puzzles",
+      "benchmark_slug": "chess-puzzles",
+      "score": 33.71,
+      "unit": "%",
+      "category": "knowledge",
+      "source": "Epoch AI Benchmarking Hub",
+      "source_url": "https://epoch.ai/data/ai-benchmarking-dashboard",
+      "benchmark_url": "https://benchgecko.ai/benchmark/chess-puzzles"
+    },
+    {
+      "benchmark": "PostTrainBench",
+      "benchmark_slug": "posttrainbench",
+      "score": 31.48,
+      "unit": "%",
+      "category": "knowledge",
+      "source": "Epoch AI Benchmarking Hub",
+      "source_url": "https://epoch.ai/data/ai-benchmarking-dashboard",
+      "benchmark_url": "https://benchgecko.ai/benchmark/posttrainbench"
+    },
+    {
+      "benchmark": "Frontierswe",
+      "benchmark_slug": "frontierswe",
+      "score": 25.87,
+      "unit": "%",
+      "category": "coding",
+      "source": "Epoch AI Benchmarking Hub",
+      "source_url": "https://epoch.ai/data/ai-benchmarking-dashboard",
+      "benchmark_url": "https://benchgecko.ai/benchmark/frontierswe"
+    },
+    {
+      "benchmark": "Artificial Analysis · CritPt",
+      "benchmark_slug": "aa-critpt",
+      "score": 23.4,
+      "unit": "%",
+      "category": "speed",
+      "source": "Artificial Analysis",
+      "source_url": "https://artificialanalysis.ai",
+      "benchmark_url": "https://benchgecko.ai/benchmark/aa-critpt"
+    },
+    {
+      "benchmark": "Mystery Game Puzzles",
+      "benchmark_slug": "mystery-game-puzzles",
+      "score": 18.48,
+      "unit": "%",
+      "category": "general",
+      "source": "Epoch AI Benchmarking Hub",
+      "source_url": "https://epoch.ai/data/ai-benchmarking-dashboard",
+      "benchmark_url": "https://benchgecko.ai/benchmark/mystery-game-puzzles"
+    },
+    {
+      "benchmark": "WeirdML v3",
+      "benchmark_slug": "weirdml-v3",
+      "score": 17.12,
+      "unit": "%",
+      "category": "knowledge",
+      "source": "Epoch AI Benchmarking Hub",
+      "source_url": "https://epoch.ai/data/ai-benchmarking-dashboard",
+      "benchmark_url": "https://benchgecko.ai/benchmark/weirdml-v3"
+    },
+    {
+      "benchmark": "Furniture Assembly",
+      "benchmark_slug": "furniture-assembly",
+      "score": 5.95,
+      "unit": "%",
+      "category": "general",
+      "source": "Epoch AI Benchmarking Hub",
+      "source_url": "https://epoch.ai/data/ai-benchmarking-dashboard",
+      "benchmark_url": "https://benchgecko.ai/benchmark/furniture-assembly"
+    }
+  ],
+  "gecko_tests": {
+    "gecko_score": 41,
+    "rank": 45,
+    "tests_taken": 4,
+    "tests": [
+      {
+        "test": "who-are-you",
+        "name": "Who Are You",
+        "grade": "B",
+        "value": 100,
+        "verdict": "Knows who made it",
+        "url": "https://benchgecko.ai/gecko-tests/who-are-you"
+      },
+      {
+        "test": "world-map",
+        "name": "World Map",
+        "grade": "C",
+        "value": 94.6,
+        "verdict": "94.6% of the map right",
+        "url": "https://benchgecko.ai/gecko-tests/world-map"
+      },
+      {
+        "test": "knowledge-horizon",
+        "name": "Knowledge Horizon",
+        "grade": "C",
+        "value": 60,
+        "verdict": "Knows news up to Nov 2025",
+        "url": "https://benchgecko.ai/gecko-tests/knowledge-horizon"
+      },
+      {
+        "test": "tokenizer-tax",
+        "name": "Tokenizer Tax",
+        "grade": "E",
+        "value": 7,
+        "verdict": "93% more tokens outside English",
+        "url": "https://benchgecko.ai/gecko-tests/tokenizer-tax"
+      }
+    ],
+    "scorecard_url": "https://benchgecko.ai/gecko-tests/scorecard"
+  },
+  "links": {
+    "page": "https://benchgecko.ai/model/kimi-k3",
+    "json": "https://benchgecko.ai/api/v1/models/kimi-k3",
+    "price_history": "https://benchgecko.ai/api/v1/price-history/kimi-k3",
+    "provider_prices": "https://benchgecko.ai/pricing/arbitrage/kimi-k3"
+  }
+}

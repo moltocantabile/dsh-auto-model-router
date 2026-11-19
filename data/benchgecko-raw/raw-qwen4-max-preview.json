@@ -1,0 +1,43 @@
+{
+  "source": "BenchGecko",
+  "url": "https://benchgecko.ai/model/qwen4-max-preview",
+  "as_of": "2026-11-11",
+  "license": "BenchGecko collected data (prices, provider offers, Gecko Tests) is CC BY 4.0 · https://creativecommons.org/licenses/by/4.0/. Benchmark scores belong to their original publishers (see sources) and are aggregated with attribution. Attribution required: \"Source: BenchGecko\" with a link.",
+  "attribution": "Source: BenchGecko · https://benchgecko.ai/model/qwen4-max-preview",
+  "cite": "Qwen4-Max Preview · benchmarks, pricing and providers. BenchGecko, data as of 2026-11-11. https://benchgecko.ai/model/qwen4-max-preview",
+  "slug": "qwen4-max-preview",
+  "name": "Qwen4-Max Preview",
+  "provider": {
+    "name": "Alibaba Qwen",
+    "slug": "alibaba"
+  },
+  "model_type": "multimodal",
+  "release_date": "2026-11-11",
+  "is_open_source": false,
+  "status": "preview",
+  "context_window": 1000000,
+  "description": "Qwen4-Max Preview is Alibaba's next generation flagship multimodal Qwen model and the first of the Qwen4 family · API id qwen4-max-preview · 1M token context and up to 393,216 output tokens shared by thinking and answer · text, image and video in, text out · Token Plan subscriptions only from 2026-11-11 10:00 to 2026-11-25 24:00 (UTC+8), then retired · no per token price published.",
+  "benchgecko_score": null,
+  "avg_score": 0,
+  "list_price": {
+    "input_usd_per_m": null,
+    "output_usd_per_m": null,
+    "source": "Provider list price",
+    "as_of": "2026-11-11"
+  },
+  "pricing": {
+    "input": null,
+    "output": null
+  },
+  "providers": [],
+  "cheapest_provider": null,
+  "providers_source": null,
+  "scores": [],
+  "gecko_tests": null,
+  "links": {
+    "page": "https://benchgecko.ai/model/qwen4-max-preview",
+    "json": "https://benchgecko.ai/api/v1/models/qwen4-max-preview",
+    "price_history": "https://benchgecko.ai/api/v1/price-history/qwen4-max-preview",
+    "provider_prices": null
+  }
+}
