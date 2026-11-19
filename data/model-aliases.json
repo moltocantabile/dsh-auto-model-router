@@ -1,0 +1,9 @@
+{
+  "qwen3.8-max": ["Qwen3.8 Max (0902)"],
+  "qwen4-max": ["Qwen 4 Max", "Qwen4 Max"],
+  "qwen4-max-preview": ["Qwen 4 Max Preview"],
+  "deepseek-v4-flash-0731": ["DeepSeek V4 Flash 0731"],
+  "kimi-k3": ["Kimi K3"],
+  "glm-5.3": ["GLM-5.3"],
+  "glm-5.2": ["GLM-5.2"]
+}

@@ -292,6 +292,12 @@ with `{"action":"refresh"}`) walks five sources and merges them into
 | **Artificial Analysis** | an intelligence index, USD prices, TTFT/output speed, and per-benchmark scores for ~280 models |
 | **OpenRouter** | real weekly usage ranking: which models actually serve traffic, with 7-day token volume (`/api/frontend/v1/models/find?order=top-weekly`, no key) |
 
+Identity joins apply one rule (a date is part of the model, a serving variant is
+not), and sources that spell a model differently are mapped in
+`data/model-aliases.json` — data, not code, so the engine carries no model names
+and every alias is honoured by the same name guard. A missing alias leaves the row
+unmatched rather than attaching it to a guess.
+
 Artificial Analysis is scraped, not called through its API: the documented
 `/api/v2/*` endpoints now require a key, while `/leaderboards/models` ships the
 whole table inside its Next.js RSC stream. `scripts/scrape-artificialanalysis.mjs`

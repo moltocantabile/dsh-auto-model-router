@@ -14,6 +14,7 @@
   },
   "files": [
     "lib",
+    "data",
     "cordis.patch.yml",
     "locale/*.json",
     "icon.svg"

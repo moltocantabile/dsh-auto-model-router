@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs'
+
 /**
  * One identity rule for model names, shared by every join.
  *
@@ -7,7 +9,9 @@
  *
  * - **May differ**: an inference/serving variant (`reasoning`, `thinking`,
  *   `high`, `heavy`, `highspeed`, `default`, …), a reseller prefix (`cmaas-`), a
- *   provider prefix, and a release date or parameter-count tail.
+ *   provider prefix, and a curated source spelling from `data/model-aliases.json`.
+ * - **May not differ**: a **release date** (`-1017` is a different model from the
+ *   undated id, and from `-0731`), a parameter count, or a model tier.
  * - **May not differ**: a model tier (`flash`, `max`, `mini`, `pro`, `turbo`,
  *   `lite`, `air`, `next`, `prime`, `ultra*`) or a version digit. Those are
  *   different models with different weights and prices; collapsing them once let
@@ -53,16 +57,35 @@ export function bareId(key) {
   return slash >= 0 ? text.slice(slash + 1) : text
 }
 
-/** Extra spellings a source uses for a catalog model, keyed by catalog id. */
-const NAME_ALIASES = {
-  'qwen3.8-max': ['Qwen3.8 Max (0902)'],
-  'qwen4-max': ['Qwen 4 Max', 'Qwen4 Max'],
-  'qwen4-max-preview': ['Qwen 4 Max Preview'],
-  'deepseek-v4-flash-0731': ['DeepSeek V4 Flash 0731'],
-  'kimi-k3': ['Kimi K3'],
-  'glm-5.3': ['GLM-5.3'],
-  'glm-5.2': ['GLM-5.2'],
+/**
+ * Curated source spellings, keyed by catalog id, loaded from
+ * `data/model-aliases.json`.
+ *
+ * Sources name models differently ("Qwen3.8 Max (0902)" for `qwen3.8-max`), and
+ * no rule can derive every spelling. Keeping the table in data means the engine
+ * carries no model names and adding a spelling never touches code. A missing or
+ * malformed file degrades to no aliases rather than failing the plugin load.
+ *
+ * @returns {Record<string, string[]>}
+ */
+function loadAliases() {
+  try {
+    const raw = readFileSync(new URL('../data/model-aliases.json', import.meta.url), 'utf8')
+    const parsed = JSON.parse(raw)
+    if (parsed === null || typeof parsed !== 'object' || Array.isArray(parsed)) return {}
+    const table = {}
+    for (const [id, spellings] of Object.entries(parsed)) {
+      if (typeof id !== 'string' || id.length === 0 || !Array.isArray(spellings)) continue
+      const list = spellings.filter((spelling) => typeof spelling === 'string' && spelling.length > 0)
+      if (list.length > 0) table[id] = list
+    }
+    return table
+  } catch {
+    return {}
+  }
 }
+
+const NAME_ALIASES = loadAliases()
 
 /**
  * Whether a source row's name is a curated alias of one catalog id.
