@@ -148,11 +148,27 @@ window.__ModuleLoader__.load({
 .amr-popHint { color:var(--dsw-alias-label-tertiary); }
 .amr-popActions { display:flex; gap:6px; flex-wrap:wrap; padding-top:2px; }
 .amr-emptyLane { color:var(--dsw-alias-label-tertiary); font-size:12px; line-height:18px; }
+/* Composer trigger, after the harness's own footer control: one pill that names
+   the routing state, with the mode labels stacked in one cell so a change
+   cross-fades (opacity + blur) instead of reflowing the composer row. */
+.amr-routeTrigger { display:inline-flex; align-items:center; gap:4px; height:28px; padding:0 8px; border-radius:999px; border:.5px solid transparent; background:0 0; color:var(--dsw-alias-label-tertiary); font:inherit; font-size:13px; line-height:18px; cursor:pointer; white-space:nowrap; min-width:0; }
+.amr-routeTrigger:hover, .amr-routeTrigger[data-state="open"] { background:var(--dsw-alias-interactive-bg-hover); color:var(--dsw-alias-label-secondary); }
+.amr-routeTrigger[data-on="true"] { color:var(--dsw-alias-label-secondary); }
+.amr-routeTrigger[data-known="false"] { opacity:.7; }
 .amr-toggle { display:inline-flex; align-items:center; gap:6px; height:26px; padding:0 10px; border-radius:999px; border:.5px solid var(--dsw-alias-border-l3); background:0 0; color:var(--dsw-alias-label-secondary); font:inherit; font-size:12px; cursor:pointer; }
 .amr-toggle:hover { background:var(--dsw-alias-interactive-bg-hover); }
 .amr-toggle[data-on="true"] { border-color:var(--dsw-alias-brand-primary); color:var(--dsw-alias-label-primary); }
 .amr-toggleDot { width:6px; height:6px; border-radius:50%; background:var(--dsw-alias-label-tertiary); }
 .amr-toggle[data-on="true"] .amr-toggleDot { background:var(--dsw-alias-brand-primary); }
+.amr-routeIcon { display:inline-flex; align-items:center; justify-content:center; width:14px; height:14px; flex:none; }
+.amr-routeLayers { display:grid; overflow:hidden; transition:width .18s ease; }
+.amr-routeText { grid-area:1 / 1; justify-self:start; opacity:0; filter:blur(4px); transition:opacity .18s ease, filter .18s ease; }
+.amr-routeText[data-active="true"] { opacity:1; filter:blur(0); }
+.amr-routeSep { color:var(--dsw-alias-label-tertiary); opacity:.6; }
+.amr-routeValue { color:var(--dsw-alias-label-tertiary); }
+.amr-routeMenu { position:absolute; z-index:40; bottom:calc(100% + 6px); left:0; width:220px; display:flex; flex-direction:column; gap:6px; padding:10px 12px; border:.5px solid var(--dsw-alias-settings-card-stroke); border-radius:var(--dsw-radius-lg); background:var(--dsw-alias-bg-overlay); color:var(--dsw-alias-label-primary); font-size:12px; line-height:18px; }
+.amr-routeMenuTitle { font-size:13px; font-weight:500; }
+.sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
 .amr-tier { display:flex; flex-direction:column; gap:12px; padding:12px 14px; border:.5px solid var(--dsw-alias-settings-card-stroke); border-radius:var(--dsw-radius-lg); }
 .amr-tier + .amr-tier { margin-top:10px; }
 .amr-tierHead { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
@@ -269,6 +285,12 @@ window.__ModuleLoader__.load({
         capsuleHint: 'Click a model to switch it off, drag it to move it.',
         toggleLabel: 'Auto',
         toggleTitle: 'Automatic model routing',
+        toggleAutoShort: 'Auto',
+        toggleObserveShort: 'Observe',
+        toggleOffShort: 'Off',
+        toggleUnknownShort: '—',
+        toggleMenuOpen: 'Choose routing mode',
+        toggleDetailNone: 'no decision yet',
         toggleOnTitle: 'Auto routing is deciding the model',
         toggleOffTitle: 'Auto routing is off; the model picker decides',
         toggleUnknown: 'Auto routing: state unknown (click to read it)',
@@ -477,6 +499,12 @@ window.__ModuleLoader__.load({
         capsuleHint: '点击停用，拖动换档。',
         toggleLabel: '自动',
         toggleTitle: '自动模型路由',
+        toggleAutoShort: '自动',
+        toggleObserveShort: '观察',
+        toggleOffShort: '关闭',
+        toggleUnknownShort: '—',
+        toggleMenuOpen: '选择路由模式',
+        toggleDetailNone: '暂无决策',
         toggleOnTitle: '自动路由正在决定模型',
         toggleOffTitle: '自动路由已关闭，由模型选择器决定',
         toggleUnknown: '自动路由：状态未知（点击读取）',
@@ -1439,6 +1467,8 @@ window.__ModuleLoader__.load({
     function ComposerToggle(props) {
       const t = props.t
       const [mode, setMode] = useState(null)
+      /** Newest snapshot the control fetched, for the last routed tier. */
+      const [snapshot, setSnapshot] = useState(null)
       const [open, setOpen] = useState(false)
       const [busy, setBusy] = useState(false)
       const mounted = useRef(true)
@@ -1448,7 +1478,10 @@ window.__ModuleLoader__.load({
         let cancelled = false
         api('status')
           .then((body) => {
-            if (!cancelled && mounted.current) setMode(body.mode ?? 'off')
+            if (!cancelled && mounted.current) {
+              setMode(body.mode ?? 'off')
+              setSnapshot(body)
+            }
           })
           .catch(() => {
             /* a router that cannot be reached simply shows no state */
@@ -1463,7 +1496,10 @@ window.__ModuleLoader__.load({
         setBusy(true)
         try {
           const body = await api(next === 'toggle' ? (mode === 'on' ? 'off' : 'on') : next)
-          if (mounted.current) setMode(body.mode ?? 'off')
+          if (mounted.current) {
+            setMode(body.mode ?? 'off')
+            setSnapshot(body)
+          }
         } catch (error) {
           /* leave the previous state visible rather than guessing */
         } finally {
@@ -1472,11 +1508,36 @@ window.__ModuleLoader__.load({
         }
       }
 
-      // Never render nothing: a chip that hides itself when `status` fails is
+      // Never render nothing: a control that hides itself when `status` fails is
       // indistinguishable from a plugin that never loaded, which is exactly the
       // confusion this cost once. Unknown reads as "off" and clicking re-reads.
       const known = mode !== null
       const on = mode === 'on'
+      const active = known ? mode : 'unknown'
+      const labels = [
+        ['on', t('toggleAutoShort')],
+        ['shadow', t('toggleObserveShort')],
+        ['off', t('toggleOffShort')],
+      ]
+      // The detail half names the tier the last decision chose, the way the
+      // harness's model control names the effort next to the model.
+      const detail = (() => {
+        const last = Array.isArray(snapshot?.decisions) ? snapshot.decisions[snapshot.decisions.length - 1] : null
+        if (last !== null && typeof last.tier === 'string') return last.tier
+        if (last !== null && typeof last.routeId === 'string') return last.routeId
+        return known && mode !== 'off' ? t('toggleDetailNone') : null
+      })()
+
+      const layersRef = useRef(null)
+      const [labelWidth, setLabelWidth] = useState(null)
+      useEffect(() => {
+        const activeLayer = layersRef.current?.querySelector('[data-active="true"]')
+        if (activeLayer === undefined || activeLayer === null) return
+        const width = activeLayer.getBoundingClientRect().width
+        if (width > 0) setLabelWidth(Math.ceil(width))
+      }, [active])
+
+      const glyph = glyphOf('IconAutoReviewRegular')
       return h(
         'div',
         { style: { position: 'relative' } },
@@ -1484,16 +1545,22 @@ window.__ModuleLoader__.load({
           'button',
           {
             type: 'button',
-            className: 'amr-toggle',
+            className: 'amr-routeTrigger',
             'data-on': on ? 'true' : 'false',
-            title: known ? (on ? t('toggleOnTitle') : t('toggleOffTitle')) : t('toggleUnknown'),
-            'aria-pressed': on ? 'true' : 'false',
             'data-known': known ? 'true' : 'false',
+            'data-state': open ? 'open' : 'closed',
+            'aria-haspopup': 'menu',
+            'aria-expanded': open ? 'true' : 'false',
+            'aria-label': t('toggleMenuOpen'),
+            title: known ? (on ? t('toggleOnTitle') : t('toggleOffTitle')) : t('toggleUnknown'),
             onClick: () => {
               if (!known) {
                 api('status')
                   .then((body) => {
-                    if (mounted.current) setMode(body.mode ?? 'off')
+                    if (mounted.current) {
+                      setMode(body.mode ?? 'off')
+                      setSnapshot(body)
+                    }
                   })
                   .catch(() => {})
                 return
@@ -1501,18 +1568,38 @@ window.__ModuleLoader__.load({
               setOpen((current) => !current)
             },
           },
-          h('span', { className: 'amr-toggleDot' }),
-          t('toggleLabel'),
+          h(
+            'span',
+            { className: 'amr-routeIcon', 'aria-hidden': 'true' },
+            glyph === null ? h('span', { className: 'amr-toggleDot' }) : h(glyph, { size: 14 }),
+          ),
+          // One cell, every label stacked: only the active one is visible, the
+          // rest are blurred out, so a change fades rather than reflows the row.
+          h(
+            'span',
+            { className: 'amr-routeLayers', ref: layersRef, style: labelWidth === null ? undefined : { width: `${labelWidth}px` } },
+            h('span', { className: 'sr-only' }, known ? t(known ? (on ? 'toggleOn' : mode === 'shadow' ? 'toggleShadow' : 'toggleOff') : 'toggleUnknown') : t('toggleUnknown')),
+            ...labels.map(([value, label]) =>
+              h('span', {
+                key: value,
+                className: 'amr-routeText',
+                'data-active': active === value ? 'true' : 'false',
+                'aria-hidden': 'true',
+              }, label),
+            ),
+          ),
+          detail !== null && h('span', { className: 'amr-routeSep', 'aria-hidden': 'true' }, '·'),
+          detail !== null && h('span', { className: 'amr-routeValue' }, detail),
         ),
         open &&
           h(
             'div',
             {
-              className: 'amr-pop',
-              style: { top: 'auto', bottom: 'calc(100% + 6px)', left: 0, width: 220 },
+              className: 'amr-routeMenu',
+              role: 'menu',
               onMouseLeave: () => setOpen(false),
             },
-            h('span', { className: 'amr-popTitle' }, t('toggleTitle')),
+            h('span', { className: 'amr-routeMenuTitle' }, t('toggleTitle')),
             ...[
               ['on', t('toggleOn')],
               ['shadow', t('toggleShadow')],
@@ -1524,6 +1611,8 @@ window.__ModuleLoader__.load({
                   key: value,
                   type: 'button',
                   className: 'amr-segBtn',
+                  role: 'menuitemradio',
+                  'aria-checked': mode === value ? 'true' : 'false',
                   style: { textAlign: 'left', width: '100%' },
                   'data-active': mode === value ? 'true' : 'false',
                   disabled: busy,

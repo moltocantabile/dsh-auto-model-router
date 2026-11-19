@@ -234,6 +234,9 @@ function harness(module) {
   assert.equal(settings.definition.id, 'auto-model-router')
   assert.ok(composer !== undefined, 'the composer toggle is registered in the chatbox tool row')
   assert.equal(typeof composer.component, 'function')
+  // The composer control is mounted by its own tests; expose it on the same
+  // returned object so existing callers keep working.
+  settings.composerComponent = composer.component
   return settings
 }
 
@@ -532,18 +535,19 @@ test('the composer toggle mounts, reads the router, and switches it', async () =
     root.render(React.createElement(composer.component, { t: (key) => key }))
     await new Promise((resolve) => setTimeout(resolve, 40))
 
-    const button = container.querySelector('button.amr-toggle')
-    assert.ok(button !== null, 'the toggle is a button in the tool row')
+    const button = container.querySelector('button.amr-routeTrigger')
+    assert.ok(button !== null, 'the control is a composer-footer trigger')
     assert.equal(button.getAttribute('data-on'), 'true', 'it reads the live mode (on) from the router')
+    assert.equal(button.getAttribute('aria-haspopup'), 'menu', 'the trigger opens a menu')
     assert.ok(loaded.calls.includes('status'), 'mounting asks the router for its state')
 
     const before = loaded.calls.length
     button.dispatchEvent(new loaded.window.MouseEvent('click', { bubbles: true }))
     await new Promise((resolve) => setTimeout(resolve, 40))
     assert.equal(loaded.calls.length, before, 'opening the menu is local; it calls nothing')
-    const menu = container.querySelector('.amr-pop')
+    const menu = container.querySelector('.amr-routeMenu')
     assert.ok(menu !== null, 'clicking opens the state menu')
-    const choices = [...menu.querySelectorAll('button')]
+    const choices = [...menu.querySelectorAll('[role="menuitemradio"]')]
     assert.equal(choices.length, 3, 'on / observe / off')
 
     // Choosing a state writes it through the same endpoint the tool uses.
@@ -743,6 +747,51 @@ test('the search field filters capsules across lanes and restores them', async (
     input.dispatchEvent(new loaded.window.Event('input', { bubbles: true }))
     await new Promise((resolve) => setTimeout(resolve, 40))
     assert.equal(countCapsules(), before, 'clearing the search restores every capsule')
+
+    root.unmount()
+    await new Promise((resolve) => setTimeout(resolve, 25))
+  } finally {
+    loaded.restore()
+  }
+})
+
+
+test('the composer control is a stacked-label pill that opens the mode menu', async () => {
+  const loaded = loadBundle()
+  try {
+    const section = harness(loaded.module)
+    const React = globalThis.__amrReact
+    const { createRoot } = globalThis.__amrReactDomClient
+    const container = loaded.window.document.getElementById('root')
+    const root = createRoot(container)
+    root.render(React.createElement(section.composerComponent, { t: (key) => key }))
+    await new Promise((resolve) => setTimeout(resolve, 60))
+
+    // One pill, with the mode labels stacked in a single cell: only the active
+    // label is visible (the others are blurred out), and the full label is
+    // announced through the sr-only text.
+    const trigger = container.querySelector('.amr-routeTrigger')
+    assert.ok(trigger !== null, 'the control renders as a composer-footer trigger')
+    assert.equal(trigger.getAttribute('aria-haspopup'), 'menu')
+    assert.equal(trigger.getAttribute('aria-expanded'), 'false')
+    const layers = [...container.querySelectorAll('.amr-routeText')]
+    assert.equal(layers.length, 3, 'every mode has a stacked label')
+    assert.equal(layers.filter((layer) => layer.getAttribute('data-active') === 'true').length, 1, 'exactly one label is active')
+    assert.ok((container.querySelector('.sr-only')?.textContent ?? '').length > 0, 'the full label is announced')
+
+    trigger.dispatchEvent(new loaded.window.MouseEvent('click', { bubbles: true }))
+    await new Promise((resolve) => setTimeout(resolve, 30))
+    assert.equal(trigger.getAttribute('aria-expanded'), 'true')
+    const menu = container.querySelector('.amr-routeMenu')
+    assert.ok(menu !== null, 'clicking opens the mode menu')
+    const options = [...menu.querySelectorAll('[role="menuitemradio"]')]
+    assert.equal(options.length, 3, 'the menu offers the three routing modes')
+    assert.equal(options.filter((option) => option.getAttribute('aria-checked') === 'true').length, 1)
+
+    const shadow = options.find((option) => (option.textContent ?? '') === 'toggleShadow')
+    shadow.dispatchEvent(new loaded.window.MouseEvent('click', { bubbles: true }))
+    await new Promise((resolve) => setTimeout(resolve, 40))
+    assert.ok(loaded.requests.some((body) => body.action === 'shadow'), 'choosing observe calls the host')
 
     root.unmount()
     await new Promise((resolve) => setTimeout(resolve, 25))
