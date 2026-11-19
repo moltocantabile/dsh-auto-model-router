@@ -1767,7 +1767,10 @@ window.__ModuleLoader__.load({
                 },
               },
               h('span', { className: 'amr-effortTrack' }),
-              h('span', { className: 'amr-effortFill', style: { width: `${ratio * 100}%` } }),
+              // The track is inset by the slider's horizontal padding; the fill
+              // must be a fraction of that inner width, not of the whole row, or
+              // the last stop pushes it past the track and out of the card.
+              h('span', { className: 'amr-effortFill', style: { width: `calc((100% - 24px) * ${ratio})` } }),
               ...modes.map(([value, short], position) =>
                 h(
                   'button',

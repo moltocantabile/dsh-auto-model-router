@@ -184,7 +184,8 @@ function loadBundle() {
       ? (body.provider === 'provider-a'
         ? { ...CATALOG, provider: 'provider-a', models: CATALOG.models }
         : { ...CATALOG, provider: body.provider ?? 'p', models: CATALOG.models.filter((model) => model.id === 'm-balanced') })
-      : body.action === 'refresh' ? replies.refresh : SNAPSHOT
+      : body.action === 'refresh' ? replies.refresh
+        : ['on', 'shadow', 'off'].includes(body.action) ? { ...SNAPSHOT, mode: body.action } : SNAPSHOT
     // The endpoint answers with the payload itself; `api()` only needs
     // `ok`, `status` and `text()`, which jsdom does not implement.
     return {
@@ -813,6 +814,15 @@ test('the composer control is the slider card: model line, stop dots, arrow keys
     const dragActions = loaded.requests.slice(beforeDrag).map((request) => request.action).filter((action) => ['on', 'shadow', 'off'].includes(action))
     assert.ok(dragActions.includes('off'), `dragging to the last stop writes it (${dragActions.join(',')})`)
     assert.ok(dragActions.length <= 3, 'one gesture does not spam the host')
+    // The filled track is a fraction of the *inner* width: the slider is inset by
+    // 12px each side, so a 100%-wide fill ran past the track and out of the card.
+    // Re-query: the gesture re-rendered the card, so the captured node is stale.
+    const liveCard = container.querySelector('.amr-effortCard')
+    const fill = liveCard.querySelector('.amr-effortFill')
+    // CSS serialises `calc((100% - 24px) * 1)` as `calc(100% - 24px)`; both mean
+    // "the inner track", never the full row.
+    assert.ok(fill.style.width.includes('100% - 24px'), `the last stop fills exactly the track (${fill.style.width})`)
+    assert.ok(!/^100%$|calc\(100%\)/.test(fill.style.width), 'the fill never uses the full row width')
 
     // The refresh affordance re-reads the host state.
     const statusCallsBefore = loaded.calls.filter((action) => action === 'status').length
