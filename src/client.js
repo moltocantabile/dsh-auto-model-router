@@ -165,7 +165,13 @@ window.__ModuleLoader__.load({
 .amr-routeText { grid-area:1 / 1; justify-self:start; opacity:0; filter:blur(4px); transition:opacity .18s ease, filter .18s ease; }
 .amr-routeText[data-active="true"] { opacity:1; filter:blur(0); }
 .amr-routeSep { color:var(--dsw-alias-label-tertiary); opacity:.6; }
-.amr-routeValue { color:var(--dsw-alias-label-tertiary); }
+.amr-routeValue { color:var(--dsw-alias-label-tertiary); max-width:180px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.amr-routeMenuItem { display:flex; align-items:center; gap:6px; width:100%; height:30px; padding:0 6px; border:0; border-radius:var(--dsw-radius-sm); background:0 0; color:var(--dsw-alias-label-primary); font:inherit; font-size:13px; line-height:18px; text-align:left; cursor:pointer; }
+.amr-routeMenuItem:hover { background:var(--dsw-alias-interactive-bg-hover); }
+.amr-routeMenuItem[data-active="true"] { color:var(--dsw-alias-label-primary); }
+.amr-routeMenuItem[disabled] { opacity:.5; cursor:default; }
+.amr-routeMenuCheck { display:inline-flex; width:14px; height:14px; flex:none; color:var(--dsw-alias-brand-primary); }
+.amr-routeMenuText { flex:1; }
 .amr-routeMenu { position:absolute; z-index:40; bottom:calc(100% + 6px); left:0; width:220px; display:flex; flex-direction:column; gap:6px; padding:10px 12px; border:.5px solid var(--dsw-alias-settings-card-stroke); border-radius:var(--dsw-radius-lg); background:var(--dsw-alias-bg-overlay); color:var(--dsw-alias-label-primary); font-size:12px; line-height:18px; }
 .amr-routeMenuTitle { font-size:13px; font-weight:500; }
 .amr-routeMenuSection { display:flex; flex-direction:column; gap:2px; padding:6px 0; border-top:.5px solid var(--dsw-alias-border-l1); }
@@ -1631,8 +1637,12 @@ window.__ModuleLoader__.load({
             { className: 'amr-routeIcon', 'aria-hidden': 'true' },
             glyph === null ? h('span', { className: 'amr-toggleDot' }) : h(glyph, { size: 14 }),
           ),
-          // One cell, every label stacked: only the active one is visible, the
-          // rest are blurred out, so a change fades rather than reflows the row.
+          // Same composition as the harness's model/effort trigger: the model the
+          // router is serving, a separator, then the mode (the effort analogue) as
+          // stacked labels in one cell, so a change cross-fades instead of
+          // reflowing the composer row.
+          detail !== null && h('span', { className: 'amr-routeValue' }, detail),
+          detail !== null && h('span', { className: 'amr-routeSep', 'aria-hidden': 'true' }, '·'),
           h(
             'span',
             { className: 'amr-routeLayers', ref: layersRef, style: labelWidth === null ? undefined : { width: `${labelWidth}px` } },
@@ -1646,8 +1656,6 @@ window.__ModuleLoader__.load({
               }, label),
             ),
           ),
-          detail !== null && h('span', { className: 'amr-routeSep', 'aria-hidden': 'true' }, '·'),
-          detail !== null && h('span', { className: 'amr-routeValue' }, detail),
         ),
         open &&
           h(
@@ -1682,32 +1690,18 @@ window.__ModuleLoader__.load({
                 {
                   key: value,
                   type: 'button',
-                  className: 'amr-segBtn',
+                  className: 'amr-routeMenuItem',
                   role: 'menuitemradio',
                   'aria-checked': mode === value ? 'true' : 'false',
-                  style: { textAlign: 'left', width: '100%' },
                   'data-active': mode === value ? 'true' : 'false',
                   disabled: busy,
                   onClick: () => choose(value),
                 },
-                label,
+                h('span', { className: 'amr-routeMenuCheck', 'aria-hidden': 'true' },
+                  mode === value ? h(glyphOf('IconCheckOutlineRegular') ?? 'span', glyphOf('IconCheckOutlineRegular') === null ? {} : { size: 14 }) : null),
+                h('span', { className: 'amr-routeMenuText' }, label),
               ),
             ),
-            Array.isArray(snapshot?.decisions) && snapshot.decisions.length > 0 &&
-              h(
-                'div',
-                { className: 'amr-routeMenuSection' },
-                h('span', { className: 'amr-routeMenuLabel' }, t('composerRecent')),
-                ...[...snapshot.decisions].slice(-3).reverse().map((decision, index) =>
-                  h(
-                    'span',
-                    { key: `${decision.id ?? index}`, className: 'amr-routeMenuNote' },
-                    [decision.tier ?? decision.routeId, decision.model, typeof decision.confidence === 'number' ? Math.round(decision.confidence * 100) / 100 : null]
-                      .filter((part) => part !== null && part !== undefined)
-                      .join(' · '),
-                  ),
-                ),
-              ),
             h('span', { className: 'amr-popHint' }, t('toggleHint')),
           ),
       )
