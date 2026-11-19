@@ -292,6 +292,18 @@ export function boardMetaOf(info) {
     const value = dims[dim]
     return value !== undefined && Number.isFinite(Number(value?.value))
   }).length
+  // Per-dimension measured values (the task-type capability the ranking actually
+  // uses) and the task-type data the expansion added: domain indexes from
+  // Artificial Analysis and the task-spend adoption ranking from OpenRouter.
+  const measuredDims = {}
+  for (const [dim, value] of Object.entries(dims)) {
+    if (value === null || typeof value !== 'object') continue
+    const estimate = numOrNull(value.value)
+    if (estimate === null) continue
+    measuredDims[dim] = { value: estimate, evidence: Math.trunc(Number(value.evidence) || 0) }
+  }
+  const taskIndexes = info?.crossChecks?.taskIndexes?.indexes
+  const taskUsage = Array.isArray(info?.usage?.tasks) ? info.usage.tasks : []
   return {
     rank: Number.isInteger(ranking?.rank) ? ranking.rank : null,
     composite: numOrNull(ranking?.composite),
@@ -302,6 +314,18 @@ export function boardMetaOf(info) {
     uncalibrated: numOrNull(ranking?.uncalibrated),
     dimsCovered: ranking === null ? null : covered,
     dimsTotal: CORE_DIMENSIONS.length,
+    dims: measuredDims,
+    // Domain indexes are own-scale composites: shown, never blended. A missing
+    // value is absent, not zero.
+    taskIndexes: taskIndexes !== null && typeof taskIndexes === 'object'
+      ? Object.fromEntries(Object.entries(taskIndexes).filter(([, value]) => Number.isFinite(Number(value))).map(([domain, value]) => [domain, Math.round(Number(value) * 10) / 10]))
+      : null,
+    // Adoption, not capability: the top task tags OpenRouter reports for the model.
+    taskUsage: taskUsage.slice(0, 4).map((entry) => ({
+      tag: typeof entry?.tag === 'string' ? entry.tag : null,
+      share: Number.isFinite(Number(entry?.share)) ? Math.round(Number(entry.share) * 10000) / 10000 : null,
+      rank: Number.isFinite(Number(entry?.rank)) ? Math.trunc(Number(entry.rank)) : null,
+    })),
   }
 }
 

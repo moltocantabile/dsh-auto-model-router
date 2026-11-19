@@ -1,0 +1,2412 @@
+{
+  "checkedAt": "2026-11-19",
+  "source": "https://artificialanalysis.ai/indexes",
+  "scale": "0-100 composite; index signal only, never blended into a dimension",
+  "domains": {
+    "economics": [
+      {
+        "rank": 1,
+        "url": "https://artificialanalysis.ai/indexes/economics",
+        "name": "Claude Fable 5.2 (Max, Default Fallback)",
+        "domain": "economics",
+        "index": 66.5,
+        "subScores": {
+          "knowledge": 78.6,
+          "reasoning": 80.2,
+          "longContext": 24.2,
+          "agenticKnowledgeWork": 64.3
+        }
+      },
+      {
+        "rank": 2,
+        "url": "https://artificialanalysis.ai/indexes/economics",
+        "name": "GPT-6.2 Astra (Max)",
+        "domain": "economics",
+        "index": 61.1,
+        "subScores": {
+          "knowledge": 71.3,
+          "reasoning": 72.2,
+          "longContext": 29.8,
+          "agenticKnowledgeWork": 57.2
+        }
+      },
+      {
+        "rank": 3,
+        "url": "https://artificialanalysis.ai/indexes/economics",
+        "name": "Gemini 4 Neon (Xhigh)",
+        "domain": "economics",
+        "index": 61.9,
+        "subScores": {
+          "knowledge": 73,
+          "reasoning": 71.3,
+          "longContext": 28,
+          "agenticKnowledgeWork": 60
+        }
+      },
+      {
+        "rank": 4,
+        "url": "https://artificialanalysis.ai/indexes/economics",
+        "name": "Claude Opus 5.5 (Max, Default Fallback)",
+        "domain": "economics",
+        "index": 60.3,
+        "subScores": {
+          "knowledge": 65.3,
+          "reasoning": 67.9,
+          "longContext": 26.2,
+          "agenticKnowledgeWork": 66.1
+        }
+      },
+      {
+        "rank": 5,
+        "url": "https://artificialanalysis.ai/indexes/economics",
+        "name": "GPT-6.2 Sol (Max)",
+        "domain": "economics",
+        "index": 57.4,
+        "subScores": {
+          "knowledge": 67.2,
+          "reasoning": 64,
+          "longContext": 30,
+          "agenticKnowledgeWork": 55.6
+        }
+      },
+      {
+        "rank": 6,
+        "url": "https://artificialanalysis.ai/indexes/economics",
+        "name": "Claude Sonnet 5.5 (Max, Default Fallback)",
+        "domain": "economics",
+        "index": 54.1,
+        "subScores": {
+          "knowledge": 57.3,
+          "reasoning": 53.3,
+          "longContext": 25.8,
+          "agenticKnowledgeWork": 65.5
+        }
+      },
+      {
+        "rank": 7,
+        "url": "https://artificialanalysis.ai/indexes/economics",
+        "name": "Gemini 4 Hydrogen (Xhigh)",
+        "domain": "economics",
+        "index": 55,
+        "subScores": {
+          "knowledge": 67.3,
+          "reasoning": 58.8,
+          "longContext": 27.6,
+          "agenticKnowledgeWork": 53.4
+        }
+      },
+      {
+        "rank": 8,
+        "url": "https://artificialanalysis.ai/indexes/economics",
+        "name": "GPT-6.1 Terra (Max)",
+        "domain": "economics",
+        "index": 48.5,
+        "subScores": {
+          "knowledge": 62.8,
+          "reasoning": 47.3,
+          "longContext": 28.6,
+          "agenticKnowledgeWork": 45.2
+        }
+      },
+      {
+        "rank": 9,
+        "url": "https://artificialanalysis.ai/indexes/economics",
+        "name": "Muse Wonder Full (Max)",
+        "domain": "economics",
+        "index": 54.1,
+        "subScores": {
+          "knowledge": 62.2,
+          "reasoning": 48.5,
+          "longContext": 32.6,
+          "agenticKnowledgeWork": 61.5
+        }
+      },
+      {
+        "rank": 10,
+        "url": "https://artificialanalysis.ai/indexes/economics",
+        "name": "Kimi K3.1 Pro",
+        "domain": "economics",
+        "index": 49.9,
+        "subScores": {
+          "knowledge": 60.8,
+          "reasoning": 37.3,
+          "longContext": 31.4,
+          "agenticKnowledgeWork": 58.9
+        }
+      },
+      {
+        "rank": 11,
+        "url": "https://artificialanalysis.ai/indexes/economics",
+        "name": "Muse Wonder (Max)",
+        "domain": "economics",
+        "index": 49.5,
+        "subScores": {
+          "knowledge": 59.3,
+          "reasoning": 39,
+          "longContext": 30.6,
+          "agenticKnowledgeWork": 57.9
+        }
+      },
+      {
+        "rank": 12,
+        "url": "https://artificialanalysis.ai/indexes/economics",
+        "name": "Qwen4 Max",
+        "domain": "economics",
+        "index": 51.3,
+        "subScores": {
+          "knowledge": 61.2,
+          "reasoning": 44.9,
+          "longContext": 26.2,
+          "agenticKnowledgeWork": 59.3
+        }
+      },
+      {
+        "rank": 13,
+        "url": "https://artificialanalysis.ai/indexes/economics",
+        "name": "Claude Haiku 5.5 (Max)",
+        "domain": "economics",
+        "index": 42.7,
+        "subScores": {
+          "knowledge": 53.3,
+          "reasoning": 29.6,
+          "longContext": 20.8,
+          "agenticKnowledgeWork": 53.9
+        }
+      },
+      {
+        "rank": 14,
+        "url": "https://artificialanalysis.ai/indexes/economics",
+        "name": "Muse Ember (Max)",
+        "domain": "economics",
+        "index": 41,
+        "subScores": {
+          "knowledge": 53.1,
+          "reasoning": 25.1,
+          "longContext": 22.8,
+          "agenticKnowledgeWork": 51.1
+        }
+      },
+      {
+        "rank": 15,
+        "url": "https://artificialanalysis.ai/indexes/economics",
+        "name": "Grok 4.7 (Xhigh)",
+        "domain": "economics",
+        "index": 45.7,
+        "subScores": {
+          "knowledge": 65.1,
+          "reasoning": 23.2,
+          "longContext": 20,
+          "agenticKnowledgeWork": 57.9
+        }
+      },
+      {
+        "rank": 16,
+        "url": "https://artificialanalysis.ai/indexes/economics",
+        "name": "Tencent Hy4",
+        "domain": "economics",
+        "index": 38.3,
+        "subScores": {
+          "knowledge": 42.4,
+          "reasoning": 32.7,
+          "longContext": 21.6,
+          "agenticKnowledgeWork": 47.3
+        }
+      },
+      {
+        "rank": 17,
+        "url": "https://artificialanalysis.ai/indexes/economics",
+        "name": "Qwen3.8 Max (0902)",
+        "domain": "economics",
+        "index": 42.5,
+        "subScores": {
+          "knowledge": 53.2,
+          "reasoning": 24,
+          "longContext": 22.8,
+          "agenticKnowledgeWork": 57.1
+        }
+      },
+      {
+        "rank": 18,
+        "url": "https://artificialanalysis.ai/indexes/economics",
+        "name": "DeepSeek V4.1 Flash 1017 (Max)",
+        "domain": "economics",
+        "index": 38.5,
+        "subScores": {
+          "knowledge": 45.1,
+          "reasoning": 25.3,
+          "longContext": 17.2,
+          "agenticKnowledgeWork": 53.5
+        }
+      },
+      {
+        "rank": 19,
+        "url": "https://artificialanalysis.ai/indexes/economics",
+        "name": "GLM-5.3 (Max)",
+        "domain": "economics",
+        "index": 37.3,
+        "subScores": {
+          "knowledge": 52.6,
+          "reasoning": 17.9,
+          "longContext": 11.2,
+          "agenticKnowledgeWork": 51.3
+        }
+      },
+      {
+        "rank": 20,
+        "url": "https://artificialanalysis.ai/indexes/economics",
+        "name": "Inkling 2 Small",
+        "domain": "economics",
+        "index": 43.4,
+        "subScores": {
+          "knowledge": 56.8,
+          "reasoning": 28.7,
+          "longContext": 25.2,
+          "agenticKnowledgeWork": 51.3
+        }
+      },
+      {
+        "rank": 21,
+        "url": "https://artificialanalysis.ai/indexes/economics",
+        "name": "MiMo-V2.6-Pro",
+        "domain": "economics",
+        "index": 36.1,
+        "subScores": {
+          "knowledge": 46.8,
+          "reasoning": 15.2,
+          "longContext": 19.2,
+          "agenticKnowledgeWork": 51.1
+        }
+      },
+      {
+        "rank": 22,
+        "url": "https://artificialanalysis.ai/indexes/economics",
+        "name": "Ling 3.1 Flash 1019",
+        "domain": "economics",
+        "index": 36.5,
+        "subScores": {
+          "knowledge": 49.8,
+          "reasoning": 17.2,
+          "longContext": 12.6,
+          "agenticKnowledgeWork": 51.2
+        }
+      },
+      {
+        "rank": 23,
+        "url": "https://artificialanalysis.ai/indexes/economics",
+        "name": "GPT-6 Luna (Max)",
+        "domain": "economics",
+        "index": 34.5,
+        "subScores": {
+          "knowledge": 43.4,
+          "reasoning": 22.2,
+          "longContext": 22.8,
+          "agenticKnowledgeWork": 41.8
+        }
+      },
+      {
+        "rank": 24,
+        "url": "https://artificialanalysis.ai/indexes/economics",
+        "name": "Mistral Large 4 (High)",
+        "domain": "economics",
+        "index": 35.6,
+        "subScores": {
+          "knowledge": 53,
+          "reasoning": 17.3,
+          "longContext": 17.6,
+          "agenticKnowledgeWork": 42.5
+        }
+      },
+      {
+        "rank": 25,
+        "url": "https://artificialanalysis.ai/indexes/economics",
+        "name": "Qwen3.8 27B (Xhigh)",
+        "domain": "economics",
+        "index": 33.7,
+        "subScores": {
+          "knowledge": 46.3,
+          "reasoning": 15.3,
+          "longContext": 16.4,
+          "agenticKnowledgeWork": 45.2
+        }
+      },
+      {
+        "rank": 26,
+        "url": "https://artificialanalysis.ai/indexes/economics",
+        "name": "K2 Horizon 375B A23B",
+        "domain": "economics",
+        "index": 30.1,
+        "subScores": {
+          "knowledge": 48,
+          "reasoning": 10.2,
+          "longContext": 7.4,
+          "agenticKnowledgeWork": 40.2
+        }
+      },
+      {
+        "rank": 27,
+        "url": "https://artificialanalysis.ai/indexes/economics",
+        "name": "Beam 1.0",
+        "domain": "economics",
+        "index": 27.1,
+        "subScores": {
+          "knowledge": 50.2,
+          "reasoning": 12.8,
+          "longContext": 11.6,
+          "agenticKnowledgeWork": 23.8
+        }
+      },
+      {
+        "rank": 28,
+        "url": "https://artificialanalysis.ai/indexes/economics",
+        "name": "Nemotron 3.5 Super VL",
+        "domain": "economics",
+        "index": 26.1,
+        "subScores": {
+          "knowledge": 50.8,
+          "reasoning": 8.8,
+          "longContext": 8,
+          "agenticKnowledgeWork": 24.9
+        }
+      }
+    ],
+    "engineering": [
+      {
+        "rank": 1,
+        "url": "https://artificialanalysis.ai/indexes/engineering",
+        "name": "Claude Fable 5.2 (Max, Default Fallback)",
+        "domain": "engineering",
+        "index": 72.6,
+        "subScores": {
+          "science": 74.9,
+          "knowledge": 79.5,
+          "reasoning": 80.2,
+          "agenticTerminalUse": 54.2,
+          "agenticKnowledgeWork": 64.3
+        }
+      },
+      {
+        "rank": 2,
+        "url": "https://artificialanalysis.ai/indexes/engineering",
+        "name": "GPT-6.2 Astra (Max)",
+        "domain": "engineering",
+        "index": 66.6,
+        "subScores": {
+          "science": 74.8,
+          "knowledge": 68.1,
+          "reasoning": 72.2,
+          "agenticTerminalUse": 54.8,
+          "agenticKnowledgeWork": 57.2
+        }
+      },
+      {
+        "rank": 3,
+        "url": "https://artificialanalysis.ai/indexes/engineering",
+        "name": "Gemini 4 Neon (Xhigh)",
+        "domain": "engineering",
+        "index": 66.8,
+        "subScores": {
+          "science": 65.3,
+          "knowledge": 74.8,
+          "reasoning": 71.3,
+          "agenticTerminalUse": 54,
+          "agenticKnowledgeWork": 60
+        }
+      },
+      {
+        "rank": 4,
+        "url": "https://artificialanalysis.ai/indexes/engineering",
+        "name": "Claude Opus 5.5 (Max, Default Fallback)",
+        "domain": "engineering",
+        "index": 65.3,
+        "subScores": {
+          "science": 63.5,
+          "knowledge": 70.4,
+          "reasoning": 67.9,
+          "agenticTerminalUse": 53,
+          "agenticKnowledgeWork": 66.1
+        }
+      },
+      {
+        "rank": 5,
+        "url": "https://artificialanalysis.ai/indexes/engineering",
+        "name": "GPT-6.2 Sol (Max)",
+        "domain": "engineering",
+        "index": 61.2,
+        "subScores": {
+          "science": 65.1,
+          "knowledge": 63.9,
+          "reasoning": 64,
+          "agenticTerminalUse": 52.2,
+          "agenticKnowledgeWork": 55.6
+        }
+      },
+      {
+        "rank": 6,
+        "url": "https://artificialanalysis.ai/indexes/engineering",
+        "name": "Claude Sonnet 5.5 (Max, Default Fallback)",
+        "domain": "engineering",
+        "index": 58.5,
+        "subScores": {
+          "science": 56.2,
+          "knowledge": 62.9,
+          "reasoning": 53.3,
+          "agenticTerminalUse": 52.7,
+          "agenticKnowledgeWork": 65.5
+        }
+      },
+      {
+        "rank": 7,
+        "url": "https://artificialanalysis.ai/indexes/engineering",
+        "name": "Gemini 4 Hydrogen (Xhigh)",
+        "domain": "engineering",
+        "index": 60.1,
+        "subScores": {
+          "science": 57.8,
+          "knowledge": 72.8,
+          "reasoning": 58.8,
+          "agenticTerminalUse": 46.2,
+          "agenticKnowledgeWork": 53.4
+        }
+      },
+      {
+        "rank": 8,
+        "url": "https://artificialanalysis.ai/indexes/engineering",
+        "name": "GPT-6.1 Terra (Max)",
+        "domain": "engineering",
+        "index": 54.7,
+        "subScores": {
+          "science": 62.8,
+          "knowledge": 62,
+          "reasoning": 47.3,
+          "agenticTerminalUse": 48.9,
+          "agenticKnowledgeWork": 45.2
+        }
+      },
+      {
+        "rank": 9,
+        "url": "https://artificialanalysis.ai/indexes/engineering",
+        "name": "Muse Wonder Full (Max)",
+        "domain": "engineering",
+        "index": 55.3,
+        "subScores": {
+          "science": 46.8,
+          "knowledge": 66.3,
+          "reasoning": 48.5,
+          "agenticTerminalUse": 47.4,
+          "agenticKnowledgeWork": 61.5
+        }
+      },
+      {
+        "rank": 10,
+        "url": "https://artificialanalysis.ai/indexes/engineering",
+        "name": "Kimi K3.1 Pro",
+        "domain": "engineering",
+        "index": 50.9,
+        "subScores": {
+          "science": 41.9,
+          "knowledge": 64.3,
+          "reasoning": 37.3,
+          "agenticTerminalUse": 46.3,
+          "agenticKnowledgeWork": 58.9
+        }
+      },
+      {
+        "rank": 11,
+        "url": "https://artificialanalysis.ai/indexes/engineering",
+        "name": "Muse Wonder (Max)",
+        "domain": "engineering",
+        "index": 49.6,
+        "subScores": {
+          "science": 38.1,
+          "knowledge": 64.8,
+          "reasoning": 39,
+          "agenticTerminalUse": 39.9,
+          "agenticKnowledgeWork": 57.9
+        }
+      },
+      {
+        "rank": 12,
+        "url": "https://artificialanalysis.ai/indexes/engineering",
+        "name": "Qwen4 Max",
+        "domain": "engineering",
+        "index": 50.1,
+        "subScores": {
+          "science": 33.2,
+          "knowledge": 66.4,
+          "reasoning": 44.9,
+          "agenticTerminalUse": 37.5,
+          "agenticKnowledgeWork": 59.3
+        }
+      },
+      {
+        "rank": 13,
+        "url": "https://artificialanalysis.ai/indexes/engineering",
+        "name": "Claude Haiku 5.5 (Max)",
+        "domain": "engineering",
+        "index": 42.5,
+        "subScores": {
+          "science": 31.8,
+          "knowledge": 57,
+          "reasoning": 29.6,
+          "agenticTerminalUse": 33.9,
+          "agenticKnowledgeWork": 53.9
+        }
+      },
+      {
+        "rank": 14,
+        "url": "https://artificialanalysis.ai/indexes/engineering",
+        "name": "Muse Ember (Max)",
+        "domain": "engineering",
+        "index": 41.8,
+        "subScores": {
+          "science": 29.5,
+          "knowledge": 60.3,
+          "reasoning": 25.1,
+          "agenticTerminalUse": 34,
+          "agenticKnowledgeWork": 51.1
+        }
+      },
+      {
+        "rank": 15,
+        "url": "https://artificialanalysis.ai/indexes/engineering",
+        "name": "Grok 4.7 (Xhigh)",
+        "domain": "engineering",
+        "index": 41.8,
+        "subScores": {
+          "science": 22.5,
+          "knowledge": 66.3,
+          "reasoning": 23.2,
+          "agenticTerminalUse": 27.2,
+          "agenticKnowledgeWork": 57.9
+        }
+      },
+      {
+        "rank": 16,
+        "url": "https://artificialanalysis.ai/indexes/engineering",
+        "name": "Tencent Hy4",
+        "domain": "engineering",
+        "index": 41.1,
+        "subScores": {
+          "science": 25.9,
+          "knowledge": 57,
+          "reasoning": 32.7,
+          "agenticTerminalUse": 34.4,
+          "agenticKnowledgeWork": 47.3
+        }
+      },
+      {
+        "rank": 17,
+        "url": "https://artificialanalysis.ai/indexes/engineering",
+        "name": "Qwen3.8 Max (0902)",
+        "domain": "engineering",
+        "index": 39.3,
+        "subScores": {
+          "science": 20.7,
+          "knowledge": 57,
+          "reasoning": 24,
+          "agenticTerminalUse": 31.2,
+          "agenticKnowledgeWork": 57.1
+        }
+      },
+      {
+        "rank": 18,
+        "url": "https://artificialanalysis.ai/indexes/engineering",
+        "name": "DeepSeek V4.1 Flash 1017 (Max)",
+        "domain": "engineering",
+        "index": 37.6,
+        "subScores": {
+          "science": 18.9,
+          "knowledge": 53.5,
+          "reasoning": 25.3,
+          "agenticTerminalUse": 31.2,
+          "agenticKnowledgeWork": 53.5
+        }
+      },
+      {
+        "rank": 19,
+        "url": "https://artificialanalysis.ai/indexes/engineering",
+        "name": "GLM-5.3 (Max)",
+        "domain": "engineering",
+        "index": 37.6,
+        "subScores": {
+          "science": 21.5,
+          "knowledge": 57.5,
+          "reasoning": 17.9,
+          "agenticTerminalUse": 31.8,
+          "agenticKnowledgeWork": 51.3
+        }
+      },
+      {
+        "rank": 20,
+        "url": "https://artificialanalysis.ai/indexes/engineering",
+        "name": "Inkling 2 Small",
+        "domain": "engineering",
+        "index": 38.9,
+        "subScores": {
+          "science": 20.4,
+          "knowledge": 61.6,
+          "reasoning": 28.7,
+          "agenticTerminalUse": 19.2,
+          "agenticKnowledgeWork": 51.3
+        }
+      },
+      {
+        "rank": 21,
+        "url": "https://artificialanalysis.ai/indexes/engineering",
+        "name": "MiMo-V2.6-Pro",
+        "domain": "engineering",
+        "index": 34.3,
+        "subScores": {
+          "science": 19.9,
+          "knowledge": 50.6,
+          "reasoning": 15.2,
+          "agenticTerminalUse": 29.4,
+          "agenticKnowledgeWork": 51.1
+        }
+      },
+      {
+        "rank": 22,
+        "url": "https://artificialanalysis.ai/indexes/engineering",
+        "name": "Ling 3.1 Flash 1019",
+        "domain": "engineering",
+        "index": 35.5,
+        "subScores": {
+          "science": 21.4,
+          "knowledge": 54.4,
+          "reasoning": 17.2,
+          "agenticTerminalUse": 24.9,
+          "agenticKnowledgeWork": 51.2
+        }
+      },
+      {
+        "rank": 23,
+        "url": "https://artificialanalysis.ai/indexes/engineering",
+        "name": "GPT-6 Luna (Max)",
+        "domain": "engineering",
+        "index": 33.3,
+        "subScores": {
+          "science": 25.5,
+          "knowledge": 48.8,
+          "reasoning": 22.2,
+          "agenticTerminalUse": 18.9,
+          "agenticKnowledgeWork": 41.8
+        }
+      },
+      {
+        "rank": 24,
+        "url": "https://artificialanalysis.ai/indexes/engineering",
+        "name": "Mistral Large 4 (High)",
+        "domain": "engineering",
+        "index": 33.4,
+        "subScores": {
+          "science": 15.6,
+          "knowledge": 58.3,
+          "reasoning": 17.3,
+          "agenticTerminalUse": 19.9,
+          "agenticKnowledgeWork": 42.5
+        }
+      },
+      {
+        "rank": 25,
+        "url": "https://artificialanalysis.ai/indexes/engineering",
+        "name": "Qwen3.8 27B (Xhigh)",
+        "domain": "engineering",
+        "index": 28.1,
+        "subScores": {
+          "science": 2.2,
+          "knowledge": 54.3,
+          "reasoning": 15.3,
+          "agenticTerminalUse": 10.2,
+          "agenticKnowledgeWork": 45.2
+        }
+      },
+      {
+        "rank": 26,
+        "url": "https://artificialanalysis.ai/indexes/engineering",
+        "name": "K2 Horizon 375B A23B",
+        "domain": "engineering",
+        "index": 26.6,
+        "subScores": {
+          "science": 6,
+          "knowledge": 54.4,
+          "reasoning": 10.2,
+          "agenticTerminalUse": 6.7,
+          "agenticKnowledgeWork": 40.2
+        }
+      },
+      {
+        "rank": 27,
+        "url": "https://artificialanalysis.ai/indexes/engineering",
+        "name": "Beam 1.0",
+        "domain": "engineering",
+        "index": 25.2,
+        "subScores": {
+          "science": 13.5,
+          "knowledge": 52.5,
+          "reasoning": 12.8,
+          "agenticTerminalUse": 4.3,
+          "agenticKnowledgeWork": 23.8
+        }
+      },
+      {
+        "rank": 28,
+        "url": "https://artificialanalysis.ai/indexes/engineering",
+        "name": "Nemotron 3.5 Super VL",
+        "domain": "engineering",
+        "index": 23.5,
+        "subScores": {
+          "science": 6.8,
+          "knowledge": 53.8,
+          "reasoning": 8.8,
+          "agenticTerminalUse": 3.1,
+          "agenticKnowledgeWork": 24.9
+        }
+      }
+    ],
+    "finance-and-accounting": [
+      {
+        "rank": 1,
+        "url": "https://artificialanalysis.ai/indexes/finance-and-accounting",
+        "name": "Claude Fable 5.2 (Max, Default Fallback)",
+        "domain": "finance-and-accounting",
+        "index": 64.7,
+        "subScores": {
+          "knowledge": 73.1,
+          "reasoning": 80.2,
+          "longContext": 24.2,
+          "agenticToolUse": 78.8,
+          "nonHallucination": 40.5,
+          "agenticKnowledgeWork": 64.3
+        }
+      },
+      {
+        "rank": 2,
+        "url": "https://artificialanalysis.ai/indexes/finance-and-accounting",
+        "name": "GPT-6.2 Astra (Max)",
+        "domain": "finance-and-accounting",
+        "index": 60.9,
+        "subScores": {
+          "knowledge": 60.4,
+          "reasoning": 72.2,
+          "longContext": 29.8,
+          "agenticToolUse": 80.6,
+          "nonHallucination": 55.1,
+          "agenticKnowledgeWork": 57.2
+        }
+      },
+      {
+        "rank": 3,
+        "url": "https://artificialanalysis.ai/indexes/finance-and-accounting",
+        "name": "Gemini 4 Neon (Xhigh)",
+        "domain": "finance-and-accounting",
+        "index": 65.1,
+        "subScores": {
+          "knowledge": 50.9,
+          "reasoning": 71.3,
+          "longContext": 28,
+          "agenticToolUse": 87.3,
+          "nonHallucination": 90,
+          "agenticKnowledgeWork": 60
+        }
+      },
+      {
+        "rank": 4,
+        "url": "https://artificialanalysis.ai/indexes/finance-and-accounting",
+        "name": "Claude Opus 5.5 (Max, Default Fallback)",
+        "domain": "finance-and-accounting",
+        "index": 59.4,
+        "subScores": {
+          "knowledge": 51.6,
+          "reasoning": 67.9,
+          "longContext": 26.2,
+          "agenticToolUse": 66.5,
+          "nonHallucination": 56.9,
+          "agenticKnowledgeWork": 66.1
+        }
+      },
+      {
+        "rank": 5,
+        "url": "https://artificialanalysis.ai/indexes/finance-and-accounting",
+        "name": "GPT-6.2 Sol (Max)",
+        "domain": "finance-and-accounting",
+        "index": 57.2,
+        "subScores": {
+          "knowledge": 53.6,
+          "reasoning": 64,
+          "longContext": 30,
+          "agenticToolUse": 72.1,
+          "nonHallucination": 58.9,
+          "agenticKnowledgeWork": 55.6
+        }
+      },
+      {
+        "rank": 6,
+        "url": "https://artificialanalysis.ai/indexes/finance-and-accounting",
+        "name": "Claude Sonnet 5.5 (Max, Default Fallback)",
+        "domain": "finance-and-accounting",
+        "index": 55.8,
+        "subScores": {
+          "knowledge": 37.8,
+          "reasoning": 53.3,
+          "longContext": 25.8,
+          "agenticToolUse": 79.4,
+          "nonHallucination": 62.9,
+          "agenticKnowledgeWork": 65.5
+        }
+      },
+      {
+        "rank": 7,
+        "url": "https://artificialanalysis.ai/indexes/finance-and-accounting",
+        "name": "Gemini 4 Hydrogen (Xhigh)",
+        "domain": "finance-and-accounting",
+        "index": 58.1,
+        "subScores": {
+          "knowledge": 37.3,
+          "reasoning": 58.8,
+          "longContext": 27.6,
+          "agenticToolUse": 81.5,
+          "nonHallucination": 95.7,
+          "agenticKnowledgeWork": 53.4
+        }
+      },
+      {
+        "rank": 8,
+        "url": "https://artificialanalysis.ai/indexes/finance-and-accounting",
+        "name": "GPT-6.1 Terra (Max)",
+        "domain": "finance-and-accounting",
+        "index": 49,
+        "subScores": {
+          "knowledge": 38.2,
+          "reasoning": 47.3,
+          "longContext": 28.6,
+          "agenticToolUse": 54.4,
+          "nonHallucination": 79.5,
+          "agenticKnowledgeWork": 45.2
+        }
+      },
+      {
+        "rank": 9,
+        "url": "https://artificialanalysis.ai/indexes/finance-and-accounting",
+        "name": "Muse Wonder Full (Max)",
+        "domain": "finance-and-accounting",
+        "index": 55.2,
+        "subScores": {
+          "knowledge": 31.8,
+          "reasoning": 48.5,
+          "longContext": 32.6,
+          "agenticToolUse": 65.5,
+          "nonHallucination": 89.3,
+          "agenticKnowledgeWork": 61.5
+        }
+      },
+      {
+        "rank": 10,
+        "url": "https://artificialanalysis.ai/indexes/finance-and-accounting",
+        "name": "Kimi K3.1 Pro",
+        "domain": "finance-and-accounting",
+        "index": 53.3,
+        "subScores": {
+          "knowledge": 38.7,
+          "reasoning": 37.3,
+          "longContext": 31.4,
+          "agenticToolUse": 80.3,
+          "nonHallucination": 72.1,
+          "agenticKnowledgeWork": 58.9
+        }
+      },
+      {
+        "rank": 11,
+        "url": "https://artificialanalysis.ai/indexes/finance-and-accounting",
+        "name": "Muse Wonder (Max)",
+        "domain": "finance-and-accounting",
+        "index": 51.1,
+        "subScores": {
+          "knowledge": 28,
+          "reasoning": 39,
+          "longContext": 30.6,
+          "agenticToolUse": 63.1,
+          "nonHallucination": 87,
+          "agenticKnowledgeWork": 57.9
+        }
+      },
+      {
+        "rank": 12,
+        "url": "https://artificialanalysis.ai/indexes/finance-and-accounting",
+        "name": "Qwen4 Max",
+        "domain": "finance-and-accounting",
+        "index": 54.1,
+        "subScores": {
+          "knowledge": 32.9,
+          "reasoning": 44.9,
+          "longContext": 26.2,
+          "agenticToolUse": 73.8,
+          "nonHallucination": 84.4,
+          "agenticKnowledgeWork": 59.3
+        }
+      },
+      {
+        "rank": 13,
+        "url": "https://artificialanalysis.ai/indexes/finance-and-accounting",
+        "name": "Claude Haiku 5.5 (Max)",
+        "domain": "finance-and-accounting",
+        "index": 43.6,
+        "subScores": {
+          "knowledge": 25.6,
+          "reasoning": 29.6,
+          "longContext": 20.8,
+          "agenticToolUse": 43.2,
+          "nonHallucination": 74.6,
+          "agenticKnowledgeWork": 53.9
+        }
+      },
+      {
+        "rank": 14,
+        "url": "https://artificialanalysis.ai/indexes/finance-and-accounting",
+        "name": "Muse Ember (Max)",
+        "domain": "finance-and-accounting",
+        "index": 44.6,
+        "subScores": {
+          "knowledge": 16.9,
+          "reasoning": 25.1,
+          "longContext": 22.8,
+          "agenticToolUse": 70.5,
+          "nonHallucination": 87.2,
+          "agenticKnowledgeWork": 51.1
+        }
+      },
+      {
+        "rank": 15,
+        "url": "https://artificialanalysis.ai/indexes/finance-and-accounting",
+        "name": "Grok 4.7 (Xhigh)",
+        "domain": "finance-and-accounting",
+        "index": 51.7,
+        "subScores": {
+          "knowledge": 39.3,
+          "reasoning": 23.2,
+          "longContext": 20,
+          "agenticToolUse": 72.7,
+          "nonHallucination": 85,
+          "agenticKnowledgeWork": 57.9
+        }
+      },
+      {
+        "rank": 16,
+        "url": "https://artificialanalysis.ai/indexes/finance-and-accounting",
+        "name": "Tencent Hy4",
+        "domain": "finance-and-accounting",
+        "index": 38,
+        "subScores": {
+          "knowledge": 38,
+          "reasoning": 32.7,
+          "longContext": 21.6,
+          "agenticToolUse": 62.1,
+          "nonHallucination": 14.3,
+          "agenticKnowledgeWork": 47.3
+        }
+      },
+      {
+        "rank": 17,
+        "url": "https://artificialanalysis.ai/indexes/finance-and-accounting",
+        "name": "Qwen3.8 Max (0902)",
+        "domain": "finance-and-accounting",
+        "index": 45,
+        "subScores": {
+          "knowledge": 21.1,
+          "reasoning": 24,
+          "longContext": 22.8,
+          "agenticToolUse": 56.6,
+          "nonHallucination": 81.4,
+          "agenticKnowledgeWork": 57.1
+        }
+      },
+      {
+        "rank": 18,
+        "url": "https://artificialanalysis.ai/indexes/finance-and-accounting",
+        "name": "DeepSeek V4.1 Flash 1017 (Max)",
+        "domain": "finance-and-accounting",
+        "index": 42.2,
+        "subScores": {
+          "knowledge": 29.3,
+          "reasoning": 25.3,
+          "longContext": 17.2,
+          "agenticToolUse": 74.1,
+          "nonHallucination": 44.7,
+          "agenticKnowledgeWork": 53.5
+        }
+      },
+      {
+        "rank": 19,
+        "url": "https://artificialanalysis.ai/indexes/finance-and-accounting",
+        "name": "GLM-5.3 (Max)",
+        "domain": "finance-and-accounting",
+        "index": 42.1,
+        "subScores": {
+          "knowledge": 23.6,
+          "reasoning": 17.9,
+          "longContext": 11.2,
+          "agenticToolUse": 62.3,
+          "nonHallucination": 75.9,
+          "agenticKnowledgeWork": 51.3
+        }
+      },
+      {
+        "rank": 20,
+        "url": "https://artificialanalysis.ai/indexes/finance-and-accounting",
+        "name": "Inkling 2 Small",
+        "domain": "finance-and-accounting",
+        "index": 44.3,
+        "subScores": {
+          "knowledge": 26.2,
+          "reasoning": 28.7,
+          "longContext": 25.2,
+          "agenticToolUse": 43.9,
+          "nonHallucination": 82.8,
+          "agenticKnowledgeWork": 51.3
+        }
+      },
+      {
+        "rank": 21,
+        "url": "https://artificialanalysis.ai/indexes/finance-and-accounting",
+        "name": "MiMo-V2.6-Pro",
+        "domain": "finance-and-accounting",
+        "index": 38.9,
+        "subScores": {
+          "knowledge": 29.8,
+          "reasoning": 15.2,
+          "longContext": 19.2,
+          "agenticToolUse": 56.3,
+          "nonHallucination": 48.4,
+          "agenticKnowledgeWork": 51.1
+        }
+      },
+      {
+        "rank": 22,
+        "url": "https://artificialanalysis.ai/indexes/finance-and-accounting",
+        "name": "Ling 3.1 Flash 1019",
+        "domain": "finance-and-accounting",
+        "index": 42.6,
+        "subScores": {
+          "knowledge": 20.4,
+          "reasoning": 17.2,
+          "longContext": 12.6,
+          "agenticToolUse": 78.4,
+          "nonHallucination": 73.7,
+          "agenticKnowledgeWork": 51.2
+        }
+      },
+      {
+        "rank": 23,
+        "url": "https://artificialanalysis.ai/indexes/finance-and-accounting",
+        "name": "GPT-6 Luna (Max)",
+        "domain": "finance-and-accounting",
+        "index": 33.9,
+        "subScores": {
+          "knowledge": 34.2,
+          "reasoning": 22.2,
+          "longContext": 22.8,
+          "agenticToolUse": 41,
+          "nonHallucination": 28,
+          "agenticKnowledgeWork": 41.8
+        }
+      },
+      {
+        "rank": 24,
+        "url": "https://artificialanalysis.ai/indexes/finance-and-accounting",
+        "name": "Mistral Large 4 (High)",
+        "domain": "finance-and-accounting",
+        "index": 39.1,
+        "subScores": {
+          "knowledge": 20.2,
+          "reasoning": 17.3,
+          "longContext": 17.6,
+          "agenticToolUse": 54.5,
+          "nonHallucination": 82.2,
+          "agenticKnowledgeWork": 42.5
+        }
+      },
+      {
+        "rank": 25,
+        "url": "https://artificialanalysis.ai/indexes/finance-and-accounting",
+        "name": "Qwen3.8 27B (Xhigh)",
+        "domain": "finance-and-accounting",
+        "index": 35.5,
+        "subScores": {
+          "knowledge": 13.3,
+          "reasoning": 15.3,
+          "longContext": 16.4,
+          "agenticToolUse": 41,
+          "nonHallucination": 76.2,
+          "agenticKnowledgeWork": 45.2
+        }
+      },
+      {
+        "rank": 26,
+        "url": "https://artificialanalysis.ai/indexes/finance-and-accounting",
+        "name": "K2 Horizon 375B A23B",
+        "domain": "finance-and-accounting",
+        "index": 32.2,
+        "subScores": {
+          "knowledge": 11.1,
+          "reasoning": 10.2,
+          "longContext": 7.4,
+          "agenticToolUse": 30.4,
+          "nonHallucination": 83,
+          "agenticKnowledgeWork": 40.2
+        }
+      },
+      {
+        "rank": 27,
+        "url": "https://artificialanalysis.ai/indexes/finance-and-accounting",
+        "name": "Beam 1.0",
+        "domain": "finance-and-accounting",
+        "index": 30.2,
+        "subScores": {
+          "knowledge": 23.3,
+          "reasoning": 12.8,
+          "longContext": 11.6,
+          "agenticToolUse": 42.4,
+          "nonHallucination": 70.1,
+          "agenticKnowledgeWork": 23.8
+        }
+      },
+      {
+        "rank": 28,
+        "url": "https://artificialanalysis.ai/indexes/finance-and-accounting",
+        "name": "Nemotron 3.5 Super VL",
+        "domain": "finance-and-accounting",
+        "index": 26.7,
+        "subScores": {
+          "knowledge": 17.1,
+          "reasoning": 8.8,
+          "longContext": 8,
+          "agenticToolUse": 10.3,
+          "nonHallucination": 81.2,
+          "agenticKnowledgeWork": 24.9
+        }
+      }
+    ],
+    "healthcare-and-medical": [
+      {
+        "rank": 1,
+        "url": "https://artificialanalysis.ai/indexes/healthcare-and-medical",
+        "name": "Claude Fable 5.2 (Max, Default Fallback)",
+        "domain": "healthcare-and-medical",
+        "index": 65.4,
+        "subScores": {
+          "knowledge": 75.6,
+          "reasoning": 80.2,
+          "longContext": 43.9,
+          "agenticToolUse": 80.9,
+          "nonHallucination": 37.3,
+          "agenticKnowledgeWork": 64.3
+        }
+      },
+      {
+        "rank": 2,
+        "url": "https://artificialanalysis.ai/indexes/healthcare-and-medical",
+        "name": "GPT-6.2 Astra (Max)",
+        "domain": "healthcare-and-medical",
+        "index": 57,
+        "subScores": {
+          "knowledge": 62.7,
+          "reasoning": 72.2,
+          "longContext": 39.4,
+          "agenticToolUse": 78.8,
+          "nonHallucination": 20.8,
+          "agenticKnowledgeWork": 57.2
+        }
+      },
+      {
+        "rank": 3,
+        "url": "https://artificialanalysis.ai/indexes/healthcare-and-medical",
+        "name": "Claude Opus 5.5 (Max, Default Fallback)",
+        "domain": "healthcare-and-medical",
+        "index": 57.9,
+        "subScores": {
+          "knowledge": 61.3,
+          "reasoning": 67.9,
+          "longContext": 27.8,
+          "agenticToolUse": 77.3,
+          "nonHallucination": 35.1,
+          "agenticKnowledgeWork": 66.1
+        }
+      },
+      {
+        "rank": 4,
+        "url": "https://artificialanalysis.ai/indexes/healthcare-and-medical",
+        "name": "GPT-6.2 Sol (Max)",
+        "domain": "healthcare-and-medical",
+        "index": 53.3,
+        "subScores": {
+          "knowledge": 54.9,
+          "reasoning": 64,
+          "longContext": 37.2,
+          "agenticToolUse": 75.1,
+          "nonHallucination": 24.1,
+          "agenticKnowledgeWork": 55.6
+        }
+      },
+      {
+        "rank": 5,
+        "url": "https://artificialanalysis.ai/indexes/healthcare-and-medical",
+        "name": "Claude Sonnet 5.5 (Max, Default Fallback)",
+        "domain": "healthcare-and-medical",
+        "index": 54.2,
+        "subScores": {
+          "knowledge": 42.2,
+          "reasoning": 53.3,
+          "longContext": 41.7,
+          "agenticToolUse": 76.5,
+          "nonHallucination": 42.3,
+          "agenticKnowledgeWork": 65.5
+        }
+      },
+      {
+        "rank": 6,
+        "url": "https://artificialanalysis.ai/indexes/healthcare-and-medical",
+        "name": "Gemini 4 Hydrogen (Xhigh)",
+        "domain": "healthcare-and-medical",
+        "index": 53.3,
+        "subScores": {
+          "knowledge": 38.9,
+          "reasoning": 58.8,
+          "longContext": 21.1,
+          "agenticToolUse": 81.5,
+          "nonHallucination": 90.2,
+          "agenticKnowledgeWork": 53.4
+        }
+      },
+      {
+        "rank": 7,
+        "url": "https://artificialanalysis.ai/indexes/healthcare-and-medical",
+        "name": "GPT-6.1 Terra (Max)",
+        "domain": "healthcare-and-medical",
+        "index": 44.7,
+        "subScores": {
+          "knowledge": 37.1,
+          "reasoning": 47.3,
+          "longContext": 30.6,
+          "agenticToolUse": 70,
+          "nonHallucination": 43.5,
+          "agenticKnowledgeWork": 45.2
+        }
+      },
+      {
+        "rank": 8,
+        "url": "https://artificialanalysis.ai/indexes/healthcare-and-medical",
+        "name": "Muse Wonder Full (Max)",
+        "domain": "healthcare-and-medical",
+        "index": 51.9,
+        "subScores": {
+          "knowledge": 34.4,
+          "reasoning": 48.5,
+          "longContext": 22.2,
+          "agenticToolUse": 79.3,
+          "nonHallucination": 78.3,
+          "agenticKnowledgeWork": 61.5
+        }
+      },
+      {
+        "rank": 9,
+        "url": "https://artificialanalysis.ai/indexes/healthcare-and-medical",
+        "name": "Kimi K3.1 Pro",
+        "domain": "healthcare-and-medical",
+        "index": 51.6,
+        "subScores": {
+          "knowledge": 42.4,
+          "reasoning": 37.3,
+          "longContext": 38.3,
+          "agenticToolUse": 76.8,
+          "nonHallucination": 52.9,
+          "agenticKnowledgeWork": 58.9
+        }
+      },
+      {
+        "rank": 10,
+        "url": "https://artificialanalysis.ai/indexes/healthcare-and-medical",
+        "name": "Muse Wonder (Max)",
+        "domain": "healthcare-and-medical",
+        "index": 48.7,
+        "subScores": {
+          "knowledge": 30.4,
+          "reasoning": 39,
+          "longContext": 22.2,
+          "agenticToolUse": 78.7,
+          "nonHallucination": 75.7,
+          "agenticKnowledgeWork": 57.9
+        }
+      },
+      {
+        "rank": 11,
+        "url": "https://artificialanalysis.ai/indexes/healthcare-and-medical",
+        "name": "Qwen4 Max",
+        "domain": "healthcare-and-medical",
+        "index": 48.2,
+        "subScores": {
+          "knowledge": 34,
+          "reasoning": 44.9,
+          "longContext": 19.4,
+          "agenticToolUse": 78,
+          "nonHallucination": 57.9,
+          "agenticKnowledgeWork": 59.3
+        }
+      },
+      {
+        "rank": 12,
+        "url": "https://artificialanalysis.ai/indexes/healthcare-and-medical",
+        "name": "Claude Haiku 5.5 (Max)",
+        "domain": "healthcare-and-medical",
+        "index": 37.5,
+        "subScores": {
+          "knowledge": 19.6,
+          "reasoning": 29.6,
+          "longContext": 35,
+          "agenticToolUse": 36.5,
+          "nonHallucination": 54.4,
+          "agenticKnowledgeWork": 53.9
+        }
+      },
+      {
+        "rank": 13,
+        "url": "https://artificialanalysis.ai/indexes/healthcare-and-medical",
+        "name": "Muse Ember (Max)",
+        "domain": "healthcare-and-medical",
+        "index": 41.3,
+        "subScores": {
+          "knowledge": 14.7,
+          "reasoning": 25.1,
+          "longContext": 18.3,
+          "agenticToolUse": 75.7,
+          "nonHallucination": 82.3,
+          "agenticKnowledgeWork": 51.1
+        }
+      },
+      {
+        "rank": 14,
+        "url": "https://artificialanalysis.ai/indexes/healthcare-and-medical",
+        "name": "Grok 4.7 (Xhigh)",
+        "domain": "healthcare-and-medical",
+        "index": 46.6,
+        "subScores": {
+          "knowledge": 34.9,
+          "reasoning": 23.2,
+          "longContext": 20,
+          "agenticToolUse": 72.4,
+          "nonHallucination": 72.4,
+          "agenticKnowledgeWork": 57.9
+        }
+      },
+      {
+        "rank": 15,
+        "url": "https://artificialanalysis.ai/indexes/healthcare-and-medical",
+        "name": "Tencent Hy4",
+        "domain": "healthcare-and-medical",
+        "index": 42.9,
+        "subScores": {
+          "knowledge": 43.3,
+          "reasoning": 32.7,
+          "longContext": 32.8,
+          "agenticToolUse": 72.2,
+          "nonHallucination": 12.2,
+          "agenticKnowledgeWork": 47.3
+        }
+      },
+      {
+        "rank": 16,
+        "url": "https://artificialanalysis.ai/indexes/healthcare-and-medical",
+        "name": "Qwen3.8 Max (0902)",
+        "domain": "healthcare-and-medical",
+        "index": 40.8,
+        "subScores": {
+          "knowledge": 21.3,
+          "reasoning": 24,
+          "longContext": 20,
+          "agenticToolUse": 61.1,
+          "nonHallucination": 66.7,
+          "agenticKnowledgeWork": 57.1
+        }
+      },
+      {
+        "rank": 17,
+        "url": "https://artificialanalysis.ai/indexes/healthcare-and-medical",
+        "name": "DeepSeek V4.1 Flash 1017 (Max)",
+        "domain": "healthcare-and-medical",
+        "index": 41.3,
+        "subScores": {
+          "knowledge": 28.7,
+          "reasoning": 25.3,
+          "longContext": 26.7,
+          "agenticToolUse": 72.1,
+          "nonHallucination": 34.3,
+          "agenticKnowledgeWork": 53.5
+        }
+      },
+      {
+        "rank": 18,
+        "url": "https://artificialanalysis.ai/indexes/healthcare-and-medical",
+        "name": "GLM-5.3 (Max)",
+        "domain": "healthcare-and-medical",
+        "index": 39.3,
+        "subScores": {
+          "knowledge": 24.7,
+          "reasoning": 17.9,
+          "longContext": 17.2,
+          "agenticToolUse": 70.3,
+          "nonHallucination": 54.3,
+          "agenticKnowledgeWork": 51.3
+        }
+      },
+      {
+        "rank": 19,
+        "url": "https://artificialanalysis.ai/indexes/healthcare-and-medical",
+        "name": "Inkling 2 Small",
+        "domain": "healthcare-and-medical",
+        "index": 40.8,
+        "subScores": {
+          "knowledge": 29.3,
+          "reasoning": 28.7,
+          "longContext": 20.6,
+          "agenticToolUse": 54.8,
+          "nonHallucination": 64.2,
+          "agenticKnowledgeWork": 51.3
+        }
+      },
+      {
+        "rank": 20,
+        "url": "https://artificialanalysis.ai/indexes/healthcare-and-medical",
+        "name": "MiMo-V2.6-Pro",
+        "domain": "healthcare-and-medical",
+        "index": 35.8,
+        "subScores": {
+          "knowledge": 26.4,
+          "reasoning": 15.2,
+          "longContext": 12.8,
+          "agenticToolUse": 65.7,
+          "nonHallucination": 30.8,
+          "agenticKnowledgeWork": 51.1
+        }
+      },
+      {
+        "rank": 21,
+        "url": "https://artificialanalysis.ai/indexes/healthcare-and-medical",
+        "name": "Ling 3.1 Flash 1019",
+        "domain": "healthcare-and-medical",
+        "index": 38.3,
+        "subScores": {
+          "knowledge": 20.7,
+          "reasoning": 17.2,
+          "longContext": 15,
+          "agenticToolUse": 68.5,
+          "nonHallucination": 61.1,
+          "agenticKnowledgeWork": 51.2
+        }
+      },
+      {
+        "rank": 22,
+        "url": "https://artificialanalysis.ai/indexes/healthcare-and-medical",
+        "name": "GPT-6 Luna (Max)",
+        "domain": "healthcare-and-medical",
+        "index": 34.8,
+        "subScores": {
+          "knowledge": 28,
+          "reasoning": 22.2,
+          "longContext": 26.1,
+          "agenticToolUse": 65.9,
+          "nonHallucination": 13.6,
+          "agenticKnowledgeWork": 41.8
+        }
+      },
+      {
+        "rank": 23,
+        "url": "https://artificialanalysis.ai/indexes/healthcare-and-medical",
+        "name": "Mistral Large 4 (High)",
+        "domain": "healthcare-and-medical",
+        "index": 36.7,
+        "subScores": {
+          "knowledge": 21.3,
+          "reasoning": 17.3,
+          "longContext": 17.8,
+          "agenticToolUse": 66.2,
+          "nonHallucination": 64.1,
+          "agenticKnowledgeWork": 42.5
+        }
+      },
+      {
+        "rank": 24,
+        "url": "https://artificialanalysis.ai/indexes/healthcare-and-medical",
+        "name": "Qwen3.8 27B (Xhigh)",
+        "domain": "healthcare-and-medical",
+        "index": 34.6,
+        "subScores": {
+          "knowledge": 7.8,
+          "reasoning": 15.3,
+          "longContext": 22.8,
+          "agenticToolUse": 58.3,
+          "nonHallucination": 76.6,
+          "agenticKnowledgeWork": 45.2
+        }
+      },
+      {
+        "rank": 25,
+        "url": "https://artificialanalysis.ai/indexes/healthcare-and-medical",
+        "name": "K2 Horizon 375B A23B",
+        "domain": "healthcare-and-medical",
+        "index": 29.5,
+        "subScores": {
+          "knowledge": 9.8,
+          "reasoning": 10.2,
+          "longContext": 12.2,
+          "agenticToolUse": 47.9,
+          "nonHallucination": 69.5,
+          "agenticKnowledgeWork": 40.2
+        }
+      },
+      {
+        "rank": 26,
+        "url": "https://artificialanalysis.ai/indexes/healthcare-and-medical",
+        "name": "Beam 1.0",
+        "domain": "healthcare-and-medical",
+        "index": 30.7,
+        "subScores": {
+          "knowledge": 24.9,
+          "reasoning": 12.8,
+          "longContext": 17.8,
+          "agenticToolUse": 60.2,
+          "nonHallucination": 55.3,
+          "agenticKnowledgeWork": 23.8
+        }
+      },
+      {
+        "rank": 27,
+        "url": "https://artificialanalysis.ai/indexes/healthcare-and-medical",
+        "name": "Nemotron 3.5 Super VL",
+        "domain": "healthcare-and-medical",
+        "index": 21,
+        "subScores": {
+          "knowledge": 12.4,
+          "reasoning": 8.8,
+          "longContext": 13.3,
+          "agenticToolUse": 15.7,
+          "nonHallucination": 63.7,
+          "agenticKnowledgeWork": 24.9
+        }
+      }
+    ],
+    "legal": [
+      {
+        "rank": 1,
+        "url": "https://artificialanalysis.ai/indexes/legal",
+        "name": "Claude Fable 5.2 (Max, Default Fallback)",
+        "domain": "legal",
+        "index": 63.3,
+        "subScores": {
+          "knowledge": 71.8,
+          "reasoning": 80.2,
+          "longContext": 24.2,
+          "agenticToolUse": 80.9,
+          "nonHallucination": 48,
+          "agenticKnowledgeWork": 64.3
+        }
+      },
+      {
+        "rank": 2,
+        "url": "https://artificialanalysis.ai/indexes/legal",
+        "name": "GPT-6.2 Astra (Max)",
+        "domain": "legal",
+        "index": 58.7,
+        "subScores": {
+          "knowledge": 59.1,
+          "reasoning": 72.2,
+          "longContext": 29.8,
+          "agenticToolUse": 78.8,
+          "nonHallucination": 59.8,
+          "agenticKnowledgeWork": 57.2
+        }
+      },
+      {
+        "rank": 3,
+        "url": "https://artificialanalysis.ai/indexes/legal",
+        "name": "Gemini 4 Neon (Xhigh)",
+        "domain": "legal",
+        "index": 63.8,
+        "subScores": {
+          "knowledge": 56.9,
+          "reasoning": 71.3,
+          "longContext": 28,
+          "agenticToolUse": 82.4,
+          "nonHallucination": 93.8,
+          "agenticKnowledgeWork": 60
+        }
+      },
+      {
+        "rank": 4,
+        "url": "https://artificialanalysis.ai/indexes/legal",
+        "name": "Claude Opus 5.5 (Max, Default Fallback)",
+        "domain": "legal",
+        "index": 58,
+        "subScores": {
+          "knowledge": 49.6,
+          "reasoning": 67.9,
+          "longContext": 26.2,
+          "agenticToolUse": 77.3,
+          "nonHallucination": 66.5,
+          "agenticKnowledgeWork": 66.1
+        }
+      },
+      {
+        "rank": 5,
+        "url": "https://artificialanalysis.ai/indexes/legal",
+        "name": "GPT-6.2 Sol (Max)",
+        "domain": "legal",
+        "index": 55,
+        "subScores": {
+          "knowledge": 48.2,
+          "reasoning": 64,
+          "longContext": 30,
+          "agenticToolUse": 75.1,
+          "nonHallucination": 68.7,
+          "agenticKnowledgeWork": 55.6
+        }
+      },
+      {
+        "rank": 6,
+        "url": "https://artificialanalysis.ai/indexes/legal",
+        "name": "Claude Sonnet 5.5 (Max, Default Fallback)",
+        "domain": "legal",
+        "index": 52.2,
+        "subScores": {
+          "knowledge": 32.9,
+          "reasoning": 53.3,
+          "longContext": 25.8,
+          "agenticToolUse": 76.5,
+          "nonHallucination": 76.8,
+          "agenticKnowledgeWork": 65.5
+        }
+      },
+      {
+        "rank": 7,
+        "url": "https://artificialanalysis.ai/indexes/legal",
+        "name": "Gemini 4 Hydrogen (Xhigh)",
+        "domain": "legal",
+        "index": 56.7,
+        "subScores": {
+          "knowledge": 45.3,
+          "reasoning": 58.8,
+          "longContext": 27.6,
+          "agenticToolUse": 81.5,
+          "nonHallucination": 94.3,
+          "agenticKnowledgeWork": 53.4
+        }
+      },
+      {
+        "rank": 8,
+        "url": "https://artificialanalysis.ai/indexes/legal",
+        "name": "GPT-6.1 Terra (Max)",
+        "domain": "legal",
+        "index": 46.4,
+        "subScores": {
+          "knowledge": 30.4,
+          "reasoning": 47.3,
+          "longContext": 28.6,
+          "agenticToolUse": 70,
+          "nonHallucination": 83.4,
+          "agenticKnowledgeWork": 45.2
+        }
+      },
+      {
+        "rank": 9,
+        "url": "https://artificialanalysis.ai/indexes/legal",
+        "name": "Muse Wonder Full (Max)",
+        "domain": "legal",
+        "index": 50.7,
+        "subScores": {
+          "knowledge": 25.3,
+          "reasoning": 48.5,
+          "longContext": 32.6,
+          "agenticToolUse": 79.3,
+          "nonHallucination": 88.4,
+          "agenticKnowledgeWork": 61.5
+        }
+      },
+      {
+        "rank": 10,
+        "url": "https://artificialanalysis.ai/indexes/legal",
+        "name": "Kimi K3.1 Pro",
+        "domain": "legal",
+        "index": 49.2,
+        "subScores": {
+          "knowledge": 31.6,
+          "reasoning": 37.3,
+          "longContext": 31.4,
+          "agenticToolUse": 76.8,
+          "nonHallucination": 83.1,
+          "agenticKnowledgeWork": 58.9
+        }
+      },
+      {
+        "rank": 11,
+        "url": "https://artificialanalysis.ai/indexes/legal",
+        "name": "Muse Wonder (Max)",
+        "domain": "legal",
+        "index": 46.9,
+        "subScores": {
+          "knowledge": 22.4,
+          "reasoning": 39,
+          "longContext": 30.6,
+          "agenticToolUse": 78.7,
+          "nonHallucination": 85.4,
+          "agenticKnowledgeWork": 57.9
+        }
+      },
+      {
+        "rank": 12,
+        "url": "https://artificialanalysis.ai/indexes/legal",
+        "name": "Qwen4 Max",
+        "domain": "legal",
+        "index": 49.6,
+        "subScores": {
+          "knowledge": 27.8,
+          "reasoning": 44.9,
+          "longContext": 26.2,
+          "agenticToolUse": 78,
+          "nonHallucination": 87.7,
+          "agenticKnowledgeWork": 59.3
+        }
+      },
+      {
+        "rank": 13,
+        "url": "https://artificialanalysis.ai/indexes/legal",
+        "name": "Claude Haiku 5.5 (Max)",
+        "domain": "legal",
+        "index": 38.7,
+        "subScores": {
+          "knowledge": 16.2,
+          "reasoning": 29.6,
+          "longContext": 20.8,
+          "agenticToolUse": 36.5,
+          "nonHallucination": 79.8,
+          "agenticKnowledgeWork": 53.9
+        }
+      },
+      {
+        "rank": 14,
+        "url": "https://artificialanalysis.ai/indexes/legal",
+        "name": "Muse Ember (Max)",
+        "domain": "legal",
+        "index": 38.5,
+        "subScores": {
+          "knowledge": 8.2,
+          "reasoning": 25.1,
+          "longContext": 22.8,
+          "agenticToolUse": 75.7,
+          "nonHallucination": 89.3,
+          "agenticKnowledgeWork": 51.1
+        }
+      },
+      {
+        "rank": 15,
+        "url": "https://artificialanalysis.ai/indexes/legal",
+        "name": "Grok 4.7 (Xhigh)",
+        "domain": "legal",
+        "index": 47.2,
+        "subScores": {
+          "knowledge": 35.1,
+          "reasoning": 23.2,
+          "longContext": 20,
+          "agenticToolUse": 72.4,
+          "nonHallucination": 87.3,
+          "agenticKnowledgeWork": 57.9
+        }
+      },
+      {
+        "rank": 16,
+        "url": "https://artificialanalysis.ai/indexes/legal",
+        "name": "Tencent Hy4",
+        "domain": "legal",
+        "index": 35.4,
+        "subScores": {
+          "knowledge": 35.1,
+          "reasoning": 32.7,
+          "longContext": 21.6,
+          "agenticToolUse": 72.2,
+          "nonHallucination": 15.4,
+          "agenticKnowledgeWork": 47.3
+        }
+      },
+      {
+        "rank": 17,
+        "url": "https://artificialanalysis.ai/indexes/legal",
+        "name": "Qwen3.8 Max (0902)",
+        "domain": "legal",
+        "index": 41,
+        "subScores": {
+          "knowledge": 17.6,
+          "reasoning": 24,
+          "longContext": 22.8,
+          "agenticToolUse": 61.1,
+          "nonHallucination": 83.6,
+          "agenticKnowledgeWork": 57.1
+        }
+      },
+      {
+        "rank": 18,
+        "url": "https://artificialanalysis.ai/indexes/legal",
+        "name": "DeepSeek V4.1 Flash 1017 (Max)",
+        "domain": "legal",
+        "index": 37.7,
+        "subScores": {
+          "knowledge": 26.2,
+          "reasoning": 25.3,
+          "longContext": 17.2,
+          "agenticToolUse": 72.1,
+          "nonHallucination": 49.1,
+          "agenticKnowledgeWork": 53.5
+        }
+      },
+      {
+        "rank": 19,
+        "url": "https://artificialanalysis.ai/indexes/legal",
+        "name": "GLM-5.3 (Max)",
+        "domain": "legal",
+        "index": 35.8,
+        "subScores": {
+          "knowledge": 15.3,
+          "reasoning": 17.9,
+          "longContext": 11.2,
+          "agenticToolUse": 70.3,
+          "nonHallucination": 73.8,
+          "agenticKnowledgeWork": 51.3
+        }
+      },
+      {
+        "rank": 20,
+        "url": "https://artificialanalysis.ai/indexes/legal",
+        "name": "Inkling 2 Small",
+        "domain": "legal",
+        "index": 41.6,
+        "subScores": {
+          "knowledge": 21.1,
+          "reasoning": 28.7,
+          "longContext": 25.2,
+          "agenticToolUse": 54.8,
+          "nonHallucination": 85.6,
+          "agenticKnowledgeWork": 51.3
+        }
+      },
+      {
+        "rank": 21,
+        "url": "https://artificialanalysis.ai/indexes/legal",
+        "name": "MiMo-V2.6-Pro",
+        "domain": "legal",
+        "index": 35,
+        "subScores": {
+          "knowledge": 17.8,
+          "reasoning": 15.2,
+          "longContext": 19.2,
+          "agenticToolUse": 65.7,
+          "nonHallucination": 62.4,
+          "agenticKnowledgeWork": 51.1
+        }
+      },
+      {
+        "rank": 22,
+        "url": "https://artificialanalysis.ai/indexes/legal",
+        "name": "Ling 3.1 Flash 1019",
+        "domain": "legal",
+        "index": 35.5,
+        "subScores": {
+          "knowledge": 13.3,
+          "reasoning": 17.2,
+          "longContext": 12.6,
+          "agenticToolUse": 68.5,
+          "nonHallucination": 76.4,
+          "agenticKnowledgeWork": 51.2
+        }
+      },
+      {
+        "rank": 23,
+        "url": "https://artificialanalysis.ai/indexes/legal",
+        "name": "GPT-6 Luna (Max)",
+        "domain": "legal",
+        "index": 32.2,
+        "subScores": {
+          "knowledge": 23.8,
+          "reasoning": 22.2,
+          "longContext": 22.8,
+          "agenticToolUse": 65.9,
+          "nonHallucination": 38.2,
+          "agenticKnowledgeWork": 41.8
+        }
+      },
+      {
+        "rank": 24,
+        "url": "https://artificialanalysis.ai/indexes/legal",
+        "name": "Mistral Large 4 (High)",
+        "domain": "legal",
+        "index": 34.6,
+        "subScores": {
+          "knowledge": 13.1,
+          "reasoning": 17.3,
+          "longContext": 17.6,
+          "agenticToolUse": 66.2,
+          "nonHallucination": 82.4,
+          "agenticKnowledgeWork": 42.5
+        }
+      },
+      {
+        "rank": 25,
+        "url": "https://artificialanalysis.ai/indexes/legal",
+        "name": "Qwen3.8 27B (Xhigh)",
+        "domain": "legal",
+        "index": 33.2,
+        "subScores": {
+          "knowledge": 5.6,
+          "reasoning": 15.3,
+          "longContext": 16.4,
+          "agenticToolUse": 58.3,
+          "nonHallucination": 89.4,
+          "agenticKnowledgeWork": 45.2
+        }
+      },
+      {
+        "rank": 26,
+        "url": "https://artificialanalysis.ai/indexes/legal",
+        "name": "K2 Horizon 375B A23B",
+        "domain": "legal",
+        "index": 28.9,
+        "subScores": {
+          "knowledge": 7.6,
+          "reasoning": 10.2,
+          "longContext": 7.4,
+          "agenticToolUse": 47.9,
+          "nonHallucination": 79.3,
+          "agenticKnowledgeWork": 40.2
+        }
+      },
+      {
+        "rank": 27,
+        "url": "https://artificialanalysis.ai/indexes/legal",
+        "name": "Beam 1.0",
+        "domain": "legal",
+        "index": 28.1,
+        "subScores": {
+          "knowledge": 15.3,
+          "reasoning": 12.8,
+          "longContext": 11.6,
+          "agenticToolUse": 60.2,
+          "nonHallucination": 76.6,
+          "agenticKnowledgeWork": 23.8
+        }
+      },
+      {
+        "rank": 28,
+        "url": "https://artificialanalysis.ai/indexes/legal",
+        "name": "Nemotron 3.5 Super VL",
+        "domain": "legal",
+        "index": 25.3,
+        "subScores": {
+          "knowledge": 10.7,
+          "reasoning": 8.8,
+          "longContext": 8,
+          "agenticToolUse": 15.7,
+          "nonHallucination": 86.3,
+          "agenticKnowledgeWork": 24.9
+        }
+      }
+    ],
+    "strategy-and-ops": [
+      {
+        "rank": 1,
+        "url": "https://artificialanalysis.ai/indexes/strategy-and-ops",
+        "name": "Claude Fable 5.2 (Max, Default Fallback)",
+        "domain": "strategy-and-ops",
+        "index": 67.4,
+        "subScores": {
+          "knowledge": 73.1,
+          "longContext": 24.2,
+          "agenticToolUse": 75.9,
+          "nonHallucination": 40.5,
+          "agenticKnowledgeWork": 64.3
+        }
+      },
+      {
+        "rank": 2,
+        "url": "https://artificialanalysis.ai/indexes/strategy-and-ops",
+        "name": "GPT-6.2 Astra (Max)",
+        "domain": "strategy-and-ops",
+        "index": 63.3,
+        "subScores": {
+          "knowledge": 60.4,
+          "longContext": 29.8,
+          "agenticToolUse": 76.5,
+          "nonHallucination": 55.1,
+          "agenticKnowledgeWork": 57.2
+        }
+      },
+      {
+        "rank": 3,
+        "url": "https://artificialanalysis.ai/indexes/strategy-and-ops",
+        "name": "Gemini 4 Neon (Xhigh)",
+        "domain": "strategy-and-ops",
+        "index": 63.8,
+        "subScores": {
+          "knowledge": 50.9,
+          "longContext": 28,
+          "agenticToolUse": 77.6,
+          "nonHallucination": 90,
+          "agenticKnowledgeWork": 60
+        }
+      },
+      {
+        "rank": 4,
+        "url": "https://artificialanalysis.ai/indexes/strategy-and-ops",
+        "name": "Claude Opus 5.5 (Max, Default Fallback)",
+        "domain": "strategy-and-ops",
+        "index": 61.4,
+        "subScores": {
+          "knowledge": 51.6,
+          "longContext": 26.2,
+          "agenticToolUse": 70.2,
+          "nonHallucination": 56.9,
+          "agenticKnowledgeWork": 66.1
+        }
+      },
+      {
+        "rank": 5,
+        "url": "https://artificialanalysis.ai/indexes/strategy-and-ops",
+        "name": "GPT-6.2 Sol (Max)",
+        "domain": "strategy-and-ops",
+        "index": 59.4,
+        "subScores": {
+          "knowledge": 53.6,
+          "longContext": 30,
+          "agenticToolUse": 71.1,
+          "nonHallucination": 58.9,
+          "agenticKnowledgeWork": 55.6
+        }
+      },
+      {
+        "rank": 6,
+        "url": "https://artificialanalysis.ai/indexes/strategy-and-ops",
+        "name": "Claude Sonnet 5.5 (Max, Default Fallback)",
+        "domain": "strategy-and-ops",
+        "index": 58.1,
+        "subScores": {
+          "knowledge": 37.8,
+          "longContext": 25.8,
+          "agenticToolUse": 70.1,
+          "nonHallucination": 62.9,
+          "agenticKnowledgeWork": 65.5
+        }
+      },
+      {
+        "rank": 7,
+        "url": "https://artificialanalysis.ai/indexes/strategy-and-ops",
+        "name": "Gemini 4 Hydrogen (Xhigh)",
+        "domain": "strategy-and-ops",
+        "index": 57.7,
+        "subScores": {
+          "knowledge": 37.3,
+          "longContext": 27.6,
+          "agenticToolUse": 74.9,
+          "nonHallucination": 95.7,
+          "agenticKnowledgeWork": 53.4
+        }
+      },
+      {
+        "rank": 8,
+        "url": "https://artificialanalysis.ai/indexes/strategy-and-ops",
+        "name": "GPT-6.1 Terra (Max)",
+        "domain": "strategy-and-ops",
+        "index": 50,
+        "subScores": {
+          "knowledge": 38.2,
+          "longContext": 28.6,
+          "agenticToolUse": 61.5,
+          "nonHallucination": 79.5,
+          "agenticKnowledgeWork": 45.2
+        }
+      },
+      {
+        "rank": 9,
+        "url": "https://artificialanalysis.ai/indexes/strategy-and-ops",
+        "name": "Muse Wonder Full (Max)",
+        "domain": "strategy-and-ops",
+        "index": 57.9,
+        "subScores": {
+          "knowledge": 31.8,
+          "longContext": 32.6,
+          "agenticToolUse": 72.6,
+          "nonHallucination": 89.3,
+          "agenticKnowledgeWork": 61.5
+        }
+      },
+      {
+        "rank": 10,
+        "url": "https://artificialanalysis.ai/indexes/strategy-and-ops",
+        "name": "Kimi K3.1 Pro",
+        "domain": "strategy-and-ops",
+        "index": 57.6,
+        "subScores": {
+          "knowledge": 38.7,
+          "longContext": 31.4,
+          "agenticToolUse": 71.7,
+          "nonHallucination": 72.1,
+          "agenticKnowledgeWork": 58.9
+        }
+      },
+      {
+        "rank": 11,
+        "url": "https://artificialanalysis.ai/indexes/strategy-and-ops",
+        "name": "Muse Wonder (Max)",
+        "domain": "strategy-and-ops",
+        "index": 54.5,
+        "subScores": {
+          "knowledge": 28,
+          "longContext": 30.6,
+          "agenticToolUse": 69.2,
+          "nonHallucination": 87,
+          "agenticKnowledgeWork": 57.9
+        }
+      },
+      {
+        "rank": 12,
+        "url": "https://artificialanalysis.ai/indexes/strategy-and-ops",
+        "name": "Qwen4 Max",
+        "domain": "strategy-and-ops",
+        "index": 56.9,
+        "subScores": {
+          "knowledge": 32.9,
+          "longContext": 26.2,
+          "agenticToolUse": 72.3,
+          "nonHallucination": 84.4,
+          "agenticKnowledgeWork": 59.3
+        }
+      },
+      {
+        "rank": 13,
+        "url": "https://artificialanalysis.ai/indexes/strategy-and-ops",
+        "name": "Claude Haiku 5.5 (Max)",
+        "domain": "strategy-and-ops",
+        "index": 39.1,
+        "subScores": {
+          "knowledge": 25.6,
+          "longContext": 20.8,
+          "agenticToolUse": 33.7,
+          "nonHallucination": 74.6,
+          "agenticKnowledgeWork": 53.9
+        }
+      },
+      {
+        "rank": 14,
+        "url": "https://artificialanalysis.ai/indexes/strategy-and-ops",
+        "name": "Muse Ember (Max)",
+        "domain": "strategy-and-ops",
+        "index": 48.7,
+        "subScores": {
+          "knowledge": 16.9,
+          "longContext": 22.8,
+          "agenticToolUse": 67.5,
+          "nonHallucination": 87.2,
+          "agenticKnowledgeWork": 51.1
+        }
+      },
+      {
+        "rank": 15,
+        "url": "https://artificialanalysis.ai/indexes/strategy-and-ops",
+        "name": "Grok 4.7 (Xhigh)",
+        "domain": "strategy-and-ops",
+        "index": 54.8,
+        "subScores": {
+          "knowledge": 39.3,
+          "longContext": 20,
+          "agenticToolUse": 64,
+          "nonHallucination": 85,
+          "agenticKnowledgeWork": 57.9
+        }
+      },
+      {
+        "rank": 16,
+        "url": "https://artificialanalysis.ai/indexes/strategy-and-ops",
+        "name": "Tencent Hy4",
+        "domain": "strategy-and-ops",
+        "index": 48.7,
+        "subScores": {
+          "knowledge": 38,
+          "longContext": 21.6,
+          "agenticToolUse": 66.4,
+          "nonHallucination": 14.3,
+          "agenticKnowledgeWork": 47.3
+        }
+      },
+      {
+        "rank": 17,
+        "url": "https://artificialanalysis.ai/indexes/strategy-and-ops",
+        "name": "Qwen3.8 Max (0902)",
+        "domain": "strategy-and-ops",
+        "index": 47.3,
+        "subScores": {
+          "knowledge": 21.1,
+          "longContext": 22.8,
+          "agenticToolUse": 56.1,
+          "nonHallucination": 81.4,
+          "agenticKnowledgeWork": 57.1
+        }
+      },
+      {
+        "rank": 18,
+        "url": "https://artificialanalysis.ai/indexes/strategy-and-ops",
+        "name": "DeepSeek V4.1 Flash 1017 (Max)",
+        "domain": "strategy-and-ops",
+        "index": 49.2,
+        "subScores": {
+          "knowledge": 29.3,
+          "longContext": 17.2,
+          "agenticToolUse": 65,
+          "nonHallucination": 44.7,
+          "agenticKnowledgeWork": 53.5
+        }
+      },
+      {
+        "rank": 19,
+        "url": "https://artificialanalysis.ai/indexes/strategy-and-ops",
+        "name": "GLM-5.3 (Max)",
+        "domain": "strategy-and-ops",
+        "index": 47.4,
+        "subScores": {
+          "knowledge": 23.6,
+          "longContext": 11.2,
+          "agenticToolUse": 62.2,
+          "nonHallucination": 75.9,
+          "agenticKnowledgeWork": 51.3
+        }
+      },
+      {
+        "rank": 20,
+        "url": "https://artificialanalysis.ai/indexes/strategy-and-ops",
+        "name": "Inkling 2 Small",
+        "domain": "strategy-and-ops",
+        "index": 43.5,
+        "subScores": {
+          "knowledge": 26.2,
+          "longContext": 25.2,
+          "agenticToolUse": 46,
+          "nonHallucination": 82.8,
+          "agenticKnowledgeWork": 51.3
+        }
+      },
+      {
+        "rank": 21,
+        "url": "https://artificialanalysis.ai/indexes/strategy-and-ops",
+        "name": "MiMo-V2.6-Pro",
+        "domain": "strategy-and-ops",
+        "index": 46.9,
+        "subScores": {
+          "knowledge": 29.8,
+          "longContext": 19.2,
+          "agenticToolUse": 59.1,
+          "nonHallucination": 48.4,
+          "agenticKnowledgeWork": 51.1
+        }
+      },
+      {
+        "rank": 22,
+        "url": "https://artificialanalysis.ai/indexes/strategy-and-ops",
+        "name": "Ling 3.1 Flash 1019",
+        "domain": "strategy-and-ops",
+        "index": 47.6,
+        "subScores": {
+          "knowledge": 20.4,
+          "longContext": 12.6,
+          "agenticToolUse": 65.1,
+          "nonHallucination": 73.7,
+          "agenticKnowledgeWork": 51.2
+        }
+      },
+      {
+        "rank": 23,
+        "url": "https://artificialanalysis.ai/indexes/strategy-and-ops",
+        "name": "GPT-6 Luna (Max)",
+        "domain": "strategy-and-ops",
+        "index": 43.2,
+        "subScores": {
+          "knowledge": 34.2,
+          "longContext": 22.8,
+          "agenticToolUse": 55.9,
+          "nonHallucination": 28,
+          "agenticKnowledgeWork": 41.8
+        }
+      },
+      {
+        "rank": 24,
+        "url": "https://artificialanalysis.ai/indexes/strategy-and-ops",
+        "name": "Mistral Large 4 (High)",
+        "domain": "strategy-and-ops",
+        "index": 43.3,
+        "subScores": {
+          "knowledge": 20.2,
+          "longContext": 17.6,
+          "agenticToolUse": 58.6,
+          "nonHallucination": 82.2,
+          "agenticKnowledgeWork": 42.5
+        }
+      },
+      {
+        "rank": 25,
+        "url": "https://artificialanalysis.ai/indexes/strategy-and-ops",
+        "name": "Qwen3.8 27B (Xhigh)",
+        "domain": "strategy-and-ops",
+        "index": 39,
+        "subScores": {
+          "knowledge": 13.3,
+          "longContext": 16.4,
+          "agenticToolUse": 49.9,
+          "nonHallucination": 76.2,
+          "agenticKnowledgeWork": 45.2
+        }
+      },
+      {
+        "rank": 26,
+        "url": "https://artificialanalysis.ai/indexes/strategy-and-ops",
+        "name": "K2 Horizon 375B A23B",
+        "domain": "strategy-and-ops",
+        "index": 32.9,
+        "subScores": {
+          "knowledge": 11.1,
+          "longContext": 7.4,
+          "agenticToolUse": 38.7,
+          "nonHallucination": 83,
+          "agenticKnowledgeWork": 40.2
+        }
+      },
+      {
+        "rank": 27,
+        "url": "https://artificialanalysis.ai/indexes/strategy-and-ops",
+        "name": "Beam 1.0",
+        "domain": "strategy-and-ops",
+        "index": 34.5,
+        "subScores": {
+          "knowledge": 23.3,
+          "longContext": 11.6,
+          "agenticToolUse": 49.8,
+          "nonHallucination": 70.1,
+          "agenticKnowledgeWork": 23.8
+        }
+      },
+      {
+        "rank": 28,
+        "url": "https://artificialanalysis.ai/indexes/strategy-and-ops",
+        "name": "Nemotron 3.5 Super VL",
+        "domain": "strategy-and-ops",
+        "index": 21.8,
+        "subScores": {
+          "knowledge": 17.1,
+          "longContext": 8,
+          "agenticToolUse": 15.8,
+          "nonHallucination": 81.2,
+          "agenticKnowledgeWork": 24.9
+        }
+      }
+    ]
+  }
+}

@@ -95,6 +95,39 @@ export const LLM_BENCHMARK_PAGES = [
   ['livebench-reasoning', 'reasoning', 'livebench-2-reasoning'],
 ]
 
+/**
+ * Artificial Analysis task-type indexes: the industry/domain index pages.
+ *
+ * Each page publishes one `weightedIndex` per model plus its component
+ * `subScores` (`knowledge`, `reasoning`, `longContext`, agentic tool use, …).
+ * The index is a composite of six-plus evaluations, so it is stored as an index
+ * signal and never blended into a dimension (same rule as the intelligence
+ * index). The subScores are domain-conditioned versions of the same evidence and
+ * are kept for audit; they are not merged either.
+ */
+export const AA_TASK_INDEX_PAGES = [
+  ['economics', 'economics'], ['engineering', 'engineering'],
+  ['finance-and-accounting', 'finance-and-accounting'],
+  ['healthcare-and-medical', 'healthcare-and-medical'],
+  ['legal', 'legal'], ['strategy-and-ops', 'strategy-and-ops'],
+]
+export const ARTIFICIAL_ANALYSIS_INDEX_URL = (slug) => `https://artificialanalysis.ai/indexes/${slug}`
+
+/**
+ * OpenRouter's own task benchmarks. These are single-benchmark leaderboards that
+ * OpenRouter runs itself and reports as the median accuracy across providers, so
+ * each one is one benchmark vote for a dimension. The `*-search` boards are
+ * deliberately absent: they measure a model+search-engine configuration, not a
+ * model, and our catalog cannot name that configuration.
+ */
+export const OPENROUTER_BENCHMARK_PAGES = [
+  ['gpqa-diamond', 'knowledge', 'gpqa'],
+  ['tau2-bench-airline', 'agentic', 'tau2'],
+  ['vgi-bench', 'vision', 'vgi-bench'],
+]
+export const OPENROUTER_BENCHMARK_URL = (slug) => `https://openrouter.ai/benchmarks/${slug}`
+export const OPENROUTER_TASK_SPEND_URL = 'https://openrouter.ai/api/frontend/v1/rankings/task-spend'
+
 /** Benchmark board tables, and the prefix their columns carry in the catalog. */
 const BENCH_TABLES = [
   ['KnowledgeWorkTable', 'KnowledgeWork'],
@@ -447,6 +480,39 @@ export async function refreshCatalog({
   }
   analysis.pagesFetched = pagesFetched
 
+  // Task-type indexes. Artificial Analysis publishes domain indexes (composite
+  // per industry) whose weighted value is an index signal; OpenRouter publishes
+  // single-benchmark leaderboards (one vote per benchmark) and a task-spend
+  // ranking (adoption, never capability).
+  const aaTaskIndexes = {}
+  for (const [slug, domain] of AA_TASK_INDEX_PAGES) {
+    if (signal?.aborted === true) throw new Error('refresh aborted')
+    try {
+      const html = await fetchText(ARTIFICIAL_ANALYSIS_INDEX_URL(slug), { fetchImpl, signal })
+      const rows = extractArtificialAnalysisTaskIndexes(html, domain)
+      if (rows.length > 0) aaTaskIndexes[domain] = rows
+    } catch (error) {
+      errors.push(`artificialanalysis index ${slug}: ${String(error?.message ?? error)}`)
+    }
+  }
+  const orBenchmarks = {}
+  for (const [slug, dimension, canonical] of OPENROUTER_BENCHMARK_PAGES) {
+    if (signal?.aborted === true) throw new Error('refresh aborted')
+    try {
+      const html = await fetchText(OPENROUTER_BENCHMARK_URL(slug), { fetchImpl, signal })
+      const rows = extractOpenRouterBenchmarkPage(html).map((row) => ({ ...row, canonical, dimension }))
+      if (rows.length > 0) orBenchmarks[slug] = rows
+    } catch (error) {
+      errors.push(`openrouter benchmark ${slug}: ${String(error?.message ?? error)}`)
+    }
+  }
+  let orTaskUsage = null
+  try {
+    orTaskUsage = extractOpenRouterTaskUsage(await fetchJson(OPENROUTER_TASK_SPEND_URL, { fetchImpl, signal }))
+  } catch (error) {
+    errors.push(`openrouter task spend: ${String(error?.message ?? error)}`)
+  }
+
   const dataset = buildDataset({
     base,
     benchgecko: extractions,
@@ -483,6 +549,11 @@ export async function refreshCatalog({
     }
   }
 
+  // Task signals are attached last so the adoption merge cannot be undone by the
+  // weekly-usage pass: indexes stay signals, OpenRouter benchmarks become
+  // observations, task spend stays adoption.
+  const taskSignals = attachTaskSignals(dataset, { aaTaskIndexes, orBenchmarks, orTaskUsage, now })
+
   // Phase 1 of the data-utilisation design: rank the whole catalog and record the
   // result per entry. Nothing routes on it yet -- the decision log shows the diff.
   const ranked = attachRanking(dataset)
@@ -505,7 +576,13 @@ export async function refreshCatalog({
       envelopes: derived.valid === true ? { sample: derived.sample, ...derived.envelopes } : { valid: false, reason: derived.reason ?? 'not enough measured models' },
       openrouter,
       reconciled,
-      sources: [COMPASS_ABILITY_URL, COMPASS_BENCH_URL, 'https://benchgecko.ai', EPOCH_ECI_URL, LLM_LEADERBOARD, ARTIFICIAL_ANALYSIS_URL],
+      taskSignals: {
+        ...taskSignals,
+        taskIndexes: Object.keys(aaTaskIndexes).length,
+        benchmarks: Object.keys(orBenchmarks).length,
+        usageTasks: orTaskUsage === null ? 0 : Object.keys(orTaskUsage.models).length,
+      },
+      sources: [COMPASS_ABILITY_URL, COMPASS_BENCH_URL, 'https://benchgecko.ai', EPOCH_ECI_URL, LLM_LEADERBOARD, ARTIFICIAL_ANALYSIS_URL, 'https://artificialanalysis.ai/indexes', 'https://openrouter.ai/benchmarks'],
       errors,
     },
   }
@@ -677,6 +754,11 @@ export function attachRanking(dataset, options = {}) {
       calibratedChannels: table.coverage?.channels ?? null,
       uncalibratedObservations: table.coverage?.uncalibratedObservations ?? 0,
       unknownBenchmarks: (table.unknownBenchmarks ?? []).length,
+      // Task-type coverage: composite indexes (index signals), OpenRouter
+      // single-benchmark observations, and per-task adoption.
+      taskIndexes: table.models.filter((row) => row.signals?.taskIndexes !== null && row.signals?.taskIndexes !== undefined).length,
+      openrouterBenchmarks: table.models.filter((row) => row.entry?.crossChecks?.openrouterBenchmarks !== undefined).length,
+      taskUsage: table.models.filter((row) => row.signals?.taskUsage !== null).length,
       top,
     },
   }
@@ -1292,6 +1374,175 @@ export function extractLlmBenchmarkPage(html, track, index, base = null) {
 }
 
 const round3 = (value) => Math.round(value * 1000) / 1000
+
+/**
+ * Read the per-model rows of one Artificial Analysis index page.
+ *
+ * The page server-renders the index chart rows inside its RSC flight stream:
+ * `{ name, weightedIndex, subScores: { knowledge, reasoning, longContext, … } }`.
+ * Values are stored as published (0-100 composite scale).
+ *
+ * @param {string} html
+ * @param {string} domain - index slug, recorded as the key
+ * @returns {Array<{name: string, domain: string, index: number, subScores: object}>}
+ */
+export function extractArtificialAnalysisTaskIndexes(html, domain) {
+  const text = decodeFlightChunks(html).join('')
+  const rows = []
+  let at = text.indexOf('{"id":"')
+  while (at >= 0) {
+    const row = readJsonObjectAt(text, at)
+    if (row !== null && typeof row.name === 'string' && typeof row.weightedIndex === 'number' && Number.isFinite(row.weightedIndex)) {
+      const subScores = {}
+      for (const [key, value] of Object.entries(row.subScores ?? {})) {
+        if (typeof value === 'number' && Number.isFinite(value)) subScores[key] = round1(value)
+      }
+      rows.push({ name: row.name, domain, index: round1(row.weightedIndex), subScores })
+    }
+    at = text.indexOf('{"id":"', at + 1)
+  }
+  return rows
+}
+
+/**
+ * Read one OpenRouter benchmark leaderboard page.
+ *
+ * The server-rendered page embeds a `models` array; each entry carries the
+ * model's name/slug and a `median` provider result with `accuracy` as a 0-1
+ * fraction. The fraction is stored as published.
+ *
+ * @param {string} html
+ * @returns {Array<{name: string, slug: string, accuracy: number}>}
+ */
+export function extractOpenRouterBenchmarkPage(html) {
+  const text = decodeFlightChunks(html).join('')
+  const marker = '"models":['
+  const at = text.indexOf(marker)
+  if (at < 0) return []
+  const start = at + marker.length - 1
+  let depth = 0, inStr = false, esc = false, end = -1
+  for (let i = start; i < text.length; i++) {
+    const c = text[i]
+    if (inStr) { if (esc) esc = false; else if (c === '\\') esc = true; else if (c === '"') inStr = false; continue }
+    if (c === '"') inStr = true
+    else if (c === '[') depth++
+    else if (c === ']') { depth--; if (depth === 0) { end = i; break } }
+  }
+  if (end < 0) return []
+  let models
+  try { models = JSON.parse(text.slice(start, end + 1)) } catch { return [] }
+  const out = []
+  for (const model of Array.isArray(models) ? models : []) {
+    const accuracy = Number(model?.median?.accuracy)
+    if (typeof model?.modelName !== 'string' || !Number.isFinite(accuracy) || accuracy <= 0) continue
+    out.push({ name: model.modelName, slug: String(model.modelSlug ?? ''), accuracy })
+  }
+  return out
+}
+
+/**
+ * Reduce OpenRouter's task-spend ranking to per-model task shares.
+ *
+ * `spend`/`tokens` each carry the same 39 task tags with a model list ordered by
+ * that task's share. This is adoption, not capability: it is stored on the
+ * entry's `usage` and never blended into a dimension.
+ *
+ * @param {{data?: object}} payload - response of the task-spend endpoint
+ * @returns {{windowDays: number|null, models: Record<string, Array<{tag: string, macroCategory: string, share: number, rank: number}>>}}
+ */
+export function extractOpenRouterTaskUsage(payload) {
+  const spend = payload?.data?.spend ?? {}
+  const byModel = {}
+  for (const task of Array.isArray(spend.tasks) ? spend.tasks : []) {
+    if (typeof task?.tag !== 'string') continue
+    const models = Array.isArray(task.models) ? task.models : []
+    models.forEach((model, position) => {
+      if (typeof model?.model !== 'string') return
+      ;(byModel[model.model] ??= []).push({
+        tag: task.tag,
+        macroCategory: typeof task.macroCategory === 'string' ? task.macroCategory : null,
+        share: typeof model.share === 'number' ? Math.round(model.share * 10000) / 10000 : null,
+        rank: position + 1,
+      })
+    })
+  }
+  for (const tasks of Object.values(byModel)) tasks.sort((a, b) => a.rank - b.rank)
+  return { windowDays: typeof spend.windowDays === 'number' ? spend.windowDays : null, models: byModel }
+}
+
+/** Strip the source's author prefix from a model name/slug. */
+function bareSourceName(value) {
+  const text = String(value ?? '')
+  if (text.includes(': ')) return text.slice(text.indexOf(': ') + 2)
+  if (text.includes('/')) return text.slice(text.lastIndexOf('/') + 1)
+  return text
+}
+
+/** Every dataset id naming the same model as a source row. */
+function idsNamingModel(dataset, name) {
+  const ids = []
+  for (const id of Object.keys(dataset)) {
+    if (!sameModelName(id, name)) continue
+    if (!labelAgrees(dataset, id, name)) continue
+    ids.push(id)
+  }
+  return ids
+}
+
+/**
+ * Attach the task-type signals without turning adoption into capability.
+ *
+ * - `aaTaskIndexes` (domain indexes) and their sub-scores are composite
+ *   evidence: stored under `crossChecks.taskIndexes` as an index signal.
+ * - `orBenchmarks` are single benchmark accuracies: stored under
+ *   `crossChecks.openrouterBenchmarks` for the ranking engine, which treats them
+ *   as one benchmark vote per canonical id.
+ * - `orTaskUsage` is per-task adoption: merged into `usage.tasks` and never
+ *   blended into a dimension.
+ *
+ * @param {Record<string, object>} dataset
+ * @param {{aaTaskIndexes?: Record<string, Array>, orBenchmarks?: Record<string, Array>, orTaskUsage?: object|null, now?: Date}} input
+ */
+export function attachTaskSignals(dataset, { aaTaskIndexes = {}, orBenchmarks = {}, orTaskUsage = null, now = new Date() } = {}) {
+  const checkedAt = now.toISOString().slice(0, 10)
+  let indexModels = 0
+  for (const [domain, rows] of Object.entries(aaTaskIndexes)) {
+    for (const row of Array.isArray(rows) ? rows : []) {
+      for (const id of idsNamingModel(dataset, row.name)) {
+        const entry = dataset[id]
+        const taskIndexes = (entry.crossChecks ??= {}).taskIndexes ??= { source: 'https://artificialanalysis.ai/indexes', checkedAt, indexes: {}, subScores: {} }
+        if (taskIndexes.indexes[domain] === undefined) indexModels += 1
+        taskIndexes.indexes[domain] = row.index
+        if (Object.keys(row.subScores ?? {}).length > 0) taskIndexes.subScores[domain] = row.subScores
+      }
+    }
+  }
+  let benchmarkModels = 0
+  for (const rows of Object.values(orBenchmarks)) {
+    for (const row of Array.isArray(rows) ? rows : []) {
+      const canonical = typeof row.canonical === 'string' ? row.canonical : null
+      if (canonical === null) continue
+      const name = bareSourceName(row.name)
+      for (const id of idsNamingModel(dataset, name)) {
+        const entry = dataset[id]
+        const block = (entry.crossChecks ??= {}).openrouterBenchmarks ??= { source: 'https://openrouter.ai/benchmarks', checkedAt, accuracy: {} }
+        if (block.accuracy[canonical] === undefined) benchmarkModels += 1
+        block.accuracy[canonical] = Math.round(row.accuracy * 10000) / 10000
+      }
+    }
+  }
+  let usageModels = 0
+  if (orTaskUsage !== null && orTaskUsage !== undefined) {
+    for (const [model, tasks] of Object.entries(orTaskUsage.models ?? {})) {
+      for (const id of idsNamingModel(dataset, bareSourceName(model))) {
+        const entry = dataset[id]
+        entry.usage = { ...(entry.usage ?? {}), source: entry.usage?.source ?? 'openrouter-task-spend', tasks: tasks.slice(0, 12), windowDays: orTaskUsage.windowDays ?? null }
+        usageModels += 1
+      }
+    }
+  }
+  return { indexModels, benchmarkModels, usageModels }
+}
 
 /** Merge the two extra passes into a compiled catalog as cross-checks. */
 export function attachCrossChecks(dataset, { epoch, llm }) {

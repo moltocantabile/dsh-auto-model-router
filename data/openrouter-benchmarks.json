@@ -1,0 +1,2575 @@
+{
+  "checkedAt": "2026-11-19",
+  "source": "https://openrouter.ai/benchmarks",
+  "scale": "accuracy as a 0-1 fraction, median across providers as published",
+  "benchmarks": {
+    "gpqa-diamond": [
+      {
+        "rank": 1,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Google: Gemini 4 Argon",
+        "slug": "google/gemini-4-argon",
+        "accuracy": 0.964646
+      },
+      {
+        "rank": 2,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Google: Gemini 3.8 Flash",
+        "slug": "google/gemini-3.8-flash",
+        "accuracy": 0.95637
+      },
+      {
+        "rank": 3,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "OpenAI: GPT-6 Astra Pro",
+        "slug": "openai/gpt-6-astra-pro",
+        "accuracy": 0.954545
+      },
+      {
+        "rank": 4,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Anthropic: Claude Fable 5.2",
+        "slug": "anthropic/claude-fable-5.2",
+        "accuracy": 0.949495
+      },
+      {
+        "rank": 5,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Google: Gemini 3.1 Pro Preview",
+        "slug": "google/gemini-3.1-pro-preview",
+        "accuracy": 0.945286
+      },
+      {
+        "rank": 6,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "OpenAI: GPT-6 Astra",
+        "slug": "openai/gpt-6-astra",
+        "accuracy": 0.944444
+      },
+      {
+        "rank": 7,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "OpenAI: GPT-6.1 Sol",
+        "slug": "openai/gpt-6.1-sol",
+        "accuracy": 0.944444
+      },
+      {
+        "rank": 8,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "OpenAI: GPT-5.6 Sol Pro",
+        "slug": "openai/gpt-5.6-sol-pro",
+        "accuracy": 0.941077
+      },
+      {
+        "rank": 9,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "OpenAI: GPT-5.5",
+        "slug": "openai/gpt-5.5",
+        "accuracy": 0.939394
+      },
+      {
+        "rank": 10,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Google: Gemini 3.7 Flash",
+        "slug": "google/gemini-3.7-flash",
+        "accuracy": 0.938528
+      },
+      {
+        "rank": 11,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "MoonshotAI: Kimi K3.1 Pro",
+        "slug": "moonshotai/kimi-k3.1-pro",
+        "accuracy": 0.936027
+      },
+      {
+        "rank": 12,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "SpaceXAI: Grok 4.6",
+        "slug": "x-ai/grok-4.6",
+        "accuracy": 0.928451
+      },
+      {
+        "rank": 13,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Anthropic: Claude Sonnet 5.5",
+        "slug": "anthropic/claude-sonnet-5.5",
+        "accuracy": 0.9282826
+      },
+      {
+        "rank": 14,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Google: Gemini 3.6 Flash",
+        "slug": "google/gemini-3.6-flash",
+        "accuracy": 0.9276095000000001
+      },
+      {
+        "rank": 15,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "OpenAI: GPT-5.6 Sol",
+        "slug": "openai/gpt-5.6-sol",
+        "accuracy": 0.9242420000000001
+      },
+      {
+        "rank": 16,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Google: Gemini 3.5 Flash",
+        "slug": "google/gemini-3.5-flash",
+        "accuracy": 0.9234005000000001
+      },
+      {
+        "rank": 17,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "MoonshotAI: Kimi K3",
+        "slug": "moonshotai/kimi-k3",
+        "accuracy": 0.9202018
+      },
+      {
+        "rank": 18,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "OpenAI: GPT-6 Sol",
+        "slug": "openai/gpt-6-sol",
+        "accuracy": 0.9191919999999999
+      },
+      {
+        "rank": 19,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "SpaceXAI: Grok 4.7",
+        "slug": "x-ai/grok-4.7",
+        "accuracy": 0.9191919999999999
+      },
+      {
+        "rank": 20,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "OpenAI: GPT-6.1 Terra",
+        "slug": "openai/gpt-6.1-terra",
+        "accuracy": 0.910774
+      },
+      {
+        "rank": 21,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Qwen: Qwen3.7 Max",
+        "slug": "qwen/qwen3.7-max",
+        "accuracy": 0.9090909999999999
+      },
+      {
+        "rank": 22,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Thinking Machines: Inkling 2 Small",
+        "slug": "thinkingmachines/inkling-2-small",
+        "accuracy": 0.907407
+      },
+      {
+        "rank": 23,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "DeepSeek: DeepSeek V4 Pro 0813",
+        "slug": "deepseek/deepseek-v4-pro-0813",
+        "accuracy": 0.9054404524137931
+      },
+      {
+        "rank": 24,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "OpenAI: GPT-5.4",
+        "slug": "openai/gpt-5.4",
+        "accuracy": 0.902357
+      },
+      {
+        "rank": 25,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Anthropic: Claude Opus 5.5",
+        "slug": "anthropic/claude-opus-5.5",
+        "accuracy": 0.9020761666666667
+      },
+      {
+        "rank": 26,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "MiniMax: MiniMax M3",
+        "slug": "minimax/minimax-m3",
+        "accuracy": 0.9017445454545455
+      },
+      {
+        "rank": 27,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Meta: Muse Spark Open",
+        "slug": "meta/muse-spark-open",
+        "accuracy": 0.9015150000000001
+      },
+      {
+        "rank": 28,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "DeepSeek: DeepSeek V4.1 Flash 1017",
+        "slug": "deepseek/deepseek-v4.1-flash-1017",
+        "accuracy": 0.9006730000000001
+      },
+      {
+        "rank": 29,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Anthropic: Claude Fable 5.1",
+        "slug": "anthropic/claude-fable-5.1",
+        "accuracy": 0.8993264
+      },
+      {
+        "rank": 30,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Anthropic: Claude Opus 4.8",
+        "slug": "anthropic/claude-opus-4.8",
+        "accuracy": 0.8971531818181817
+      },
+      {
+        "rank": 31,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Tencent: Hy4 preview",
+        "slug": "tencent/hy4-preview",
+        "accuracy": 0.8966325999999999
+      },
+      {
+        "rank": 32,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "OpenAI: GPT-5.6 Luna Pro",
+        "slug": "openai/gpt-5.6-luna-pro",
+        "accuracy": 0.895623
+      },
+      {
+        "rank": 33,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Anthropic: Claude Opus 4.7",
+        "slug": "anthropic/claude-opus-4.7",
+        "accuracy": 0.8951635454545456
+      },
+      {
+        "rank": 34,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "DeepSeek: DeepSeek V4.1 Flash",
+        "slug": "deepseek/deepseek-v4.1-flash",
+        "accuracy": 0.8910532857142858
+      },
+      {
+        "rank": 35,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Amazon: Nova Micro 1.0",
+        "slug": "amazon/nova-micro-v1",
+        "accuracy": 0.8863635000000001
+      },
+      {
+        "rank": 36,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Qwen: Qwen3.8 Flash",
+        "slug": "qwen/qwen3.8-flash",
+        "accuracy": 0.885522
+      },
+      {
+        "rank": 37,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Google: Gemini 3 Flash Preview",
+        "slug": "google/gemini-3-flash-preview",
+        "accuracy": 0.88468
+      },
+      {
+        "rank": 38,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "OpenAI: GPT-5.6 Terra",
+        "slug": "openai/gpt-5.6-terra",
+        "accuracy": 0.883838
+      },
+      {
+        "rank": 39,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "OpenAI: GPT-6 Luna Pro",
+        "slug": "openai/gpt-6-luna-pro",
+        "accuracy": 0.883838
+      },
+      {
+        "rank": 40,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Reflection: Beam 1.0 501B A23B",
+        "slug": "reflection/beam-1.0-501b-a23b",
+        "accuracy": 0.883838
+      },
+      {
+        "rank": 41,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Xiaomi: MiMo-V2.6-Pro",
+        "slug": "xiaomi/mimo-v2.6-pro",
+        "accuracy": 0.8832730173285199
+      },
+      {
+        "rank": 42,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "DeepSeek: DeepSeek V4 Flash Vision Exp",
+        "slug": "deepseek/deepseek-v4-flash-vision-exp",
+        "accuracy": 0.8801906666666667
+      },
+      {
+        "rank": 43,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Anthropic: Claude Opus 5",
+        "slug": "anthropic/claude-opus-5",
+        "accuracy": 0.8792469090909092
+      },
+      {
+        "rank": 44,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Qwen: Qwen3.7 Plus",
+        "slug": "qwen/qwen3.7-plus",
+        "accuracy": 0.878788
+      },
+      {
+        "rank": 45,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Anthropic: Claude Fable 5",
+        "slug": "anthropic/claude-fable-5",
+        "accuracy": 0.8777164545454544
+      },
+      {
+        "rank": 46,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "MiniMax: MiniMax M3.1 Flash",
+        "slug": "minimax/minimax-m3.1-flash",
+        "accuracy": 0.8762625
+      },
+      {
+        "rank": 47,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "OpenAI: GPT-5.6 Luna",
+        "slug": "openai/gpt-5.6-luna",
+        "accuracy": 0.8762625
+      },
+      {
+        "rank": 48,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Qwen: Qwen3.8 2.4T A95B",
+        "slug": "qwen/qwen3.8-2.4t-a95b",
+        "accuracy": 0.8744105999999999
+      },
+      {
+        "rank": 49,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "OpenAI: GPT-6 Luna",
+        "slug": "openai/gpt-6-luna",
+        "accuracy": 0.873737
+      },
+      {
+        "rank": 50,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "DeepSeek: DeepSeek V4 Pro 0423",
+        "slug": "deepseek/deepseek-v4-pro",
+        "accuracy": 0.8727751428571429
+      },
+      {
+        "rank": 51,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "DeepSeek: DeepSeek V4 Flash 0731",
+        "slug": "deepseek/deepseek-v4-flash-0731",
+        "accuracy": 0.8692989090909092
+      },
+      {
+        "rank": 52,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "NVIDIA: Nemotron 3.5 Super VL",
+        "slug": "nvidia/nemotron-3.5-super-vl",
+        "accuracy": 0.8681253333333332
+      },
+      {
+        "rank": 53,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "MoonshotAI: Kimi K2.6",
+        "slug": "moonshotai/kimi-k2.6",
+        "accuracy": 0.867147968231047
+      },
+      {
+        "rank": 54,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "OpenAI: GPT-5.1",
+        "slug": "openai/gpt-5.1",
+        "accuracy": 0.867003
+      },
+      {
+        "rank": 55,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Anthropic: Claude Opus 4.6",
+        "slug": "anthropic/claude-opus-4.6",
+        "accuracy": 0.8667226666666666
+      },
+      {
+        "rank": 56,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "MoonshotAI: Kimi K2.7 Code",
+        "slug": "moonshotai/kimi-k2.7-code",
+        "accuracy": 0.86633
+      },
+      {
+        "rank": 57,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Anthropic: Claude Haiku 5.5",
+        "slug": "anthropic/claude-haiku-5.5",
+        "accuracy": 0.8663297999999999
+      },
+      {
+        "rank": 58,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Thinking Machines: Inkling Small",
+        "slug": "thinkingmachines/inkling-small",
+        "accuracy": 0.8656005
+      },
+      {
+        "rank": 59,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Anthropic: Claude Opus 4.5",
+        "slug": "anthropic/claude-opus-4.5",
+        "accuracy": 0.8647076363636366
+      },
+      {
+        "rank": 60,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Qwen: Qwen3.5 397B A17B",
+        "slug": "qwen/qwen3.5-397b-a17b",
+        "accuracy": 0.8623737499999998
+      },
+      {
+        "rank": 61,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "DeepSeek: DeepSeek V4 Flash 0423",
+        "slug": "deepseek/deepseek-v4-flash",
+        "accuracy": 0.8592592
+      },
+      {
+        "rank": 62,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Z.ai: GLM 5.3 FlashX",
+        "slug": "z-ai/glm-5.3-flashx",
+        "accuracy": 0.858586
+      },
+      {
+        "rank": 63,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "OpenAI: GPT-5",
+        "slug": "openai/gpt-5",
+        "accuracy": 0.8569019999999999
+      },
+      {
+        "rank": 64,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "MiniMax: MiniMax M2.7",
+        "slug": "minimax/minimax-m2.7",
+        "accuracy": 0.854737857142857
+      },
+      {
+        "rank": 65,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Z.ai: GLM 5.3",
+        "slug": "z-ai/glm-5.3",
+        "accuracy": 0.8537037
+      },
+      {
+        "rank": 66,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Anthropic: Claude Sonnet 5",
+        "slug": "anthropic/claude-sonnet-5",
+        "accuracy": 0.852923
+      },
+      {
+        "rank": 67,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Z.ai: GLM 5.2",
+        "slug": "z-ai/glm-5.2",
+        "accuracy": 0.8502384166666667
+      },
+      {
+        "rank": 68,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "MoonshotAI: Kimi K2.5",
+        "slug": "moonshotai/kimi-k2.5",
+        "accuracy": 0.8499278571428572
+      },
+      {
+        "rank": 69,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Qwen: Qwen3.5-122B-A10B",
+        "slug": "qwen/qwen3.5-122b-a10b",
+        "accuracy": 0.8489438181818183
+      },
+      {
+        "rank": 70,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "inclusionAI: Ling 3.0 Flash VL",
+        "slug": "inclusionai/ling-3.0-flash-vl",
+        "accuracy": 0.848485
+      },
+      {
+        "rank": 71,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Google: Gemini 3.5 Flash Lite",
+        "slug": "google/gemini-3.5-flash-lite",
+        "accuracy": 0.844276
+      },
+      {
+        "rank": 72,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Z.ai: GLM 5.3 Flash",
+        "slug": "z-ai/glm-5.3-flash",
+        "accuracy": 0.8407407
+      },
+      {
+        "rank": 73,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Qwen: Qwen3.6 27B",
+        "slug": "qwen/qwen3.6-27b",
+        "accuracy": 0.8383140372413792
+      },
+      {
+        "rank": 74,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "OpenAI: GPT-5.4 Mini",
+        "slug": "openai/gpt-5.4-mini",
+        "accuracy": 0.837542
+      },
+      {
+        "rank": 75,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Thinking Machines: Inkling",
+        "slug": "thinkingmachines/inkling",
+        "accuracy": 0.8340364430379746
+      },
+      {
+        "rank": 76,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Tencent: Hy4",
+        "slug": "tencent/hy4",
+        "accuracy": 0.83165
+      },
+      {
+        "rank": 77,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Z.ai: GLM 4.7",
+        "slug": "z-ai/glm-4.7",
+        "accuracy": 0.8270801428571428
+      },
+      {
+        "rank": 78,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Google: Gemini 2.5 Pro",
+        "slug": "google/gemini-2.5-pro",
+        "accuracy": 0.8257574999999999
+      },
+      {
+        "rank": 79,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Google: Gemma 4 31B",
+        "slug": "google/gemma-4-31b-it",
+        "accuracy": 0.8225107142857142
+      },
+      {
+        "rank": 80,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Xiaomi: MiMo-V2.5-Pro",
+        "slug": "xiaomi/mimo-v2.5-pro",
+        "accuracy": 0.8220747500000002
+      },
+      {
+        "rank": 81,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Google: Gemini 3.1 Flash Lite",
+        "slug": "google/gemini-3.1-flash-lite",
+        "accuracy": 0.8207070000000001
+      },
+      {
+        "rank": 82,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Qwen: Qwen3.8 27B",
+        "slug": "qwen/qwen3.8-27b",
+        "accuracy": 0.8194060909090909
+      },
+      {
+        "rank": 83,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "DeepSeek: DeepSeek V3.2",
+        "slug": "deepseek/deepseek-v3.2",
+        "accuracy": 0.8172197142857143
+      },
+      {
+        "rank": 84,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Qwen: Qwen3.5-35B-A3B",
+        "slug": "qwen/qwen3.5-35b-a3b",
+        "accuracy": 0.8164981428571428
+      },
+      {
+        "rank": 85,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Anthropic: Claude Sonnet 4.5",
+        "slug": "anthropic/claude-sonnet-4.5",
+        "accuracy": 0.8158860909090909
+      },
+      {
+        "rank": 86,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "inclusionAI: Ling 3.1 Flash",
+        "slug": "inclusionai/ling-3.1-flash",
+        "accuracy": 0.813051
+      },
+      {
+        "rank": 87,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Z.ai: GLM 5.1",
+        "slug": "z-ai/glm-5.1",
+        "accuracy": 0.8109216250000001
+      },
+      {
+        "rank": 88,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "OpenAI: GPT-5 Mini",
+        "slug": "openai/gpt-5-mini",
+        "accuracy": 0.8097645
+      },
+      {
+        "rank": 89,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Upstage: Solar Pro 4",
+        "slug": "upstage/solar-pro4",
+        "accuracy": 0.808081
+      },
+      {
+        "rank": 90,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Meta: Muse Glimmer 30B",
+        "slug": "meta/muse-glimmer-30b",
+        "accuracy": 0.8078402857142857
+      },
+      {
+        "rank": 91,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Qwen: Qwen3.6 35B A3B",
+        "slug": "qwen/qwen3.6-35b-a3b",
+        "accuracy": 0.7980561818181818
+      },
+      {
+        "rank": 92,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Z.ai: GLM 5",
+        "slug": "z-ai/glm-5",
+        "accuracy": 0.7905242857142856
+      },
+      {
+        "rank": 93,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "MiniMax: MiniMax M2.5",
+        "slug": "minimax/minimax-m2.5",
+        "accuracy": 0.7887204999999999
+      },
+      {
+        "rank": 94,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Anthropic: Claude Sonnet 4",
+        "slug": "anthropic/claude-sonnet-4",
+        "accuracy": 0.786195
+      },
+      {
+        "rank": 95,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Qwen: Qwen3 235B A22B Thinking 2507",
+        "slug": "qwen/qwen3-235b-a22b-thinking-2507",
+        "accuracy": 0.786195
+      },
+      {
+        "rank": 96,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "OpenAI: GPT-5.4 Nano",
+        "slug": "openai/gpt-5.4-nano",
+        "accuracy": 0.776936
+      },
+      {
+        "rank": 97,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Qwen: Qwen3.5-9B",
+        "slug": "qwen/qwen3.5-9b",
+        "accuracy": 0.7746912499999999
+      },
+      {
+        "rank": 98,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Xiaomi: MiMo-V2.5",
+        "slug": "xiaomi/mimo-v2.5",
+        "accuracy": 0.772166
+      },
+      {
+        "rank": 99,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "DeepSeek: DeepSeek V3.1 Terminus",
+        "slug": "deepseek/deepseek-v3.1-terminus",
+        "accuracy": 0.7718855
+      },
+      {
+        "rank": 100,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Z.ai: GLM 4.6",
+        "slug": "z-ai/glm-4.6",
+        "accuracy": 0.7693602222222222
+      },
+      {
+        "rank": 101,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "DeepSeek: R1 0528",
+        "slug": "deepseek/deepseek-r1-0528",
+        "accuracy": 0.7670034
+      },
+      {
+        "rank": 102,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Mistral: Mistral Small 4",
+        "slug": "mistralai/mistral-small-2603",
+        "accuracy": 0.7575759999999999
+      },
+      {
+        "rank": 103,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Qwen: Qwen3 Coder Next",
+        "slug": "qwen/qwen3-coder-next",
+        "accuracy": 0.750842
+      },
+      {
+        "rank": 104,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "inclusionAI: Ling 3.0 Flash",
+        "slug": "inclusionai/ling-3.0-flash",
+        "accuracy": 0.7487311624365482
+      },
+      {
+        "rank": 105,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "OpenAI: gpt-oss-120b",
+        "slug": "openai/gpt-oss-120b",
+        "accuracy": 0.7452301111111111
+      },
+      {
+        "rank": 106,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Xiaomi: MiMo-V2.6-Flash",
+        "slug": "xiaomi/mimo-v2.6-flash",
+        "accuracy": 0.732155
+      },
+      {
+        "rank": 107,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Anthropic: Claude Haiku 4.5",
+        "slug": "anthropic/claude-haiku-4.5",
+        "accuracy": 0.7315579999999999
+      },
+      {
+        "rank": 108,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Google: Gemini 2.5 Flash",
+        "slug": "google/gemini-2.5-flash",
+        "accuracy": 0.7281145
+      },
+      {
+        "rank": 109,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Qwen: Qwen3 235B A22B Instruct 2507",
+        "slug": "qwen/qwen3-235b-a22b-2507",
+        "accuracy": 0.7272728571428572
+      },
+      {
+        "rank": 110,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Anthropic: Claude Sonnet 4.6",
+        "slug": "anthropic/claude-sonnet-4.6",
+        "accuracy": 0.720845
+      },
+      {
+        "rank": 111,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Qwen: Qwen3 Next 80B A3B Instruct",
+        "slug": "qwen/qwen3-next-80b-a3b-instruct",
+        "accuracy": 0.7177330000000001
+      },
+      {
+        "rank": 112,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "NVIDIA: Nemotron 3.5 Lightning",
+        "slug": "nvidia/nemotron-3.5-lightning",
+        "accuracy": 0.7061267289719626
+      },
+      {
+        "rank": 113,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "OpenAI: GPT-5 Nano",
+        "slug": "openai/gpt-5-nano",
+        "accuracy": 0.7045455
+      },
+      {
+        "rank": 114,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Qwen: Qwen3 VL 235B A22B Instruct",
+        "slug": "qwen/qwen3-vl-235b-a22b-instruct",
+        "accuracy": 0.694725
+      },
+      {
+        "rank": 115,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Google: Gemma 4 26B A4B ",
+        "slug": "google/gemma-4-26b-a4b-it",
+        "accuracy": 0.6927611428571429
+      },
+      {
+        "rank": 116,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Z.ai: GLM 4.6V",
+        "slug": "z-ai/glm-4.6v",
+        "accuracy": 0.66835
+      },
+      {
+        "rank": 117,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Meta: Llama 4 Maverick",
+        "slug": "meta-llama/llama-4-maverick",
+        "accuracy": 0.6632995
+      },
+      {
+        "rank": 118,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "IBM: Granite 4.2 8B",
+        "slug": "ibm-granite/granite-4.2-8b",
+        "accuracy": 0.65736
+      },
+      {
+        "rank": 119,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "OpenAI: GPT-4.1 Mini",
+        "slug": "openai/gpt-4.1-mini",
+        "accuracy": 0.652357
+      },
+      {
+        "rank": 120,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "OpenAI: gpt-oss-20b",
+        "slug": "openai/gpt-oss-20b",
+        "accuracy": 0.6522367142857142
+      },
+      {
+        "rank": 121,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Qwen: Qwen3 30B A3B Instruct 2507",
+        "slug": "qwen/qwen3-30b-a3b-instruct-2507",
+        "accuracy": 0.6492706666666667
+      },
+      {
+        "rank": 122,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Qwen: Qwen3 VL 30B A3B Instruct",
+        "slug": "qwen/qwen3-vl-30b-a3b-instruct",
+        "accuracy": 0.6418952857142858
+      },
+      {
+        "rank": 123,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "OpenAI: GPT-4.1",
+        "slug": "openai/gpt-4.1",
+        "accuracy": 0.6372055000000001
+      },
+      {
+        "rank": 124,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "DeepSeek: DeepSeek V3.1",
+        "slug": "deepseek/deepseek-chat-v3.1",
+        "accuracy": 0.6366041428571428
+      },
+      {
+        "rank": 125,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "NVIDIA: Nemotron 3 Nano 30B A3B",
+        "slug": "nvidia/nemotron-3-nano-30b-a3b",
+        "accuracy": 0.6322752857142858
+      },
+      {
+        "rank": 126,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "DeepSeek: DeepSeek V3",
+        "slug": "deepseek/deepseek-chat",
+        "accuracy": 0.6212125000000001
+      },
+      {
+        "rank": 127,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Qwen: Qwen3 32B",
+        "slug": "qwen/qwen3-32b",
+        "accuracy": 0.6094280000000001
+      },
+      {
+        "rank": 128,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Qwen: Qwen3 30B A3B",
+        "slug": "qwen/qwen3-30b-a3b",
+        "accuracy": 0.609428
+      },
+      {
+        "rank": 129,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Qwen: Qwen3 Coder 480B A35B",
+        "slug": "qwen/qwen3-coder",
+        "accuracy": 0.6043773333333333
+      },
+      {
+        "rank": 130,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Qwen: Qwen3 14B",
+        "slug": "qwen/qwen3-14b",
+        "accuracy": 0.591751
+      },
+      {
+        "rank": 131,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Google: Gemini 2.5 Flash Lite",
+        "slug": "google/gemini-2.5-flash-lite",
+        "accuracy": 0.5521885000000001
+      },
+      {
+        "rank": 132,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "DeepSeek: DeepSeek V3 0324",
+        "slug": "deepseek/deepseek-chat-v3-0324",
+        "accuracy": 0.5462965
+      },
+      {
+        "rank": 133,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Qwen: Qwen3 VL 8B Instruct",
+        "slug": "qwen/qwen3-vl-8b-instruct",
+        "accuracy": 0.538721
+      },
+      {
+        "rank": 134,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "OpenAI: GPT-4o (2024-08-06)",
+        "slug": "openai/gpt-4o-2024-08-06",
+        "accuracy": 0.5202019999999999
+      },
+      {
+        "rank": 135,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Z.ai: GLM 4.7 Flash",
+        "slug": "z-ai/glm-4.7-flash",
+        "accuracy": 0.5165396259541984
+      },
+      {
+        "rank": 136,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "OpenAI: GPT-4o",
+        "slug": "openai/gpt-4o",
+        "accuracy": 0.510943
+      },
+      {
+        "rank": 137,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "inclusionAI: Ling 3.0 Flash Fin",
+        "slug": "inclusionai/ling-3.0-flash-fin",
+        "accuracy": 0.505051
+      },
+      {
+        "rank": 138,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "OpenAI: GPT-4.1 Nano",
+        "slug": "openai/gpt-4.1-nano",
+        "accuracy": 0.49074049999999997
+      },
+      {
+        "rank": 139,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Meta: Llama 3.3 70B Instruct",
+        "slug": "meta-llama/llama-3.3-70b-instruct",
+        "accuracy": 0.47874562499999995
+      },
+      {
+        "rank": 140,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Qwen2.5 72B Instruct",
+        "slug": "qwen/qwen-2.5-72b-instruct",
+        "accuracy": 0.45959600000000006
+      },
+      {
+        "rank": 141,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "OpenAI: GPT-4o-mini",
+        "slug": "openai/gpt-4o-mini",
+        "accuracy": 0.43602700000000005
+      },
+      {
+        "rank": 142,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Qwen: Qwen2.5 VL 72B Instruct",
+        "slug": "qwen/qwen2.5-vl-72b-instruct",
+        "accuracy": 0.429293
+      },
+      {
+        "rank": 143,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Tencent: Hy-MT2-30B-A3B",
+        "slug": "tencent/hy-mt2-30b-a3b",
+        "accuracy": 0.388889
+      },
+      {
+        "rank": 144,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Google: Gemma 3 12B",
+        "slug": "google/gemma-3-12b-it",
+        "accuracy": 0.38047125000000004
+      },
+      {
+        "rank": 145,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Meta: Llama 3.2 3B Instruct",
+        "slug": "meta-llama/llama-3.2-3b-instruct",
+        "accuracy": 0.286195
+      },
+      {
+        "rank": 146,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Sao10K: Llama 3 8B Lunaris",
+        "slug": "sao10k/l3-lunaris-8b",
+        "accuracy": 0.27665533333333336
+      },
+      {
+        "rank": 147,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Google: Gemma 3 4B",
+        "slug": "google/gemma-3-4b-it",
+        "accuracy": 0.271044
+      },
+      {
+        "rank": 148,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Meta: Llama 3.1 8B Instruct",
+        "slug": "meta-llama/llama-3.1-8b-instruct",
+        "accuracy": 0.270833375
+      },
+      {
+        "rank": 149,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Google: Nano Banana 2.1",
+        "slug": "google/gemini-nano-banana-2.1",
+        "accuracy": 0.213805
+      },
+      {
+        "rank": 150,
+        "url": "https://openrouter.ai/benchmarks/gpqa-diamond",
+        "name": "Google: Nano Banana 2 Lite (Gemini 3.1 Flash Lite Image)",
+        "slug": "google/gemini-3.1-flash-lite-image",
+        "accuracy": 0.102694
+      }
+    ],
+    "tau2-bench-airline": [
+      {
+        "rank": 1,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "OpenAI: GPT-5.1",
+        "slug": "openai/gpt-5.1",
+        "accuracy": 0.8
+      },
+      {
+        "rank": 2,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "inclusionAI: Ling 3.1 Flash",
+        "slug": "inclusionai/ling-3.1-flash",
+        "accuracy": 0.793333
+      },
+      {
+        "rank": 3,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Anthropic: Claude Fable 5.1",
+        "slug": "anthropic/claude-fable-5.1",
+        "accuracy": 0.79166675
+      },
+      {
+        "rank": 4,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Qwen: Qwen3.5 397B A17B",
+        "slug": "qwen/qwen3.5-397b-a17b",
+        "accuracy": 0.7914285714285715
+      },
+      {
+        "rank": 5,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Anthropic: Claude Fable 5",
+        "slug": "anthropic/claude-fable-5",
+        "accuracy": 0.79
+      },
+      {
+        "rank": 6,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Anthropic: Claude Sonnet 5.5",
+        "slug": "anthropic/claude-sonnet-5.5",
+        "accuracy": 0.788
+      },
+      {
+        "rank": 7,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Google: Gemini 4 Argon",
+        "slug": "google/gemini-4-argon",
+        "accuracy": 0.786667
+      },
+      {
+        "rank": 8,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Google: Gemini 3.5 Flash Lite",
+        "slug": "google/gemini-3.5-flash-lite",
+        "accuracy": 0.7833330000000001
+      },
+      {
+        "rank": 9,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Anthropic: Claude Opus 5",
+        "slug": "anthropic/claude-opus-5",
+        "accuracy": 0.782
+      },
+      {
+        "rank": 10,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Xiaomi: MiMo-V2.6-Flash",
+        "slug": "xiaomi/mimo-v2.6-flash",
+        "accuracy": 0.7786668
+      },
+      {
+        "rank": 11,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Qwen: Qwen3.5-122B-A10B",
+        "slug": "qwen/qwen3.5-122b-a10b",
+        "accuracy": 0.7733333636363636
+      },
+      {
+        "rank": 12,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "DeepSeek: DeepSeek V4 Pro 0813",
+        "slug": "deepseek/deepseek-v4-pro-0813",
+        "accuracy": 0.7733333
+      },
+      {
+        "rank": 13,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Z.ai: GLM 5.3",
+        "slug": "z-ai/glm-5.3",
+        "accuracy": 0.7725926666666666
+      },
+      {
+        "rank": 14,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Google: Gemini 3.7 Flash",
+        "slug": "google/gemini-3.7-flash",
+        "accuracy": 0.7721088979591837
+      },
+      {
+        "rank": 15,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Qwen: Qwen3.8 27B",
+        "slug": "qwen/qwen3.8-27b",
+        "accuracy": 0.7709091818181818
+      },
+      {
+        "rank": 16,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Qwen: Qwen3.6 27B",
+        "slug": "qwen/qwen3.6-27b",
+        "accuracy": 0.7700001
+      },
+      {
+        "rank": 17,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Google: Gemini 3.1 Pro Preview",
+        "slug": "google/gemini-3.1-pro-preview",
+        "accuracy": 0.77
+      },
+      {
+        "rank": 18,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "DeepSeek: DeepSeek V4 Pro 0423",
+        "slug": "deepseek/deepseek-v4-pro",
+        "accuracy": 0.7685714285714286
+      },
+      {
+        "rank": 19,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Anthropic: Claude Opus 4.8",
+        "slug": "anthropic/claude-opus-4.8",
+        "accuracy": 0.7680001999999999
+      },
+      {
+        "rank": 20,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Xiaomi: MiMo-V2.6-Pro",
+        "slug": "xiaomi/mimo-v2.6-pro",
+        "accuracy": 0.7677776666666667
+      },
+      {
+        "rank": 21,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Amazon: Nova Micro 1.0",
+        "slug": "amazon/nova-micro-v1",
+        "accuracy": 0.7666669999999999
+      },
+      {
+        "rank": 22,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Anthropic: Claude Opus 4.7",
+        "slug": "anthropic/claude-opus-4.7",
+        "accuracy": 0.7640001
+      },
+      {
+        "rank": 23,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Anthropic: Claude Opus 4.5",
+        "slug": "anthropic/claude-opus-4.5",
+        "accuracy": 0.7606667
+      },
+      {
+        "rank": 24,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Tencent: Hy4 preview",
+        "slug": "tencent/hy4-preview",
+        "accuracy": 0.7600001999999999
+      },
+      {
+        "rank": 25,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "GLM 5.3",
+        "slug": "z-ai/glm-5.3",
+        "accuracy": 0.76
+      },
+      {
+        "rank": 26,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Meta: Muse Spark Open",
+        "slug": "meta/muse-spark-open",
+        "accuracy": 0.7566669999999999
+      },
+      {
+        "rank": 27,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "MoonshotAI: Kimi K3.1 Pro",
+        "slug": "moonshotai/kimi-k3.1-pro",
+        "accuracy": 0.7566669999999999
+      },
+      {
+        "rank": 28,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Meta: Muse Glimmer 30B",
+        "slug": "meta/muse-glimmer-30b",
+        "accuracy": 0.7566665
+      },
+      {
+        "rank": 29,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Google: Gemma 4 31B",
+        "slug": "google/gemma-4-31b-it",
+        "accuracy": 0.7561904285714286
+      },
+      {
+        "rank": 30,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Qwen: Qwen3.5-35B-A3B",
+        "slug": "qwen/qwen3.5-35b-a3b",
+        "accuracy": 0.7557471896551724
+      },
+      {
+        "rank": 31,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Z.ai: GLM 5.3 Flash",
+        "slug": "z-ai/glm-5.3-flash",
+        "accuracy": 0.7555554444444444
+      },
+      {
+        "rank": 32,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Google: Gemini 3.6 Flash",
+        "slug": "google/gemini-3.6-flash",
+        "accuracy": 0.7533335
+      },
+      {
+        "rank": 33,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "SpaceXAI: Grok 4.6",
+        "slug": "x-ai/grok-4.6",
+        "accuracy": 0.7533335
+      },
+      {
+        "rank": 34,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Anthropic: Claude Opus 5.5",
+        "slug": "anthropic/claude-opus-5.5",
+        "accuracy": 0.7533333333333333
+      },
+      {
+        "rank": 35,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "OpenAI: GPT-5.3-Codex",
+        "slug": "openai/gpt-5.3-codex",
+        "accuracy": 0.753333
+      },
+      {
+        "rank": 36,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "SpaceXAI: Grok 4.7",
+        "slug": "x-ai/grok-4.7",
+        "accuracy": 0.753333
+      },
+      {
+        "rank": 37,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "DeepSeek: DeepSeek V4.1 Flash",
+        "slug": "deepseek/deepseek-v4.1-flash",
+        "accuracy": 0.7514287142857142
+      },
+      {
+        "rank": 38,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "OpenAI: GPT-5.4",
+        "slug": "openai/gpt-5.4",
+        "accuracy": 0.75
+      },
+      {
+        "rank": 39,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Qwen: Qwen3.8 2.4T A95B",
+        "slug": "qwen/qwen3.8-2.4t-a95b",
+        "accuracy": 0.7481482222222222
+      },
+      {
+        "rank": 40,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "DeepSeek: DeepSeek V4 Flash Vision Exp",
+        "slug": "deepseek/deepseek-v4-flash-vision-exp",
+        "accuracy": 0.7480002
+      },
+      {
+        "rank": 41,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Anthropic: Claude Sonnet 5",
+        "slug": "anthropic/claude-sonnet-5",
+        "accuracy": 0.7454546363636363
+      },
+      {
+        "rank": 42,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "MiniMax: MiniMax M3",
+        "slug": "minimax/minimax-m3",
+        "accuracy": 0.7413334
+      },
+      {
+        "rank": 43,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Anthropic: Claude Opus 4.6",
+        "slug": "anthropic/claude-opus-4.6",
+        "accuracy": 0.7413333
+      },
+      {
+        "rank": 44,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Z.ai: GLM 5",
+        "slug": "z-ai/glm-5",
+        "accuracy": 0.7409522857142857
+      },
+      {
+        "rank": 45,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Anthropic: Claude Sonnet 4.6",
+        "slug": "anthropic/claude-sonnet-4.6",
+        "accuracy": 0.74
+      },
+      {
+        "rank": 46,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "MoonshotAI: Kimi K2.7 Code",
+        "slug": "moonshotai/kimi-k2.7-code",
+        "accuracy": 0.7386666000000001
+      },
+      {
+        "rank": 47,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "MoonshotAI: Kimi K3",
+        "slug": "moonshotai/kimi-k3",
+        "accuracy": 0.7385184444444445
+      },
+      {
+        "rank": 48,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "DeepSeek: DeepSeek V3.2",
+        "slug": "deepseek/deepseek-v3.2",
+        "accuracy": 0.737143
+      },
+      {
+        "rank": 49,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "OpenAI: GPT-5.5",
+        "slug": "openai/gpt-5.5",
+        "accuracy": 0.736667
+      },
+      {
+        "rank": 50,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Xiaomi: MiMo-V2.5-Pro",
+        "slug": "xiaomi/mimo-v2.5-pro",
+        "accuracy": 0.735833375
+      },
+      {
+        "rank": 51,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "DeepSeek: DeepSeek V4 Flash 0731",
+        "slug": "deepseek/deepseek-v4-flash-0731",
+        "accuracy": 0.7340741111111111
+      },
+      {
+        "rank": 52,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Qwen: Qwen3.5-9B",
+        "slug": "qwen/qwen3.5-9b",
+        "accuracy": 0.7336684371859297
+      },
+      {
+        "rank": 53,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "OpenAI: GPT-5.6 Sol",
+        "slug": "openai/gpt-5.6-sol",
+        "accuracy": 0.7333335
+      },
+      {
+        "rank": 54,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "MoonshotAI: Kimi K2.6",
+        "slug": "moonshotai/kimi-k2.6",
+        "accuracy": 0.73333325
+      },
+      {
+        "rank": 55,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "DeepSeek: DeepSeek V4.1 Flash 1017",
+        "slug": "deepseek/deepseek-v4.1-flash-1017",
+        "accuracy": 0.7333330000000001
+      },
+      {
+        "rank": 56,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Google: Gemini 3 Flash Preview",
+        "slug": "google/gemini-3-flash-preview",
+        "accuracy": 0.7333330000000001
+      },
+      {
+        "rank": 57,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Z.ai: GLM 5.3 FlashX",
+        "slug": "z-ai/glm-5.3-flashx",
+        "accuracy": 0.7333330000000001
+      },
+      {
+        "rank": 58,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Xiaomi: MiMo-V2.5",
+        "slug": "xiaomi/mimo-v2.5",
+        "accuracy": 0.73166675
+      },
+      {
+        "rank": 59,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "DeepSeek: DeepSeek V4 Flash 0423",
+        "slug": "deepseek/deepseek-v4-flash",
+        "accuracy": 0.7311110000000001
+      },
+      {
+        "rank": 60,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "DeepSeek: DeepSeek V3.1 Terminus",
+        "slug": "deepseek/deepseek-v3.1-terminus",
+        "accuracy": 0.73
+      },
+      {
+        "rank": 61,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "NVIDIA: Nemotron 3.5 Super VL",
+        "slug": "nvidia/nemotron-3.5-super-vl",
+        "accuracy": 0.7288886666666667
+      },
+      {
+        "rank": 62,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Anthropic: Claude Haiku 5.5",
+        "slug": "anthropic/claude-haiku-5.5",
+        "accuracy": 0.72833325
+      },
+      {
+        "rank": 63,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "OpenAI: GPT-6 Astra Pro",
+        "slug": "openai/gpt-6-astra-pro",
+        "accuracy": 0.726667
+      },
+      {
+        "rank": 64,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Google: Gemini 3.5 Flash",
+        "slug": "google/gemini-3.5-flash",
+        "accuracy": 0.7266665
+      },
+      {
+        "rank": 65,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "OpenAI: GPT-5.6 Terra",
+        "slug": "openai/gpt-5.6-terra",
+        "accuracy": 0.7233335
+      },
+      {
+        "rank": 66,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Qwen: Qwen3.6 35B A3B",
+        "slug": "qwen/qwen3.6-35b-a3b",
+        "accuracy": 0.7228916987951808
+      },
+      {
+        "rank": 67,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Anthropic: Claude Sonnet 4.5",
+        "slug": "anthropic/claude-sonnet-4.5",
+        "accuracy": 0.722
+      },
+      {
+        "rank": 68,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Z.ai: GLM 4.7",
+        "slug": "z-ai/glm-4.7",
+        "accuracy": 0.7209522857142857
+      },
+      {
+        "rank": 69,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Qwen: Qwen3.7 Max",
+        "slug": "qwen/qwen3.7-max",
+        "accuracy": 0.72
+      },
+      {
+        "rank": 70,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Z.ai: GLM 4.6",
+        "slug": "z-ai/glm-4.6",
+        "accuracy": 0.7190477142857142
+      },
+      {
+        "rank": 71,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Z.ai: GLM 5.1",
+        "slug": "z-ai/glm-5.1",
+        "accuracy": 0.7171427142857143
+      },
+      {
+        "rank": 72,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "OpenAI: GPT-5 Mini",
+        "slug": "openai/gpt-5-mini",
+        "accuracy": 0.7166669999999999
+      },
+      {
+        "rank": 73,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Google: Gemini 3.1 Flash Lite",
+        "slug": "google/gemini-3.1-flash-lite",
+        "accuracy": 0.713333
+      },
+      {
+        "rank": 74,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Qwen: Qwen3.8 Flash",
+        "slug": "qwen/qwen3.8-flash",
+        "accuracy": 0.713333
+      },
+      {
+        "rank": 75,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Google: Gemini 3.8 Flash",
+        "slug": "google/gemini-3.8-flash",
+        "accuracy": 0.712766
+      },
+      {
+        "rank": 76,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Z.ai: GLM 5.2",
+        "slug": "z-ai/glm-5.2",
+        "accuracy": 0.7090909090909091
+      },
+      {
+        "rank": 77,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "MiniMax: MiniMax M2.7",
+        "slug": "minimax/minimax-m2.7",
+        "accuracy": 0.7085714285714285
+      },
+      {
+        "rank": 78,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "inclusionAI: Ling 3.0 Flash Fin",
+        "slug": "inclusionai/ling-3.0-flash-fin",
+        "accuracy": 0.707483
+      },
+      {
+        "rank": 79,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "OpenAI: GPT-5.6 Sol Pro",
+        "slug": "openai/gpt-5.6-sol-pro",
+        "accuracy": 0.706667
+      },
+      {
+        "rank": 80,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "OpenAI: GPT-5.6 Luna Pro",
+        "slug": "openai/gpt-5.6-luna-pro",
+        "accuracy": 0.7033335
+      },
+      {
+        "rank": 81,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Qwen: Qwen3.7 Plus",
+        "slug": "qwen/qwen3.7-plus",
+        "accuracy": 0.703333
+      },
+      {
+        "rank": 82,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Anthropic: Claude Sonnet 4",
+        "slug": "anthropic/claude-sonnet-4",
+        "accuracy": 0.7
+      },
+      {
+        "rank": 83,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "GLM 5.3 Flash",
+        "slug": "z-ai/glm-5.3-flash",
+        "accuracy": 0.7
+      },
+      {
+        "rank": 84,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "inclusionAI: Ling 3.0 Flash VL",
+        "slug": "inclusionai/ling-3.0-flash-vl",
+        "accuracy": 0.7
+      },
+      {
+        "rank": 85,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "MoonshotAI: Kimi K2.5",
+        "slug": "moonshotai/kimi-k2.5",
+        "accuracy": 0.7
+      },
+      {
+        "rank": 86,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "OpenAI: GPT-6.1 Sol",
+        "slug": "openai/gpt-6.1-sol",
+        "accuracy": 0.7
+      },
+      {
+        "rank": 87,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "OpenAI: GPT-5.6 Luna",
+        "slug": "openai/gpt-5.6-luna",
+        "accuracy": 0.696667
+      },
+      {
+        "rank": 88,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "OpenAI: GPT-6 Sol",
+        "slug": "openai/gpt-6-sol",
+        "accuracy": 0.693333
+      },
+      {
+        "rank": 89,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Reflection: Beam 1.0 501B A23B",
+        "slug": "reflection/beam-1.0-501b-a23b",
+        "accuracy": 0.693333
+      },
+      {
+        "rank": 90,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "inclusionAI: Ling 3.0 Flash",
+        "slug": "inclusionai/ling-3.0-flash",
+        "accuracy": 0.686667
+      },
+      {
+        "rank": 91,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Google: Gemma 4 26B A4B ",
+        "slug": "google/gemma-4-26b-a4b-it",
+        "accuracy": 0.6847617142857143
+      },
+      {
+        "rank": 92,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "OpenAI: GPT-6.1 Terra",
+        "slug": "openai/gpt-6.1-terra",
+        "accuracy": 0.6844443333333333
+      },
+      {
+        "rank": 93,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Anthropic: Claude Fable 5.2",
+        "slug": "anthropic/claude-fable-5.2",
+        "accuracy": 0.68
+      },
+      {
+        "rank": 94,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "OpenAI: GPT-6 Astra",
+        "slug": "openai/gpt-6-astra",
+        "accuracy": 0.68
+      },
+      {
+        "rank": 95,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "MiniMax: MiniMax M2.5",
+        "slug": "minimax/minimax-m2.5",
+        "accuracy": 0.676667
+      },
+      {
+        "rank": 96,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "OpenAI: GPT-5",
+        "slug": "openai/gpt-5",
+        "accuracy": 0.6733334999999999
+      },
+      {
+        "rank": 97,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "OpenAI: GPT-6 Luna",
+        "slug": "openai/gpt-6-luna",
+        "accuracy": 0.673333
+      },
+      {
+        "rank": 98,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Thinking Machines: Inkling",
+        "slug": "thinkingmachines/inkling",
+        "accuracy": 0.672
+      },
+      {
+        "rank": 99,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "OpenAI: GPT-6 Luna Pro",
+        "slug": "openai/gpt-6-luna-pro",
+        "accuracy": 0.666667
+      },
+      {
+        "rank": 100,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "MiniMax: MiniMax M3.1 Flash",
+        "slug": "minimax/minimax-m3.1-flash",
+        "accuracy": 0.6666665
+      },
+      {
+        "rank": 101,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "OpenAI: GPT-5.4 Mini",
+        "slug": "openai/gpt-5.4-mini",
+        "accuracy": 0.6666665
+      },
+      {
+        "rank": 102,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Z.ai: GLM 4.7 Flash",
+        "slug": "z-ai/glm-4.7-flash",
+        "accuracy": 0.6666665
+      },
+      {
+        "rank": 103,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Upstage: Solar Pro 4",
+        "slug": "upstage/solar-pro4",
+        "accuracy": 0.66
+      },
+      {
+        "rank": 104,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Anthropic: Claude Haiku 4.5",
+        "slug": "anthropic/claude-haiku-4.5",
+        "accuracy": 0.6569696363636364
+      },
+      {
+        "rank": 105,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "NVIDIA: Nemotron 3.5 Lightning",
+        "slug": "nvidia/nemotron-3.5-lightning",
+        "accuracy": 0.6562239298245615
+      },
+      {
+        "rank": 106,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "OpenAI: gpt-oss-120b",
+        "slug": "openai/gpt-oss-120b",
+        "accuracy": 0.652381
+      },
+      {
+        "rank": 107,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "OpenAI: GPT-5.4 Nano",
+        "slug": "openai/gpt-5.4-nano",
+        "accuracy": 0.6466665
+      },
+      {
+        "rank": 108,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Thinking Machines: Inkling 2 Small",
+        "slug": "thinkingmachines/inkling-2-small",
+        "accuracy": 0.633333
+      },
+      {
+        "rank": 109,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Google: Nano Banana 2.1",
+        "slug": "google/gemini-nano-banana-2.1",
+        "accuracy": 0.631944
+      },
+      {
+        "rank": 110,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Qwen: Qwen3 235B A22B Thinking 2507",
+        "slug": "qwen/qwen3-235b-a22b-thinking-2507",
+        "accuracy": 0.626667
+      },
+      {
+        "rank": 111,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Qwen: Qwen3 Coder Next",
+        "slug": "qwen/qwen3-coder-next",
+        "accuracy": 0.6133333333333333
+      },
+      {
+        "rank": 112,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Z.ai: GLM 4.6V",
+        "slug": "z-ai/glm-4.6v",
+        "accuracy": 0.606667
+      },
+      {
+        "rank": 113,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Thinking Machines: Inkling Small",
+        "slug": "thinkingmachines/inkling-small",
+        "accuracy": 0.6066668000000001
+      },
+      {
+        "rank": 114,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "IBM: Granite 4.2 8B",
+        "slug": "ibm-granite/granite-4.2-8b",
+        "accuracy": 0.583333
+      },
+      {
+        "rank": 115,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Google: Gemini 2.5 Pro",
+        "slug": "google/gemini-2.5-pro",
+        "accuracy": 0.58
+      },
+      {
+        "rank": 116,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Google: Gemini 2.5 Flash",
+        "slug": "google/gemini-2.5-flash",
+        "accuracy": 0.5666665000000001
+      },
+      {
+        "rank": 117,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "OpenAI: gpt-oss-20b",
+        "slug": "openai/gpt-oss-20b",
+        "accuracy": 0.5366089075144508
+      },
+      {
+        "rank": 118,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Google: Gemini 2.5 Flash Lite",
+        "slug": "google/gemini-2.5-flash-lite",
+        "accuracy": 0.534014
+      },
+      {
+        "rank": 119,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "NVIDIA: Nemotron 3 Nano 30B A3B",
+        "slug": "nvidia/nemotron-3-nano-30b-a3b",
+        "accuracy": 0.517778
+      },
+      {
+        "rank": 120,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "DeepSeek: R1 0528",
+        "slug": "deepseek/deepseek-r1-0528",
+        "accuracy": 0.4953334
+      },
+      {
+        "rank": 121,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "OpenAI: GPT-5 Nano",
+        "slug": "openai/gpt-5-nano",
+        "accuracy": 0.48333349999999997
+      },
+      {
+        "rank": 122,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Google: Gemma 3 12B",
+        "slug": "google/gemma-3-12b-it",
+        "accuracy": 0.48
+      },
+      {
+        "rank": 123,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "OpenAI: GPT-4.1",
+        "slug": "openai/gpt-4.1",
+        "accuracy": 0.47666650000000005
+      },
+      {
+        "rank": 124,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Qwen: Qwen3 30B A3B",
+        "slug": "qwen/qwen3-30b-a3b",
+        "accuracy": 0.47
+      },
+      {
+        "rank": 125,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Qwen: Qwen3 32B",
+        "slug": "qwen/qwen3-32b",
+        "accuracy": 0.47
+      },
+      {
+        "rank": 126,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Qwen: Qwen3 Coder 480B A35B",
+        "slug": "qwen/qwen3-coder",
+        "accuracy": 0.4622223333333333
+      },
+      {
+        "rank": 127,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Qwen: Qwen3 Next 80B A3B Instruct",
+        "slug": "qwen/qwen3-next-80b-a3b-instruct",
+        "accuracy": 0.4622220000000001
+      },
+      {
+        "rank": 128,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Mistral: Mistral Small 4",
+        "slug": "mistralai/mistral-small-2603",
+        "accuracy": 0.46
+      },
+      {
+        "rank": 129,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "DeepSeek: DeepSeek V3 0324",
+        "slug": "deepseek/deepseek-chat-v3-0324",
+        "accuracy": 0.45
+      },
+      {
+        "rank": 130,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "OpenAI: GPT-4.1 Mini",
+        "slug": "openai/gpt-4.1-mini",
+        "accuracy": 0.44333300000000003
+      },
+      {
+        "rank": 131,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Qwen: Qwen3 14B",
+        "slug": "qwen/qwen3-14b",
+        "accuracy": 0.44
+      },
+      {
+        "rank": 132,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "DeepSeek: DeepSeek V3.1",
+        "slug": "deepseek/deepseek-chat-v3.1",
+        "accuracy": 0.43
+      },
+      {
+        "rank": 133,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "OpenAI: GPT-4o (2024-08-06)",
+        "slug": "openai/gpt-4o-2024-08-06",
+        "accuracy": 0.42666650000000006
+      },
+      {
+        "rank": 134,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Meta: Llama 4 Maverick",
+        "slug": "meta-llama/llama-4-maverick",
+        "accuracy": 0.4233335
+      },
+      {
+        "rank": 135,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "OpenAI: GPT-4o",
+        "slug": "openai/gpt-4o",
+        "accuracy": 0.416667
+      },
+      {
+        "rank": 136,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Qwen: Qwen3 VL 235B A22B Instruct",
+        "slug": "qwen/qwen3-vl-235b-a22b-instruct",
+        "accuracy": 0.4
+      },
+      {
+        "rank": 137,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "DeepSeek: DeepSeek V3",
+        "slug": "deepseek/deepseek-chat",
+        "accuracy": 0.39833349999999995
+      },
+      {
+        "rank": 138,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Qwen: Qwen3 30B A3B Instruct 2507",
+        "slug": "qwen/qwen3-30b-a3b-instruct-2507",
+        "accuracy": 0.3844443333333334
+      },
+      {
+        "rank": 139,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Qwen: Qwen3 235B A22B Instruct 2507",
+        "slug": "qwen/qwen3-235b-a22b-2507",
+        "accuracy": 0.3780952857142857
+      },
+      {
+        "rank": 140,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Qwen: Qwen3 VL 30B A3B Instruct",
+        "slug": "qwen/qwen3-vl-30b-a3b-instruct",
+        "accuracy": 0.35570486577181204
+      },
+      {
+        "rank": 141,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Meta: Llama 3.3 70B Instruct",
+        "slug": "meta-llama/llama-3.3-70b-instruct",
+        "accuracy": 0.33622356069364157
+      },
+      {
+        "rank": 142,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Qwen: Qwen3 VL 8B Instruct",
+        "slug": "qwen/qwen3-vl-8b-instruct",
+        "accuracy": 0.326667
+      },
+      {
+        "rank": 143,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "OpenAI: GPT-4o-mini",
+        "slug": "openai/gpt-4o-mini",
+        "accuracy": 0.30666649999999995
+      },
+      {
+        "rank": 144,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Meta: Llama 3.1 8B Instruct",
+        "slug": "meta-llama/llama-3.1-8b-instruct",
+        "accuracy": 0.25632182758620686
+      },
+      {
+        "rank": 145,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "Qwen2.5 72B Instruct",
+        "slug": "qwen/qwen-2.5-72b-instruct",
+        "accuracy": 0.24
+      },
+      {
+        "rank": 146,
+        "url": "https://openrouter.ai/benchmarks/tau2-bench-airline",
+        "name": "OpenAI: GPT-4.1 Nano",
+        "slug": "openai/gpt-4.1-nano",
+        "accuracy": 0.11
+      }
+    ],
+    "vgi-bench": [
+      {
+        "rank": 1,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "ByteDance Seed: Seed 1.6",
+        "slug": "bytedance-seed/seed-1.6",
+        "accuracy": 0.6620485919395467
+      },
+      {
+        "rank": 2,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "Qwen: Qwen3.8 Omni Flash",
+        "slug": "qwen/qwen3.8-omni-flash",
+        "accuracy": 0.654984
+      },
+      {
+        "rank": 3,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "Qwen: Qwen4 Max",
+        "slug": "qwen/qwen4-max",
+        "accuracy": 0.643128
+      },
+      {
+        "rank": 4,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "ByteDance Seed: Seed-2.0-Lite",
+        "slug": "bytedance-seed/seed-2.0-lite",
+        "accuracy": 0.6374335
+      },
+      {
+        "rank": 5,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "Qwen: Qwen3.8 Max (0902)",
+        "slug": "qwen/qwen3.8-max-0902",
+        "accuracy": 0.637209
+      },
+      {
+        "rank": 6,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "Meta: Muse Wonder",
+        "slug": "meta/muse-wonder",
+        "accuracy": 0.635535
+      },
+      {
+        "rank": 7,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "Google: Gemini 2.5 Pro",
+        "slug": "google/gemini-2.5-pro",
+        "accuracy": 0.6137750000000001
+      },
+      {
+        "rank": 8,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "Meta: Muse Spark 1.3",
+        "slug": "meta/muse-spark-1.3",
+        "accuracy": 0.610984
+      },
+      {
+        "rank": 9,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "Qwen: Qwen3.8 Max (0803)",
+        "slug": "qwen/qwen3.8-max",
+        "accuracy": 0.57971
+      },
+      {
+        "rank": 10,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "Meta: Muse Ember",
+        "slug": "meta/muse-ember",
+        "accuracy": 0.574032
+      },
+      {
+        "rank": 11,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "Crouton Alpha",
+        "slug": "stealth/crouton-alpha",
+        "accuracy": 0.567957
+      },
+      {
+        "rank": 12,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "Qwen: Qwen3.8 Flash",
+        "slug": "qwen/qwen3.8-flash",
+        "accuracy": 0.567901
+      },
+      {
+        "rank": 13,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "Google: Gemini 3 Flash Preview",
+        "slug": "google/gemini-3-flash-preview",
+        "accuracy": 0.5482459256292905
+      },
+      {
+        "rank": 14,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "Qwen: Qwen3.7 Flash",
+        "slug": "qwen/qwen3.7-flash",
+        "accuracy": 0.547674861627907
+      },
+      {
+        "rank": 15,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "Meta: Muse Spark 1.1",
+        "slug": "meta/muse-spark-1.1",
+        "accuracy": 0.5421410000000001
+      },
+      {
+        "rank": 16,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "Meta: Muse Spark Open",
+        "slug": "meta/muse-spark-open",
+        "accuracy": 0.527681969072165
+      },
+      {
+        "rank": 17,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "Google: Gemma 4 31B",
+        "slug": "google/gemma-4-31b-it",
+        "accuracy": 0.512528
+      },
+      {
+        "rank": 18,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "Meta: Muse Spark 1.2",
+        "slug": "meta/muse-spark-1.2",
+        "accuracy": 0.509871
+      },
+      {
+        "rank": 19,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "Qwen: Qwen3.6 Plus",
+        "slug": "qwen/qwen3.6-plus",
+        "accuracy": 0.5063582589595376
+      },
+      {
+        "rank": 20,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "Google: Gemini 2.5 Flash",
+        "slug": "google/gemini-2.5-flash",
+        "accuracy": 0.5003805
+      },
+      {
+        "rank": 21,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "Google: Gemini 2.5 Flash Lite",
+        "slug": "google/gemini-2.5-flash-lite",
+        "accuracy": 0.479879
+      },
+      {
+        "rank": 22,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "Qwen: Qwen3.8 27B",
+        "slug": "qwen/qwen3.8-27b",
+        "accuracy": 0.475875
+      },
+      {
+        "rank": 23,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "Xiaomi: MiMo-V2.5",
+        "slug": "xiaomi/mimo-v2.5",
+        "accuracy": 0.4651385438395415
+      },
+      {
+        "rank": 24,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "Perceptron: Perceptron Mk1",
+        "slug": "perceptron/perceptron-mk1",
+        "accuracy": 0.4616725110336818
+      },
+      {
+        "rank": 25,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "Qwen: Qwen3.5-Flash",
+        "slug": "qwen/qwen3.5-flash-02-23",
+        "accuracy": 0.46165701849710983
+      },
+      {
+        "rank": 26,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "Xiaomi: MiMo-X-Pro Preview",
+        "slug": "xiaomi/mimo-x-pro-preview",
+        "accuracy": 0.45558099999999996
+      },
+      {
+        "rank": 27,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "Qwen: Qwen3.5 397B A17B",
+        "slug": "qwen/qwen3.5-397b-a17b",
+        "accuracy": 0.45539226352941176
+      },
+      {
+        "rank": 28,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "Qwen: Qwen3.5 Plus 2026-02-15",
+        "slug": "qwen/qwen3.5-plus-02-15",
+        "accuracy": 0.4547208023121387
+      },
+      {
+        "rank": 29,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "Xiaomi: MiMo-X-Flash Preview",
+        "slug": "xiaomi/mimo-x-flash-preview",
+        "accuracy": 0.45444200000000007
+      },
+      {
+        "rank": 30,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "Qwen: Qwen3.6 Flash",
+        "slug": "qwen/qwen3.6-flash",
+        "accuracy": 0.45227058660508085
+      },
+      {
+        "rank": 31,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "Qwen: Qwen3.5 Plus 2026-04-20",
+        "slug": "qwen/qwen3.5-plus-20260420",
+        "accuracy": 0.4505647772397095
+      },
+      {
+        "rank": 32,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "Xiaomi: MiMo-V2.6-Pro",
+        "slug": "xiaomi/mimo-v2.6-pro",
+        "accuracy": 0.439324
+      },
+      {
+        "rank": 33,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "ByteDance Seed: Seed-2.0-Mini",
+        "slug": "bytedance-seed/seed-2.0-mini",
+        "accuracy": 0.4342459566704675
+      },
+      {
+        "rank": 34,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "Xiaomi: MiMo-V2.6-Pro-UltraSpeed",
+        "slug": "xiaomi/mimo-v2.6-pro-ultraspeed",
+        "accuracy": 0.4335609999999999
+      },
+      {
+        "rank": 35,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "Z.ai: GLM 5.3 FlashX",
+        "slug": "z-ai/glm-5.3-flashx",
+        "accuracy": 0.423135
+      },
+      {
+        "rank": 36,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "Qwen: Qwen3.5-9B",
+        "slug": "qwen/qwen3.5-9b",
+        "accuracy": 0.40546699999999997
+      },
+      {
+        "rank": 37,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "Z.ai: GLM 5.3 Flash",
+        "slug": "z-ai/glm-5.3-flash",
+        "accuracy": 0.3429764
+      },
+      {
+        "rank": 38,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "MiniMax: MiniMax M3",
+        "slug": "minimax/minimax-m3",
+        "accuracy": 0.30129079999999997
+      },
+      {
+        "rank": 39,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "Perceptron: Perceptron Mk1.5",
+        "slug": "perceptron/perceptron-mk1.5",
+        "accuracy": 0.289294
+      },
+      {
+        "rank": 40,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "NVIDIA: Nemotron 3.5 Super VL",
+        "slug": "nvidia/nemotron-3.5-super-vl",
+        "accuracy": 0.284738
+      },
+      {
+        "rank": 41,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "Xiaomi: MiMo-V2.6-Flash",
+        "slug": "xiaomi/mimo-v2.6-flash",
+        "accuracy": 0.269552
+      },
+      {
+        "rank": 42,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "Qwen: Qwen3.6 35B A3B",
+        "slug": "qwen/qwen3.6-35b-a3b",
+        "accuracy": 0.267829
+      },
+      {
+        "rank": 43,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "MoonshotAI: Kimi K3.1 Pro",
+        "slug": "moonshotai/kimi-k3.1-pro",
+        "accuracy": 0.249051
+      },
+      {
+        "rank": 44,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "Google: Gemma 4 26B A4B ",
+        "slug": "google/gemma-4-26b-a4b-it",
+        "accuracy": 0.24745344898918664
+      },
+      {
+        "rank": 45,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "MiniMax: MiniMax M3.1 Flash",
+        "slug": "minimax/minimax-m3.1-flash",
+        "accuracy": 0.222222
+      },
+      {
+        "rank": 46,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "Reka Edge",
+        "slug": "rekaai/reka-edge",
+        "accuracy": 0.21374349999999998
+      },
+      {
+        "rank": 47,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "inclusionAI: Ling 3.0 Flash VL",
+        "slug": "inclusionai/ling-3.0-flash-vl",
+        "accuracy": 0.192337
+      },
+      {
+        "rank": 48,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "Google: Gemini 4 Cobalt (EAP)",
+        "slug": "google/gemini-4-cobalt-eap",
+        "accuracy": 0.160972
+      },
+      {
+        "rank": 49,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "Google: Gemini 4 Neon",
+        "slug": "google/gemini-4-neon",
+        "accuracy": 0.159754
+      },
+      {
+        "rank": 50,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "Google: Gemini 4 Argon",
+        "slug": "google/gemini-4-argon",
+        "accuracy": 0.154897
+      },
+      {
+        "rank": 51,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "Google: Gemini 4 Carbon (EAP)",
+        "slug": "google/gemini-4-carbon-eap",
+        "accuracy": 0.147105
+      },
+      {
+        "rank": 52,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "Google: Gemini 3.8 Flash",
+        "slug": "google/gemini-3.8-flash",
+        "accuracy": 0.143529
+      },
+      {
+        "rank": 53,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "Elorian: Glimpse",
+        "slug": "elorian/glimpse",
+        "accuracy": 0.138117
+      },
+      {
+        "rank": 54,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "Qwen: Qwen3.5-122B-A10B",
+        "slug": "qwen/qwen3.5-122b-a10b",
+        "accuracy": 0.1284518043217287
+      },
+      {
+        "rank": 55,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "Google: Gemini 4 Hydrogen",
+        "slug": "google/gemini-4-hydrogen",
+        "accuracy": 0.12655
+      },
+      {
+        "rank": 56,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "Google: Gemini 3.7 Flash",
+        "slug": "google/gemini-3.7-flash",
+        "accuracy": 0.12432
+      },
+      {
+        "rank": 57,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "Qwen: Qwen3.5-35B-A3B",
+        "slug": "qwen/qwen3.5-35b-a3b",
+        "accuracy": 0.12391821603053435
+      },
+      {
+        "rank": 58,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "Z.ai: GLM 5V Turbo",
+        "slug": "z-ai/glm-5v-turbo",
+        "accuracy": 0.12314690763968072
+      },
+      {
+        "rank": 59,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "Qwen: Qwen3.6 27B",
+        "slug": "qwen/qwen3.6-27b",
+        "accuracy": 0.11781621354383051
+      },
+      {
+        "rank": 60,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "Google: Gemini 3.6 Flash",
+        "slug": "google/gemini-3.6-flash",
+        "accuracy": 0.114655
+      },
+      {
+        "rank": 61,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "Google: Gemini 4 Carbon",
+        "slug": "google/gemini-4-carbon",
+        "accuracy": 0.113895
+      },
+      {
+        "rank": 62,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "Google: Gemini 3.1 Pro Preview",
+        "slug": "google/gemini-3.1-pro-preview",
+        "accuracy": 0.109339
+      },
+      {
+        "rank": 63,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "Google: Gemini 3.1 Pro Preview Custom Tools",
+        "slug": "google/gemini-3.1-pro-preview-customtools",
+        "accuracy": 0.105543
+      },
+      {
+        "rank": 64,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "Google: Gemini 3.5 Flash",
+        "slug": "google/gemini-3.5-flash",
+        "accuracy": 0.100987
+      },
+      {
+        "rank": 65,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "Google: Gemini 3.5 Flash Lite",
+        "slug": "google/gemini-3.5-flash-lite",
+        "accuracy": 0.084282
+      },
+      {
+        "rank": 66,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "Google: Gemini 3.1 Flash Lite",
+        "slug": "google/gemini-3.1-flash-lite",
+        "accuracy": 0.082005
+      },
+      {
+        "rank": 67,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "Google: Gemini 3.1 Flash Lite Preview",
+        "slug": "google/gemini-3.1-flash-lite-preview",
+        "accuracy": 0.082005
+      },
+      {
+        "rank": 68,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "Google: Gemini 4 Hydrogen (EAP)",
+        "slug": "google/gemini-4-hydrogen-eap",
+        "accuracy": 0.064491
+      },
+      {
+        "rank": 69,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "Z.ai: GLM 4.6V",
+        "slug": "z-ai/glm-4.6v",
+        "accuracy": 0.056126339041095895
+      },
+      {
+        "rank": 70,
+        "url": "https://openrouter.ai/benchmarks/vgi-bench",
+        "name": "MoonshotAI: Kimi K3",
+        "slug": "moonshotai/kimi-k3",
+        "accuracy": 0.053175370313695486
+      }
+    ]
+  }
+}

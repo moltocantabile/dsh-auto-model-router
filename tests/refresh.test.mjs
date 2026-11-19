@@ -3,8 +3,12 @@ import { test } from 'node:test'
 import zlib from 'node:zlib'
 
 import {
+  attachTaskSignals,
   attachUsage,
+  extractArtificialAnalysisTaskIndexes,
   extractBenchGecko,
+  extractOpenRouterBenchmarkPage,
+  extractOpenRouterTaskUsage,
   extractCompass,
   extractEpochEci,
   extractLlmBenchmarkPage,
@@ -318,4 +322,62 @@ test('refresh reconciles a stored label that names another model', async () => {
   assert.equal(result.dataset['glm-5'].label, 'glm-5', 'the label is repaired from the id')
   assert.equal(result.dataset['kimi-k3'].label, 'Kimi K3', 'a label that agrees with its id is kept')
   assert.deepEqual(result.summary.reconciled, [{ id: 'glm-5', from: 'GLM-5.3 (Max)', to: 'glm-5' }])
+})
+
+/** One Next.js RSC flight chunk carrying the given payload (see AA tests). */
+const flight = (payload) => `<script>self.__next_f.push([1,${JSON.stringify(JSON.stringify(payload))}])</script>`
+
+test('an Artificial Analysis index page yields weightedIndex and its sub-scores per model', () => {
+  const html = flight([
+    { id: 'a', name: 'DeepSeek V4.1 Flash 1017 (Max)', weightedIndex: 61.234, subScores: { knowledge: 55.5, reasoning: 60.2 } },
+    { id: 'b', name: 'GLM-5.3 (Max)', weightedIndex: 58.0, subScores: { knowledge: 50.1 } },
+    { id: 'c', name: 'Not a model row' },
+  ])
+  const rows = extractArtificialAnalysisTaskIndexes(html, 'legal')
+  assert.equal(rows.length, 2)
+  assert.equal(rows[0].index, 61.2)
+  assert.equal(rows[0].domain, 'legal')
+  assert.equal(rows[0].subScores.reasoning, 60.2)
+})
+
+test('an OpenRouter benchmark page yields the provider-median accuracy per model', () => {
+  const html = flight({ hasData: true, models: [
+    { modelName: 'DeepSeek: DeepSeek V4.1 Flash 1017', modelSlug: 'deepseek/deepseek-v4.1-flash-1017', median: { accuracy: 0.964646 } },
+    { modelName: 'No accuracy', modelSlug: 'x/y', median: { accuracy: null } },
+  ] })
+  const rows = extractOpenRouterBenchmarkPage(html)
+  assert.deepEqual(rows, [{ name: 'DeepSeek: DeepSeek V4.1 Flash 1017', slug: 'deepseek/deepseek-v4.1-flash-1017', accuracy: 0.964646 }])
+})
+
+test('OpenRouter task spend reduces to per-model task shares in rank order', () => {
+  const payload = { data: { spend: {
+    windowDays: 30,
+    tasks: [
+      { tag: 'software.implementation', macroCategory: 'software', models: [{ model: 'a/m1', share: 0.2 }, { model: 'a/m2', share: 0.1 }] },
+      { tag: 'creative.interactive_roleplay', macroCategory: 'creative', models: [{ model: 'a/m2', share: 0.3 }] },
+    ],
+  } } }
+  const usage = extractOpenRouterTaskUsage(payload)
+  assert.equal(usage.windowDays, 30)
+  assert.deepEqual(usage.models['a/m2'].map((entry) => entry.tag), ['creative.interactive_roleplay', 'software.implementation'])
+  assert.equal(usage.models['a/m2'][0].rank, 1)
+})
+
+test('task signals attach by identity and never to a different model', () => {
+  const dataset = {
+    'vanchin/deepseek-v4.1-flash': { label: 'DeepSeek V4.1 Flash', crossChecks: {} },
+    'glm-5.3': { label: 'GLM-5.3', crossChecks: {} },
+    'glm-5.3-flash': { label: 'GLM-5.3-Flash', crossChecks: {} },
+  }
+  const summary = attachTaskSignals(dataset, {
+    aaTaskIndexes: { legal: [{ name: 'DeepSeek V4.1 Flash 1017 (Max)', index: 61.2, subScores: { knowledge: 55.5 } }] },
+    orBenchmarks: { 'gpqa-diamond': [{ name: 'DeepSeek: DeepSeek V4.1 Flash 1017', accuracy: 0.96, canonical: 'gpqa' }] },
+    orTaskUsage: { windowDays: 30, models: { 'deepseek/deepseek-v4.1-flash-1017': [{ tag: 'software.implementation', macroCategory: 'software', share: 0.2, rank: 1 }] } },
+  })
+  assert.equal(dataset['vanchin/deepseek-v4.1-flash'].crossChecks.taskIndexes.indexes.legal, 61.2)
+  assert.equal(dataset['vanchin/deepseek-v4.1-flash'].crossChecks.openrouterBenchmarks.accuracy.gpqa, 0.96)
+  assert.equal(dataset['vanchin/deepseek-v4.1-flash'].usage.tasks[0].tag, 'software.implementation')
+  assert.equal(dataset['glm-5.3'].crossChecks.taskIndexes, undefined, 'a different model is not matched')
+  assert.equal(dataset['glm-5.3-flash'].crossChecks.openrouterBenchmarks, undefined)
+  assert.deepEqual(summary, { indexModels: 1, benchmarkModels: 1, usageModels: 1 })
 })

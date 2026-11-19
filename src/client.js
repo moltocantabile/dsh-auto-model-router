@@ -168,6 +168,10 @@ window.__ModuleLoader__.load({
 .amr-routeValue { color:var(--dsw-alias-label-tertiary); }
 .amr-routeMenu { position:absolute; z-index:40; bottom:calc(100% + 6px); left:0; width:220px; display:flex; flex-direction:column; gap:6px; padding:10px 12px; border:.5px solid var(--dsw-alias-settings-card-stroke); border-radius:var(--dsw-radius-lg); background:var(--dsw-alias-bg-overlay); color:var(--dsw-alias-label-primary); font-size:12px; line-height:18px; }
 .amr-routeMenuTitle { font-size:13px; font-weight:500; }
+.amr-routeMenuSection { display:flex; flex-direction:column; gap:2px; padding:6px 0; border-top:.5px solid var(--dsw-alias-border-l1); }
+.amr-routeMenuLabel { font-size:11px; color:var(--dsw-alias-label-tertiary); text-transform:uppercase; letter-spacing:.04em; }
+.amr-routeMenuValue { font-size:12px; color:var(--dsw-alias-label-primary); }
+.amr-routeMenuNote { font-size:11px; color:var(--dsw-alias-label-tertiary); font-variant-numeric:tabular-nums; }
 .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
 .amr-tier { display:flex; flex-direction:column; gap:12px; padding:12px 14px; border:.5px solid var(--dsw-alias-settings-card-stroke); border-radius:var(--dsw-radius-lg); }
 .amr-tier + .amr-tier { margin-top:10px; }
@@ -265,6 +269,10 @@ window.__ModuleLoader__.load({
         badgeUncalibrated: '{count} uncal.',
         rankComposite: 'composite {value}',
         rankCoverage: '{n}/{m} dims measured',
+        taskDimensions: 'task dimensions',
+        taskIndexes: 'domain indexes',
+        taskUsage: 'adoption',
+        taskCoverage: 'task data: {indexes} models with domain indexes · {usage} with adoption',
         rankLow: 'low {value}',
         rankQuality: 'quality {value}',
         rankPosition: 'rank #{rank}',
@@ -290,6 +298,10 @@ window.__ModuleLoader__.load({
         toggleOffShort: 'Off',
         toggleUnknownShort: '—',
         toggleMenuOpen: 'Choose routing mode',
+        composerCurrent: 'Current',
+        composerRecent: 'Recent decisions',
+        composerNoDecisions: 'No decision yet.',
+        composerConfidence: 'confidence {value}',
         toggleDetailNone: 'no decision yet',
         toggleOnTitle: 'Auto routing is deciding the model',
         toggleOffTitle: 'Auto routing is off; the model picker decides',
@@ -479,6 +491,10 @@ window.__ModuleLoader__.load({
         badgeUncalibrated: '{count} 项未校准',
         rankComposite: '综合分 {value}',
         rankCoverage: '{n}/{m} 个维度有测量',
+        taskDimensions: '任务维度',
+        taskIndexes: '领域指数',
+        taskUsage: '使用度',
+        taskCoverage: '任务数据：{indexes} 个模型有领域指数 · {usage} 个有使用度',
         rankLow: '保守下界 {value}',
         rankQuality: '质量 {value}',
         rankPosition: '排名 #{rank}',
@@ -504,6 +520,10 @@ window.__ModuleLoader__.load({
         toggleOffShort: '关闭',
         toggleUnknownShort: '—',
         toggleMenuOpen: '选择路由模式',
+        composerCurrent: '当前',
+        composerRecent: '最近的决策',
+        composerNoDecisions: '暂无决策。',
+        composerConfidence: '置信度 {value}',
         toggleDetailNone: '暂无决策',
         toggleOnTitle: '自动路由正在决定模型',
         toggleOffTitle: '自动路由已关闭，由模型选择器决定',
@@ -1166,6 +1186,22 @@ window.__ModuleLoader__.load({
                       : t('rankCoverage').replace('{n}', String(metaOf(key).dimsCovered)).replace('{m}', String(metaOf(key).dimsTotal)),
                   ].filter(Boolean).join(' · '),
                 ),
+              (metaOf(key).dims ?? {}) && Object.keys(metaOf(key).dims ?? {}).length > 0 &&
+                h('p', { className: 'amr-note' },
+                  `${t('taskDimensions')}: ` + Object.entries(metaOf(key).dims)
+                    .filter(([, value]) => value !== null && typeof value === 'object')
+                    .map(([dim, value]) => `${dim} ${value.value}`)
+                    .join(' · ')),
+              metaOf(key).taskIndexes !== null && metaOf(key).taskIndexes !== undefined &&
+                h('p', { className: 'amr-note' },
+                  `${t('taskIndexes')}: ` + Object.entries(metaOf(key).taskIndexes)
+                    .map(([domain, value]) => `${String(domain).replace(/-/g, ' ')} ${value}`)
+                    .join(' · ')),
+              Array.isArray(metaOf(key).taskUsage) && metaOf(key).taskUsage.length > 0 &&
+                h('p', { className: 'amr-note' },
+                  `${t('taskUsage')}: ` + metaOf(key).taskUsage
+                    .map((entry) => `${entry.rank === null ? '' : `#${entry.rank} `}${String(entry.tag ?? '').replace(/\./g, ' / ')}${entry.share === null ? '' : ` ${entry.share}`}`)
+                    .join(' · ')),
               laneId === 'unmeasured' && h('p', { className: 'amr-note' }, t('unmeasuredModelHint')),
               dominatedBy.has(key) && h('p', { className: 'amr-note' }, t('dominatedHint').replace('{by}', dominatedBy.get(key))),
               editingKey === key && editDraft !== null
@@ -1301,6 +1337,17 @@ window.__ModuleLoader__.load({
         )
       }
 
+      const taskCoverage = useMemo(() => {
+        const rows = Object.values(board.meta ?? {})
+        let indexes = 0
+        let usage = 0
+        for (const row of rows) {
+          if (row?.taskIndexes !== null && row?.taskIndexes !== undefined) indexes += 1
+          if (Array.isArray(row?.taskUsage) && row.taskUsage.length > 0) usage += 1
+        }
+        return { indexes, usage, total: rows.length }
+      }, [board])
+
       const laneIds = lanes.map((lane) => lane.id)
       const totalVisible = laneIds.reduce((count, id) => count + rawLaneMembers(id).filter(visible).length, 0)
       const shownVisible = laneIds.reduce((count, id) => count + laneMembers(id).length, 0)
@@ -1373,6 +1420,9 @@ window.__ModuleLoader__.load({
         h('p', { className: 'amr-note' }, t('boardHint')),
         (board.unmeasured ?? []).length > 0 &&
           h('p', { className: 'amr-note' }, t('unmeasuredHint').replace('{count}', String((board.unmeasured ?? []).length))),
+        taskCoverage.total > 0 && (taskCoverage.indexes > 0 || taskCoverage.usage > 0) &&
+          h('p', { className: 'amr-note' },
+            t('taskCoverage').replace('{indexes}', String(taskCoverage.indexes)).replace('{usage}', String(taskCoverage.usage))),
         h(
           'div',
           { className: 'amr-row', style: { alignItems: 'center', gap: 8 } },
@@ -1521,10 +1571,18 @@ window.__ModuleLoader__.load({
       ]
       // The detail half names the tier the last decision chose, the way the
       // harness's model control names the effort next to the model.
+      const lastDecision = Array.isArray(snapshot?.decisions) && snapshot.decisions.length > 0
+        ? snapshot.decisions[snapshot.decisions.length - 1]
+        : null
+      const force = snapshot?.force ?? null
+      const pin = typeof force?.thisAgent === 'string' ? force.thisAgent : typeof force?.global === 'string' ? force.global : null
       const detail = (() => {
-        const last = Array.isArray(snapshot?.decisions) ? snapshot.decisions[snapshot.decisions.length - 1] : null
-        if (last !== null && typeof last.tier === 'string') return last.tier
-        if (last !== null && typeof last.routeId === 'string') return last.routeId
+        if (pin !== null) return pin.replace(/^model:/, '')
+        if (lastDecision !== null) {
+          if (typeof lastDecision.model === 'string' && lastDecision.model.length > 0) return lastDecision.model
+          if (typeof lastDecision.tier === 'string') return lastDecision.tier
+          if (typeof lastDecision.routeId === 'string') return lastDecision.routeId
+        }
         return known && mode !== 'off' ? t('toggleDetailNone') : null
       })()
 
@@ -1600,6 +1658,20 @@ window.__ModuleLoader__.load({
               onMouseLeave: () => setOpen(false),
             },
             h('span', { className: 'amr-routeMenuTitle' }, t('toggleTitle')),
+            // Expanded state: what the router is doing right now, the same facts
+            // the trigger summarises, so opening the control answers "which model
+            // is serving this session" without going to Settings.
+            h(
+              'div',
+              { className: 'amr-routeMenuSection' },
+              h('span', { className: 'amr-routeMenuLabel' }, t('composerCurrent')),
+              h('span', { className: 'amr-routeMenuValue' },
+                lastDecision === null
+                  ? t('composerNoDecisions')
+                  : [lastDecision.model ?? lastDecision.routeId, lastDecision.tier].filter(Boolean).join(' · ')),
+              typeof lastDecision?.confidence === 'number' &&
+                h('span', { className: 'amr-routeMenuNote' }, t('composerConfidence').replace('{value}', String(Math.round(lastDecision.confidence * 100) / 100))),
+            ),
             ...[
               ['on', t('toggleOn')],
               ['shadow', t('toggleShadow')],
@@ -1621,6 +1693,21 @@ window.__ModuleLoader__.load({
                 label,
               ),
             ),
+            Array.isArray(snapshot?.decisions) && snapshot.decisions.length > 0 &&
+              h(
+                'div',
+                { className: 'amr-routeMenuSection' },
+                h('span', { className: 'amr-routeMenuLabel' }, t('composerRecent')),
+                ...[...snapshot.decisions].slice(-3).reverse().map((decision, index) =>
+                  h(
+                    'span',
+                    { key: `${decision.id ?? index}`, className: 'amr-routeMenuNote' },
+                    [decision.tier ?? decision.routeId, decision.model, typeof decision.confidence === 'number' ? Math.round(decision.confidence * 100) / 100 : null]
+                      .filter((part) => part !== null && part !== undefined)
+                      .join(' · '),
+                  ),
+                ),
+              ),
             h('span', { className: 'amr-popHint' }, t('toggleHint')),
           ),
       )

@@ -1,6 +1,6 @@
 {
   "checkedAt": "2026-11-19",
-  "durationMs": 154717,
+  "durationMs": 124467,
   "base": "src/model-info-data.json",
   "pool": "data/catalog-pool.json",
   "models": 69,
@@ -10,7 +10,9 @@
     "https://benchgecko.ai",
     "https://epoch.ai/data/eci_scores.csv",
     "https://llmleaderboard.com",
-    "https://artificialanalysis.ai/leaderboards/models"
+    "https://artificialanalysis.ai/leaderboards/models",
+    "https://artificialanalysis.ai/indexes",
+    "https://openrouter.ai/benchmarks"
   ],
   "benchgecko": 12,
   "compass": 7,
@@ -24,15 +26,23 @@
     "filledPrice": 0,
     "filledLatency": 0
   },
+  "taskSignals": {
+    "indexModels": 110,
+    "benchmarkModels": 164,
+    "usageModels": 71,
+    "taskIndexes": 6,
+    "benchmarks": 3,
+    "usageTasks": 84
+  },
   "openrouter": {
     "rows": 637,
     "matched": 58,
     "uniqueRanks": 44
   },
   "ranking": {
-    "measured": 65,
+    "measured": 68,
     "provisional": 0,
-    "unmeasured": 4,
+    "unmeasured": 1,
     "calibratedChannels": {
       "benchgecko": {
         "models": 12,
@@ -61,17 +71,27 @@
       },
       "aa": {
         "models": 54,
-        "observations": 734,
+        "observations": 761,
         "dimensions": {
           "knowledge": 151,
-          "agentic": 261,
+          "agentic": 278,
           "coding": 84,
           "reasoning": 152,
           "longContext": 54,
-          "vision": 25,
+          "vision": 35,
           "math": 7
         },
         "uncalibrated": 54
+      },
+      "openrouter": {
+        "models": 66,
+        "observations": 164,
+        "dimensions": {
+          "knowledge": 59,
+          "agentic": 59,
+          "vision": 46
+        },
+        "uncalibrated": 46
       },
       "llm": {
         "models": 32,
@@ -85,33 +105,36 @@
         "uncalibrated": 15
       }
     },
-    "uncalibratedObservations": 562,
-    "unknownBenchmarks": 8,
+    "uncalibratedObservations": 635,
+    "unknownBenchmarks": 5,
+    "taskIndexes": 19,
+    "openrouterBenchmarks": 66,
+    "taskUsage": 55,
     "top": [
       {
         "key": "qwen3.7-max",
         "rank": 1,
-        "composite": 58
+        "composite": 57.9
       },
       {
         "key": "glm-5.3",
         "rank": 2,
-        "composite": 51.7
+        "composite": 51.5
+      },
+      {
+        "key": "deepseek-v4-flash-0731",
+        "rank": 3,
+        "composite": 49.5
       },
       {
         "key": "kimi-k3",
-        "rank": 3,
-        "composite": 51.1
+        "rank": 4,
+        "composite": 51.2
       },
       {
         "key": "deepseek-v4-pro-0813",
-        "rank": 4,
-        "composite": 49.8
-      },
-      {
-        "key": "deepseek-v4.1-flash-1017",
         "rank": 5,
-        "composite": 53.9
+        "composite": 49.8
       }
     ]
   },
@@ -119,65 +142,66 @@
     "sample": 64,
     "fast": {
       "maxCost": 67,
-      "minQuality": 22,
+      "minQuality": 28,
       "maxLatency": "fast",
       "derived": true,
       "sample": 64
     },
     "balanced": {
       "maxCost": 79,
-      "minQuality": 26,
+      "minQuality": 33,
       "maxLatency": "balanced",
       "derived": true,
       "sample": 64
     },
     "deep": {
       "maxCost": 100,
-      "minQuality": 29,
+      "minQuality": 35,
       "maxLatency": "slow",
       "derived": true,
       "sample": 64
     }
   },
   "errors": [],
+  "reconciled": [],
   "diagnostics": {
     "sourceAgreement": {
       "epoch": {
-        "n": 46,
-        "spearman": 0.32,
+        "n": 47,
+        "spearman": 0.28,
         "note": "interval scale: rank agreement only, never blended"
       },
       "aaIndex": {
         "n": 20,
-        "spearman": 0.58,
+        "spearman": 0.74,
         "note": "own index scale: used for provisional fallback and agreement, never blended"
       },
       "compassAverage": {
         "n": 7,
-        "spearman": 0.64
+        "spearman": 0.74
       },
       "indexFit": {
         "status": "calibrated",
         "mode": "linear-shrunk",
-        "offset": 33.32,
-        "slope": 0.55,
+        "offset": 33.8,
+        "slope": 0.56,
         "n": 20,
-        "residualRms": 3.95,
+        "residualRms": 3.8,
         "pairs": 20
       }
     },
     "quantiles": {
       "composite": {
-        "q25": 49,
-        "q50": 50.3,
-        "q75": 51.3,
-        "n": 65
+        "q25": 49.3,
+        "q50": 50.8,
+        "q75": 51.6,
+        "n": 68
       },
       "rankValue": {
-        "q25": 21.9,
-        "q50": 26.3,
-        "q75": 29,
-        "n": 65
+        "q25": 27.9,
+        "q50": 32.9,
+        "q75": 35.4,
+        "n": 68
       },
       "dims": {
         "coding": {
@@ -199,16 +223,16 @@
           "n": 12
         },
         "knowledge": {
-          "q25": 53,
-          "q50": 56.1,
-          "q75": 61.2,
-          "n": 63
+          "q25": 55.7,
+          "q50": 59.6,
+          "q75": 62.7,
+          "n": 68
         },
         "agentic": {
-          "q25": 48.6,
-          "q50": 51.9,
-          "q75": 52.9,
-          "n": 13
+          "q25": 49.4,
+          "q50": 49.4,
+          "q75": 49.5,
+          "n": 62
         },
         "longContext": {
           "q25": 56.7,
@@ -223,9 +247,9 @@
           "n": 3
         },
         "speed": {
-          "q25": 43.5,
+          "q25": 43.7,
           "q50": 50.3,
-          "q75": 64.3,
+          "q75": 64.2,
           "n": 51
         }
       }
@@ -258,17 +282,27 @@
       },
       "aa": {
         "models": 54,
-        "observations": 734,
+        "observations": 761,
         "dimensions": {
           "knowledge": 151,
-          "agentic": 261,
+          "agentic": 278,
           "coding": 84,
           "reasoning": 152,
           "longContext": 54,
-          "vision": 25,
+          "vision": 35,
           "math": 7
         },
         "uncalibrated": 54
+      },
+      "openrouter": {
+        "models": 66,
+        "observations": 164,
+        "dimensions": {
+          "knowledge": 59,
+          "agentic": 59,
+          "vision": 46
+        },
+        "uncalibrated": 46
       },
       "llm": {
         "models": 32,
@@ -722,6 +756,23 @@
         ]
       },
       {
+        "channel": "aa",
+        "canonical": "mka",
+        "dim": "vision",
+        "models": [
+          "deepseek-v4.1-flash-1017",
+          "kimi-k3.1-pro",
+          "vanchin/deepseek-v4.1-flash-1017",
+          "kimi/kimi-k3.1-pro-highspeed",
+          "kimi/kimi-k3.1-pro",
+          "minimax/minimax-m3.1-flash",
+          "xiaomi/mimo-v2.6-pro-ultraspeed",
+          "stepfun/step-5-preview",
+          "vanchin/deepseek-v4.1-flash",
+          "zhipu/glm-5.3-flash"
+        ]
+      },
+      {
         "channel": "llm",
         "canonical": "livebench-agentic",
         "dim": "agentic",
@@ -803,7 +854,7 @@
       },
       {
         "channel": "aa",
-        "canonical": "tau3",
+        "canonical": "tau3-banking",
         "dim": "agentic",
         "models": [
           "deepseek-v4-pro-0813",
@@ -811,17 +862,86 @@
           "qwen3.7-plus",
           "cmaas-glm-5.3",
           "zhipu/glm-5.3-flash",
+          "stepfun/step-3.7-flash",
           "qwen3.8-27b",
           "zhipu/glm-5.3",
           "qwen3.8-2.4t-a95b",
+          "kimi/kimi-k3",
+          "kimi/kimi-k2.7-code-highspeed",
+          "minimax/minimax-m3",
+          "zhipu/glm-5.2",
+          "kimi/kimi-k2.7-code",
+          "kimi-k2.7-code",
+          "qwen3.7-plus-2026-05-26",
+          "zhipu/glm-5.1",
+          "kimi/kimi-k2.6",
+          "qwen3.6-27b",
+          "kimi-k2.6",
+          "qwen3.6-35b-a3b",
+          "glm-5.1",
+          "vanchin/deepseek-v3.1-terminus",
+          "qwen3.6-plus-2026-04-02",
+          "qwen3.6-plus",
+          "minimax/minimax-m2.7",
+          "qwen3.5-122b-a10b",
+          "qwen3.5-35b-a3b",
+          "qwen3.5-397b-a17b",
+          "kimi-k2.5",
+          "siliconflow/deepseek-v3.1-terminus",
+          "siliconflow/deepseek-v3-0324"
+        ]
+      },
+      {
+        "channel": "openrouter",
+        "canonical": "vgi-bench",
+        "dim": "vision",
+        "models": [
+          "deepseek-v4-pro-0813",
+          "deepseek-v4-pro",
+          "qwen3.8-flash",
+          "qwen3.7-flash",
+          "qwen3.8-max",
+          "qwen4-max",
+          "kimi-k3",
+          "qwen3.7-max",
+          "qwen3.7-plus",
+          "qwen3.6-flash",
+          "glm-5.3-prime",
+          "ZHIPU/GLM-5.3-FlashX",
+          "vanchin/deepseek-v3",
+          "kimi-k3.1-pro",
+          "antdigital/ling-3.1-flash",
+          "kimi/kimi-k3.1-pro-highspeed",
+          "kimi/kimi-k3.1-pro",
+          "minimax/minimax-m3.1-flash",
+          "xiaomi/mimo-v2.6-pro-ultraspeed",
+          "stepfun/step-5-preview",
+          "zhipu/glm-5.3-flash",
+          "stepfun/step-3.7-flash",
+          "vanchin/deepseek-v4-pro",
+          "vanchin/deepseek-v4-pro-0813",
+          "qwen3.8-27b",
+          "qwen3.8-2.4t-a95b",
+          "kimi/kimi-k3",
           "kimi/kimi-k2.7-code-highspeed",
           "minimax/minimax-m3",
           "kimi/kimi-k2.7-code",
           "kimi-k2.7-code",
           "qwen3.7-plus-2026-05-26",
+          "qwen3.6-27b",
           "qwen3.6-35b-a3b",
+          "qwen3.6-plus-2026-04-02",
+          "qwen3.6-plus",
+          "minimax/minimax-m2.7",
+          "minimax-m2.5",
           "qwen3.5-122b-a10b",
-          "qwen3.5-397b-a17b"
+          "qwen3.5-35b-a3b",
+          "qwen3.5-27b",
+          "qwen3.5-397b-a17b",
+          "minimax/minimax-m2.1",
+          "minimax/minimax-m2.5",
+          "siliconflow/deepseek-v3.2",
+          "siliconflow/deepseek-v3-0324"
         ]
       },
       {
@@ -839,7 +959,8 @@
           "stepfun/step-5-preview",
           "zhipu/glm-5.3-flash",
           "zhipu/glm-5.3",
-          "minimax/minimax-m3"
+          "minimax/minimax-m3",
+          "minimax/minimax-m2.7"
         ]
       },
       {
@@ -1037,22 +1158,6 @@
     ],
     "unknownBenchmarks": [
       {
-        "channel": "aa",
-        "label": "mka",
-        "models": [
-          "deepseek-v4.1-flash-1017",
-          "kimi-k3.1-pro",
-          "vanchin/deepseek-v4.1-flash-1017",
-          "kimi/kimi-k3.1-pro-highspeed",
-          "kimi/kimi-k3.1-pro",
-          "minimax/minimax-m3.1-flash",
-          "xiaomi/mimo-v2.6-pro-ultraspeed",
-          "stepfun/step-5-preview",
-          "vanchin/deepseek-v4.1-flash",
-          "zhipu/glm-5.3-flash"
-        ]
-      },
-      {
         "channel": "benchgecko",
         "label": "Dtbench",
         "models": [
@@ -1101,35 +1206,6 @@
           "qwen3.7-max",
           "glm-5.2"
         ]
-      },
-      {
-        "channel": "aa",
-        "label": "tauBanking",
-        "models": [
-          "stepfun/step-3.7-flash",
-          "kimi/kimi-k3",
-          "zhipu/glm-5.2",
-          "zhipu/glm-5.1",
-          "kimi/kimi-k2.6",
-          "qwen3.6-27b",
-          "kimi-k2.6",
-          "glm-5.1",
-          "vanchin/deepseek-v3.1-terminus",
-          "qwen3.6-plus-2026-04-02",
-          "qwen3.6-plus",
-          "minimax/minimax-m2.7",
-          "qwen3.5-35b-a3b",
-          "kimi-k2.5",
-          "siliconflow/deepseek-v3.1-terminus",
-          "siliconflow/deepseek-v3-0324"
-        ]
-      },
-      {
-        "channel": "aa",
-        "label": "analystAgent",
-        "models": [
-          "minimax/minimax-m2.7"
-        ]
       }
     ],
     "indexSignals": [
@@ -1145,6 +1221,158 @@
           "qwen4-max",
           "glm-5.3",
           "kimi-k3"
+        ]
+      },
+      {
+        "channel": "task-index",
+        "family": "artificial-analysis",
+        "canonical": "economics",
+        "models": [
+          "deepseek-v4.1-flash-1017",
+          "deepseek-v4.1-flash",
+          "qwen3.8-max",
+          "qwen4-max",
+          "glm-5.3",
+          "qwen3.7-max",
+          "kimi-k3.1-pro",
+          "antdigital/ling-3.1-flash",
+          "vanchin/deepseek-v4.1-flash-1017",
+          "cmaas-glm-5.3",
+          "kimi/kimi-k3.1-pro-highspeed",
+          "kimi/kimi-k3.1-pro",
+          "xiaomi/mimo-v2.6-pro-ultraspeed",
+          "vanchin/deepseek-v4.1-flash",
+          "qwen3.8-27b",
+          "zhipu/glm-5.3",
+          "minimax/minimax-m3",
+          "qwen3.6-27b",
+          "qwen3.5-27b"
+        ]
+      },
+      {
+        "channel": "task-index",
+        "family": "artificial-analysis",
+        "canonical": "engineering",
+        "models": [
+          "deepseek-v4.1-flash-1017",
+          "deepseek-v4.1-flash",
+          "qwen3.8-max",
+          "qwen4-max",
+          "glm-5.3",
+          "qwen3.7-max",
+          "kimi-k3.1-pro",
+          "antdigital/ling-3.1-flash",
+          "vanchin/deepseek-v4.1-flash-1017",
+          "cmaas-glm-5.3",
+          "kimi/kimi-k3.1-pro-highspeed",
+          "kimi/kimi-k3.1-pro",
+          "xiaomi/mimo-v2.6-pro-ultraspeed",
+          "vanchin/deepseek-v4.1-flash",
+          "qwen3.8-27b",
+          "zhipu/glm-5.3",
+          "minimax/minimax-m3",
+          "qwen3.6-27b",
+          "qwen3.5-27b"
+        ]
+      },
+      {
+        "channel": "task-index",
+        "family": "artificial-analysis",
+        "canonical": "finance-and-accounting",
+        "models": [
+          "deepseek-v4.1-flash-1017",
+          "deepseek-v4.1-flash",
+          "qwen3.8-max",
+          "qwen4-max",
+          "glm-5.3",
+          "qwen3.7-max",
+          "kimi-k3.1-pro",
+          "antdigital/ling-3.1-flash",
+          "vanchin/deepseek-v4.1-flash-1017",
+          "cmaas-glm-5.3",
+          "kimi/kimi-k3.1-pro-highspeed",
+          "kimi/kimi-k3.1-pro",
+          "xiaomi/mimo-v2.6-pro-ultraspeed",
+          "vanchin/deepseek-v4.1-flash",
+          "qwen3.8-27b",
+          "zhipu/glm-5.3",
+          "minimax/minimax-m3",
+          "qwen3.6-27b",
+          "qwen3.5-27b"
+        ]
+      },
+      {
+        "channel": "task-index",
+        "family": "artificial-analysis",
+        "canonical": "healthcare-and-medical",
+        "models": [
+          "deepseek-v4.1-flash-1017",
+          "deepseek-v4.1-flash",
+          "qwen3.8-max",
+          "qwen4-max",
+          "glm-5.3",
+          "kimi-k3.1-pro",
+          "antdigital/ling-3.1-flash",
+          "vanchin/deepseek-v4.1-flash-1017",
+          "cmaas-glm-5.3",
+          "kimi/kimi-k3.1-pro-highspeed",
+          "kimi/kimi-k3.1-pro",
+          "xiaomi/mimo-v2.6-pro-ultraspeed",
+          "vanchin/deepseek-v4.1-flash",
+          "qwen3.8-27b",
+          "zhipu/glm-5.3"
+        ]
+      },
+      {
+        "channel": "task-index",
+        "family": "artificial-analysis",
+        "canonical": "legal",
+        "models": [
+          "deepseek-v4.1-flash-1017",
+          "deepseek-v4.1-flash",
+          "qwen3.8-max",
+          "qwen4-max",
+          "glm-5.3",
+          "qwen3.7-max",
+          "kimi-k3.1-pro",
+          "antdigital/ling-3.1-flash",
+          "vanchin/deepseek-v4.1-flash-1017",
+          "cmaas-glm-5.3",
+          "kimi/kimi-k3.1-pro-highspeed",
+          "kimi/kimi-k3.1-pro",
+          "xiaomi/mimo-v2.6-pro-ultraspeed",
+          "vanchin/deepseek-v4.1-flash",
+          "qwen3.8-27b",
+          "zhipu/glm-5.3",
+          "minimax/minimax-m3",
+          "qwen3.6-27b",
+          "qwen3.5-27b"
+        ]
+      },
+      {
+        "channel": "task-index",
+        "family": "artificial-analysis",
+        "canonical": "strategy-and-ops",
+        "models": [
+          "deepseek-v4.1-flash-1017",
+          "deepseek-v4.1-flash",
+          "qwen3.8-max",
+          "qwen4-max",
+          "glm-5.3",
+          "qwen3.7-max",
+          "kimi-k3.1-pro",
+          "antdigital/ling-3.1-flash",
+          "vanchin/deepseek-v4.1-flash-1017",
+          "cmaas-glm-5.3",
+          "kimi/kimi-k3.1-pro-highspeed",
+          "kimi/kimi-k3.1-pro",
+          "xiaomi/mimo-v2.6-pro-ultraspeed",
+          "vanchin/deepseek-v4.1-flash",
+          "qwen3.8-27b",
+          "zhipu/glm-5.3",
+          "minimax/minimax-m3",
+          "qwen3.6-27b",
+          "qwen3.5-27b"
         ]
       },
       {

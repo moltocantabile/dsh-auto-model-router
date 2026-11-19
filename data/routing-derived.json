@@ -4,21 +4,21 @@
   "envelopes": {
     "fast": {
       "maxCost": 67,
-      "minQuality": 22,
+      "minQuality": 28,
       "maxLatency": "fast",
       "derived": true,
       "sample": 64
     },
     "balanced": {
       "maxCost": 79,
-      "minQuality": 26,
+      "minQuality": 33,
       "maxLatency": "balanced",
       "derived": true,
       "sample": 64
     },
     "deep": {
       "maxCost": 100,
-      "minQuality": 29,
+      "minQuality": 35,
       "maxLatency": "slow",
       "derived": true,
       "sample": 64

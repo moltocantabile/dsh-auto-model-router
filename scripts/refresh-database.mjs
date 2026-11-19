@@ -93,6 +93,7 @@ const report = {
   epoch: summary.epoch,
   llmLeaderboard: summary.llmLeaderboard,
   artificialAnalysis: summary.artificialAnalysis,
+  taskSignals: summary.taskSignals,
   openrouter: summary.openrouter,
   ranking: summary.ranking,
   envelopes: summary.envelopes,

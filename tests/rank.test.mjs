@@ -792,7 +792,7 @@ test('the shipped catalog: measurable gaps are reported, not hidden', () => {
   for (const row of table.models) {
     for (const dim of CORE_DIMENSIONS) {
       for (const source of row.dims[dim]?.sources ?? []) {
-        assert.ok(['benchgecko', 'compass', 'aa', 'llm', 'compiled'].includes(source.channel), `${source.channel} is a measurement channel`)
+        assert.ok(['benchgecko', 'compass', 'aa', 'llm', 'openrouter', 'compiled'].includes(source.channel), `${source.channel} is a measurement channel`)
       }
     }
   }
@@ -815,4 +815,73 @@ test('the shipped catalog: tier planning keeps the stable names and refuses prio
     assert.ok(assigned.unmeasured.includes(row.key), `${row.key} is listed as unmeasured`)
     assert.ok(!Object.values(assigned.groups).some((group) => group.includes(row.key)), row.key)
   }
+})
+
+// ── task-type indexes ───────────────────────────────────────────────────────
+
+test('the task benchmark registry maps each task index to one dimension', () => {
+  const expected = [
+    ['math-500', 'math', 'math-500'],
+    ['mmlu-pro', 'knowledge', 'mmlu-pro'],
+    ['global-mmlu-lite', 'knowledge', 'global-mmlu-lite'],
+    ['vgi-bench', 'vision', 'vgi-bench'],
+    ['gpqa', 'knowledge', 'gpqa'],
+    ['tau2', 'agentic', 'tau2'],
+    ['tauBanking', 'agentic', 'tau3-banking'],
+    ['analystAgent', 'agentic', 'analyst-agent'],
+    ['mkaClimbWsr', 'vision', 'mka'],
+  ]
+  for (const [label, dim, canonical] of expected) {
+    const hit = classifyBenchmark(label, label === 'gpqa' || label === 'tau2' ? 'openrouter' : 'aa')
+    assert.equal(hit.kind, 'dimension', `${label} must be a dimension benchmark`)
+    assert.equal(hit.dim, dim, `${label} dimension`)
+    assert.equal(hit.canonical, canonical, `${label} canonical id`)
+  }
+})
+
+test('an OpenRouter task benchmark lands in its dimension and moves the composite', () => {
+  const anchors = ['a1', 'a2', 'a3', 'a4'].map((key, index) => {
+    const value = 50 + index * 10
+    return [key, measuredModel(key, value, {
+      crossChecks: { openrouterBenchmarks: { source: 'openrouter', accuracy: { gpqa: value / 100 } } },
+    })]
+  })
+  const target = (accuracy) => model('t/target', {
+    // no knowledge benchmark on the axis: the OpenRouter gpqa row is the only
+    // knowledge measurement the model has.
+    benchmarks: {
+      'SWE-Bench verified': 80,
+      'ARC-AGI': 80,
+      'OTIS Mock AIME 2024-2025': 80,
+      'APEX-Agents': 80,
+    },
+    crossChecks: accuracy === null ? {} : { openrouterBenchmarks: { source: 'openrouter', accuracy: { gpqa: accuracy } } },
+  })
+  const without = rankTable(datasetOf([...anchors, ['t/target', target(null)]]))
+  const withRow = rankTable(datasetOf([...anchors, ['t/target', target(0.9)]]))
+  const bare = without.byKey['t/target']
+  const enhanced = withRow.byKey['t/target']
+  // The knowledge dimension was missing without the task benchmark and is now
+  // measured from the OpenRouter observation.
+  assert.equal(bare.dims.knowledge, undefined)
+  assert.ok(enhanced.dims.knowledge !== undefined, 'the task index creates the knowledge estimate')
+  assert.equal(enhanced.dims.knowledge.evidence, 1, 'one benchmark is one vote')
+  assert.ok(enhanced.dims.knowledge.estimate > 0)
+  assert.ok(enhanced.dims.knowledge.sources.some((source) => source.channel === 'openrouter'))
+  assert.notEqual(enhanced.composite, bare.composite, 'the composite moves')
+  assert.ok(enhanced.coverage > bare.coverage)
+})
+
+test('composite task indexes stay out of the dimensions and are reported as index signals', () => {
+  const plain = datasetOf([['p/model', measuredModel('p/model', 70)]])
+  const withIndexes = datasetOf([['p/model', measuredModel('p/model', 70, {
+    crossChecks: { taskIndexes: { source: 'aa', indexes: { legal: 91.5, engineering: 72.4 }, subScores: { legal: { knowledge: 88 } } } },
+  })]])
+  const a = rankTable(plain)
+  const b = rankTable(withIndexes)
+  assert.deepEqual(b.byKey['p/model'].dims, a.byKey['p/model'].dims, 'a composite index never enters a dimension')
+  assert.equal(b.byKey['p/model'].composite, a.byKey['p/model'].composite)
+  const signal = b.indexSignals.find((entry) => entry.channel === 'task-index' && entry.canonical === 'legal')
+  assert.ok(signal !== undefined, 'the task index is reported as an index signal')
+  assert.deepEqual(signal.models, ['p/model'])
 })

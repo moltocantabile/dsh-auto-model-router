@@ -261,6 +261,8 @@ const DIM_RULES = [
   ['terminal-bench', 'agentic', /^terminal-?bench/],
   ['apex-agents', 'agentic', /^apex-agents/],
   ['tau2', 'agentic', /^tau2/],
+  // Banking is their own task (their own canonical id), not a tau2 variant.
+  ['tau3-banking', 'agentic', /^(tau3-?banking|taubanking)$/],
   ['tau3', 'agentic', /^tau3/],
   ['itbench', 'agentic', /^itbench/],
   ['osworld', 'agentic', /^osworld/],
@@ -268,10 +270,18 @@ const DIM_RULES = [
   ['furniture-assembly', 'agentic', /^furniture-assembly/],
   ['automationbench', 'agentic', /^automationbench/],
   ['enterprise-ops-gym', 'agentic', /^enterprise-ops-gym/],
-  ['analyst-agent', 'agentic', /^(aa-)?analyst-agent/],
+  ['analyst-agent', 'agentic', /^(aa-)?analyst-?agent$/],
   ['harvey-lab', 'agentic', /^harvey-lab/],
   ['vials', 'agentic', /^vials/],
   ['livebench-agentic', 'agentic', /^(livebench-agentic|livebench-2-agentic|agentic|agentic-coding)$/],
+  // Task-level benchmarks: Artificial Analysis evaluation pages and OpenRouter's
+  // own leaderboards publish single-benchmark scores under other names.
+  ['math-500', 'math', /^math-?500$/],
+  ['mmlu-pro', 'knowledge', /^mmlu-?pro$/],
+  ['global-mmlu-lite', 'knowledge', /^global-?mmlu/],
+  // MKA (multimodal knowledge agent) is a visual-document benchmark: vision.
+  ['mka', 'vision', /^mka/],
+  ['vgi-bench', 'vision', /^vgi-?bench$/],
   // vision / long context: measured only when a benchmark measured them
   ['mmmu', 'vision', /^mmmu/],
   ['long-context-reasoning', 'longContext', /^(long-context-reasoning|mlcr|mlcr-aa)$/],
@@ -349,6 +359,14 @@ export function classifyBenchmark(name, channel = 'benchgecko') {
     const hit = matchDim(normalized)
     if (hit === null) return { kind: 'unknown', family: 'compass', canonical: normalized }
     return { kind: 'dimension', family: 'compass', canonical: hit.canonical, dim: hit.dim }
+  }
+  if (channel === 'openrouter') {
+    // OpenRouter runs the benchmark itself and reports a provider-median accuracy;
+    // the canonical id may be shared with another channel (gpqa, tau2), which is
+    // what makes it one vote for the benchmark rather than one per publisher.
+    const hit = matchDim(normalized)
+    if (hit === null) return { kind: 'unknown', family: 'openrouter', canonical: normalized }
+    return { kind: 'dimension', family: 'openrouter', canonical: hit.canonical, dim: hit.dim }
   }
   return { kind: 'unknown', family: String(channel), canonical: normalized }
 }
@@ -636,6 +654,18 @@ export function sourceObservations(entry, analysisRow = null) {
     }
   }
 
+  // OpenRouter's own task benchmarks: one median accuracy per benchmark, stored
+  // as published (0-1 fraction). A canonical id shared with another channel
+  // (gpqa, tau2) is one benchmark vote across publishers, not one vote each.
+  for (const [id, value] of Object.entries(entry?.crossChecks?.openrouterBenchmarks?.accuracy ?? {})) {
+    const raw = num(value)
+    if (raw === null || raw <= 0) continue
+    const hit = classifyBenchmark(id, 'openrouter')
+    if (hit.kind === 'dimension') list.push({ channel: 'openrouter', family: 'openrouter', canonical: hit.canonical, dim: hit.dim, raw })
+    else if (hit.kind === 'index') indexes.push({ channel: 'openrouter', family: 'openrouter', canonical: hit.canonical, raw })
+    else unknown.push({ channel: 'openrouter', label: id, raw })
+  }
+
   // llmleaderboard benchmark tracks: independent per-track scores, fastest
   // serving measurement kept by the extractor.
   for (const [track, value] of Object.entries(entry?.crossChecks?.llmLeaderboard?.benchmarks ?? {})) {
@@ -758,11 +788,12 @@ function fitChannels(entries, settings) {
     compass: {},
     aa: {},
     llm: {},
-    benchmarks: { compass: {}, aa: {}, llm: {} },
+    openrouter: {},
+    benchmarks: { compass: {}, aa: {}, llm: {}, openrouter: {} },
     groups: { compass: {} },
   }
 
-  for (const channel of ['compass', 'aa', 'llm']) {
+  for (const channel of ['compass', 'aa', 'llm', 'openrouter']) {
     // 1. Equate the *same benchmark* across channels where both sides measured it.
     //    This is the strongest calibration available, and it is what stops
     //    CompassRank's ability table (frontier near 78) from being applied as if
@@ -1141,7 +1172,13 @@ function rowSignals(entry, analysisRow) {
   const epoch = entry?.crossChecks?.epoch
   const aa = entry?.crossChecks?.artificialAnalysis
   const compassAverage = num(entry?.crossChecks?.compassRank?.average)
+  const taskIndexes = entry?.crossChecks?.taskIndexes ?? null
+  // Adoption by task category. It is a routing-adjacent signal the selector can
+  // read; it is never a capability observation.
+  const taskUsage = Array.isArray(entry?.usage?.tasks) && entry.usage.tasks.length > 0 ? entry.usage.tasks : null
   return {
+    taskIndexes,
+    taskUsage,
     epoch: num(epoch?.eci) !== null ? { eci: num(epoch.eci), date: epoch?.date ?? null } : null,
     aaIndex: num(aa?.intelligenceIndex) !== null && aa.intelligenceIndex > 0 ? aa.intelligenceIndex : null,
     compassAverage,
@@ -1385,6 +1422,15 @@ export function rankTable(dataset, options = {}) {
     for (const item of row.observations.indexes) {
       const key = `${item.channel}:${item.canonical}`
       const record = indexes.get(key) ?? { channel: item.channel, family: item.family, canonical: item.canonical, models: [] }
+      record.models.push(row.key)
+      indexes.set(key, record)
+    }
+    // Composite task indexes are reported as index signals: they are never
+    // blended into a dimension (the same rule as the intelligence index).
+    for (const [domain, value] of Object.entries(row.entry?.crossChecks?.taskIndexes?.indexes ?? {})) {
+      if (num(value) === null) continue
+      const key = `task-index:${domain}`
+      const record = indexes.get(key) ?? { channel: 'task-index', family: 'artificial-analysis', canonical: domain, models: [] }
       record.models.push(row.key)
       indexes.set(key, record)
     }

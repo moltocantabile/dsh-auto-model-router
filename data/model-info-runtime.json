@@ -91,8 +91,8 @@
         "intelligenceIndex": 32.6,
         "priceIn": 0.3,
         "priceOut": 1.2,
-        "ttft": 1.28127671807687,
-        "speed": 168.693866885755,
+        "ttft": 1.28311039688464,
+        "speed": 164.953655954574,
         "benchmarks": {
           "omniscience-accuracy": 39.6,
           "omniscience-non-hallucination": 35.9,
@@ -158,6 +158,72 @@
           "livebench-2-reasoning": 89.1
         },
         "board": "https://llmleaderboard.com"
+      },
+      "taskIndexes": {
+        "source": "https://artificialanalysis.ai/indexes",
+        "checkedAt": "2026-11-19",
+        "indexes": {
+          "economics": 38.5,
+          "engineering": 37.6,
+          "finance-and-accounting": 42.2,
+          "healthcare-and-medical": 41.3,
+          "legal": 37.7,
+          "strategy-and-ops": 49.2
+        },
+        "subScores": {
+          "economics": {
+            "knowledge": 45.1,
+            "reasoning": 25.3,
+            "longContext": 17.2,
+            "agenticKnowledgeWork": 53.5
+          },
+          "engineering": {
+            "science": 18.9,
+            "knowledge": 53.5,
+            "reasoning": 25.3,
+            "agenticTerminalUse": 31.2,
+            "agenticKnowledgeWork": 53.5
+          },
+          "finance-and-accounting": {
+            "knowledge": 29.3,
+            "reasoning": 25.3,
+            "longContext": 17.2,
+            "agenticToolUse": 74.1,
+            "nonHallucination": 44.7,
+            "agenticKnowledgeWork": 53.5
+          },
+          "healthcare-and-medical": {
+            "knowledge": 28.7,
+            "reasoning": 25.3,
+            "longContext": 26.7,
+            "agenticToolUse": 72.1,
+            "nonHallucination": 34.3,
+            "agenticKnowledgeWork": 53.5
+          },
+          "legal": {
+            "knowledge": 26.2,
+            "reasoning": 25.3,
+            "longContext": 17.2,
+            "agenticToolUse": 72.1,
+            "nonHallucination": 49.1,
+            "agenticKnowledgeWork": 53.5
+          },
+          "strategy-and-ops": {
+            "knowledge": 29.3,
+            "longContext": 17.2,
+            "agenticToolUse": 65,
+            "nonHallucination": 44.7,
+            "agenticKnowledgeWork": 53.5
+          }
+        }
+      },
+      "openrouterBenchmarks": {
+        "source": "https://openrouter.ai/benchmarks",
+        "checkedAt": "2026-11-19",
+        "accuracy": {
+          "gpqa": 0.8911,
+          "tau2": 0.7333
+        }
       }
     },
     "sources": [
@@ -170,16 +236,91 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 1,
-      "tokens": 62893202540068,
-      "share": 0.2347,
-      "percentile": 100
+      "tokens": 63442769051111,
+      "share": 0.2328,
+      "percentile": 100,
+      "tasks": [
+        {
+          "tag": "data.classification_tagging",
+          "macroCategory": "data",
+          "share": 0.0453,
+          "rank": 5
+        },
+        {
+          "tag": "software.database_sql",
+          "macroCategory": "software",
+          "share": 0.0303,
+          "rank": 5
+        },
+        {
+          "tag": "data.extraction",
+          "macroCategory": "data",
+          "share": 0.0337,
+          "rank": 6
+        },
+        {
+          "tag": "software.security_assessment",
+          "macroCategory": "software",
+          "share": 0.0357,
+          "rank": 7
+        },
+        {
+          "tag": "writing.summarization",
+          "macroCategory": "writing",
+          "share": 0.0395,
+          "rank": 7
+        },
+        {
+          "tag": "data.reconciliation_consolidation",
+          "macroCategory": "data",
+          "share": 0.0378,
+          "rank": 7
+        },
+        {
+          "tag": "writing.rewriting_editing",
+          "macroCategory": "writing",
+          "share": 0.0251,
+          "rank": 8
+        },
+        {
+          "tag": "writing.translation_localization",
+          "macroCategory": "writing",
+          "share": 0.0281,
+          "rank": 9
+        },
+        {
+          "tag": "assistance.casual_conversation",
+          "macroCategory": "assistance",
+          "share": 0.0311,
+          "rank": 9
+        },
+        {
+          "tag": "information.context_grounded_qa",
+          "macroCategory": "information",
+          "share": 0.0293,
+          "rank": 10
+        },
+        {
+          "tag": "writing.drafting",
+          "macroCategory": "writing",
+          "share": 0.0255,
+          "rank": 10
+        },
+        {
+          "tag": "software.testing_verification",
+          "macroCategory": "software",
+          "share": 0.0227,
+          "rank": 10
+        }
+      ],
+      "windowDays": 30
     },
     "ranking": {
       "status": "measured",
-      "composite": 53.9,
-      "low": 39.9,
-      "rank": 5,
-      "uncalibrated": 15,
+      "composite": 53.5,
+      "low": 37.4,
+      "rank": 10,
+      "uncalibrated": 16,
       "dims": {
         "coding": {
           "value": 43.9,
@@ -194,12 +335,12 @@
           "evidence": 2
         },
         "knowledge": {
-          "value": 56.1,
+          "value": 55.9,
           "evidence": 4
         },
         "agentic": {
-          "value": 56.7,
-          "evidence": 3
+          "value": 55.3,
+          "evidence": 4
         },
         "longContext": {
           "value": 59.7,
@@ -210,12 +351,12 @@
           "evidence": 0
         },
         "speed": {
-          "value": 75.9,
+          "value": 75.7,
           "evidence": 2
         },
         "overall": {
-          "value": 53.9,
-          "evidence": 18
+          "value": 53.5,
+          "evidence": 19
         }
       }
     }
@@ -322,6 +463,72 @@
           "gdp-pdf-aa": 12.8
         },
         "board": "https://llmleaderboard.com"
+      },
+      "taskIndexes": {
+        "source": "https://artificialanalysis.ai/indexes",
+        "checkedAt": "2026-11-19",
+        "indexes": {
+          "economics": 38.5,
+          "engineering": 37.6,
+          "finance-and-accounting": 42.2,
+          "healthcare-and-medical": 41.3,
+          "legal": 37.7,
+          "strategy-and-ops": 49.2
+        },
+        "subScores": {
+          "economics": {
+            "knowledge": 45.1,
+            "reasoning": 25.3,
+            "longContext": 17.2,
+            "agenticKnowledgeWork": 53.5
+          },
+          "engineering": {
+            "science": 18.9,
+            "knowledge": 53.5,
+            "reasoning": 25.3,
+            "agenticTerminalUse": 31.2,
+            "agenticKnowledgeWork": 53.5
+          },
+          "finance-and-accounting": {
+            "knowledge": 29.3,
+            "reasoning": 25.3,
+            "longContext": 17.2,
+            "agenticToolUse": 74.1,
+            "nonHallucination": 44.7,
+            "agenticKnowledgeWork": 53.5
+          },
+          "healthcare-and-medical": {
+            "knowledge": 28.7,
+            "reasoning": 25.3,
+            "longContext": 26.7,
+            "agenticToolUse": 72.1,
+            "nonHallucination": 34.3,
+            "agenticKnowledgeWork": 53.5
+          },
+          "legal": {
+            "knowledge": 26.2,
+            "reasoning": 25.3,
+            "longContext": 17.2,
+            "agenticToolUse": 72.1,
+            "nonHallucination": 49.1,
+            "agenticKnowledgeWork": 53.5
+          },
+          "strategy-and-ops": {
+            "knowledge": 29.3,
+            "longContext": 17.2,
+            "agenticToolUse": 65,
+            "nonHallucination": 44.7,
+            "agenticKnowledgeWork": 53.5
+          }
+        }
+      },
+      "openrouterBenchmarks": {
+        "source": "https://openrouter.ai/benchmarks",
+        "checkedAt": "2026-11-19",
+        "accuracy": {
+          "gpqa": 0.8911,
+          "tau2": 0.7333
+        }
       }
     },
     "sources": [
@@ -332,15 +539,90 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 3,
-      "tokens": 16193882008084,
-      "share": 0.0604,
-      "percentile": 97.7
+      "tokens": 16306865190152,
+      "share": 0.0598,
+      "percentile": 97.7,
+      "tasks": [
+        {
+          "tag": "data.classification_tagging",
+          "macroCategory": "data",
+          "share": 0.0453,
+          "rank": 5
+        },
+        {
+          "tag": "software.database_sql",
+          "macroCategory": "software",
+          "share": 0.0303,
+          "rank": 5
+        },
+        {
+          "tag": "data.extraction",
+          "macroCategory": "data",
+          "share": 0.0337,
+          "rank": 6
+        },
+        {
+          "tag": "software.security_assessment",
+          "macroCategory": "software",
+          "share": 0.0357,
+          "rank": 7
+        },
+        {
+          "tag": "writing.summarization",
+          "macroCategory": "writing",
+          "share": 0.0395,
+          "rank": 7
+        },
+        {
+          "tag": "data.reconciliation_consolidation",
+          "macroCategory": "data",
+          "share": 0.0378,
+          "rank": 7
+        },
+        {
+          "tag": "writing.rewriting_editing",
+          "macroCategory": "writing",
+          "share": 0.0251,
+          "rank": 8
+        },
+        {
+          "tag": "writing.translation_localization",
+          "macroCategory": "writing",
+          "share": 0.0281,
+          "rank": 9
+        },
+        {
+          "tag": "assistance.casual_conversation",
+          "macroCategory": "assistance",
+          "share": 0.0311,
+          "rank": 9
+        },
+        {
+          "tag": "information.context_grounded_qa",
+          "macroCategory": "information",
+          "share": 0.0293,
+          "rank": 10
+        },
+        {
+          "tag": "writing.drafting",
+          "macroCategory": "writing",
+          "share": 0.0255,
+          "rank": 10
+        },
+        {
+          "tag": "software.testing_verification",
+          "macroCategory": "software",
+          "share": 0.0227,
+          "rank": 10
+        }
+      ],
+      "windowDays": 30
     },
     "ranking": {
       "status": "measured",
-      "composite": 46.5,
-      "low": 35,
-      "rank": 10,
+      "composite": 47.1,
+      "low": 31.3,
+      "rank": 39,
       "dims": {
         "coding": {
           "value": 45.5,
@@ -355,12 +637,12 @@
           "evidence": 3
         },
         "knowledge": {
-          "value": 53.3,
+          "value": 53.5,
           "evidence": 4
         },
         "agentic": {
-          "value": 31,
-          "evidence": 3
+          "value": 33.9,
+          "evidence": 4
         },
         "longContext": {
           "value": 59.8,
@@ -375,8 +657,8 @@
           "evidence": 1
         },
         "overall": {
-          "value": 46.5,
-          "evidence": 20
+          "value": 47.1,
+          "evidence": 21
         }
       }
     }
@@ -468,6 +750,14 @@
           "gdp-pdf-aa": 10.8
         },
         "board": "https://llmleaderboard.com"
+      },
+      "openrouterBenchmarks": {
+        "source": "https://openrouter.ai/benchmarks",
+        "checkedAt": "2026-11-19",
+        "accuracy": {
+          "gpqa": 0.8593,
+          "tau2": 0.7311
+        }
       }
     },
     "sources": [
@@ -480,15 +770,24 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 19,
-      "tokens": 2912771219961,
-      "share": 0.0109,
-      "percentile": 83.7
+      "tokens": 2934521457188,
+      "share": 0.0108,
+      "percentile": 83.7,
+      "tasks": [
+        {
+          "tag": "data.analysis",
+          "macroCategory": "data",
+          "share": 0.0345,
+          "rank": 8
+        }
+      ],
+      "windowDays": 30
     },
     "ranking": {
       "status": "measured",
-      "composite": 49.6,
-      "low": 35,
-      "rank": 9,
+      "composite": 49.5,
+      "low": 41.5,
+      "rank": 3,
       "dims": {
         "coding": {
           "value": 45.5,
@@ -506,6 +805,10 @@
           "value": 51,
           "evidence": 3
         },
+        "agentic": {
+          "value": 49.4,
+          "evidence": 1
+        },
         "longContext": {
           "value": 49.7,
           "evidence": 1
@@ -515,8 +818,8 @@
           "evidence": 0
         },
         "overall": {
-          "value": 49.6,
-          "evidence": 12
+          "value": 49.5,
+          "evidence": 13
         }
       }
     }
@@ -590,6 +893,14 @@
           "gdp-pdf-aa": 10.8
         },
         "board": "https://llmleaderboard.com"
+      },
+      "openrouterBenchmarks": {
+        "source": "https://openrouter.ai/benchmarks",
+        "checkedAt": "2026-11-19",
+        "accuracy": {
+          "gpqa": 0.8593,
+          "tau2": 0.7311
+        }
       }
     },
     "sources": [
@@ -599,18 +910,31 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 23,
-      "tokens": 2022008655020,
+      "tokens": 2036711131035,
       "share": 0.0075,
-      "percentile": 81.4
+      "percentile": 81.4,
+      "tasks": [
+        {
+          "tag": "data.analysis",
+          "macroCategory": "data",
+          "share": 0.0345,
+          "rank": 8
+        }
+      ],
+      "windowDays": 30
     },
     "ranking": {
       "status": "measured",
-      "composite": 43.3,
-      "low": 5.3,
-      "rank": 65,
+      "composite": 52,
+      "low": 11.7,
+      "rank": 66,
       "dims": {
         "knowledge": {
-          "value": 43.3,
+          "value": 55.4,
+          "evidence": 2
+        },
+        "agentic": {
+          "value": 49.4,
           "evidence": 1
         },
         "longContext": {
@@ -622,8 +946,8 @@
           "evidence": 0
         },
         "overall": {
-          "value": 43.3,
-          "evidence": 1
+          "value": 52,
+          "evidence": 3
         }
       }
     }
@@ -727,8 +1051,8 @@
         "intelligenceIndex": 23.1,
         "priceIn": 1.32,
         "priceOut": 3.96,
-        "ttft": 2.43448099542593,
-        "speed": 88.8974000223504,
+        "ttft": 2.43272508775361,
+        "speed": 87.1101776081165,
         "benchmarks": {
           "omniscience-accuracy": 45.2,
           "omniscience-non-hallucination": 5.9,
@@ -792,6 +1116,15 @@
           "gdp-pdf-aa": 11.4
         },
         "board": "https://llmleaderboard.com"
+      },
+      "openrouterBenchmarks": {
+        "source": "https://openrouter.ai/benchmarks",
+        "checkedAt": "2026-11-19",
+        "accuracy": {
+          "gpqa": 0.8728,
+          "tau2": 0.7686,
+          "vgi-bench": 0.4506
+        }
       }
     },
     "sources": [
@@ -804,16 +1137,37 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 43,
-      "tokens": 746612824594,
+      "tokens": 753128201742,
       "share": 0.0028,
-      "percentile": 69.8
+      "percentile": 69.8,
+      "tasks": [
+        {
+          "tag": "creative.creative_writing",
+          "macroCategory": "creative",
+          "share": 0.0321,
+          "rank": 6
+        },
+        {
+          "tag": "creative.interactive_roleplay",
+          "macroCategory": "creative",
+          "share": 0.0271,
+          "rank": 9
+        },
+        {
+          "tag": "writing.translation_localization",
+          "macroCategory": "writing",
+          "share": 0.0231,
+          "rank": 10
+        }
+      ],
+      "windowDays": 30
     },
     "ranking": {
       "status": "measured",
       "composite": 49.8,
-      "low": 42,
-      "rank": 4,
-      "uncalibrated": 13,
+      "low": 40.5,
+      "rank": 5,
+      "uncalibrated": 14,
       "dims": {
         "coding": {
           "value": 45.6,
@@ -832,8 +1186,8 @@
           "evidence": 5
         },
         "agentic": {
-          "value": 47.4,
-          "evidence": 3
+          "value": 47.6,
+          "evidence": 4
         },
         "longContext": {
           "value": 57.2,
@@ -844,12 +1198,12 @@
           "evidence": 0
         },
         "speed": {
-          "value": 65.2,
+          "value": 65.1,
           "evidence": 2
         },
         "overall": {
           "value": 49.8,
-          "evidence": 22
+          "evidence": 23
         }
       }
     }
@@ -953,6 +1307,15 @@
         "eci": 150.2,
         "date": "2026-04-24",
         "board": "https://epoch.ai/eci"
+      },
+      "openrouterBenchmarks": {
+        "source": "https://openrouter.ai/benchmarks",
+        "checkedAt": "2026-11-19",
+        "accuracy": {
+          "gpqa": 0.8728,
+          "tau2": 0.7686,
+          "vgi-bench": 0.4506
+        }
       }
     },
     "sources": [
@@ -963,15 +1326,37 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 49,
-      "tokens": 571521443331,
+      "tokens": 576151882037,
       "share": 0.0021,
-      "percentile": 65.1
+      "percentile": 65.1,
+      "tasks": [
+        {
+          "tag": "creative.creative_writing",
+          "macroCategory": "creative",
+          "share": 0.0321,
+          "rank": 6
+        },
+        {
+          "tag": "creative.interactive_roleplay",
+          "macroCategory": "creative",
+          "share": 0.0271,
+          "rank": 9
+        },
+        {
+          "tag": "writing.translation_localization",
+          "macroCategory": "writing",
+          "share": 0.0231,
+          "rank": 10
+        }
+      ],
+      "windowDays": 30
     },
     "ranking": {
       "status": "measured",
-      "composite": 52.9,
-      "low": 32.4,
-      "rank": 12,
+      "composite": 52.8,
+      "low": 30.2,
+      "rank": 45,
+      "uncalibrated": 1,
       "dims": {
         "coding": {
           "value": 58.1,
@@ -990,8 +1375,8 @@
           "evidence": 5
         },
         "agentic": {
-          "value": 52.2,
-          "evidence": 1
+          "value": 51.3,
+          "evidence": 2
         },
         "longContext": {
           "value": 57.2,
@@ -1002,8 +1387,8 @@
           "evidence": 0
         },
         "overall": {
-          "value": 52.9,
-          "evidence": 22
+          "value": 52.8,
+          "evidence": 23
         }
       }
     }
@@ -1081,6 +1466,15 @@
         "hle": 16.14,
         "evaluated": "2026-08-26",
         "board": "https://rank.opencompass.org.cn/leaderboard/llm"
+      },
+      "openrouterBenchmarks": {
+        "source": "https://openrouter.ai/benchmarks",
+        "checkedAt": "2026-11-19",
+        "accuracy": {
+          "gpqa": 0.8855,
+          "tau2": 0.7133,
+          "vgi-bench": 0.1139
+        }
       }
     },
     "sources": [
@@ -1093,15 +1487,31 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 30,
-      "tokens": 1341756329859,
+      "tokens": 1351506709904,
       "share": 0.005,
-      "percentile": 79.1
+      "percentile": 79.1,
+      "tasks": [
+        {
+          "tag": "information.math_logic",
+          "macroCategory": "information",
+          "share": 0.0459,
+          "rank": 6
+        },
+        {
+          "tag": "software.implementation",
+          "macroCategory": "software",
+          "share": 0.0222,
+          "rank": 10
+        }
+      ],
+      "windowDays": 30
     },
     "ranking": {
       "status": "measured",
-      "composite": 49.3,
-      "low": 36.5,
-      "rank": 7,
+      "composite": 50.7,
+      "low": 35.2,
+      "rank": 18,
+      "uncalibrated": 1,
       "dims": {
         "coding": {
           "value": 45.8,
@@ -1112,12 +1522,12 @@
           "evidence": 3
         },
         "knowledge": {
-          "value": 55.2,
-          "evidence": 1
+          "value": 64.4,
+          "evidence": 2
         },
         "agentic": {
-          "value": 52.2,
-          "evidence": 2
+          "value": 51.4,
+          "evidence": 3
         },
         "longContext": {
           "value": 99,
@@ -1128,8 +1538,8 @@
           "evidence": 0
         },
         "overall": {
-          "value": 49.3,
-          "evidence": 7
+          "value": 50.7,
+          "evidence": 9
         }
       }
     }
@@ -1201,6 +1611,15 @@
     "distinguishing": [
       "lowest input price in the catalog"
     ],
+    "crossChecks": {
+      "openrouterBenchmarks": {
+        "source": "https://openrouter.ai/benchmarks",
+        "checkedAt": "2026-11-19",
+        "accuracy": {
+          "vgi-bench": 0.1139
+        }
+      }
+    },
     "sources": [
       "https://help.aliyun.com/zh/model-studio/qwen3-7-flash",
       "https://benchgecko.ai/model/qwen3-7-flash"
@@ -1209,15 +1628,31 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 53,
-      "tokens": 459961339842,
+      "tokens": 463037243131,
       "share": 0.0017,
-      "percentile": 62.8
+      "percentile": 62.8,
+      "tasks": [
+        {
+          "tag": "information.math_logic",
+          "macroCategory": "information",
+          "share": 0.0459,
+          "rank": 6
+        },
+        {
+          "tag": "software.implementation",
+          "macroCategory": "software",
+          "share": 0.0222,
+          "rank": 10
+        }
+      ],
+      "windowDays": 30
     },
     "ranking": {
       "status": "measured",
       "composite": 44.7,
       "low": 24,
-      "rank": 42,
+      "rank": 63,
+      "uncalibrated": 1,
       "dims": {
         "reasoning": {
           "value": 31.4,
@@ -1324,6 +1759,71 @@
         "eci": 156,
         "date": "2026-09-01",
         "board": "https://epoch.ai/eci"
+      },
+      "taskIndexes": {
+        "source": "https://artificialanalysis.ai/indexes",
+        "checkedAt": "2026-11-19",
+        "indexes": {
+          "economics": 42.5,
+          "engineering": 39.3,
+          "finance-and-accounting": 45,
+          "healthcare-and-medical": 40.8,
+          "legal": 41,
+          "strategy-and-ops": 47.3
+        },
+        "subScores": {
+          "economics": {
+            "knowledge": 53.2,
+            "reasoning": 24,
+            "longContext": 22.8,
+            "agenticKnowledgeWork": 57.1
+          },
+          "engineering": {
+            "science": 20.7,
+            "knowledge": 57,
+            "reasoning": 24,
+            "agenticTerminalUse": 31.2,
+            "agenticKnowledgeWork": 57.1
+          },
+          "finance-and-accounting": {
+            "knowledge": 21.1,
+            "reasoning": 24,
+            "longContext": 22.8,
+            "agenticToolUse": 56.6,
+            "nonHallucination": 81.4,
+            "agenticKnowledgeWork": 57.1
+          },
+          "healthcare-and-medical": {
+            "knowledge": 21.3,
+            "reasoning": 24,
+            "longContext": 20,
+            "agenticToolUse": 61.1,
+            "nonHallucination": 66.7,
+            "agenticKnowledgeWork": 57.1
+          },
+          "legal": {
+            "knowledge": 17.6,
+            "reasoning": 24,
+            "longContext": 22.8,
+            "agenticToolUse": 61.1,
+            "nonHallucination": 83.6,
+            "agenticKnowledgeWork": 57.1
+          },
+          "strategy-and-ops": {
+            "knowledge": 21.1,
+            "longContext": 22.8,
+            "agenticToolUse": 56.1,
+            "nonHallucination": 81.4,
+            "agenticKnowledgeWork": 57.1
+          }
+        }
+      },
+      "openrouterBenchmarks": {
+        "source": "https://openrouter.ai/benchmarks",
+        "checkedAt": "2026-11-19",
+        "accuracy": {
+          "vgi-bench": 0.1598
+        }
       }
     },
     "sources": [
@@ -1335,15 +1835,25 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 73,
-      "tokens": 205439336661,
+      "tokens": 205971878420,
       "share": 0.0008,
-      "percentile": 53.5
+      "percentile": 53.5,
+      "tasks": [
+        {
+          "tag": "assistance.service_issue_resolution",
+          "macroCategory": "assistance",
+          "share": 0.0275,
+          "rank": 9
+        }
+      ],
+      "windowDays": 30
     },
     "ranking": {
       "status": "measured",
       "composite": 51.5,
       "low": 38.7,
       "rank": 6,
+      "uncalibrated": 1,
       "dims": {
         "coding": {
           "value": 47.9,
@@ -1454,8 +1964,8 @@
         "intelligenceIndex": 42.9,
         "priceIn": 1.5,
         "priceOut": 4.5,
-        "ttft": 6.25731434623756,
-        "speed": 55.9090660194196,
+        "ttft": 6.25646222320498,
+        "speed": 55.7011770165834,
         "benchmarks": {
           "omniscience-accuracy": 43.7,
           "omniscience-non-hallucination": 71.6,
@@ -1505,6 +2015,71 @@
           "gdp-pdf-aa": 26.2
         },
         "board": "https://llmleaderboard.com"
+      },
+      "taskIndexes": {
+        "source": "https://artificialanalysis.ai/indexes",
+        "checkedAt": "2026-11-19",
+        "indexes": {
+          "economics": 51.3,
+          "engineering": 50.1,
+          "finance-and-accounting": 54.1,
+          "healthcare-and-medical": 48.2,
+          "legal": 49.6,
+          "strategy-and-ops": 56.9
+        },
+        "subScores": {
+          "economics": {
+            "knowledge": 61.2,
+            "reasoning": 44.9,
+            "longContext": 26.2,
+            "agenticKnowledgeWork": 59.3
+          },
+          "engineering": {
+            "science": 33.2,
+            "knowledge": 66.4,
+            "reasoning": 44.9,
+            "agenticTerminalUse": 37.5,
+            "agenticKnowledgeWork": 59.3
+          },
+          "finance-and-accounting": {
+            "knowledge": 32.9,
+            "reasoning": 44.9,
+            "longContext": 26.2,
+            "agenticToolUse": 73.8,
+            "nonHallucination": 84.4,
+            "agenticKnowledgeWork": 59.3
+          },
+          "healthcare-and-medical": {
+            "knowledge": 34,
+            "reasoning": 44.9,
+            "longContext": 19.4,
+            "agenticToolUse": 78,
+            "nonHallucination": 57.9,
+            "agenticKnowledgeWork": 59.3
+          },
+          "legal": {
+            "knowledge": 27.8,
+            "reasoning": 44.9,
+            "longContext": 26.2,
+            "agenticToolUse": 78,
+            "nonHallucination": 87.7,
+            "agenticKnowledgeWork": 59.3
+          },
+          "strategy-and-ops": {
+            "knowledge": 32.9,
+            "longContext": 26.2,
+            "agenticToolUse": 72.3,
+            "nonHallucination": 84.4,
+            "agenticKnowledgeWork": 59.3
+          }
+        }
+      },
+      "openrouterBenchmarks": {
+        "source": "https://openrouter.ai/benchmarks",
+        "checkedAt": "2026-11-19",
+        "accuracy": {
+          "vgi-bench": 0.6431
+        }
       }
     },
     "sources": [
@@ -1516,17 +2091,26 @@
     "notes": "Cache hit is 5 percent of input; explicit-cache creation bills at 125 percent (5m) or 200 percent (1h).",
     "usage": {
       "source": "openrouter-top-weekly",
-      "rank": 64,
-      "tokens": 298678280505,
-      "share": 0.0011,
-      "percentile": 58.1
+      "rank": 62,
+      "tokens": 321901726789,
+      "share": 0.0012,
+      "percentile": 60.5,
+      "tasks": [
+        {
+          "tag": "assistance.service_issue_resolution",
+          "macroCategory": "assistance",
+          "share": 0.0275,
+          "rank": 9
+        }
+      ],
+      "windowDays": 30
     },
     "ranking": {
       "status": "measured",
       "composite": 51.9,
       "low": 27.7,
-      "rank": 22,
-      "uncalibrated": 12,
+      "rank": 52,
+      "uncalibrated": 13,
       "dims": {
         "reasoning": {
           "value": 50.8,
@@ -1743,8 +2327,8 @@
         "intelligenceIndex": 31.7,
         "priceIn": 1.4,
         "priceOut": 4.4,
-        "ttft": 2.75660065294884,
-        "speed": 83.1324318409764,
+        "ttft": 2.74370217399648,
+        "speed": 81.8347573284862,
         "benchmarks": {
           "omniscience-accuracy": 32.3,
           "omniscience-non-hallucination": 61.1,
@@ -1824,6 +2408,72 @@
           "gdp-pdf-aa": 11.2
         },
         "board": "https://llmleaderboard.com"
+      },
+      "taskIndexes": {
+        "source": "https://artificialanalysis.ai/indexes",
+        "checkedAt": "2026-11-19",
+        "indexes": {
+          "economics": 37.3,
+          "engineering": 37.6,
+          "finance-and-accounting": 42.1,
+          "healthcare-and-medical": 39.3,
+          "legal": 35.8,
+          "strategy-and-ops": 47.4
+        },
+        "subScores": {
+          "economics": {
+            "knowledge": 52.6,
+            "reasoning": 17.9,
+            "longContext": 11.2,
+            "agenticKnowledgeWork": 51.3
+          },
+          "engineering": {
+            "science": 21.5,
+            "knowledge": 57.5,
+            "reasoning": 17.9,
+            "agenticTerminalUse": 31.8,
+            "agenticKnowledgeWork": 51.3
+          },
+          "finance-and-accounting": {
+            "knowledge": 23.6,
+            "reasoning": 17.9,
+            "longContext": 11.2,
+            "agenticToolUse": 62.3,
+            "nonHallucination": 75.9,
+            "agenticKnowledgeWork": 51.3
+          },
+          "healthcare-and-medical": {
+            "knowledge": 24.7,
+            "reasoning": 17.9,
+            "longContext": 17.2,
+            "agenticToolUse": 70.3,
+            "nonHallucination": 54.3,
+            "agenticKnowledgeWork": 51.3
+          },
+          "legal": {
+            "knowledge": 15.3,
+            "reasoning": 17.9,
+            "longContext": 11.2,
+            "agenticToolUse": 70.3,
+            "nonHallucination": 73.8,
+            "agenticKnowledgeWork": 51.3
+          },
+          "strategy-and-ops": {
+            "knowledge": 23.6,
+            "longContext": 11.2,
+            "agenticToolUse": 62.2,
+            "nonHallucination": 75.9,
+            "agenticKnowledgeWork": 51.3
+          }
+        }
+      },
+      "openrouterBenchmarks": {
+        "source": "https://openrouter.ai/benchmarks",
+        "checkedAt": "2026-11-19",
+        "accuracy": {
+          "gpqa": 0.8537,
+          "tau2": 0.76
+        }
       }
     },
     "sources": [
@@ -1835,14 +2485,23 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 12,
-      "tokens": 3472506446093,
-      "share": 0.013,
-      "percentile": 86
+      "tokens": 3503446903299,
+      "share": 0.0129,
+      "percentile": 86,
+      "tasks": [
+        {
+          "tag": "assistance.service_issue_resolution",
+          "macroCategory": "assistance",
+          "share": 0.0275,
+          "rank": 9
+        }
+      ],
+      "windowDays": 30
     },
     "ranking": {
       "status": "measured",
-      "composite": 51.7,
-      "low": 43.9,
+      "composite": 51.5,
+      "low": 42.1,
       "rank": 2,
       "uncalibrated": 20,
       "dims": {
@@ -1863,8 +2522,8 @@
           "evidence": 5
         },
         "agentic": {
-          "value": 54.9,
-          "evidence": 3
+          "value": 53.8,
+          "evidence": 4
         },
         "longContext": {
           "value": 60.4,
@@ -1875,12 +2534,12 @@
           "evidence": 0
         },
         "speed": {
-          "value": 69,
+          "value": 68.9,
           "evidence": 2
         },
         "overall": {
-          "value": 51.7,
-          "evidence": 24
+          "value": 51.5,
+          "evidence": 25
         }
       }
     }
@@ -2009,6 +2668,15 @@
           "livebench-2-reasoning": 90.7
         },
         "board": "https://llmleaderboard.com"
+      },
+      "openrouterBenchmarks": {
+        "source": "https://openrouter.ai/benchmarks",
+        "checkedAt": "2026-11-19",
+        "accuracy": {
+          "gpqa": 0.9202,
+          "tau2": 0.7385,
+          "vgi-bench": 0.0532
+        }
       }
     },
     "sources": [
@@ -2020,16 +2688,25 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 31,
-      "tokens": 1212688570051,
+      "tokens": 1220180901940,
       "share": 0.0045,
-      "percentile": 76.7
+      "percentile": 76.7,
+      "tasks": [
+        {
+          "tag": "assistance.service_issue_resolution",
+          "macroCategory": "assistance",
+          "share": 0.0275,
+          "rank": 9
+        }
+      ],
+      "windowDays": 30
     },
     "ranking": {
       "status": "measured",
-      "composite": 51.1,
-      "low": 42,
-      "rank": 3,
-      "uncalibrated": 4,
+      "composite": 51.2,
+      "low": 40.7,
+      "rank": 4,
+      "uncalibrated": 5,
       "dims": {
         "coding": {
           "value": 49.9,
@@ -2044,12 +2721,12 @@
           "evidence": 3
         },
         "knowledge": {
-          "value": 58.1,
+          "value": 58,
           "evidence": 5
         },
         "agentic": {
-          "value": 42.6,
-          "evidence": 4
+          "value": 43.4,
+          "evidence": 5
         },
         "longContext": {
           "value": 62.7,
@@ -2064,8 +2741,8 @@
           "evidence": 1
         },
         "overall": {
-          "value": 51.1,
-          "evidence": 27
+          "value": 51.2,
+          "evidence": 28
         }
       }
     }
@@ -2160,6 +2837,64 @@
         "eci": 154.6,
         "date": "2026-05-19",
         "board": "https://epoch.ai/eci"
+      },
+      "taskIndexes": {
+        "source": "https://artificialanalysis.ai/indexes",
+        "checkedAt": "2026-11-19",
+        "indexes": {
+          "economics": 61.9,
+          "engineering": 66.8,
+          "finance-and-accounting": 65.1,
+          "legal": 63.8,
+          "strategy-and-ops": 63.8
+        },
+        "subScores": {
+          "economics": {
+            "knowledge": 73,
+            "reasoning": 71.3,
+            "longContext": 28,
+            "agenticKnowledgeWork": 60
+          },
+          "engineering": {
+            "science": 65.3,
+            "knowledge": 74.8,
+            "reasoning": 71.3,
+            "agenticTerminalUse": 54,
+            "agenticKnowledgeWork": 60
+          },
+          "finance-and-accounting": {
+            "knowledge": 50.9,
+            "reasoning": 71.3,
+            "longContext": 28,
+            "agenticToolUse": 87.3,
+            "nonHallucination": 90,
+            "agenticKnowledgeWork": 60
+          },
+          "legal": {
+            "knowledge": 56.9,
+            "reasoning": 71.3,
+            "longContext": 28,
+            "agenticToolUse": 82.4,
+            "nonHallucination": 93.8,
+            "agenticKnowledgeWork": 60
+          },
+          "strategy-and-ops": {
+            "knowledge": 50.9,
+            "longContext": 28,
+            "agenticToolUse": 77.6,
+            "nonHallucination": 90,
+            "agenticKnowledgeWork": 60
+          }
+        }
+      },
+      "openrouterBenchmarks": {
+        "source": "https://openrouter.ai/benchmarks",
+        "checkedAt": "2026-11-19",
+        "accuracy": {
+          "gpqa": 0.9091,
+          "tau2": 0.72,
+          "vgi-bench": 0.1598
+        }
       }
     },
     "sources": [
@@ -2172,15 +2907,25 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 230,
-      "tokens": 8561383593,
+      "tokens": 8586308544,
       "share": 0,
-      "percentile": 9.3
+      "percentile": 9.3,
+      "tasks": [
+        {
+          "tag": "assistance.service_issue_resolution",
+          "macroCategory": "assistance",
+          "share": 0.0275,
+          "rank": 9
+        }
+      ],
+      "windowDays": 30
     },
     "ranking": {
       "status": "measured",
-      "composite": 58,
-      "low": 46.3,
+      "composite": 57.9,
+      "low": 45.1,
       "rank": 1,
+      "uncalibrated": 1,
       "dims": {
         "coding": {
           "value": 62.9,
@@ -2195,12 +2940,12 @@
           "evidence": 4
         },
         "knowledge": {
-          "value": 66.8,
+          "value": 66.9,
           "evidence": 4
         },
         "agentic": {
-          "value": 50.6,
-          "evidence": 1
+          "value": 50,
+          "evidence": 2
         },
         "longContext": {
           "value": 50.6,
@@ -2211,8 +2956,8 @@
           "evidence": 0
         },
         "overall": {
-          "value": 58,
-          "evidence": 16
+          "value": 57.9,
+          "evidence": 17
         }
       }
     }
@@ -2307,8 +3052,8 @@
         "intelligenceIndex": null,
         "priceIn": 0.4,
         "priceOut": 1.6,
-        "ttft": 2.76913265371203,
-        "speed": 56.3080979609067,
+        "ttft": 2.76668619149124,
+        "speed": 56.1429284745272,
         "benchmarks": {
           "automationbench-aa": 17.4,
           "hle-diamond": 13.9,
@@ -2362,6 +3107,15 @@
         "eci": 148,
         "date": "2026-06-02",
         "board": "https://epoch.ai/eci"
+      },
+      "openrouterBenchmarks": {
+        "source": "https://openrouter.ai/benchmarks",
+        "checkedAt": "2026-11-19",
+        "accuracy": {
+          "gpqa": 0.8788,
+          "tau2": 0.7033,
+          "vgi-bench": 0.1549
+        }
       }
     },
     "sources": [
@@ -2371,17 +3125,74 @@
     "notes": "Prices are the <=256K Beijing tier; 256K-1M is 6/24. No benchmarks published.",
     "usage": {
       "source": "openrouter-top-weekly",
-      "rank": 133,
-      "tokens": 47265135132,
+      "rank": 134,
+      "tokens": 47583216512,
       "share": 0.0002,
-      "percentile": 41.9
+      "percentile": 41.9,
+      "tasks": [
+        {
+          "tag": "creative.interactive_roleplay",
+          "macroCategory": "creative",
+          "share": 0.0869,
+          "rank": 2
+        },
+        {
+          "tag": "creative.creative_writing",
+          "macroCategory": "creative",
+          "share": 0.0705,
+          "rank": 3
+        },
+        {
+          "tag": "media.speech_transcription",
+          "macroCategory": "media",
+          "share": 0.0786,
+          "rank": 3
+        },
+        {
+          "tag": "writing.rewriting_editing",
+          "macroCategory": "writing",
+          "share": 0.031,
+          "rank": 5
+        },
+        {
+          "tag": "writing.drafting",
+          "macroCategory": "writing",
+          "share": 0.0354,
+          "rank": 7
+        },
+        {
+          "tag": "assistance.advice_coaching",
+          "macroCategory": "assistance",
+          "share": 0.0346,
+          "rank": 7
+        },
+        {
+          "tag": "writing.translation_localization",
+          "macroCategory": "writing",
+          "share": 0.0294,
+          "rank": 8
+        },
+        {
+          "tag": "information.planning_decision_support",
+          "macroCategory": "information",
+          "share": 0.0239,
+          "rank": 10
+        },
+        {
+          "tag": "software.architecture_requirements_planning",
+          "macroCategory": "software",
+          "share": 0.0279,
+          "rank": 10
+        }
+      ],
+      "windowDays": 30
     },
     "ranking": {
       "status": "measured",
-      "composite": 43.7,
-      "low": 26.9,
-      "rank": 28,
-      "uncalibrated": 12,
+      "composite": 42.9,
+      "low": 25.8,
+      "rank": 60,
+      "uncalibrated": 13,
       "dims": {
         "coding": {
           "value": 39.1,
@@ -2396,11 +3207,11 @@
           "evidence": 2
         },
         "knowledge": {
-          "value": 56.1,
+          "value": 56.2,
           "evidence": 3
         },
         "agentic": {
-          "value": 48.6,
+          "value": 44.1,
           "evidence": 3
         },
         "longContext": {
@@ -2416,7 +3227,7 @@
           "evidence": 1
         },
         "overall": {
-          "value": 43.7,
+          "value": 42.9,
           "evidence": 14
         }
       }
@@ -2505,6 +3316,13 @@
         "eci": 143.8,
         "date": "2026-04-27",
         "board": "https://epoch.ai/eci"
+      },
+      "openrouterBenchmarks": {
+        "source": "https://openrouter.ai/benchmarks",
+        "checkedAt": "2026-11-19",
+        "accuracy": {
+          "vgi-bench": 0.1139
+        }
       }
     },
     "sources": [
@@ -2514,16 +3332,32 @@
     "notes": "Prices are the <=256K Beijing tier. Older flash line, dominated by its successors.",
     "usage": {
       "source": "openrouter-top-weekly",
-      "rank": 219,
-      "tokens": 10989916034,
+      "rank": 218,
+      "tokens": 11095078241,
       "share": 0,
-      "percentile": 14
+      "percentile": 14,
+      "tasks": [
+        {
+          "tag": "information.math_logic",
+          "macroCategory": "information",
+          "share": 0.0459,
+          "rank": 6
+        },
+        {
+          "tag": "software.implementation",
+          "macroCategory": "software",
+          "share": 0.0222,
+          "rank": 10
+        }
+      ],
+      "windowDays": 30
     },
     "ranking": {
       "status": "measured",
       "composite": 49,
       "low": 35.2,
-      "rank": 8,
+      "rank": 19,
+      "uncalibrated": 1,
       "dims": {
         "coding": {
           "value": 55,
@@ -2669,6 +3503,14 @@
           "gdp-pdf-aa": 10.4
         },
         "board": "https://llmleaderboard.com"
+      },
+      "openrouterBenchmarks": {
+        "source": "https://openrouter.ai/benchmarks",
+        "checkedAt": "2026-11-19",
+        "accuracy": {
+          "gpqa": 0.8502,
+          "tau2": 0.7091
+        }
       }
     },
     "sources": [
@@ -2680,15 +3522,24 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 35,
-      "tokens": 965574798564,
+      "tokens": 974358839555,
       "share": 0.0036,
-      "percentile": 74.4
+      "percentile": 74.4,
+      "tasks": [
+        {
+          "tag": "assistance.service_issue_resolution",
+          "macroCategory": "assistance",
+          "share": 0.0275,
+          "rank": 9
+        }
+      ],
+      "windowDays": 30
     },
     "ranking": {
       "status": "measured",
-      "composite": 55,
-      "low": 34.6,
-      "rank": 11,
+      "composite": 54.8,
+      "low": 32.9,
+      "rank": 34,
       "dims": {
         "coding": {
           "value": 59.3,
@@ -2707,8 +3558,8 @@
           "evidence": 5
         },
         "agentic": {
-          "value": 54.6,
-          "evidence": 2
+          "value": 53.3,
+          "evidence": 3
         },
         "longContext": {
           "value": 51.3,
@@ -2723,8 +3574,8 @@
           "evidence": 1
         },
         "overall": {
-          "value": 55,
-          "evidence": 24
+          "value": 54.8,
+          "evidence": 25
         }
       }
     }
@@ -2757,24 +3608,106 @@
       "vision": 0,
       "speed": 0
     },
-    "usage": {
-      "source": "openrouter-top-weekly",
-      "rank": 169,
-      "tokens": 26202473122,
-      "share": 0.0001,
-      "percentile": 30.2
-    },
-    "ranking": {
-      "status": "unmeasured",
-      "composite": null,
-      "low": null,
-      "rank": null,
-      "dims": {}
-    },
     "contextWindow": null,
     "price": null,
     "reasoning": null,
-    "latency": null
+    "latency": null,
+    "usage": {
+      "source": "openrouter-top-weekly",
+      "rank": 169,
+      "tokens": 26541977607,
+      "share": 0.0001,
+      "percentile": 30.2,
+      "tasks": [
+        {
+          "tag": "creative.interactive_roleplay",
+          "macroCategory": "creative",
+          "share": 0.0869,
+          "rank": 2
+        },
+        {
+          "tag": "creative.creative_writing",
+          "macroCategory": "creative",
+          "share": 0.0705,
+          "rank": 3
+        },
+        {
+          "tag": "media.speech_transcription",
+          "macroCategory": "media",
+          "share": 0.0786,
+          "rank": 3
+        },
+        {
+          "tag": "writing.rewriting_editing",
+          "macroCategory": "writing",
+          "share": 0.031,
+          "rank": 5
+        },
+        {
+          "tag": "writing.drafting",
+          "macroCategory": "writing",
+          "share": 0.0354,
+          "rank": 7
+        },
+        {
+          "tag": "assistance.advice_coaching",
+          "macroCategory": "assistance",
+          "share": 0.0346,
+          "rank": 7
+        },
+        {
+          "tag": "writing.translation_localization",
+          "macroCategory": "writing",
+          "share": 0.0294,
+          "rank": 8
+        },
+        {
+          "tag": "information.planning_decision_support",
+          "macroCategory": "information",
+          "share": 0.0239,
+          "rank": 10
+        },
+        {
+          "tag": "software.architecture_requirements_planning",
+          "macroCategory": "software",
+          "share": 0.0279,
+          "rank": 10
+        }
+      ],
+      "windowDays": 30
+    },
+    "crossChecks": {
+      "openrouterBenchmarks": {
+        "source": "https://openrouter.ai/benchmarks",
+        "checkedAt": "2026-11-19",
+        "accuracy": {
+          "gpqa": 0.9646,
+          "tau2": 0.7867,
+          "vgi-bench": 0.1549
+        }
+      }
+    },
+    "ranking": {
+      "status": "measured",
+      "composite": 55.8,
+      "low": 25.8,
+      "rank": 59,
+      "uncalibrated": 1,
+      "dims": {
+        "knowledge": {
+          "value": 64.1,
+          "evidence": 1
+        },
+        "agentic": {
+          "value": 49.5,
+          "evidence": 1
+        },
+        "overall": {
+          "value": 55.8,
+          "evidence": 2
+        }
+      }
+    }
   },
   "ZHIPU/GLM-5.3-FlashX": {
     "label": "GLM-5.3-FlashX",
@@ -2804,24 +3737,64 @@
       "vision": 0,
       "speed": 0
     },
-    "usage": {
-      "source": "openrouter-top-weekly",
-      "rank": 85,
-      "tokens": 145346748374,
-      "share": 0.0005,
-      "percentile": 51.2
-    },
-    "ranking": {
-      "status": "unmeasured",
-      "composite": null,
-      "low": null,
-      "rank": null,
-      "dims": {}
-    },
     "contextWindow": null,
     "price": null,
     "reasoning": null,
-    "latency": null
+    "latency": null,
+    "usage": {
+      "source": "openrouter-top-weekly",
+      "rank": 85,
+      "tokens": 147810473502,
+      "share": 0.0005,
+      "percentile": 51.2,
+      "tasks": [
+        {
+          "tag": "information.math_logic",
+          "macroCategory": "information",
+          "share": 0.0459,
+          "rank": 6
+        },
+        {
+          "tag": "software.implementation",
+          "macroCategory": "software",
+          "share": 0.0222,
+          "rank": 10
+        }
+      ],
+      "windowDays": 30
+    },
+    "crossChecks": {
+      "openrouterBenchmarks": {
+        "source": "https://openrouter.ai/benchmarks",
+        "checkedAt": "2026-11-19",
+        "accuracy": {
+          "gpqa": 0.8586,
+          "tau2": 0.7333,
+          "vgi-bench": 0.1139
+        }
+      }
+    },
+    "ranking": {
+      "status": "measured",
+      "composite": 55.7,
+      "low": 25.7,
+      "rank": 61,
+      "uncalibrated": 1,
+      "dims": {
+        "knowledge": {
+          "value": 64,
+          "evidence": 1
+        },
+        "agentic": {
+          "value": 49.4,
+          "evidence": 1
+        },
+        "overall": {
+          "value": 55.7,
+          "evidence": 2
+        }
+      }
+    }
   },
   "vanchin/deepseek-v3": {
     "label": "DeepSeek V3",
@@ -2851,24 +3824,107 @@
       "vision": 0,
       "speed": 0
     },
+    "contextWindow": null,
+    "price": null,
+    "reasoning": null,
+    "latency": null,
     "crossChecks": {
       "epoch": {
         "eci": 135.3,
         "date": "2025-03-24",
         "board": "https://epoch.ai/eci"
+      },
+      "openrouterBenchmarks": {
+        "source": "https://openrouter.ai/benchmarks",
+        "checkedAt": "2026-11-19",
+        "accuracy": {
+          "gpqa": 0.5463,
+          "tau2": 0.3983,
+          "vgi-bench": 0.1549
+        }
       }
     },
-    "ranking": {
-      "status": "unmeasured",
-      "composite": null,
-      "low": null,
-      "rank": null,
-      "dims": {}
+    "usage": {
+      "source": "openrouter-task-spend",
+      "tasks": [
+        {
+          "tag": "creative.interactive_roleplay",
+          "macroCategory": "creative",
+          "share": 0.0869,
+          "rank": 2
+        },
+        {
+          "tag": "creative.creative_writing",
+          "macroCategory": "creative",
+          "share": 0.0705,
+          "rank": 3
+        },
+        {
+          "tag": "media.speech_transcription",
+          "macroCategory": "media",
+          "share": 0.0786,
+          "rank": 3
+        },
+        {
+          "tag": "writing.rewriting_editing",
+          "macroCategory": "writing",
+          "share": 0.031,
+          "rank": 5
+        },
+        {
+          "tag": "writing.drafting",
+          "macroCategory": "writing",
+          "share": 0.0354,
+          "rank": 7
+        },
+        {
+          "tag": "assistance.advice_coaching",
+          "macroCategory": "assistance",
+          "share": 0.0346,
+          "rank": 7
+        },
+        {
+          "tag": "writing.translation_localization",
+          "macroCategory": "writing",
+          "share": 0.0294,
+          "rank": 8
+        },
+        {
+          "tag": "information.planning_decision_support",
+          "macroCategory": "information",
+          "share": 0.0239,
+          "rank": 10
+        },
+        {
+          "tag": "software.architecture_requirements_planning",
+          "macroCategory": "software",
+          "share": 0.0279,
+          "rank": 10
+        }
+      ],
+      "windowDays": 30
     },
-    "contextWindow": null,
-    "price": null,
-    "reasoning": null,
-    "latency": null
+    "ranking": {
+      "status": "measured",
+      "composite": 55.1,
+      "low": 25.1,
+      "rank": 62,
+      "uncalibrated": 1,
+      "dims": {
+        "knowledge": {
+          "value": 63.4,
+          "evidence": 1
+        },
+        "agentic": {
+          "value": 48.9,
+          "evidence": 1
+        },
+        "overall": {
+          "value": 55.1,
+          "evidence": 2
+        }
+      }
+    }
   },
   "kimi-k3.1-pro": {
     "label": "Kimi K3.1 Pro",
@@ -2891,8 +3947,8 @@
         "intelligenceIndex": 46.5,
         "priceIn": 2,
         "priceOut": 10,
-        "ttft": 3.58571830072023,
-        "speed": 30.5873421320193,
+        "ttft": 3.56063179187939,
+        "speed": 30.6689937217673,
         "benchmarks": {
           "omniscience-accuracy": 48.9,
           "omniscience-non-hallucination": 62.7,
@@ -2934,6 +3990,73 @@
           "livebench-2-reasoning": 91.1
         },
         "board": "https://llmleaderboard.com"
+      },
+      "taskIndexes": {
+        "source": "https://artificialanalysis.ai/indexes",
+        "checkedAt": "2026-11-19",
+        "indexes": {
+          "economics": 49.9,
+          "engineering": 50.9,
+          "finance-and-accounting": 53.3,
+          "healthcare-and-medical": 51.6,
+          "legal": 49.2,
+          "strategy-and-ops": 57.6
+        },
+        "subScores": {
+          "economics": {
+            "knowledge": 60.8,
+            "reasoning": 37.3,
+            "longContext": 31.4,
+            "agenticKnowledgeWork": 58.9
+          },
+          "engineering": {
+            "science": 41.9,
+            "knowledge": 64.3,
+            "reasoning": 37.3,
+            "agenticTerminalUse": 46.3,
+            "agenticKnowledgeWork": 58.9
+          },
+          "finance-and-accounting": {
+            "knowledge": 38.7,
+            "reasoning": 37.3,
+            "longContext": 31.4,
+            "agenticToolUse": 80.3,
+            "nonHallucination": 72.1,
+            "agenticKnowledgeWork": 58.9
+          },
+          "healthcare-and-medical": {
+            "knowledge": 42.4,
+            "reasoning": 37.3,
+            "longContext": 38.3,
+            "agenticToolUse": 76.8,
+            "nonHallucination": 52.9,
+            "agenticKnowledgeWork": 58.9
+          },
+          "legal": {
+            "knowledge": 31.6,
+            "reasoning": 37.3,
+            "longContext": 31.4,
+            "agenticToolUse": 76.8,
+            "nonHallucination": 83.1,
+            "agenticKnowledgeWork": 58.9
+          },
+          "strategy-and-ops": {
+            "knowledge": 38.7,
+            "longContext": 31.4,
+            "agenticToolUse": 71.7,
+            "nonHallucination": 72.1,
+            "agenticKnowledgeWork": 58.9
+          }
+        }
+      },
+      "openrouterBenchmarks": {
+        "source": "https://openrouter.ai/benchmarks",
+        "checkedAt": "2026-11-19",
+        "accuracy": {
+          "gpqa": 0.936,
+          "tau2": 0.7567,
+          "vgi-bench": 0.1549
+        }
       }
     },
     "scores": {
@@ -2961,16 +4084,73 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 11,
-      "tokens": 3594782713475,
-      "share": 0.0134,
-      "percentile": 88.4
+      "tokens": 3624209328860,
+      "share": 0.0133,
+      "percentile": 88.4,
+      "tasks": [
+        {
+          "tag": "creative.interactive_roleplay",
+          "macroCategory": "creative",
+          "share": 0.0869,
+          "rank": 2
+        },
+        {
+          "tag": "creative.creative_writing",
+          "macroCategory": "creative",
+          "share": 0.0705,
+          "rank": 3
+        },
+        {
+          "tag": "media.speech_transcription",
+          "macroCategory": "media",
+          "share": 0.0786,
+          "rank": 3
+        },
+        {
+          "tag": "writing.rewriting_editing",
+          "macroCategory": "writing",
+          "share": 0.031,
+          "rank": 5
+        },
+        {
+          "tag": "writing.drafting",
+          "macroCategory": "writing",
+          "share": 0.0354,
+          "rank": 7
+        },
+        {
+          "tag": "assistance.advice_coaching",
+          "macroCategory": "assistance",
+          "share": 0.0346,
+          "rank": 7
+        },
+        {
+          "tag": "writing.translation_localization",
+          "macroCategory": "writing",
+          "share": 0.0294,
+          "rank": 8
+        },
+        {
+          "tag": "information.planning_decision_support",
+          "macroCategory": "information",
+          "share": 0.0239,
+          "rank": 10
+        },
+        {
+          "tag": "software.architecture_requirements_planning",
+          "macroCategory": "software",
+          "share": 0.0279,
+          "rank": 10
+        }
+      ],
+      "windowDays": 30
     },
     "ranking": {
       "status": "measured",
-      "composite": 52.1,
-      "low": 30.1,
-      "rank": 14,
-      "uncalibrated": 16,
+      "composite": 53.4,
+      "low": 36,
+      "rank": 15,
+      "uncalibrated": 18,
       "dims": {
         "coding": {
           "value": 53.6,
@@ -2981,7 +4161,11 @@
           "evidence": 1
         },
         "knowledge": {
-          "value": 50.1,
+          "value": 60.7,
+          "evidence": 2
+        },
+        "agentic": {
+          "value": 49.4,
           "evidence": 1
         },
         "longContext": {
@@ -2993,8 +4177,8 @@
           "evidence": 2
         },
         "overall": {
-          "value": 52.1,
-          "evidence": 3
+          "value": 53.4,
+          "evidence": 5
         }
       }
     }
@@ -3041,6 +4225,73 @@
         "contextTokens": 1048576,
         "reasoning": true,
         "source": "https://artificialanalysis.ai/leaderboards/models"
+      },
+      "taskIndexes": {
+        "source": "https://artificialanalysis.ai/indexes",
+        "checkedAt": "2026-11-19",
+        "indexes": {
+          "economics": 36.5,
+          "engineering": 35.5,
+          "finance-and-accounting": 42.6,
+          "healthcare-and-medical": 38.3,
+          "legal": 35.5,
+          "strategy-and-ops": 47.6
+        },
+        "subScores": {
+          "economics": {
+            "knowledge": 49.8,
+            "reasoning": 17.2,
+            "longContext": 12.6,
+            "agenticKnowledgeWork": 51.2
+          },
+          "engineering": {
+            "science": 21.4,
+            "knowledge": 54.4,
+            "reasoning": 17.2,
+            "agenticTerminalUse": 24.9,
+            "agenticKnowledgeWork": 51.2
+          },
+          "finance-and-accounting": {
+            "knowledge": 20.4,
+            "reasoning": 17.2,
+            "longContext": 12.6,
+            "agenticToolUse": 78.4,
+            "nonHallucination": 73.7,
+            "agenticKnowledgeWork": 51.2
+          },
+          "healthcare-and-medical": {
+            "knowledge": 20.7,
+            "reasoning": 17.2,
+            "longContext": 15,
+            "agenticToolUse": 68.5,
+            "nonHallucination": 61.1,
+            "agenticKnowledgeWork": 51.2
+          },
+          "legal": {
+            "knowledge": 13.3,
+            "reasoning": 17.2,
+            "longContext": 12.6,
+            "agenticToolUse": 68.5,
+            "nonHallucination": 76.4,
+            "agenticKnowledgeWork": 51.2
+          },
+          "strategy-and-ops": {
+            "knowledge": 20.4,
+            "longContext": 12.6,
+            "agenticToolUse": 65.1,
+            "nonHallucination": 73.7,
+            "agenticKnowledgeWork": 51.2
+          }
+        }
+      },
+      "openrouterBenchmarks": {
+        "source": "https://openrouter.ai/benchmarks",
+        "checkedAt": "2026-11-19",
+        "accuracy": {
+          "gpqa": 0.8131,
+          "tau2": 0.7933,
+          "vgi-bench": 0.1139
+        }
       }
     },
     "scores": {
@@ -3068,16 +4319,31 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 120,
-      "tokens": 64795584496,
+      "tokens": 65171764565,
       "share": 0.0002,
-      "percentile": 44.2
+      "percentile": 44.2,
+      "tasks": [
+        {
+          "tag": "information.math_logic",
+          "macroCategory": "information",
+          "share": 0.0459,
+          "rank": 6
+        },
+        {
+          "tag": "software.implementation",
+          "macroCategory": "software",
+          "share": 0.0222,
+          "rank": 10
+        }
+      ],
+      "windowDays": 30
     },
     "ranking": {
       "status": "measured",
-      "composite": 49.7,
-      "low": 19.7,
-      "rank": 59,
-      "uncalibrated": 9,
+      "composite": 52.2,
+      "low": 38.2,
+      "rank": 7,
+      "uncalibrated": 10,
       "dims": {
         "coding": {
           "value": 52.3,
@@ -3087,13 +4353,21 @@
           "value": 47.1,
           "evidence": 1
         },
+        "knowledge": {
+          "value": 63.9,
+          "evidence": 1
+        },
+        "agentic": {
+          "value": 49.5,
+          "evidence": 1
+        },
         "longContext": {
           "value": 57.7,
           "evidence": 1
         },
         "overall": {
-          "value": 49.7,
-          "evidence": 2
+          "value": 52.2,
+          "evidence": 4
         }
       }
     }
@@ -3119,8 +4393,8 @@
         "intelligenceIndex": 32.6,
         "priceIn": 0.3,
         "priceOut": 1.2,
-        "ttft": 1.28127671807687,
-        "speed": 168.693866885755,
+        "ttft": 1.28311039688464,
+        "speed": 164.953655954574,
         "benchmarks": {
           "omniscience-accuracy": 39.6,
           "omniscience-non-hallucination": 35.9,
@@ -3161,6 +4435,72 @@
           "livebench-2-reasoning": 89.1
         },
         "board": "https://llmleaderboard.com"
+      },
+      "taskIndexes": {
+        "source": "https://artificialanalysis.ai/indexes",
+        "checkedAt": "2026-11-19",
+        "indexes": {
+          "economics": 38.5,
+          "engineering": 37.6,
+          "finance-and-accounting": 42.2,
+          "healthcare-and-medical": 41.3,
+          "legal": 37.7,
+          "strategy-and-ops": 49.2
+        },
+        "subScores": {
+          "economics": {
+            "knowledge": 45.1,
+            "reasoning": 25.3,
+            "longContext": 17.2,
+            "agenticKnowledgeWork": 53.5
+          },
+          "engineering": {
+            "science": 18.9,
+            "knowledge": 53.5,
+            "reasoning": 25.3,
+            "agenticTerminalUse": 31.2,
+            "agenticKnowledgeWork": 53.5
+          },
+          "finance-and-accounting": {
+            "knowledge": 29.3,
+            "reasoning": 25.3,
+            "longContext": 17.2,
+            "agenticToolUse": 74.1,
+            "nonHallucination": 44.7,
+            "agenticKnowledgeWork": 53.5
+          },
+          "healthcare-and-medical": {
+            "knowledge": 28.7,
+            "reasoning": 25.3,
+            "longContext": 26.7,
+            "agenticToolUse": 72.1,
+            "nonHallucination": 34.3,
+            "agenticKnowledgeWork": 53.5
+          },
+          "legal": {
+            "knowledge": 26.2,
+            "reasoning": 25.3,
+            "longContext": 17.2,
+            "agenticToolUse": 72.1,
+            "nonHallucination": 49.1,
+            "agenticKnowledgeWork": 53.5
+          },
+          "strategy-and-ops": {
+            "knowledge": 29.3,
+            "longContext": 17.2,
+            "agenticToolUse": 65,
+            "nonHallucination": 44.7,
+            "agenticKnowledgeWork": 53.5
+          }
+        }
+      },
+      "openrouterBenchmarks": {
+        "source": "https://openrouter.ai/benchmarks",
+        "checkedAt": "2026-11-19",
+        "accuracy": {
+          "gpqa": 0.8911,
+          "tau2": 0.7333
+        }
       }
     },
     "scores": {
@@ -3188,16 +4528,91 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 1,
-      "tokens": 62893202540068,
-      "share": 0.2347,
-      "percentile": 100
+      "tokens": 63442769051111,
+      "share": 0.2328,
+      "percentile": 100,
+      "tasks": [
+        {
+          "tag": "data.classification_tagging",
+          "macroCategory": "data",
+          "share": 0.0453,
+          "rank": 5
+        },
+        {
+          "tag": "software.database_sql",
+          "macroCategory": "software",
+          "share": 0.0303,
+          "rank": 5
+        },
+        {
+          "tag": "data.extraction",
+          "macroCategory": "data",
+          "share": 0.0337,
+          "rank": 6
+        },
+        {
+          "tag": "software.security_assessment",
+          "macroCategory": "software",
+          "share": 0.0357,
+          "rank": 7
+        },
+        {
+          "tag": "writing.summarization",
+          "macroCategory": "writing",
+          "share": 0.0395,
+          "rank": 7
+        },
+        {
+          "tag": "data.reconciliation_consolidation",
+          "macroCategory": "data",
+          "share": 0.0378,
+          "rank": 7
+        },
+        {
+          "tag": "writing.rewriting_editing",
+          "macroCategory": "writing",
+          "share": 0.0251,
+          "rank": 8
+        },
+        {
+          "tag": "writing.translation_localization",
+          "macroCategory": "writing",
+          "share": 0.0281,
+          "rank": 9
+        },
+        {
+          "tag": "assistance.casual_conversation",
+          "macroCategory": "assistance",
+          "share": 0.0311,
+          "rank": 9
+        },
+        {
+          "tag": "information.context_grounded_qa",
+          "macroCategory": "information",
+          "share": 0.0293,
+          "rank": 10
+        },
+        {
+          "tag": "writing.drafting",
+          "macroCategory": "writing",
+          "share": 0.0255,
+          "rank": 10
+        },
+        {
+          "tag": "software.testing_verification",
+          "macroCategory": "software",
+          "share": 0.0227,
+          "rank": 10
+        }
+      ],
+      "windowDays": 30
     },
     "ranking": {
       "status": "measured",
-      "composite": 48.7,
-      "low": 26.7,
-      "rank": 31,
-      "uncalibrated": 15,
+      "composite": 51,
+      "low": 32.8,
+      "rank": 37,
+      "uncalibrated": 16,
       "dims": {
         "coding": {
           "value": 52,
@@ -3208,7 +4623,11 @@
           "evidence": 1
         },
         "knowledge": {
-          "value": 43.9,
+          "value": 56,
+          "evidence": 2
+        },
+        "agentic": {
+          "value": 49.4,
           "evidence": 1
         },
         "longContext": {
@@ -3216,12 +4635,12 @@
           "evidence": 1
         },
         "speed": {
-          "value": 75.9,
+          "value": 75.7,
           "evidence": 2
         },
         "overall": {
-          "value": 48.7,
-          "evidence": 3
+          "value": 51,
+          "evidence": 5
         }
       }
     }
@@ -3247,8 +4666,8 @@
         "intelligenceIndex": 31.7,
         "priceIn": 1.4,
         "priceOut": 4.4,
-        "ttft": 2.75660065294884,
-        "speed": 83.1324318409764,
+        "ttft": 2.74370217399648,
+        "speed": 81.8347573284862,
         "benchmarks": {
           "omniscience-accuracy": 32.3,
           "omniscience-non-hallucination": 61.1,
@@ -3295,6 +4714,72 @@
           "gdp-pdf-aa": 11.2
         },
         "board": "https://llmleaderboard.com"
+      },
+      "taskIndexes": {
+        "source": "https://artificialanalysis.ai/indexes",
+        "checkedAt": "2026-11-19",
+        "indexes": {
+          "economics": 37.3,
+          "engineering": 37.6,
+          "finance-and-accounting": 42.1,
+          "healthcare-and-medical": 39.3,
+          "legal": 35.8,
+          "strategy-and-ops": 47.4
+        },
+        "subScores": {
+          "economics": {
+            "knowledge": 52.6,
+            "reasoning": 17.9,
+            "longContext": 11.2,
+            "agenticKnowledgeWork": 51.3
+          },
+          "engineering": {
+            "science": 21.5,
+            "knowledge": 57.5,
+            "reasoning": 17.9,
+            "agenticTerminalUse": 31.8,
+            "agenticKnowledgeWork": 51.3
+          },
+          "finance-and-accounting": {
+            "knowledge": 23.6,
+            "reasoning": 17.9,
+            "longContext": 11.2,
+            "agenticToolUse": 62.3,
+            "nonHallucination": 75.9,
+            "agenticKnowledgeWork": 51.3
+          },
+          "healthcare-and-medical": {
+            "knowledge": 24.7,
+            "reasoning": 17.9,
+            "longContext": 17.2,
+            "agenticToolUse": 70.3,
+            "nonHallucination": 54.3,
+            "agenticKnowledgeWork": 51.3
+          },
+          "legal": {
+            "knowledge": 15.3,
+            "reasoning": 17.9,
+            "longContext": 11.2,
+            "agenticToolUse": 70.3,
+            "nonHallucination": 73.8,
+            "agenticKnowledgeWork": 51.3
+          },
+          "strategy-and-ops": {
+            "knowledge": 23.6,
+            "longContext": 11.2,
+            "agenticToolUse": 62.2,
+            "nonHallucination": 75.9,
+            "agenticKnowledgeWork": 51.3
+          }
+        }
+      },
+      "openrouterBenchmarks": {
+        "source": "https://openrouter.ai/benchmarks",
+        "checkedAt": "2026-11-19",
+        "accuracy": {
+          "gpqa": 0.8537,
+          "tau2": 0.76
+        }
       }
     },
     "scores": {
@@ -3319,11 +4804,23 @@
       "vision": 0,
       "speed": 0
     },
+    "usage": {
+      "source": "openrouter-task-spend",
+      "tasks": [
+        {
+          "tag": "assistance.service_issue_resolution",
+          "macroCategory": "assistance",
+          "share": 0.0275,
+          "rank": 9
+        }
+      ],
+      "windowDays": 30
+    },
     "ranking": {
       "status": "measured",
-      "composite": 51.3,
-      "low": 26.2,
-      "rank": 35,
+      "composite": 50.9,
+      "low": 34.5,
+      "rank": 23,
       "uncalibrated": 20,
       "dims": {
         "coding": {
@@ -3338,17 +4835,21 @@
           "value": 55.5,
           "evidence": 2
         },
+        "agentic": {
+          "value": 49.5,
+          "evidence": 1
+        },
         "longContext": {
           "value": 58.1,
           "evidence": 1
         },
         "speed": {
-          "value": 69,
+          "value": 68.9,
           "evidence": 2
         },
         "overall": {
-          "value": 51.3,
-          "evidence": 4
+          "value": 50.9,
+          "evidence": 5
         }
       }
     }
@@ -3374,8 +4875,8 @@
         "intelligenceIndex": 46.5,
         "priceIn": 2,
         "priceOut": 10,
-        "ttft": 3.58571830072023,
-        "speed": 30.5873421320193,
+        "ttft": 3.56063179187939,
+        "speed": 30.6689937217673,
         "benchmarks": {
           "omniscience-accuracy": 48.9,
           "omniscience-non-hallucination": 62.7,
@@ -3417,6 +4918,73 @@
           "livebench-2-reasoning": 91.1
         },
         "board": "https://llmleaderboard.com"
+      },
+      "taskIndexes": {
+        "source": "https://artificialanalysis.ai/indexes",
+        "checkedAt": "2026-11-19",
+        "indexes": {
+          "economics": 49.9,
+          "engineering": 50.9,
+          "finance-and-accounting": 53.3,
+          "healthcare-and-medical": 51.6,
+          "legal": 49.2,
+          "strategy-and-ops": 57.6
+        },
+        "subScores": {
+          "economics": {
+            "knowledge": 60.8,
+            "reasoning": 37.3,
+            "longContext": 31.4,
+            "agenticKnowledgeWork": 58.9
+          },
+          "engineering": {
+            "science": 41.9,
+            "knowledge": 64.3,
+            "reasoning": 37.3,
+            "agenticTerminalUse": 46.3,
+            "agenticKnowledgeWork": 58.9
+          },
+          "finance-and-accounting": {
+            "knowledge": 38.7,
+            "reasoning": 37.3,
+            "longContext": 31.4,
+            "agenticToolUse": 80.3,
+            "nonHallucination": 72.1,
+            "agenticKnowledgeWork": 58.9
+          },
+          "healthcare-and-medical": {
+            "knowledge": 42.4,
+            "reasoning": 37.3,
+            "longContext": 38.3,
+            "agenticToolUse": 76.8,
+            "nonHallucination": 52.9,
+            "agenticKnowledgeWork": 58.9
+          },
+          "legal": {
+            "knowledge": 31.6,
+            "reasoning": 37.3,
+            "longContext": 31.4,
+            "agenticToolUse": 76.8,
+            "nonHallucination": 83.1,
+            "agenticKnowledgeWork": 58.9
+          },
+          "strategy-and-ops": {
+            "knowledge": 38.7,
+            "longContext": 31.4,
+            "agenticToolUse": 71.7,
+            "nonHallucination": 72.1,
+            "agenticKnowledgeWork": 58.9
+          }
+        }
+      },
+      "openrouterBenchmarks": {
+        "source": "https://openrouter.ai/benchmarks",
+        "checkedAt": "2026-11-19",
+        "accuracy": {
+          "gpqa": 0.936,
+          "tau2": 0.7567,
+          "vgi-bench": 0.1549
+        }
       }
     },
     "scores": {
@@ -3441,12 +5009,72 @@
       "vision": 0,
       "speed": 0
     },
+    "usage": {
+      "source": "openrouter-task-spend",
+      "tasks": [
+        {
+          "tag": "creative.interactive_roleplay",
+          "macroCategory": "creative",
+          "share": 0.0869,
+          "rank": 2
+        },
+        {
+          "tag": "creative.creative_writing",
+          "macroCategory": "creative",
+          "share": 0.0705,
+          "rank": 3
+        },
+        {
+          "tag": "media.speech_transcription",
+          "macroCategory": "media",
+          "share": 0.0786,
+          "rank": 3
+        },
+        {
+          "tag": "writing.rewriting_editing",
+          "macroCategory": "writing",
+          "share": 0.031,
+          "rank": 5
+        },
+        {
+          "tag": "writing.drafting",
+          "macroCategory": "writing",
+          "share": 0.0354,
+          "rank": 7
+        },
+        {
+          "tag": "assistance.advice_coaching",
+          "macroCategory": "assistance",
+          "share": 0.0346,
+          "rank": 7
+        },
+        {
+          "tag": "writing.translation_localization",
+          "macroCategory": "writing",
+          "share": 0.0294,
+          "rank": 8
+        },
+        {
+          "tag": "information.planning_decision_support",
+          "macroCategory": "information",
+          "share": 0.0239,
+          "rank": 10
+        },
+        {
+          "tag": "software.architecture_requirements_planning",
+          "macroCategory": "software",
+          "share": 0.0279,
+          "rank": 10
+        }
+      ],
+      "windowDays": 30
+    },
     "ranking": {
       "status": "measured",
-      "composite": 52.1,
-      "low": 30.1,
-      "rank": 16,
-      "uncalibrated": 16,
+      "composite": 53.4,
+      "low": 36,
+      "rank": 17,
+      "uncalibrated": 18,
       "dims": {
         "coding": {
           "value": 53.6,
@@ -3457,7 +5085,11 @@
           "evidence": 1
         },
         "knowledge": {
-          "value": 50.1,
+          "value": 60.7,
+          "evidence": 2
+        },
+        "agentic": {
+          "value": 49.4,
           "evidence": 1
         },
         "longContext": {
@@ -3469,8 +5101,8 @@
           "evidence": 2
         },
         "overall": {
-          "value": 52.1,
-          "evidence": 3
+          "value": 53.4,
+          "evidence": 5
         }
       }
     }
@@ -3496,8 +5128,8 @@
         "intelligenceIndex": 46.5,
         "priceIn": 2,
         "priceOut": 10,
-        "ttft": 3.58571830072023,
-        "speed": 30.5873421320193,
+        "ttft": 3.56063179187939,
+        "speed": 30.6689937217673,
         "benchmarks": {
           "omniscience-accuracy": 48.9,
           "omniscience-non-hallucination": 62.7,
@@ -3539,6 +5171,73 @@
           "livebench-2-reasoning": 91.1
         },
         "board": "https://llmleaderboard.com"
+      },
+      "taskIndexes": {
+        "source": "https://artificialanalysis.ai/indexes",
+        "checkedAt": "2026-11-19",
+        "indexes": {
+          "economics": 49.9,
+          "engineering": 50.9,
+          "finance-and-accounting": 53.3,
+          "healthcare-and-medical": 51.6,
+          "legal": 49.2,
+          "strategy-and-ops": 57.6
+        },
+        "subScores": {
+          "economics": {
+            "knowledge": 60.8,
+            "reasoning": 37.3,
+            "longContext": 31.4,
+            "agenticKnowledgeWork": 58.9
+          },
+          "engineering": {
+            "science": 41.9,
+            "knowledge": 64.3,
+            "reasoning": 37.3,
+            "agenticTerminalUse": 46.3,
+            "agenticKnowledgeWork": 58.9
+          },
+          "finance-and-accounting": {
+            "knowledge": 38.7,
+            "reasoning": 37.3,
+            "longContext": 31.4,
+            "agenticToolUse": 80.3,
+            "nonHallucination": 72.1,
+            "agenticKnowledgeWork": 58.9
+          },
+          "healthcare-and-medical": {
+            "knowledge": 42.4,
+            "reasoning": 37.3,
+            "longContext": 38.3,
+            "agenticToolUse": 76.8,
+            "nonHallucination": 52.9,
+            "agenticKnowledgeWork": 58.9
+          },
+          "legal": {
+            "knowledge": 31.6,
+            "reasoning": 37.3,
+            "longContext": 31.4,
+            "agenticToolUse": 76.8,
+            "nonHallucination": 83.1,
+            "agenticKnowledgeWork": 58.9
+          },
+          "strategy-and-ops": {
+            "knowledge": 38.7,
+            "longContext": 31.4,
+            "agenticToolUse": 71.7,
+            "nonHallucination": 72.1,
+            "agenticKnowledgeWork": 58.9
+          }
+        }
+      },
+      "openrouterBenchmarks": {
+        "source": "https://openrouter.ai/benchmarks",
+        "checkedAt": "2026-11-19",
+        "accuracy": {
+          "gpqa": 0.936,
+          "tau2": 0.7567,
+          "vgi-bench": 0.1549
+        }
       }
     },
     "scores": {
@@ -3566,16 +5265,73 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 11,
-      "tokens": 3594782713475,
-      "share": 0.0134,
-      "percentile": 88.4
+      "tokens": 3624209328860,
+      "share": 0.0133,
+      "percentile": 88.4,
+      "tasks": [
+        {
+          "tag": "creative.interactive_roleplay",
+          "macroCategory": "creative",
+          "share": 0.0869,
+          "rank": 2
+        },
+        {
+          "tag": "creative.creative_writing",
+          "macroCategory": "creative",
+          "share": 0.0705,
+          "rank": 3
+        },
+        {
+          "tag": "media.speech_transcription",
+          "macroCategory": "media",
+          "share": 0.0786,
+          "rank": 3
+        },
+        {
+          "tag": "writing.rewriting_editing",
+          "macroCategory": "writing",
+          "share": 0.031,
+          "rank": 5
+        },
+        {
+          "tag": "writing.drafting",
+          "macroCategory": "writing",
+          "share": 0.0354,
+          "rank": 7
+        },
+        {
+          "tag": "assistance.advice_coaching",
+          "macroCategory": "assistance",
+          "share": 0.0346,
+          "rank": 7
+        },
+        {
+          "tag": "writing.translation_localization",
+          "macroCategory": "writing",
+          "share": 0.0294,
+          "rank": 8
+        },
+        {
+          "tag": "information.planning_decision_support",
+          "macroCategory": "information",
+          "share": 0.0239,
+          "rank": 10
+        },
+        {
+          "tag": "software.architecture_requirements_planning",
+          "macroCategory": "software",
+          "share": 0.0279,
+          "rank": 10
+        }
+      ],
+      "windowDays": 30
     },
     "ranking": {
       "status": "measured",
-      "composite": 52.1,
-      "low": 30.1,
-      "rank": 15,
-      "uncalibrated": 16,
+      "composite": 53.4,
+      "low": 36,
+      "rank": 16,
+      "uncalibrated": 18,
       "dims": {
         "coding": {
           "value": 53.6,
@@ -3586,7 +5342,11 @@
           "evidence": 1
         },
         "knowledge": {
-          "value": 50.1,
+          "value": 60.7,
+          "evidence": 2
+        },
+        "agentic": {
+          "value": 49.4,
           "evidence": 1
         },
         "longContext": {
@@ -3598,8 +5358,8 @@
           "evidence": 2
         },
         "overall": {
-          "value": 52.1,
-          "evidence": 3
+          "value": 53.4,
+          "evidence": 5
         }
       }
     }
@@ -3625,8 +5385,8 @@
         "intelligenceIndex": 29.1,
         "priceIn": 0.15,
         "priceOut": 0.6,
-        "ttft": 1.32733236220418,
-        "speed": 128.913276405504,
+        "ttft": 1.31307447754697,
+        "speed": 128.382853557037,
         "benchmarks": {
           "omniscience-accuracy": 45.1,
           "omniscience-non-hallucination": 6.3,
@@ -3662,6 +5422,15 @@
           "livebench-2-reasoning": 82.9
         },
         "board": "https://llmleaderboard.com"
+      },
+      "openrouterBenchmarks": {
+        "source": "https://openrouter.ai/benchmarks",
+        "checkedAt": "2026-11-19",
+        "accuracy": {
+          "gpqa": 0.8763,
+          "tau2": 0.6667,
+          "vgi-bench": 0.2222
+        }
       }
     },
     "scores": {
@@ -3689,16 +5458,16 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 10,
-      "tokens": 3724408267913,
-      "share": 0.0139,
+      "tokens": 3761322683384,
+      "share": 0.0138,
       "percentile": 90.7
     },
     "ranking": {
       "status": "measured",
-      "composite": 49.5,
-      "low": 27.5,
-      "rank": 25,
-      "uncalibrated": 15,
+      "composite": 51.5,
+      "low": 33.3,
+      "rank": 33,
+      "uncalibrated": 17,
       "dims": {
         "coding": {
           "value": 51.1,
@@ -3709,7 +5478,11 @@
           "evidence": 1
         },
         "knowledge": {
-          "value": 46.6,
+          "value": 58,
+          "evidence": 2
+        },
+        "agentic": {
+          "value": 49.3,
           "evidence": 1
         },
         "longContext": {
@@ -3717,12 +5490,12 @@
           "evidence": 1
         },
         "speed": {
-          "value": 73.7,
+          "value": 73.8,
           "evidence": 2
         },
         "overall": {
-          "value": 49.5,
-          "evidence": 3
+          "value": 51.5,
+          "evidence": 5
         }
       }
     }
@@ -3748,8 +5521,8 @@
         "intelligenceIndex": 29.9,
         "priceIn": 0.435,
         "priceOut": 0.87,
-        "ttft": 3.91732312338748,
-        "speed": 56.1867441544446,
+        "ttft": 3.91506793809655,
+        "speed": 56.1062588235209,
         "benchmarks": {
           "omniscience-accuracy": 34.8,
           "omniscience-non-hallucination": 39.8,
@@ -3785,6 +5558,73 @@
           "livebench-2-reasoning": 79.6
         },
         "board": "https://llmleaderboard.com"
+      },
+      "taskIndexes": {
+        "source": "https://artificialanalysis.ai/indexes",
+        "checkedAt": "2026-11-19",
+        "indexes": {
+          "economics": 36.1,
+          "engineering": 34.3,
+          "finance-and-accounting": 38.9,
+          "healthcare-and-medical": 35.8,
+          "legal": 35,
+          "strategy-and-ops": 46.9
+        },
+        "subScores": {
+          "economics": {
+            "knowledge": 46.8,
+            "reasoning": 15.2,
+            "longContext": 19.2,
+            "agenticKnowledgeWork": 51.1
+          },
+          "engineering": {
+            "science": 19.9,
+            "knowledge": 50.6,
+            "reasoning": 15.2,
+            "agenticTerminalUse": 29.4,
+            "agenticKnowledgeWork": 51.1
+          },
+          "finance-and-accounting": {
+            "knowledge": 29.8,
+            "reasoning": 15.2,
+            "longContext": 19.2,
+            "agenticToolUse": 56.3,
+            "nonHallucination": 48.4,
+            "agenticKnowledgeWork": 51.1
+          },
+          "healthcare-and-medical": {
+            "knowledge": 26.4,
+            "reasoning": 15.2,
+            "longContext": 12.8,
+            "agenticToolUse": 65.7,
+            "nonHallucination": 30.8,
+            "agenticKnowledgeWork": 51.1
+          },
+          "legal": {
+            "knowledge": 17.8,
+            "reasoning": 15.2,
+            "longContext": 19.2,
+            "agenticToolUse": 65.7,
+            "nonHallucination": 62.4,
+            "agenticKnowledgeWork": 51.1
+          },
+          "strategy-and-ops": {
+            "knowledge": 29.8,
+            "longContext": 19.2,
+            "agenticToolUse": 59.1,
+            "nonHallucination": 48.4,
+            "agenticKnowledgeWork": 51.1
+          }
+        }
+      },
+      "openrouterBenchmarks": {
+        "source": "https://openrouter.ai/benchmarks",
+        "checkedAt": "2026-11-19",
+        "accuracy": {
+          "gpqa": 0.8833,
+          "tau2": 0.7678,
+          "vgi-bench": 0.1549
+        }
       }
     },
     "scores": {
@@ -3812,16 +5652,73 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 232,
-      "tokens": 8272665518,
+      "tokens": 8326732230,
       "share": 0,
-      "percentile": 7
+      "percentile": 7,
+      "tasks": [
+        {
+          "tag": "creative.interactive_roleplay",
+          "macroCategory": "creative",
+          "share": 0.0869,
+          "rank": 2
+        },
+        {
+          "tag": "creative.creative_writing",
+          "macroCategory": "creative",
+          "share": 0.0705,
+          "rank": 3
+        },
+        {
+          "tag": "media.speech_transcription",
+          "macroCategory": "media",
+          "share": 0.0786,
+          "rank": 3
+        },
+        {
+          "tag": "writing.rewriting_editing",
+          "macroCategory": "writing",
+          "share": 0.031,
+          "rank": 5
+        },
+        {
+          "tag": "writing.drafting",
+          "macroCategory": "writing",
+          "share": 0.0354,
+          "rank": 7
+        },
+        {
+          "tag": "assistance.advice_coaching",
+          "macroCategory": "assistance",
+          "share": 0.0346,
+          "rank": 7
+        },
+        {
+          "tag": "writing.translation_localization",
+          "macroCategory": "writing",
+          "share": 0.0294,
+          "rank": 8
+        },
+        {
+          "tag": "information.planning_decision_support",
+          "macroCategory": "information",
+          "share": 0.0239,
+          "rank": 10
+        },
+        {
+          "tag": "software.architecture_requirements_planning",
+          "macroCategory": "software",
+          "share": 0.0279,
+          "rank": 10
+        }
+      ],
+      "windowDays": 30
     },
     "ranking": {
       "status": "measured",
-      "composite": 49.6,
-      "low": 27.6,
-      "rank": 23,
-      "uncalibrated": 15,
+      "composite": 51.6,
+      "low": 33.4,
+      "rank": 30,
+      "uncalibrated": 17,
       "dims": {
         "coding": {
           "value": 53.6,
@@ -3832,7 +5729,11 @@
           "evidence": 1
         },
         "knowledge": {
-          "value": 46.1,
+          "value": 57.6,
+          "evidence": 2
+        },
+        "agentic": {
+          "value": 49.5,
           "evidence": 1
         },
         "longContext": {
@@ -3844,8 +5745,8 @@
           "evidence": 1
         },
         "overall": {
-          "value": 49.6,
-          "evidence": 3
+          "value": 51.6,
+          "evidence": 5
         }
       }
     }
@@ -3871,8 +5772,8 @@
         "intelligenceIndex": 28.5,
         "priceIn": 1,
         "priceOut": 2.7,
-        "ttft": 0.876942346058102,
-        "speed": 154.315360633647,
+        "ttft": 0.872625925247226,
+        "speed": 156.431168256532,
         "benchmarks": {
           "omniscience-accuracy": 36.4,
           "omniscience-non-hallucination": 68.7,
@@ -3911,6 +5812,13 @@
           "livebench-2-reasoning": 83.8
         },
         "board": "https://llmleaderboard.com"
+      },
+      "openrouterBenchmarks": {
+        "source": "https://openrouter.ai/benchmarks",
+        "checkedAt": "2026-11-19",
+        "accuracy": {
+          "vgi-bench": 0.4506
+        }
       }
     },
     "scores": {
@@ -3938,16 +5846,16 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 8,
-      "tokens": 6494579882687,
-      "share": 0.0242,
+      "tokens": 6615979292504,
+      "share": 0.0243,
       "percentile": 93
     },
     "ranking": {
       "status": "measured",
       "composite": 49.4,
       "low": 27.4,
-      "rank": 26,
-      "uncalibrated": 18,
+      "rank": 56,
+      "uncalibrated": 20,
       "dims": {
         "coding": {
           "value": 53,
@@ -3966,7 +5874,7 @@
           "evidence": 1
         },
         "speed": {
-          "value": 77.5,
+          "value": 77.7,
           "evidence": 1
         },
         "overall": {
@@ -3997,8 +5905,8 @@
         "intelligenceIndex": 32.6,
         "priceIn": 0.3,
         "priceOut": 1.2,
-        "ttft": 1.28127671807687,
-        "speed": 168.693866885755,
+        "ttft": 1.28311039688464,
+        "speed": 164.953655954574,
         "benchmarks": {
           "omniscience-accuracy": 39.6,
           "omniscience-non-hallucination": 35.9,
@@ -4036,6 +5944,72 @@
           "gdp-pdf-aa": 12.8
         },
         "board": "https://llmleaderboard.com"
+      },
+      "taskIndexes": {
+        "source": "https://artificialanalysis.ai/indexes",
+        "checkedAt": "2026-11-19",
+        "indexes": {
+          "economics": 38.5,
+          "engineering": 37.6,
+          "finance-and-accounting": 42.2,
+          "healthcare-and-medical": 41.3,
+          "legal": 37.7,
+          "strategy-and-ops": 49.2
+        },
+        "subScores": {
+          "economics": {
+            "knowledge": 45.1,
+            "reasoning": 25.3,
+            "longContext": 17.2,
+            "agenticKnowledgeWork": 53.5
+          },
+          "engineering": {
+            "science": 18.9,
+            "knowledge": 53.5,
+            "reasoning": 25.3,
+            "agenticTerminalUse": 31.2,
+            "agenticKnowledgeWork": 53.5
+          },
+          "finance-and-accounting": {
+            "knowledge": 29.3,
+            "reasoning": 25.3,
+            "longContext": 17.2,
+            "agenticToolUse": 74.1,
+            "nonHallucination": 44.7,
+            "agenticKnowledgeWork": 53.5
+          },
+          "healthcare-and-medical": {
+            "knowledge": 28.7,
+            "reasoning": 25.3,
+            "longContext": 26.7,
+            "agenticToolUse": 72.1,
+            "nonHallucination": 34.3,
+            "agenticKnowledgeWork": 53.5
+          },
+          "legal": {
+            "knowledge": 26.2,
+            "reasoning": 25.3,
+            "longContext": 17.2,
+            "agenticToolUse": 72.1,
+            "nonHallucination": 49.1,
+            "agenticKnowledgeWork": 53.5
+          },
+          "strategy-and-ops": {
+            "knowledge": 29.3,
+            "longContext": 17.2,
+            "agenticToolUse": 65,
+            "nonHallucination": 44.7,
+            "agenticKnowledgeWork": 53.5
+          }
+        }
+      },
+      "openrouterBenchmarks": {
+        "source": "https://openrouter.ai/benchmarks",
+        "checkedAt": "2026-11-19",
+        "accuracy": {
+          "gpqa": 0.8911,
+          "tau2": 0.7333
+        }
       }
     },
     "scores": {
@@ -4063,16 +6037,91 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 3,
-      "tokens": 16193882008084,
-      "share": 0.0604,
-      "percentile": 97.7
+      "tokens": 16306865190152,
+      "share": 0.0598,
+      "percentile": 97.7,
+      "tasks": [
+        {
+          "tag": "data.classification_tagging",
+          "macroCategory": "data",
+          "share": 0.0453,
+          "rank": 5
+        },
+        {
+          "tag": "software.database_sql",
+          "macroCategory": "software",
+          "share": 0.0303,
+          "rank": 5
+        },
+        {
+          "tag": "data.extraction",
+          "macroCategory": "data",
+          "share": 0.0337,
+          "rank": 6
+        },
+        {
+          "tag": "software.security_assessment",
+          "macroCategory": "software",
+          "share": 0.0357,
+          "rank": 7
+        },
+        {
+          "tag": "writing.summarization",
+          "macroCategory": "writing",
+          "share": 0.0395,
+          "rank": 7
+        },
+        {
+          "tag": "data.reconciliation_consolidation",
+          "macroCategory": "data",
+          "share": 0.0378,
+          "rank": 7
+        },
+        {
+          "tag": "writing.rewriting_editing",
+          "macroCategory": "writing",
+          "share": 0.0251,
+          "rank": 8
+        },
+        {
+          "tag": "writing.translation_localization",
+          "macroCategory": "writing",
+          "share": 0.0281,
+          "rank": 9
+        },
+        {
+          "tag": "assistance.casual_conversation",
+          "macroCategory": "assistance",
+          "share": 0.0311,
+          "rank": 9
+        },
+        {
+          "tag": "information.context_grounded_qa",
+          "macroCategory": "information",
+          "share": 0.0293,
+          "rank": 10
+        },
+        {
+          "tag": "writing.drafting",
+          "macroCategory": "writing",
+          "share": 0.0255,
+          "rank": 10
+        },
+        {
+          "tag": "software.testing_verification",
+          "macroCategory": "software",
+          "share": 0.0227,
+          "rank": 10
+        }
+      ],
+      "windowDays": 30
     },
     "ranking": {
       "status": "measured",
-      "composite": 48.7,
-      "low": 26.7,
-      "rank": 30,
-      "uncalibrated": 12,
+      "composite": 51,
+      "low": 32.8,
+      "rank": 36,
+      "uncalibrated": 13,
       "dims": {
         "coding": {
           "value": 52,
@@ -4083,7 +6132,11 @@
           "evidence": 1
         },
         "knowledge": {
-          "value": 43.9,
+          "value": 56,
+          "evidence": 2
+        },
+        "agentic": {
+          "value": 49.4,
           "evidence": 1
         },
         "longContext": {
@@ -4091,12 +6144,12 @@
           "evidence": 1
         },
         "speed": {
-          "value": 78.3,
+          "value": 78.1,
           "evidence": 2
         },
         "overall": {
-          "value": 48.7,
-          "evidence": 3
+          "value": 51,
+          "evidence": 5
         }
       }
     }
@@ -4122,8 +6175,8 @@
         "intelligenceIndex": 27.8,
         "priceIn": 0.15,
         "priceOut": 0.5,
-        "ttft": 3.28087971780916,
-        "speed": 56.5939634765066,
+        "ttft": 3.266388685787,
+        "speed": 56.7114202246121,
         "benchmarks": {
           "omniscience-accuracy": 28.2,
           "omniscience-non-hallucination": 61.7,
@@ -4171,6 +6224,15 @@
           "livebench-2-reasoning": 77.6
         },
         "board": "https://llmleaderboard.com"
+      },
+      "openrouterBenchmarks": {
+        "source": "https://openrouter.ai/benchmarks",
+        "checkedAt": "2026-11-19",
+        "accuracy": {
+          "gpqa": 0.8407,
+          "tau2": 0.7,
+          "vgi-bench": 0.1549
+        }
       }
     },
     "scores": {
@@ -4198,16 +6260,73 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 5,
-      "tokens": 11013608518087,
-      "share": 0.0411,
-      "percentile": 95.3
+      "tokens": 11104179197377,
+      "share": 0.0408,
+      "percentile": 95.3,
+      "tasks": [
+        {
+          "tag": "creative.interactive_roleplay",
+          "macroCategory": "creative",
+          "share": 0.0869,
+          "rank": 2
+        },
+        {
+          "tag": "creative.creative_writing",
+          "macroCategory": "creative",
+          "share": 0.0705,
+          "rank": 3
+        },
+        {
+          "tag": "media.speech_transcription",
+          "macroCategory": "media",
+          "share": 0.0786,
+          "rank": 3
+        },
+        {
+          "tag": "writing.rewriting_editing",
+          "macroCategory": "writing",
+          "share": 0.031,
+          "rank": 5
+        },
+        {
+          "tag": "writing.drafting",
+          "macroCategory": "writing",
+          "share": 0.0354,
+          "rank": 7
+        },
+        {
+          "tag": "assistance.advice_coaching",
+          "macroCategory": "assistance",
+          "share": 0.0346,
+          "rank": 7
+        },
+        {
+          "tag": "writing.translation_localization",
+          "macroCategory": "writing",
+          "share": 0.0294,
+          "rank": 8
+        },
+        {
+          "tag": "information.planning_decision_support",
+          "macroCategory": "information",
+          "share": 0.0239,
+          "rank": 10
+        },
+        {
+          "tag": "software.architecture_requirements_planning",
+          "macroCategory": "software",
+          "share": 0.0279,
+          "rank": 10
+        }
+      ],
+      "windowDays": 30
     },
     "ranking": {
       "status": "measured",
-      "composite": 50.4,
-      "low": 25.6,
-      "rank": 40,
-      "uncalibrated": 20,
+      "composite": 50.2,
+      "low": 34,
+      "rank": 27,
+      "uncalibrated": 22,
       "dims": {
         "coding": {
           "value": 50.5,
@@ -4218,8 +6337,12 @@
           "evidence": 1
         },
         "knowledge": {
-          "value": 56.4,
+          "value": 56.5,
           "evidence": 2
+        },
+        "agentic": {
+          "value": 49.4,
+          "evidence": 1
         },
         "longContext": {
           "value": 57.2,
@@ -4230,8 +6353,8 @@
           "evidence": 2
         },
         "overall": {
-          "value": 50.4,
-          "evidence": 4
+          "value": 50.2,
+          "evidence": 5
         }
       }
     }
@@ -4261,8 +6384,8 @@
         "intelligenceIndex": null,
         "priceIn": 0.2,
         "priceOut": 1.15,
-        "ttft": 2.76760428764169,
-        "speed": 144.833803058206,
+        "ttft": 2.72745057311669,
+        "speed": 138.634739688018,
         "benchmarks": {
           "gpqa": 80.9,
           "hle": 21.4,
@@ -4279,6 +6402,13 @@
         "contextTokens": 262144,
         "reasoning": true,
         "source": "https://artificialanalysis.ai/leaderboards/models"
+      },
+      "openrouterBenchmarks": {
+        "source": "https://openrouter.ai/benchmarks",
+        "checkedAt": "2026-11-19",
+        "accuracy": {
+          "vgi-bench": 0.1139
+        }
       }
     },
     "scores": {
@@ -4306,16 +6436,31 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 200,
-      "tokens": 13915100763,
+      "tokens": 14054568911,
       "share": 0.0001,
-      "percentile": 20.9
+      "percentile": 20.9,
+      "tasks": [
+        {
+          "tag": "information.math_logic",
+          "macroCategory": "information",
+          "share": 0.0459,
+          "rank": 6
+        },
+        {
+          "tag": "software.implementation",
+          "macroCategory": "software",
+          "share": 0.0222,
+          "rank": 10
+        }
+      ],
+      "windowDays": 30
     },
     "ranking": {
       "status": "measured",
       "composite": 49.3,
       "low": 27.3,
-      "rank": 27,
-      "uncalibrated": 7,
+      "rank": 57,
+      "uncalibrated": 9,
       "dims": {
         "coding": {
           "value": 48,
@@ -4338,7 +6483,7 @@
           "evidence": 0
         },
         "speed": {
-          "value": 60.3,
+          "value": 60,
           "evidence": 1
         },
         "overall": {
@@ -4369,8 +6514,8 @@
         "intelligenceIndex": 20.8,
         "priceIn": 1.32,
         "priceOut": 3.96,
-        "ttft": 3.69432040121335,
-        "speed": 71.6814880049236,
+        "ttft": 3.20108583066251,
+        "speed": 75.0165584276031,
         "benchmarks": {
           "omniscience-accuracy": 45.1,
           "omniscience-non-hallucination": 5.9,
@@ -4394,6 +6539,15 @@
         "eci": 150.2,
         "date": "2026-04-24",
         "board": "https://epoch.ai/eci"
+      },
+      "openrouterBenchmarks": {
+        "source": "https://openrouter.ai/benchmarks",
+        "checkedAt": "2026-11-19",
+        "accuracy": {
+          "gpqa": 0.8728,
+          "tau2": 0.7686,
+          "vgi-bench": 0.4506
+        }
       }
     },
     "scores": {
@@ -4421,16 +6575,37 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 49,
-      "tokens": 571521443331,
+      "tokens": 576151882037,
       "share": 0.0021,
-      "percentile": 65.1
+      "percentile": 65.1,
+      "tasks": [
+        {
+          "tag": "creative.creative_writing",
+          "macroCategory": "creative",
+          "share": 0.0321,
+          "rank": 6
+        },
+        {
+          "tag": "creative.interactive_roleplay",
+          "macroCategory": "creative",
+          "share": 0.0271,
+          "rank": 9
+        },
+        {
+          "tag": "writing.translation_localization",
+          "macroCategory": "writing",
+          "share": 0.0231,
+          "rank": 10
+        }
+      ],
+      "windowDays": 30
     },
     "ranking": {
       "status": "measured",
-      "composite": 49,
-      "low": 19,
-      "rank": 60,
-      "uncalibrated": 9,
+      "composite": 51.7,
+      "low": 37.7,
+      "rank": 9,
+      "uncalibrated": 10,
       "dims": {
         "coding": {
           "value": 50.6,
@@ -4440,17 +6615,25 @@
           "value": 47.3,
           "evidence": 1
         },
+        "knowledge": {
+          "value": 64,
+          "evidence": 1
+        },
+        "agentic": {
+          "value": 49.5,
+          "evidence": 1
+        },
         "longContext": {
           "value": 66.7,
           "evidence": 1
         },
         "speed": {
-          "value": 48.7,
+          "value": 51.3,
           "evidence": 1
         },
         "overall": {
-          "value": 49,
-          "evidence": 2
+          "value": 51.7,
+          "evidence": 4
         }
       }
     }
@@ -4476,8 +6659,8 @@
         "intelligenceIndex": 20.8,
         "priceIn": 1.32,
         "priceOut": 3.96,
-        "ttft": 3.69432040121335,
-        "speed": 71.6814880049236,
+        "ttft": 3.20108583066251,
+        "speed": 75.0165584276031,
         "benchmarks": {
           "omniscience-accuracy": 45.1,
           "omniscience-non-hallucination": 5.9,
@@ -4511,6 +6694,15 @@
           "gdp-pdf-aa": 11.4
         },
         "board": "https://llmleaderboard.com"
+      },
+      "openrouterBenchmarks": {
+        "source": "https://openrouter.ai/benchmarks",
+        "checkedAt": "2026-11-19",
+        "accuracy": {
+          "gpqa": 0.8728,
+          "tau2": 0.7686,
+          "vgi-bench": 0.4506
+        }
       }
     },
     "scores": {
@@ -4538,16 +6730,37 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 43,
-      "tokens": 746612824594,
+      "tokens": 753128201742,
       "share": 0.0028,
-      "percentile": 69.8
+      "percentile": 69.8,
+      "tasks": [
+        {
+          "tag": "creative.creative_writing",
+          "macroCategory": "creative",
+          "share": 0.0321,
+          "rank": 6
+        },
+        {
+          "tag": "creative.interactive_roleplay",
+          "macroCategory": "creative",
+          "share": 0.0271,
+          "rank": 9
+        },
+        {
+          "tag": "writing.translation_localization",
+          "macroCategory": "writing",
+          "share": 0.0231,
+          "rank": 10
+        }
+      ],
+      "windowDays": 30
     },
     "ranking": {
       "status": "measured",
-      "composite": 50.6,
-      "low": 29,
-      "rank": 17,
-      "uncalibrated": 9,
+      "composite": 50.3,
+      "low": 33.9,
+      "rank": 28,
+      "uncalibrated": 10,
       "dims": {
         "coding": {
           "value": 50.6,
@@ -4558,20 +6771,24 @@
           "evidence": 1
         },
         "knowledge": {
-          "value": 55.9,
+          "value": 55.7,
           "evidence": 2
+        },
+        "agentic": {
+          "value": 49.5,
+          "evidence": 1
         },
         "longContext": {
           "value": 66.7,
           "evidence": 1
         },
         "speed": {
-          "value": 61.1,
+          "value": 62.4,
           "evidence": 2
         },
         "overall": {
-          "value": 50.6,
-          "evidence": 4
+          "value": 50.3,
+          "evidence": 5
         }
       }
     }
@@ -4597,8 +6814,8 @@
         "intelligenceIndex": 20.1,
         "priceIn": 0.5,
         "priceOut": 3,
-        "ttft": 5.80754739359993,
-        "speed": 46.7500172229444,
+        "ttft": 5.76090492157485,
+        "speed": 46.970181786966,
         "benchmarks": {
           "omniscience-accuracy": 17.3,
           "omniscience-non-hallucination": 71.4,
@@ -4641,6 +6858,73 @@
           "livebench-2-reasoning": 80
         },
         "board": "https://llmleaderboard.com"
+      },
+      "taskIndexes": {
+        "source": "https://artificialanalysis.ai/indexes",
+        "checkedAt": "2026-11-19",
+        "indexes": {
+          "economics": 33.7,
+          "engineering": 28.1,
+          "finance-and-accounting": 35.5,
+          "healthcare-and-medical": 34.6,
+          "legal": 33.2,
+          "strategy-and-ops": 39
+        },
+        "subScores": {
+          "economics": {
+            "knowledge": 46.3,
+            "reasoning": 15.3,
+            "longContext": 16.4,
+            "agenticKnowledgeWork": 45.2
+          },
+          "engineering": {
+            "science": 2.2,
+            "knowledge": 54.3,
+            "reasoning": 15.3,
+            "agenticTerminalUse": 10.2,
+            "agenticKnowledgeWork": 45.2
+          },
+          "finance-and-accounting": {
+            "knowledge": 13.3,
+            "reasoning": 15.3,
+            "longContext": 16.4,
+            "agenticToolUse": 41,
+            "nonHallucination": 76.2,
+            "agenticKnowledgeWork": 45.2
+          },
+          "healthcare-and-medical": {
+            "knowledge": 7.8,
+            "reasoning": 15.3,
+            "longContext": 22.8,
+            "agenticToolUse": 58.3,
+            "nonHallucination": 76.6,
+            "agenticKnowledgeWork": 45.2
+          },
+          "legal": {
+            "knowledge": 5.6,
+            "reasoning": 15.3,
+            "longContext": 16.4,
+            "agenticToolUse": 58.3,
+            "nonHallucination": 89.4,
+            "agenticKnowledgeWork": 45.2
+          },
+          "strategy-and-ops": {
+            "knowledge": 13.3,
+            "longContext": 16.4,
+            "agenticToolUse": 49.9,
+            "nonHallucination": 76.2,
+            "agenticKnowledgeWork": 45.2
+          }
+        }
+      },
+      "openrouterBenchmarks": {
+        "source": "https://openrouter.ai/benchmarks",
+        "checkedAt": "2026-11-19",
+        "accuracy": {
+          "gpqa": 0.8194,
+          "tau2": 0.7709,
+          "vgi-bench": 0.1598
+        }
       }
     },
     "scores": {
@@ -4668,16 +6952,25 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 41,
-      "tokens": 830145763523,
+      "tokens": 843665090985,
       "share": 0.0031,
-      "percentile": 72.1
+      "percentile": 72.1,
+      "tasks": [
+        {
+          "tag": "retrieval.reranking",
+          "macroCategory": "retrieval",
+          "share": 0.162,
+          "rank": 1
+        }
+      ],
+      "windowDays": 30
     },
     "ranking": {
       "status": "measured",
-      "composite": 49.2,
-      "low": 21.7,
-      "rank": 50,
-      "uncalibrated": 17,
+      "composite": 49.3,
+      "low": 31.1,
+      "rank": 40,
+      "uncalibrated": 18,
       "dims": {
         "coding": {
           "value": 48.9,
@@ -4688,20 +6981,24 @@
           "evidence": 1
         },
         "knowledge": {
-          "value": 56.4,
+          "value": 56.6,
           "evidence": 2
+        },
+        "agentic": {
+          "value": 49.5,
+          "evidence": 1
         },
         "longContext": {
           "value": 59,
           "evidence": 1
         },
         "speed": {
-          "value": 40.4,
+          "value": 40.5,
           "evidence": 1
         },
         "overall": {
-          "value": 49.2,
-          "evidence": 4
+          "value": 49.3,
+          "evidence": 5
         }
       }
     }
@@ -4727,8 +7024,8 @@
         "intelligenceIndex": 31.7,
         "priceIn": 1.4,
         "priceOut": 4.4,
-        "ttft": 2.75660065294884,
-        "speed": 83.1324318409764,
+        "ttft": 2.74370217399648,
+        "speed": 81.8347573284862,
         "benchmarks": {
           "omniscience-accuracy": 32.3,
           "omniscience-non-hallucination": 61.1,
@@ -4775,6 +7072,72 @@
           "gdp-pdf-aa": 11.2
         },
         "board": "https://llmleaderboard.com"
+      },
+      "taskIndexes": {
+        "source": "https://artificialanalysis.ai/indexes",
+        "checkedAt": "2026-11-19",
+        "indexes": {
+          "economics": 37.3,
+          "engineering": 37.6,
+          "finance-and-accounting": 42.1,
+          "healthcare-and-medical": 39.3,
+          "legal": 35.8,
+          "strategy-and-ops": 47.4
+        },
+        "subScores": {
+          "economics": {
+            "knowledge": 52.6,
+            "reasoning": 17.9,
+            "longContext": 11.2,
+            "agenticKnowledgeWork": 51.3
+          },
+          "engineering": {
+            "science": 21.5,
+            "knowledge": 57.5,
+            "reasoning": 17.9,
+            "agenticTerminalUse": 31.8,
+            "agenticKnowledgeWork": 51.3
+          },
+          "finance-and-accounting": {
+            "knowledge": 23.6,
+            "reasoning": 17.9,
+            "longContext": 11.2,
+            "agenticToolUse": 62.3,
+            "nonHallucination": 75.9,
+            "agenticKnowledgeWork": 51.3
+          },
+          "healthcare-and-medical": {
+            "knowledge": 24.7,
+            "reasoning": 17.9,
+            "longContext": 17.2,
+            "agenticToolUse": 70.3,
+            "nonHallucination": 54.3,
+            "agenticKnowledgeWork": 51.3
+          },
+          "legal": {
+            "knowledge": 15.3,
+            "reasoning": 17.9,
+            "longContext": 11.2,
+            "agenticToolUse": 70.3,
+            "nonHallucination": 73.8,
+            "agenticKnowledgeWork": 51.3
+          },
+          "strategy-and-ops": {
+            "knowledge": 23.6,
+            "longContext": 11.2,
+            "agenticToolUse": 62.2,
+            "nonHallucination": 75.9,
+            "agenticKnowledgeWork": 51.3
+          }
+        }
+      },
+      "openrouterBenchmarks": {
+        "source": "https://openrouter.ai/benchmarks",
+        "checkedAt": "2026-11-19",
+        "accuracy": {
+          "gpqa": 0.8537,
+          "tau2": 0.76
+        }
       }
     },
     "scores": {
@@ -4802,15 +7165,24 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 12,
-      "tokens": 3472506446093,
-      "share": 0.013,
-      "percentile": 86
+      "tokens": 3503446903299,
+      "share": 0.0129,
+      "percentile": 86,
+      "tasks": [
+        {
+          "tag": "assistance.service_issue_resolution",
+          "macroCategory": "assistance",
+          "share": 0.0275,
+          "rank": 9
+        }
+      ],
+      "windowDays": 30
     },
     "ranking": {
       "status": "measured",
-      "composite": 51.3,
-      "low": 26.2,
-      "rank": 36,
+      "composite": 50.9,
+      "low": 34.5,
+      "rank": 24,
       "uncalibrated": 20,
       "dims": {
         "coding": {
@@ -4825,17 +7197,21 @@
           "value": 55.5,
           "evidence": 2
         },
+        "agentic": {
+          "value": 49.5,
+          "evidence": 1
+        },
         "longContext": {
           "value": 58.1,
           "evidence": 1
         },
         "speed": {
-          "value": 69,
+          "value": 68.9,
           "evidence": 2
         },
         "overall": {
-          "value": 51.3,
-          "evidence": 4
+          "value": 50.9,
+          "evidence": 5
         }
       }
     }
@@ -4861,8 +7237,8 @@
         "intelligenceIndex": null,
         "priceIn": 2,
         "priceOut": 6,
-        "ttft": 5.26519997800275,
-        "speed": 40.4989974295656,
+        "ttft": 5.25086212717248,
+        "speed": 40.2930345436687,
         "benchmarks": {
           "omniscience-accuracy": 31.4,
           "omniscience-non-hallucination": 65.5,
@@ -4883,6 +7259,15 @@
         "contextTokens": 262000,
         "reasoning": true,
         "source": "https://artificialanalysis.ai/leaderboards/models"
+      },
+      "openrouterBenchmarks": {
+        "source": "https://openrouter.ai/benchmarks",
+        "checkedAt": "2026-11-19",
+        "accuracy": {
+          "gpqa": 0.8744,
+          "tau2": 0.7481,
+          "vgi-bench": 0.4506
+        }
       }
     },
     "scores": {
@@ -4910,16 +7295,16 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 171,
-      "tokens": 25291558106,
+      "tokens": 25607050084,
       "share": 0.0001,
       "percentile": 27.9
     },
     "ranking": {
       "status": "measured",
-      "composite": 52.9,
-      "low": 30.9,
-      "rank": 13,
-      "uncalibrated": 9,
+      "composite": 52,
+      "low": 37.9,
+      "rank": 8,
+      "uncalibrated": 10,
       "dims": {
         "coding": {
           "value": 51.4,
@@ -4930,7 +7315,11 @@
           "evidence": 1
         },
         "knowledge": {
-          "value": 64.4,
+          "value": 64.2,
+          "evidence": 1
+        },
+        "agentic": {
+          "value": 49.4,
           "evidence": 1
         },
         "longContext": {
@@ -4942,8 +7331,8 @@
           "evidence": 1
         },
         "overall": {
-          "value": 52.9,
-          "evidence": 3
+          "value": 52,
+          "evidence": 4
         }
       }
     }
@@ -4973,8 +7362,8 @@
         "intelligenceIndex": null,
         "priceIn": 3,
         "priceOut": 15,
-        "ttft": 5.68632687663239,
-        "speed": 40.2452161650095,
+        "ttft": 5.55079107438808,
+        "speed": 40.2423119719172,
         "benchmarks": {
           "gpqa": 84.2,
           "hle": 25,
@@ -5012,6 +7401,15 @@
           "livebench-2-reasoning": 90.7
         },
         "board": "https://llmleaderboard.com"
+      },
+      "openrouterBenchmarks": {
+        "source": "https://openrouter.ai/benchmarks",
+        "checkedAt": "2026-11-19",
+        "accuracy": {
+          "gpqa": 0.9202,
+          "tau2": 0.7385,
+          "vgi-bench": 0.0532
+        }
       }
     },
     "scores": {
@@ -5039,16 +7437,25 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 31,
-      "tokens": 1212688570051,
+      "tokens": 1220180901940,
       "share": 0.0045,
-      "percentile": 76.7
+      "percentile": 76.7,
+      "tasks": [
+        {
+          "tag": "assistance.service_issue_resolution",
+          "macroCategory": "assistance",
+          "share": 0.0275,
+          "rank": 9
+        }
+      ],
+      "windowDays": 30
     },
     "ranking": {
       "status": "measured",
-      "composite": 50.3,
-      "low": 26.8,
-      "rank": 29,
-      "uncalibrated": 13,
+      "composite": 50.1,
+      "low": 34.2,
+      "rank": 26,
+      "uncalibrated": 15,
       "dims": {
         "coding": {
           "value": 50.9,
@@ -5059,8 +7466,12 @@
           "evidence": 1
         },
         "knowledge": {
-          "value": 57.5,
+          "value": 57.8,
           "evidence": 2
+        },
+        "agentic": {
+          "value": 49.4,
+          "evidence": 1
         },
         "longContext": {
           "value": 100,
@@ -5075,8 +7486,8 @@
           "evidence": 2
         },
         "overall": {
-          "value": 50.3,
-          "evidence": 4
+          "value": 50.1,
+          "evidence": 5
         }
       }
     }
@@ -5102,8 +7513,8 @@
         "intelligenceIndex": null,
         "priceIn": 0.95,
         "priceOut": 4,
-        "ttft": 6.26718359879146,
-        "speed": 56.2397043659002,
+        "ttft": 6.26161035668644,
+        "speed": 55.6501640687309,
         "benchmarks": {
           "automationbench-aa": 24.5,
           "hle-diamond": 14.8,
@@ -5130,6 +7541,15 @@
         "eci": 151.2,
         "date": "2026-06-12",
         "board": "https://epoch.ai/eci"
+      },
+      "openrouterBenchmarks": {
+        "source": "https://openrouter.ai/benchmarks",
+        "checkedAt": "2026-11-19",
+        "accuracy": {
+          "gpqa": 0.8663,
+          "tau2": 0.7387,
+          "vgi-bench": 0.1139
+        }
       }
     },
     "scores": {
@@ -5154,12 +7574,30 @@
       "vision": 0,
       "speed": 0
     },
+    "usage": {
+      "source": "openrouter-task-spend",
+      "tasks": [
+        {
+          "tag": "information.math_logic",
+          "macroCategory": "information",
+          "share": 0.0459,
+          "rank": 6
+        },
+        {
+          "tag": "software.implementation",
+          "macroCategory": "software",
+          "share": 0.0222,
+          "rank": 10
+        }
+      ],
+      "windowDays": 30
+    },
     "ranking": {
       "status": "measured",
-      "composite": 50.9,
-      "low": 28.9,
-      "rank": 20,
-      "uncalibrated": 10,
+      "composite": 50.7,
+      "low": 36.5,
+      "rank": 13,
+      "uncalibrated": 11,
       "dims": {
         "coding": {
           "value": 49.3,
@@ -5170,7 +7608,11 @@
           "evidence": 1
         },
         "knowledge": {
-          "value": 63.1,
+          "value": 63.6,
+          "evidence": 1
+        },
+        "agentic": {
+          "value": 49.4,
           "evidence": 1
         },
         "longContext": {
@@ -5178,12 +7620,12 @@
           "evidence": 1
         },
         "speed": {
-          "value": 42.4,
+          "value": 42.3,
           "evidence": 1
         },
         "overall": {
-          "value": 50.9,
-          "evidence": 3
+          "value": 50.7,
+          "evidence": 4
         }
       }
     }
@@ -5209,8 +7651,8 @@
         "intelligenceIndex": 18.9,
         "priceIn": 0.3,
         "priceOut": 1.2,
-        "ttft": 2.26159509086389,
-        "speed": 92.2937508834349,
+        "ttft": 2.31865749208037,
+        "speed": 91.0620584946077,
         "benchmarks": {
           "omniscience-accuracy": 44.9,
           "omniscience-non-hallucination": 8.6,
@@ -5255,6 +7697,64 @@
           "gdp-pdf-aa": 9.8
         },
         "board": "https://llmleaderboard.com"
+      },
+      "taskIndexes": {
+        "source": "https://artificialanalysis.ai/indexes",
+        "checkedAt": "2026-11-19",
+        "indexes": {
+          "economics": 61.9,
+          "engineering": 66.8,
+          "finance-and-accounting": 65.1,
+          "legal": 63.8,
+          "strategy-and-ops": 63.8
+        },
+        "subScores": {
+          "economics": {
+            "knowledge": 73,
+            "reasoning": 71.3,
+            "longContext": 28,
+            "agenticKnowledgeWork": 60
+          },
+          "engineering": {
+            "science": 65.3,
+            "knowledge": 74.8,
+            "reasoning": 71.3,
+            "agenticTerminalUse": 54,
+            "agenticKnowledgeWork": 60
+          },
+          "finance-and-accounting": {
+            "knowledge": 50.9,
+            "reasoning": 71.3,
+            "longContext": 28,
+            "agenticToolUse": 87.3,
+            "nonHallucination": 90,
+            "agenticKnowledgeWork": 60
+          },
+          "legal": {
+            "knowledge": 56.9,
+            "reasoning": 71.3,
+            "longContext": 28,
+            "agenticToolUse": 82.4,
+            "nonHallucination": 93.8,
+            "agenticKnowledgeWork": 60
+          },
+          "strategy-and-ops": {
+            "knowledge": 50.9,
+            "longContext": 28,
+            "agenticToolUse": 77.6,
+            "nonHallucination": 90,
+            "agenticKnowledgeWork": 60
+          }
+        }
+      },
+      "openrouterBenchmarks": {
+        "source": "https://openrouter.ai/benchmarks",
+        "checkedAt": "2026-11-19",
+        "accuracy": {
+          "gpqa": 0.9017,
+          "tau2": 0.7413,
+          "vgi-bench": 0.1598
+        }
       }
     },
     "scores": {
@@ -5282,16 +7782,25 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 48,
-      "tokens": 572240872730,
+      "tokens": 576364503918,
       "share": 0.0021,
-      "percentile": 67.4
+      "percentile": 67.4,
+      "tasks": [
+        {
+          "tag": "assistance.service_issue_resolution",
+          "macroCategory": "assistance",
+          "share": 0.0275,
+          "rank": 9
+        }
+      ],
+      "windowDays": 30
     },
     "ranking": {
       "status": "measured",
       "composite": 49.4,
-      "low": 24.1,
-      "rank": 41,
-      "uncalibrated": 18,
+      "low": 32.9,
+      "rank": 35,
+      "uncalibrated": 19,
       "dims": {
         "coding": {
           "value": 49,
@@ -5305,17 +7814,21 @@
           "value": 55.4,
           "evidence": 2
         },
+        "agentic": {
+          "value": 49.4,
+          "evidence": 1
+        },
         "longContext": {
           "value": 56,
           "evidence": 1
         },
         "speed": {
-          "value": 68.3,
+          "value": 68.1,
           "evidence": 2
         },
         "overall": {
           "value": 49.4,
-          "evidence": 4
+          "evidence": 5
         }
       }
     }
@@ -5344,8 +7857,8 @@
         "intelligenceIndex": null,
         "priceIn": 1.4,
         "priceOut": 4.4,
-        "ttft": 1.696777403606835,
-        "speed": 111.6457768553545,
+        "ttft": 1.67844062557455,
+        "speed": 107.20174038844641,
         "benchmarks": {
           "gpqa": 68.6,
           "hle": 9.8,
@@ -5371,6 +7884,14 @@
           "gdp-pdf-aa": 10.4
         },
         "board": "https://llmleaderboard.com"
+      },
+      "openrouterBenchmarks": {
+        "source": "https://openrouter.ai/benchmarks",
+        "checkedAt": "2026-11-19",
+        "accuracy": {
+          "gpqa": 0.8502,
+          "tau2": 0.7091
+        }
       }
     },
     "scores": {
@@ -5398,24 +7919,37 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 35,
-      "tokens": 965574798564,
+      "tokens": 974358839555,
       "share": 0.0036,
-      "percentile": 74.4
+      "percentile": 74.4,
+      "tasks": [
+        {
+          "tag": "assistance.service_issue_resolution",
+          "macroCategory": "assistance",
+          "share": 0.0275,
+          "rank": 9
+        }
+      ],
+      "windowDays": 30
     },
     "ranking": {
       "status": "measured",
-      "composite": 44.7,
-      "low": 13.7,
-      "rank": 62,
-      "uncalibrated": 2,
+      "composite": 46.5,
+      "low": 20.9,
+      "rank": 65,
+      "uncalibrated": 3,
       "dims": {
         "reasoning": {
           "value": 40.2,
           "evidence": 1
         },
         "knowledge": {
-          "value": 52.1,
+          "value": 53.2,
           "evidence": 2
+        },
+        "agentic": {
+          "value": 49.4,
+          "evidence": 1
         },
         "longContext": {
           "value": 99,
@@ -5426,12 +7960,12 @@
           "evidence": 0
         },
         "speed": {
-          "value": 63.4,
+          "value": 63.2,
           "evidence": 2
         },
         "overall": {
-          "value": 44.7,
-          "evidence": 3
+          "value": 46.5,
+          "evidence": 4
         }
       }
     }
@@ -5457,8 +7991,8 @@
         "intelligenceIndex": null,
         "priceIn": 0.95,
         "priceOut": 4,
-        "ttft": 6.26718359879146,
-        "speed": 56.2397043659002,
+        "ttft": 6.26161035668644,
+        "speed": 55.6501640687309,
         "benchmarks": {
           "automationbench-aa": 24.5,
           "hle-diamond": 14.8,
@@ -5485,6 +8019,15 @@
         "eci": 151.2,
         "date": "2026-06-12",
         "board": "https://epoch.ai/eci"
+      },
+      "openrouterBenchmarks": {
+        "source": "https://openrouter.ai/benchmarks",
+        "checkedAt": "2026-11-19",
+        "accuracy": {
+          "gpqa": 0.8663,
+          "tau2": 0.7387,
+          "vgi-bench": 0.1139
+        }
       }
     },
     "scores": {
@@ -5512,16 +8055,31 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 116,
-      "tokens": 68045752225,
+      "tokens": 68761945113,
       "share": 0.0003,
-      "percentile": 46.5
+      "percentile": 46.5,
+      "tasks": [
+        {
+          "tag": "information.math_logic",
+          "macroCategory": "information",
+          "share": 0.0459,
+          "rank": 6
+        },
+        {
+          "tag": "software.implementation",
+          "macroCategory": "software",
+          "share": 0.0222,
+          "rank": 10
+        }
+      ],
+      "windowDays": 30
     },
     "ranking": {
       "status": "measured",
-      "composite": 50.9,
-      "low": 28.9,
-      "rank": 19,
-      "uncalibrated": 10,
+      "composite": 50.7,
+      "low": 36.5,
+      "rank": 12,
+      "uncalibrated": 11,
       "dims": {
         "coding": {
           "value": 49.3,
@@ -5532,7 +8090,11 @@
           "evidence": 1
         },
         "knowledge": {
-          "value": 63.1,
+          "value": 63.6,
+          "evidence": 1
+        },
+        "agentic": {
+          "value": 49.4,
           "evidence": 1
         },
         "longContext": {
@@ -5540,12 +8102,12 @@
           "evidence": 1
         },
         "speed": {
-          "value": 42.4,
+          "value": 42.3,
           "evidence": 1
         },
         "overall": {
-          "value": 50.9,
-          "evidence": 3
+          "value": 50.7,
+          "evidence": 4
         }
       }
     }
@@ -5571,8 +8133,8 @@
         "intelligenceIndex": null,
         "priceIn": 0.95,
         "priceOut": 4,
-        "ttft": 6.26718359879146,
-        "speed": 56.2397043659002,
+        "ttft": 6.26161035668644,
+        "speed": 55.6501640687309,
         "benchmarks": {
           "automationbench-aa": 24.5,
           "hle-diamond": 14.8,
@@ -5599,6 +8161,15 @@
         "eci": 151.2,
         "date": "2026-06-12",
         "board": "https://epoch.ai/eci"
+      },
+      "openrouterBenchmarks": {
+        "source": "https://openrouter.ai/benchmarks",
+        "checkedAt": "2026-11-19",
+        "accuracy": {
+          "gpqa": 0.8663,
+          "tau2": 0.7387,
+          "vgi-bench": 0.1139
+        }
       }
     },
     "scores": {
@@ -5626,16 +8197,31 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 116,
-      "tokens": 68045752225,
+      "tokens": 68761945113,
       "share": 0.0003,
-      "percentile": 46.5
+      "percentile": 46.5,
+      "tasks": [
+        {
+          "tag": "information.math_logic",
+          "macroCategory": "information",
+          "share": 0.0459,
+          "rank": 6
+        },
+        {
+          "tag": "software.implementation",
+          "macroCategory": "software",
+          "share": 0.0222,
+          "rank": 10
+        }
+      ],
+      "windowDays": 30
     },
     "ranking": {
       "status": "measured",
-      "composite": 50.9,
-      "low": 28.9,
-      "rank": 18,
-      "uncalibrated": 10,
+      "composite": 50.7,
+      "low": 36.5,
+      "rank": 11,
+      "uncalibrated": 11,
       "dims": {
         "coding": {
           "value": 49.3,
@@ -5646,7 +8232,11 @@
           "evidence": 1
         },
         "knowledge": {
-          "value": 63.1,
+          "value": 63.6,
+          "evidence": 1
+        },
+        "agentic": {
+          "value": 49.4,
           "evidence": 1
         },
         "longContext": {
@@ -5654,12 +8244,12 @@
           "evidence": 1
         },
         "speed": {
-          "value": 42.4,
+          "value": 42.3,
           "evidence": 1
         },
         "overall": {
-          "value": 50.9,
-          "evidence": 3
+          "value": 50.7,
+          "evidence": 4
         }
       }
     }
@@ -5685,8 +8275,8 @@
         "intelligenceIndex": null,
         "priceIn": 0.4,
         "priceOut": 1.6,
-        "ttft": 2.76913265371203,
-        "speed": 56.3080979609067,
+        "ttft": 2.76668619149124,
+        "speed": 56.1429284745272,
         "benchmarks": {
           "automationbench-aa": 17.4,
           "hle-diamond": 13.9,
@@ -5715,6 +8305,15 @@
         "eci": 148,
         "date": "2026-06-02",
         "board": "https://epoch.ai/eci"
+      },
+      "openrouterBenchmarks": {
+        "source": "https://openrouter.ai/benchmarks",
+        "checkedAt": "2026-11-19",
+        "accuracy": {
+          "gpqa": 0.8788,
+          "tau2": 0.7033,
+          "vgi-bench": 0.1549
+        }
       }
     },
     "scores": {
@@ -5739,12 +8338,72 @@
       "vision": 0,
       "speed": 0
     },
+    "usage": {
+      "source": "openrouter-task-spend",
+      "tasks": [
+        {
+          "tag": "creative.interactive_roleplay",
+          "macroCategory": "creative",
+          "share": 0.0869,
+          "rank": 2
+        },
+        {
+          "tag": "creative.creative_writing",
+          "macroCategory": "creative",
+          "share": 0.0705,
+          "rank": 3
+        },
+        {
+          "tag": "media.speech_transcription",
+          "macroCategory": "media",
+          "share": 0.0786,
+          "rank": 3
+        },
+        {
+          "tag": "writing.rewriting_editing",
+          "macroCategory": "writing",
+          "share": 0.031,
+          "rank": 5
+        },
+        {
+          "tag": "writing.drafting",
+          "macroCategory": "writing",
+          "share": 0.0354,
+          "rank": 7
+        },
+        {
+          "tag": "assistance.advice_coaching",
+          "macroCategory": "assistance",
+          "share": 0.0346,
+          "rank": 7
+        },
+        {
+          "tag": "writing.translation_localization",
+          "macroCategory": "writing",
+          "share": 0.0294,
+          "rank": 8
+        },
+        {
+          "tag": "information.planning_decision_support",
+          "macroCategory": "information",
+          "share": 0.0239,
+          "rank": 10
+        },
+        {
+          "tag": "software.architecture_requirements_planning",
+          "macroCategory": "software",
+          "share": 0.0279,
+          "rank": 10
+        }
+      ],
+      "windowDays": 30
+    },
     "ranking": {
       "status": "measured",
-      "composite": 50.7,
-      "low": 28.7,
-      "rank": 21,
-      "uncalibrated": 12,
+      "composite": 50.5,
+      "low": 36.3,
+      "rank": 14,
+      "uncalibrated": 13,
       "dims": {
         "coding": {
           "value": 48.7,
@@ -5755,7 +8414,11 @@
           "evidence": 1
         },
         "knowledge": {
-          "value": 63.3,
+          "value": 63.6,
+          "evidence": 1
+        },
+        "agentic": {
+          "value": 49.4,
           "evidence": 1
         },
         "longContext": {
@@ -5767,8 +8430,8 @@
           "evidence": 1
         },
         "overall": {
-          "value": 50.7,
-          "evidence": 3
+          "value": 50.5,
+          "evidence": 4
         }
       }
     }
@@ -5797,8 +8460,8 @@
         "intelligenceIndex": null,
         "priceIn": 1,
         "priceOut": 3.2,
-        "ttft": 2.22375634358127,
-        "speed": 80.38178396418544,
+        "ttft": 2.153225094782055,
+        "speed": 76.54566357514204,
         "benchmarks": {
           "gpqa": 82,
           "hle": 29.3,
@@ -5815,6 +8478,14 @@
         "eci": 146.5,
         "date": "2026-02-11",
         "board": "https://epoch.ai/eci"
+      },
+      "openrouterBenchmarks": {
+        "source": "https://openrouter.ai/benchmarks",
+        "checkedAt": "2026-11-19",
+        "accuracy": {
+          "gpqa": 0.7905,
+          "tau2": 0.741
+        }
       }
     },
     "scores": {
@@ -5842,15 +8513,15 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 144,
-      "tokens": 39681474491,
+      "tokens": 40044107283,
       "share": 0.0001,
       "percentile": 39.5
     },
     "ranking": {
       "status": "measured",
-      "composite": 51.9,
-      "low": 21.9,
-      "rank": 49,
+      "composite": 51.5,
+      "low": 28.3,
+      "rank": 50,
       "uncalibrated": 4,
       "dims": {
         "reasoning": {
@@ -5858,7 +8529,11 @@
           "evidence": 1
         },
         "knowledge": {
-          "value": 60.6,
+          "value": 62.2,
+          "evidence": 1
+        },
+        "agentic": {
+          "value": 49.4,
           "evidence": 1
         },
         "longContext": {
@@ -5874,8 +8549,8 @@
           "evidence": 1
         },
         "overall": {
-          "value": 51.9,
-          "evidence": 2
+          "value": 51.5,
+          "evidence": 3
         }
       }
     }
@@ -5904,8 +8579,8 @@
         "intelligenceIndex": null,
         "priceIn": 1.19,
         "priceOut": 3.74,
-        "ttft": 3.6263877332801,
-        "speed": 64.65924984982621,
+        "ttft": 3.486961514316395,
+        "speed": 65.9101593725603,
         "benchmarks": {
           "gpqa": 86.8,
           "hle": 30.1,
@@ -5937,6 +8612,14 @@
           "gdp-pdf-aa": 8.4
         },
         "board": "https://llmleaderboard.com"
+      },
+      "openrouterBenchmarks": {
+        "source": "https://openrouter.ai/benchmarks",
+        "checkedAt": "2026-11-19",
+        "accuracy": {
+          "gpqa": 0.8109,
+          "tau2": 0.7171
+        }
       }
     },
     "scores": {
@@ -5963,17 +8646,26 @@
     },
     "usage": {
       "source": "openrouter-top-weekly",
-      "rank": 179,
-      "tokens": 22110257998,
+      "rank": 177,
+      "tokens": 22541116676,
       "share": 0.0001,
-      "percentile": 23.3
+      "percentile": 23.3,
+      "tasks": [
+        {
+          "tag": "assistance.service_issue_resolution",
+          "macroCategory": "assistance",
+          "share": 0.0275,
+          "rank": 9
+        }
+      ],
+      "windowDays": 30
     },
     "ranking": {
       "status": "measured",
-      "composite": 49,
-      "low": 21.5,
-      "rank": 52,
-      "uncalibrated": 8,
+      "composite": 49.2,
+      "low": 31,
+      "rank": 42,
+      "uncalibrated": 9,
       "dims": {
         "coding": {
           "value": 48.3,
@@ -5984,8 +8676,12 @@
           "evidence": 1
         },
         "knowledge": {
-          "value": 53.5,
+          "value": 54.2,
           "evidence": 2
+        },
+        "agentic": {
+          "value": 49.4,
+          "evidence": 1
         },
         "longContext": {
           "value": 66,
@@ -5996,12 +8692,12 @@
           "evidence": 0
         },
         "speed": {
-          "value": 47.9,
+          "value": 48.7,
           "evidence": 1
         },
         "overall": {
-          "value": 49,
-          "evidence": 4
+          "value": 49.2,
+          "evidence": 5
         }
       }
     }
@@ -6032,8 +8728,8 @@
         "intelligenceIndex": null,
         "priceIn": 0.95,
         "priceOut": 4,
-        "ttft": 7.96147011513427,
-        "speed": 35.9191426437527,
+        "ttft": 7.95463491869817,
+        "speed": 35.8990281755535,
         "benchmarks": {
           "gpqa": 91.1,
           "hle": 37.5,
@@ -6067,6 +8763,14 @@
           "gdp-pdf-aa": 13
         },
         "board": "https://llmleaderboard.com"
+      },
+      "openrouterBenchmarks": {
+        "source": "https://openrouter.ai/benchmarks",
+        "checkedAt": "2026-11-19",
+        "accuracy": {
+          "gpqa": 0.8671,
+          "tau2": 0.7333
+        }
       }
     },
     "scores": {
@@ -6094,16 +8798,25 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 99,
-      "tokens": 98629503211,
+      "tokens": 99164042491,
       "share": 0.0004,
-      "percentile": 48.8
+      "percentile": 48.8,
+      "tasks": [
+        {
+          "tag": "assistance.service_issue_resolution",
+          "macroCategory": "assistance",
+          "share": 0.0275,
+          "rank": 9
+        }
+      ],
+      "windowDays": 30
     },
     "ranking": {
       "status": "measured",
-      "composite": 51.3,
-      "low": 26.3,
-      "rank": 34,
-      "uncalibrated": 9,
+      "composite": 50.9,
+      "low": 34.6,
+      "rank": 22,
+      "uncalibrated": 10,
       "dims": {
         "coding": {
           "value": 50.5,
@@ -6114,8 +8827,12 @@
           "evidence": 1
         },
         "knowledge": {
-          "value": 55.8,
+          "value": 55.9,
           "evidence": 2
+        },
+        "agentic": {
+          "value": 49.4,
+          "evidence": 1
         },
         "longContext": {
           "value": 71.1,
@@ -6130,8 +8847,8 @@
           "evidence": 2
         },
         "overall": {
-          "value": 51.3,
-          "evidence": 4
+          "value": 50.9,
+          "evidence": 5
         }
       }
     }
@@ -6162,8 +8879,8 @@
         "intelligenceIndex": null,
         "priceIn": 0.6,
         "priceOut": 3.6,
-        "ttft": 7.15623071266944,
-        "speed": 54.4995832213722,
+        "ttft": 7.15471439052776,
+        "speed": 55.4567513536134,
         "benchmarks": {
           "gpqa": 84.2,
           "hle": 23.1,
@@ -6185,6 +8902,64 @@
         "eci": 146.8,
         "date": "2026-04-22",
         "board": "https://epoch.ai/eci"
+      },
+      "taskIndexes": {
+        "source": "https://artificialanalysis.ai/indexes",
+        "checkedAt": "2026-11-19",
+        "indexes": {
+          "economics": 61.9,
+          "engineering": 66.8,
+          "finance-and-accounting": 65.1,
+          "legal": 63.8,
+          "strategy-and-ops": 63.8
+        },
+        "subScores": {
+          "economics": {
+            "knowledge": 73,
+            "reasoning": 71.3,
+            "longContext": 28,
+            "agenticKnowledgeWork": 60
+          },
+          "engineering": {
+            "science": 65.3,
+            "knowledge": 74.8,
+            "reasoning": 71.3,
+            "agenticTerminalUse": 54,
+            "agenticKnowledgeWork": 60
+          },
+          "finance-and-accounting": {
+            "knowledge": 50.9,
+            "reasoning": 71.3,
+            "longContext": 28,
+            "agenticToolUse": 87.3,
+            "nonHallucination": 90,
+            "agenticKnowledgeWork": 60
+          },
+          "legal": {
+            "knowledge": 56.9,
+            "reasoning": 71.3,
+            "longContext": 28,
+            "agenticToolUse": 82.4,
+            "nonHallucination": 93.8,
+            "agenticKnowledgeWork": 60
+          },
+          "strategy-and-ops": {
+            "knowledge": 50.9,
+            "longContext": 28,
+            "agenticToolUse": 77.6,
+            "nonHallucination": 90,
+            "agenticKnowledgeWork": 60
+          }
+        }
+      },
+      "openrouterBenchmarks": {
+        "source": "https://openrouter.ai/benchmarks",
+        "checkedAt": "2026-11-19",
+        "accuracy": {
+          "gpqa": 0.8383,
+          "tau2": 0.77,
+          "vgi-bench": 0.1178
+        }
       }
     },
     "scores": {
@@ -6212,16 +8987,25 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 208,
-      "tokens": 12247353243,
+      "tokens": 12362843950,
       "share": 0,
-      "percentile": 16.3
+      "percentile": 16.3,
+      "tasks": [
+        {
+          "tag": "assistance.service_issue_resolution",
+          "macroCategory": "assistance",
+          "share": 0.0275,
+          "rank": 9
+        }
+      ],
+      "windowDays": 30
     },
     "ranking": {
       "status": "measured",
-      "composite": 49.6,
-      "low": 27.6,
-      "rank": 24,
-      "uncalibrated": 7,
+      "composite": 49.8,
+      "low": 35.1,
+      "rank": 20,
+      "uncalibrated": 9,
       "dims": {
         "coding": {
           "value": 47.6,
@@ -6232,7 +9016,11 @@
           "evidence": 1
         },
         "knowledge": {
-          "value": 61.3,
+          "value": 62.6,
+          "evidence": 1
+        },
+        "agentic": {
+          "value": 49.5,
           "evidence": 1
         },
         "longContext": {
@@ -6244,12 +9032,12 @@
           "evidence": 0
         },
         "speed": {
-          "value": 42.1,
+          "value": 42.2,
           "evidence": 1
         },
         "overall": {
-          "value": 49.6,
-          "evidence": 3
+          "value": 49.8,
+          "evidence": 4
         }
       }
     }
@@ -6280,8 +9068,8 @@
         "intelligenceIndex": null,
         "priceIn": 0.95,
         "priceOut": 4,
-        "ttft": 7.96147011513427,
-        "speed": 35.9191426437527,
+        "ttft": 7.95463491869817,
+        "speed": 35.8990281755535,
         "benchmarks": {
           "gpqa": 91.1,
           "hle": 37.5,
@@ -6315,6 +9103,14 @@
           "gdp-pdf-aa": 13
         },
         "board": "https://llmleaderboard.com"
+      },
+      "openrouterBenchmarks": {
+        "source": "https://openrouter.ai/benchmarks",
+        "checkedAt": "2026-11-19",
+        "accuracy": {
+          "gpqa": 0.8671,
+          "tau2": 0.7333
+        }
       }
     },
     "scores": {
@@ -6342,16 +9138,25 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 99,
-      "tokens": 98629503211,
+      "tokens": 99164042491,
       "share": 0.0004,
-      "percentile": 48.8
+      "percentile": 48.8,
+      "tasks": [
+        {
+          "tag": "assistance.service_issue_resolution",
+          "macroCategory": "assistance",
+          "share": 0.0275,
+          "rank": 9
+        }
+      ],
+      "windowDays": 30
     },
     "ranking": {
       "status": "measured",
-      "composite": 51.3,
-      "low": 26.3,
-      "rank": 33,
-      "uncalibrated": 9,
+      "composite": 50.9,
+      "low": 34.6,
+      "rank": 21,
+      "uncalibrated": 10,
       "dims": {
         "coding": {
           "value": 50.5,
@@ -6362,8 +9167,12 @@
           "evidence": 1
         },
         "knowledge": {
-          "value": 55.8,
+          "value": 55.9,
           "evidence": 2
+        },
+        "agentic": {
+          "value": 49.4,
+          "evidence": 1
         },
         "longContext": {
           "value": 71.1,
@@ -6378,8 +9187,8 @@
           "evidence": 2
         },
         "overall": {
-          "value": 51.3,
-          "evidence": 4
+          "value": 50.9,
+          "evidence": 5
         }
       }
     }
@@ -6405,8 +9214,8 @@
         "intelligenceIndex": null,
         "priceIn": 0.375,
         "priceOut": 2.25,
-        "ttft": 3.29773707709478,
-        "speed": 115.551889442761,
+        "ttft": 3.29387127149547,
+        "speed": 114.131616531802,
         "benchmarks": {
           "automationbench-aa": 5.2,
           "hle-diamond": 6.9,
@@ -6432,6 +9241,15 @@
         "eci": 144.1,
         "date": "2026-04-14",
         "board": "https://epoch.ai/eci"
+      },
+      "openrouterBenchmarks": {
+        "source": "https://openrouter.ai/benchmarks",
+        "checkedAt": "2026-11-19",
+        "accuracy": {
+          "gpqa": 0.7981,
+          "tau2": 0.7229,
+          "vgi-bench": 0.2678
+        }
       }
     },
     "scores": {
@@ -6459,16 +9277,16 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 67,
-      "tokens": 264167456992,
+      "tokens": 265863845696,
       "share": 0.001,
       "percentile": 55.8
     },
     "ranking": {
       "status": "measured",
-      "composite": 47.7,
-      "low": 25.7,
-      "rank": 39,
-      "uncalibrated": 9,
+      "composite": 48.3,
+      "low": 33.6,
+      "rank": 29,
+      "uncalibrated": 10,
       "dims": {
         "coding": {
           "value": 45.5,
@@ -6479,7 +9297,11 @@
           "evidence": 1
         },
         "knowledge": {
-          "value": 61.3,
+          "value": 62.6,
+          "evidence": 1
+        },
+        "agentic": {
+          "value": 49.4,
           "evidence": 1
         },
         "longContext": {
@@ -6487,12 +9309,12 @@
           "evidence": 1
         },
         "speed": {
-          "value": 55.4,
+          "value": 55.3,
           "evidence": 1
         },
         "overall": {
-          "value": 47.7,
-          "evidence": 3
+          "value": 48.3,
+          "evidence": 4
         }
       }
     }
@@ -6521,8 +9343,8 @@
         "intelligenceIndex": null,
         "priceIn": 1.19,
         "priceOut": 3.74,
-        "ttft": 3.6263877332801,
-        "speed": 64.65924984982621,
+        "ttft": 3.486961514316395,
+        "speed": 65.9101593725603,
         "benchmarks": {
           "gpqa": 86.8,
           "hle": 30.1,
@@ -6554,6 +9376,14 @@
           "gdp-pdf-aa": 8.4
         },
         "board": "https://llmleaderboard.com"
+      },
+      "openrouterBenchmarks": {
+        "source": "https://openrouter.ai/benchmarks",
+        "checkedAt": "2026-11-19",
+        "accuracy": {
+          "gpqa": 0.8109,
+          "tau2": 0.7171
+        }
       }
     },
     "scores": {
@@ -6580,17 +9410,26 @@
     },
     "usage": {
       "source": "openrouter-top-weekly",
-      "rank": 179,
-      "tokens": 22110257998,
+      "rank": 177,
+      "tokens": 22541116676,
       "share": 0.0001,
-      "percentile": 23.3
+      "percentile": 23.3,
+      "tasks": [
+        {
+          "tag": "assistance.service_issue_resolution",
+          "macroCategory": "assistance",
+          "share": 0.0275,
+          "rank": 9
+        }
+      ],
+      "windowDays": 30
     },
     "ranking": {
       "status": "measured",
-      "composite": 49,
-      "low": 21.5,
-      "rank": 51,
-      "uncalibrated": 8,
+      "composite": 49.2,
+      "low": 31,
+      "rank": 41,
+      "uncalibrated": 9,
       "dims": {
         "coding": {
           "value": 48.3,
@@ -6601,8 +9440,12 @@
           "evidence": 1
         },
         "knowledge": {
-          "value": 53.5,
+          "value": 54.2,
           "evidence": 2
+        },
+        "agentic": {
+          "value": 49.4,
+          "evidence": 1
         },
         "longContext": {
           "value": 66,
@@ -6613,12 +9456,12 @@
           "evidence": 0
         },
         "speed": {
-          "value": 47.9,
+          "value": 48.7,
           "evidence": 1
         },
         "overall": {
-          "value": 49,
-          "evidence": 4
+          "value": 49.2,
+          "evidence": 5
         }
       }
     }
@@ -6666,6 +9509,14 @@
         "contextTokens": 128000,
         "reasoning": true,
         "source": "https://artificialanalysis.ai/leaderboards/models"
+      },
+      "openrouterBenchmarks": {
+        "source": "https://openrouter.ai/benchmarks",
+        "checkedAt": "2026-11-19",
+        "accuracy": {
+          "gpqa": 0.7719,
+          "tau2": 0.73
+        }
       }
     },
     "scores": {
@@ -6693,16 +9544,16 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 260,
-      "tokens": 4994875675,
+      "tokens": 5027959288,
       "share": 0,
       "percentile": 0
     },
     "ranking": {
       "status": "measured",
-      "composite": 47.8,
-      "low": 25.8,
-      "rank": 38,
-      "uncalibrated": 8,
+      "composite": 48.5,
+      "low": 33.4,
+      "rank": 32,
+      "uncalibrated": 9,
       "dims": {
         "coding": {
           "value": 46,
@@ -6713,7 +9564,11 @@
           "evidence": 1
         },
         "knowledge": {
-          "value": 59.7,
+          "value": 61.8,
+          "evidence": 1
+        },
+        "agentic": {
+          "value": 49.4,
           "evidence": 1
         },
         "longContext": {
@@ -6725,8 +9580,8 @@
           "evidence": 0
         },
         "overall": {
-          "value": 47.8,
-          "evidence": 3
+          "value": 48.5,
+          "evidence": 4
         }
       }
     }
@@ -6757,8 +9612,8 @@
         "intelligenceIndex": null,
         "priceIn": 0.5,
         "priceOut": 3,
-        "ttft": 2.58775794210003,
-        "speed": 45.7754310283359,
+        "ttft": 2.61401689268613,
+        "speed": 45.8399653453328,
         "benchmarks": {
           "gpqa": 88.2,
           "hle": 27.8,
@@ -6778,6 +9633,15 @@
         "eci": 148.9,
         "date": "2026-03-31",
         "board": "https://epoch.ai/eci"
+      },
+      "openrouterBenchmarks": {
+        "source": "https://openrouter.ai/benchmarks",
+        "checkedAt": "2026-11-19",
+        "accuracy": {
+          "gpqa": 0.9646,
+          "tau2": 0.7867,
+          "vgi-bench": 0.1549
+        }
       }
     },
     "scores": {
@@ -6802,19 +9666,83 @@
       "vision": 0,
       "speed": 0
     },
+    "usage": {
+      "source": "openrouter-task-spend",
+      "tasks": [
+        {
+          "tag": "creative.interactive_roleplay",
+          "macroCategory": "creative",
+          "share": 0.0869,
+          "rank": 2
+        },
+        {
+          "tag": "creative.creative_writing",
+          "macroCategory": "creative",
+          "share": 0.0705,
+          "rank": 3
+        },
+        {
+          "tag": "media.speech_transcription",
+          "macroCategory": "media",
+          "share": 0.0786,
+          "rank": 3
+        },
+        {
+          "tag": "writing.rewriting_editing",
+          "macroCategory": "writing",
+          "share": 0.031,
+          "rank": 5
+        },
+        {
+          "tag": "writing.drafting",
+          "macroCategory": "writing",
+          "share": 0.0354,
+          "rank": 7
+        },
+        {
+          "tag": "assistance.advice_coaching",
+          "macroCategory": "assistance",
+          "share": 0.0346,
+          "rank": 7
+        },
+        {
+          "tag": "writing.translation_localization",
+          "macroCategory": "writing",
+          "share": 0.0294,
+          "rank": 8
+        },
+        {
+          "tag": "information.planning_decision_support",
+          "macroCategory": "information",
+          "share": 0.0239,
+          "rank": 10
+        },
+        {
+          "tag": "software.architecture_requirements_planning",
+          "macroCategory": "software",
+          "share": 0.0279,
+          "rank": 10
+        }
+      ],
+      "windowDays": 30
+    },
     "ranking": {
       "status": "measured",
-      "composite": 52.4,
-      "low": 22.4,
-      "rank": 46,
-      "uncalibrated": 6,
+      "composite": 51.6,
+      "low": 29.1,
+      "rank": 48,
+      "uncalibrated": 8,
       "dims": {
         "reasoning": {
           "value": 46.2,
           "evidence": 1
         },
         "knowledge": {
-          "value": 62.7,
+          "value": 63.4,
+          "evidence": 1
+        },
+        "agentic": {
+          "value": 49.5,
           "evidence": 1
         },
         "longContext": {
@@ -6826,12 +9754,12 @@
           "evidence": 0
         },
         "speed": {
-          "value": 49.1,
+          "value": 49,
           "evidence": 1
         },
         "overall": {
-          "value": 52.4,
-          "evidence": 2
+          "value": 51.6,
+          "evidence": 3
         }
       }
     }
@@ -6862,8 +9790,8 @@
         "intelligenceIndex": null,
         "priceIn": 0.5,
         "priceOut": 3,
-        "ttft": 2.58775794210003,
-        "speed": 45.7754310283359,
+        "ttft": 2.61401689268613,
+        "speed": 45.8399653453328,
         "benchmarks": {
           "gpqa": 88.2,
           "hle": 27.8,
@@ -6883,6 +9811,15 @@
         "eci": 148.9,
         "date": "2026-03-31",
         "board": "https://epoch.ai/eci"
+      },
+      "openrouterBenchmarks": {
+        "source": "https://openrouter.ai/benchmarks",
+        "checkedAt": "2026-11-19",
+        "accuracy": {
+          "gpqa": 0.9646,
+          "tau2": 0.7867,
+          "vgi-bench": 0.1549
+        }
       }
     },
     "scores": {
@@ -6910,23 +9847,84 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 221,
-      "tokens": 10391899750,
+      "tokens": 10449631198,
       "share": 0,
-      "percentile": 11.6
+      "percentile": 11.6,
+      "tasks": [
+        {
+          "tag": "creative.interactive_roleplay",
+          "macroCategory": "creative",
+          "share": 0.0869,
+          "rank": 2
+        },
+        {
+          "tag": "creative.creative_writing",
+          "macroCategory": "creative",
+          "share": 0.0705,
+          "rank": 3
+        },
+        {
+          "tag": "media.speech_transcription",
+          "macroCategory": "media",
+          "share": 0.0786,
+          "rank": 3
+        },
+        {
+          "tag": "writing.rewriting_editing",
+          "macroCategory": "writing",
+          "share": 0.031,
+          "rank": 5
+        },
+        {
+          "tag": "writing.drafting",
+          "macroCategory": "writing",
+          "share": 0.0354,
+          "rank": 7
+        },
+        {
+          "tag": "assistance.advice_coaching",
+          "macroCategory": "assistance",
+          "share": 0.0346,
+          "rank": 7
+        },
+        {
+          "tag": "writing.translation_localization",
+          "macroCategory": "writing",
+          "share": 0.0294,
+          "rank": 8
+        },
+        {
+          "tag": "information.planning_decision_support",
+          "macroCategory": "information",
+          "share": 0.0239,
+          "rank": 10
+        },
+        {
+          "tag": "software.architecture_requirements_planning",
+          "macroCategory": "software",
+          "share": 0.0279,
+          "rank": 10
+        }
+      ],
+      "windowDays": 30
     },
     "ranking": {
       "status": "measured",
-      "composite": 52.4,
-      "low": 22.4,
-      "rank": 45,
-      "uncalibrated": 6,
+      "composite": 51.6,
+      "low": 29.1,
+      "rank": 47,
+      "uncalibrated": 8,
       "dims": {
         "reasoning": {
           "value": 46.2,
           "evidence": 1
         },
         "knowledge": {
-          "value": 62.7,
+          "value": 63.4,
+          "evidence": 1
+        },
+        "agentic": {
+          "value": 49.5,
           "evidence": 1
         },
         "longContext": {
@@ -6938,12 +9936,12 @@
           "evidence": 0
         },
         "speed": {
-          "value": 49.1,
+          "value": 49,
           "evidence": 1
         },
         "overall": {
-          "value": 52.4,
-          "evidence": 2
+          "value": 51.6,
+          "evidence": 3
         }
       }
     }
@@ -6972,8 +9970,8 @@
         "intelligenceIndex": null,
         "priceIn": 0.3,
         "priceOut": 1.2,
-        "ttft": 4.06621554161242,
-        "speed": 46.1159379529671,
+        "ttft": 4.07849529396522,
+        "speed": 46.4058513172738,
         "benchmarks": {
           "gpqa": 87.4,
           "hle": 29.6,
@@ -7000,6 +9998,15 @@
           "gdp-pdf-aa": 6
         },
         "board": "https://llmleaderboard.com"
+      },
+      "openrouterBenchmarks": {
+        "source": "https://openrouter.ai/benchmarks",
+        "checkedAt": "2026-11-19",
+        "accuracy": {
+          "gpqa": 0.8547,
+          "tau2": 0.7086,
+          "vgi-bench": 0.1549
+        }
       }
     },
     "scores": {
@@ -7026,17 +10033,74 @@
     },
     "usage": {
       "source": "openrouter-top-weekly",
-      "rank": 155,
-      "tokens": 31872651556,
+      "rank": 157,
+      "tokens": 31963703232,
       "share": 0.0001,
-      "percentile": 34.9
+      "percentile": 34.9,
+      "tasks": [
+        {
+          "tag": "creative.interactive_roleplay",
+          "macroCategory": "creative",
+          "share": 0.0869,
+          "rank": 2
+        },
+        {
+          "tag": "creative.creative_writing",
+          "macroCategory": "creative",
+          "share": 0.0705,
+          "rank": 3
+        },
+        {
+          "tag": "media.speech_transcription",
+          "macroCategory": "media",
+          "share": 0.0786,
+          "rank": 3
+        },
+        {
+          "tag": "writing.rewriting_editing",
+          "macroCategory": "writing",
+          "share": 0.031,
+          "rank": 5
+        },
+        {
+          "tag": "writing.drafting",
+          "macroCategory": "writing",
+          "share": 0.0354,
+          "rank": 7
+        },
+        {
+          "tag": "assistance.advice_coaching",
+          "macroCategory": "assistance",
+          "share": 0.0346,
+          "rank": 7
+        },
+        {
+          "tag": "writing.translation_localization",
+          "macroCategory": "writing",
+          "share": 0.0294,
+          "rank": 8
+        },
+        {
+          "tag": "information.planning_decision_support",
+          "macroCategory": "information",
+          "share": 0.0239,
+          "rank": 10
+        },
+        {
+          "tag": "software.architecture_requirements_planning",
+          "macroCategory": "software",
+          "share": 0.0279,
+          "rank": 10
+        }
+      ],
+      "windowDays": 30
     },
     "ranking": {
       "status": "measured",
-      "composite": 49.5,
-      "low": 22,
-      "rank": 47,
-      "uncalibrated": 7,
+      "composite": 49.6,
+      "low": 31.4,
+      "rank": 38,
+      "uncalibrated": 10,
       "dims": {
         "coding": {
           "value": 50,
@@ -7047,8 +10111,12 @@
           "evidence": 1
         },
         "knowledge": {
-          "value": 53.1,
+          "value": 53.7,
           "evidence": 2
+        },
+        "agentic": {
+          "value": 49.4,
+          "evidence": 1
         },
         "longContext": {
           "value": 66.5,
@@ -7063,8 +10131,8 @@
           "evidence": 1
         },
         "overall": {
-          "value": 49.5,
-          "evidence": 4
+          "value": 49.6,
+          "evidence": 5
         }
       }
     }
@@ -7093,8 +10161,8 @@
         "intelligenceIndex": null,
         "priceIn": 1,
         "priceOut": 3.2,
-        "ttft": 2.22375634358127,
-        "speed": 80.38178396418544,
+        "ttft": 2.153225094782055,
+        "speed": 76.54566357514204,
         "benchmarks": {
           "gpqa": 82,
           "hle": 29.3,
@@ -7111,6 +10179,14 @@
         "eci": 146.5,
         "date": "2026-02-11",
         "board": "https://epoch.ai/eci"
+      },
+      "openrouterBenchmarks": {
+        "source": "https://openrouter.ai/benchmarks",
+        "checkedAt": "2026-11-19",
+        "accuracy": {
+          "gpqa": 0.7905,
+          "tau2": 0.741
+        }
       }
     },
     "scores": {
@@ -7138,15 +10214,15 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 144,
-      "tokens": 39681474491,
+      "tokens": 40044107283,
       "share": 0.0001,
       "percentile": 39.5
     },
     "ranking": {
       "status": "measured",
-      "composite": 51.9,
-      "low": 21.9,
-      "rank": 48,
+      "composite": 51.5,
+      "low": 28.3,
+      "rank": 49,
       "uncalibrated": 4,
       "dims": {
         "reasoning": {
@@ -7154,7 +10230,11 @@
           "evidence": 1
         },
         "knowledge": {
-          "value": 60.6,
+          "value": 62.2,
+          "evidence": 1
+        },
+        "agentic": {
+          "value": 49.4,
           "evidence": 1
         },
         "longContext": {
@@ -7170,8 +10250,8 @@
           "evidence": 1
         },
         "overall": {
-          "value": 51.9,
-          "evidence": 2
+          "value": 51.5,
+          "evidence": 3
         }
       }
     }
@@ -7200,8 +10280,8 @@
         "intelligenceIndex": null,
         "priceIn": 0.3,
         "priceOut": 1.2,
-        "ttft": 3.86060701646482,
-        "speed": 41.3576564496439,
+        "ttft": 3.9010659623426,
+        "speed": 43.1356710330412,
         "benchmarks": {
           "gpqa": 84.8,
           "hle": 20.5,
@@ -7213,6 +10293,15 @@
         "contextTokens": 204800,
         "reasoning": true,
         "source": "https://artificialanalysis.ai/leaderboards/models"
+      },
+      "openrouterBenchmarks": {
+        "source": "https://openrouter.ai/benchmarks",
+        "checkedAt": "2026-11-19",
+        "accuracy": {
+          "gpqa": 0.7887,
+          "tau2": 0.6767,
+          "vgi-bench": 0.1549
+        }
       }
     },
     "scores": {
@@ -7237,19 +10326,83 @@
       "vision": 0,
       "speed": 0
     },
+    "usage": {
+      "source": "openrouter-task-spend",
+      "tasks": [
+        {
+          "tag": "creative.interactive_roleplay",
+          "macroCategory": "creative",
+          "share": 0.0869,
+          "rank": 2
+        },
+        {
+          "tag": "creative.creative_writing",
+          "macroCategory": "creative",
+          "share": 0.0705,
+          "rank": 3
+        },
+        {
+          "tag": "media.speech_transcription",
+          "macroCategory": "media",
+          "share": 0.0786,
+          "rank": 3
+        },
+        {
+          "tag": "writing.rewriting_editing",
+          "macroCategory": "writing",
+          "share": 0.031,
+          "rank": 5
+        },
+        {
+          "tag": "writing.drafting",
+          "macroCategory": "writing",
+          "share": 0.0354,
+          "rank": 7
+        },
+        {
+          "tag": "assistance.advice_coaching",
+          "macroCategory": "assistance",
+          "share": 0.0346,
+          "rank": 7
+        },
+        {
+          "tag": "writing.translation_localization",
+          "macroCategory": "writing",
+          "share": 0.0294,
+          "rank": 8
+        },
+        {
+          "tag": "information.planning_decision_support",
+          "macroCategory": "information",
+          "share": 0.0239,
+          "rank": 10
+        },
+        {
+          "tag": "software.architecture_requirements_planning",
+          "macroCategory": "software",
+          "share": 0.0279,
+          "rank": 10
+        }
+      ],
+      "windowDays": 30
+    },
     "ranking": {
       "status": "measured",
       "composite": 50.4,
-      "low": 20.4,
-      "rank": 57,
-      "uncalibrated": 4,
+      "low": 27.5,
+      "rank": 54,
+      "uncalibrated": 5,
       "dims": {
         "reasoning": {
           "value": 43.8,
           "evidence": 1
         },
         "knowledge": {
-          "value": 61.5,
+          "value": 62.7,
+          "evidence": 1
+        },
+        "agentic": {
+          "value": 49.3,
           "evidence": 1
         },
         "longContext": {
@@ -7261,12 +10414,12 @@
           "evidence": 0
         },
         "speed": {
-          "value": 42.3,
+          "value": 42.6,
           "evidence": 1
         },
         "overall": {
           "value": 50.4,
-          "evidence": 2
+          "evidence": 3
         }
       }
     }
@@ -7292,8 +10445,8 @@
         "intelligenceIndex": null,
         "priceIn": 0.4,
         "priceOut": 3.2,
-        "ttft": 4.51325881628331,
-        "speed": 104.375416712176,
+        "ttft": 4.50750382574733,
+        "speed": 103.387585669736,
         "benchmarks": {
           "automationbench-aa": 5.5,
           "hle-diamond": 7.3,
@@ -7314,6 +10467,15 @@
         "contextTokens": 262144,
         "reasoning": true,
         "source": "https://artificialanalysis.ai/leaderboards/models"
+      },
+      "openrouterBenchmarks": {
+        "source": "https://openrouter.ai/benchmarks",
+        "checkedAt": "2026-11-19",
+        "accuracy": {
+          "gpqa": 0.8489,
+          "tau2": 0.7733,
+          "vgi-bench": 0.1285
+        }
       }
     },
     "scores": {
@@ -7341,16 +10503,16 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 233,
-      "tokens": 7984833972,
+      "tokens": 8029993267,
       "share": 0,
       "percentile": 4.7
     },
     "ranking": {
       "status": "measured",
-      "composite": 48.5,
-      "low": 26.5,
-      "rank": 32,
-      "uncalibrated": 9,
+      "composite": 48.9,
+      "low": 34.3,
+      "rank": 25,
+      "uncalibrated": 10,
       "dims": {
         "coding": {
           "value": 46.6,
@@ -7361,7 +10523,11 @@
           "evidence": 1
         },
         "knowledge": {
-          "value": 61.8,
+          "value": 62.9,
+          "evidence": 1
+        },
+        "agentic": {
+          "value": 49.5,
           "evidence": 1
         },
         "longContext": {
@@ -7369,12 +10535,12 @@
           "evidence": 1
         },
         "speed": {
-          "value": 49.8,
+          "value": 49.7,
           "evidence": 1
         },
         "overall": {
-          "value": 48.5,
-          "evidence": 3
+          "value": 48.9,
+          "evidence": 4
         }
       }
     }
@@ -7404,8 +10570,8 @@
         "intelligenceIndex": null,
         "priceIn": 0.25,
         "priceOut": 2,
-        "ttft": 3.73175494502497,
-        "speed": 103.519341457854,
+        "ttft": 3.70881774206385,
+        "speed": 104.267292551559,
         "benchmarks": {
           "gpqa": 81.9,
           "hle": 13.4,
@@ -7425,6 +10591,15 @@
         "eci": 144.1,
         "date": "2026-02-24",
         "board": "https://epoch.ai/eci"
+      },
+      "openrouterBenchmarks": {
+        "source": "https://openrouter.ai/benchmarks",
+        "checkedAt": "2026-11-19",
+        "accuracy": {
+          "gpqa": 0.8165,
+          "tau2": 0.7557,
+          "vgi-bench": 0.1239
+        }
       }
     },
     "scores": {
@@ -7451,24 +10626,28 @@
     },
     "usage": {
       "source": "openrouter-top-weekly",
-      "rank": 146,
-      "tokens": 34862700165,
+      "rank": 147,
+      "tokens": 35163867713,
       "share": 0.0001,
       "percentile": 37.2
     },
     "ranking": {
       "status": "measured",
-      "composite": 48.6,
-      "low": 18.6,
-      "rank": 61,
-      "uncalibrated": 6,
+      "composite": 49.3,
+      "low": 26,
+      "rank": 58,
+      "uncalibrated": 8,
       "dims": {
         "reasoning": {
           "value": 41.4,
           "evidence": 1
         },
         "knowledge": {
-          "value": 60.6,
+          "value": 62.2,
+          "evidence": 1
+        },
+        "agentic": {
+          "value": 49.4,
           "evidence": 1
         },
         "longContext": {
@@ -7480,12 +10659,12 @@
           "evidence": 0
         },
         "speed": {
-          "value": 52.4,
+          "value": 52.6,
           "evidence": 1
         },
         "overall": {
-          "value": 48.6,
-          "evidence": 2
+          "value": 49.3,
+          "evidence": 3
         }
       }
     }
@@ -7515,8 +10694,8 @@
         "intelligenceIndex": null,
         "priceIn": 0.3,
         "priceOut": 2.4,
-        "ttft": 11.9303152838584,
-        "speed": 34.434609296304,
+        "ttft": 11.9314531953695,
+        "speed": 30.9105248744933,
         "benchmarks": {
           "gpqa": 85.8,
           "hle": 23.9,
@@ -7530,6 +10709,62 @@
         "contextTokens": 262144,
         "reasoning": true,
         "source": "https://artificialanalysis.ai/leaderboards/models"
+      },
+      "taskIndexes": {
+        "source": "https://artificialanalysis.ai/indexes",
+        "checkedAt": "2026-11-19",
+        "indexes": {
+          "economics": 61.9,
+          "engineering": 66.8,
+          "finance-and-accounting": 65.1,
+          "legal": 63.8,
+          "strategy-and-ops": 63.8
+        },
+        "subScores": {
+          "economics": {
+            "knowledge": 73,
+            "reasoning": 71.3,
+            "longContext": 28,
+            "agenticKnowledgeWork": 60
+          },
+          "engineering": {
+            "science": 65.3,
+            "knowledge": 74.8,
+            "reasoning": 71.3,
+            "agenticTerminalUse": 54,
+            "agenticKnowledgeWork": 60
+          },
+          "finance-and-accounting": {
+            "knowledge": 50.9,
+            "reasoning": 71.3,
+            "longContext": 28,
+            "agenticToolUse": 87.3,
+            "nonHallucination": 90,
+            "agenticKnowledgeWork": 60
+          },
+          "legal": {
+            "knowledge": 56.9,
+            "reasoning": 71.3,
+            "longContext": 28,
+            "agenticToolUse": 82.4,
+            "nonHallucination": 93.8,
+            "agenticKnowledgeWork": 60
+          },
+          "strategy-and-ops": {
+            "knowledge": 50.9,
+            "longContext": 28,
+            "agenticToolUse": 77.6,
+            "nonHallucination": 90,
+            "agenticKnowledgeWork": 60
+          }
+        }
+      },
+      "openrouterBenchmarks": {
+        "source": "https://openrouter.ai/benchmarks",
+        "checkedAt": "2026-11-19",
+        "accuracy": {
+          "vgi-bench": 0.1598
+        }
       }
     },
     "scores": {
@@ -7557,16 +10792,25 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 202,
-      "tokens": 13428360876,
-      "share": 0.0001,
-      "percentile": 18.6
+      "tokens": 13492238685,
+      "share": 0,
+      "percentile": 18.6,
+      "tasks": [
+        {
+          "tag": "assistance.service_issue_resolution",
+          "macroCategory": "assistance",
+          "share": 0.0275,
+          "rank": 9
+        }
+      ],
+      "windowDays": 30
     },
     "ranking": {
       "status": "measured",
       "composite": 51.3,
       "low": 21.3,
-      "rank": 53,
-      "uncalibrated": 6,
+      "rank": 64,
+      "uncalibrated": 7,
       "dims": {
         "reasoning": {
           "value": 44.9,
@@ -7585,7 +10829,7 @@
           "evidence": 0
         },
         "speed": {
-          "value": 37.2,
+          "value": 36.1,
           "evidence": 1
         },
         "overall": {
@@ -7616,8 +10860,8 @@
         "intelligenceIndex": null,
         "priceIn": 0.6,
         "priceOut": 3.6,
-        "ttft": 2.50597150372188,
-        "speed": 50.9465610222158,
+        "ttft": 2.50998571507456,
+        "speed": 50.6509045500174,
         "benchmarks": {
           "automationbench-aa": 6.9,
           "hle-diamond": 12.4,
@@ -7655,6 +10899,15 @@
           "gdp-pdf-aa": 12.2
         },
         "board": "https://llmleaderboard.com"
+      },
+      "openrouterBenchmarks": {
+        "source": "https://openrouter.ai/benchmarks",
+        "checkedAt": "2026-11-19",
+        "accuracy": {
+          "gpqa": 0.8624,
+          "tau2": 0.7914,
+          "vgi-bench": 0.4506
+        }
       }
     },
     "scores": {
@@ -7681,17 +10934,17 @@
     },
     "usage": {
       "source": "openrouter-top-weekly",
-      "rank": 165,
-      "tokens": 27202813479,
+      "rank": 166,
+      "tokens": 27502376532,
       "share": 0.0001,
       "percentile": 32.6
     },
     "ranking": {
       "status": "measured",
-      "composite": 48.2,
-      "low": 20.7,
-      "rank": 56,
-      "uncalibrated": 12,
+      "composite": 48.5,
+      "low": 30.3,
+      "rank": 44,
+      "uncalibrated": 13,
       "dims": {
         "coding": {
           "value": 48.3,
@@ -7702,20 +10955,24 @@
           "evidence": 1
         },
         "knowledge": {
-          "value": 55.1,
+          "value": 55.4,
           "evidence": 2
+        },
+        "agentic": {
+          "value": 49.5,
+          "evidence": 1
         },
         "longContext": {
           "value": 56.7,
           "evidence": 1
         },
         "speed": {
-          "value": 50.7,
+          "value": 50.6,
           "evidence": 1
         },
         "overall": {
-          "value": 48.2,
-          "evidence": 4
+          "value": 48.5,
+          "evidence": 5
         }
       }
     }
@@ -7759,6 +11016,15 @@
         "contextTokens": 204800,
         "reasoning": true,
         "source": "https://artificialanalysis.ai/leaderboards/models"
+      },
+      "openrouterBenchmarks": {
+        "source": "https://openrouter.ai/benchmarks",
+        "checkedAt": "2026-11-19",
+        "accuracy": {
+          "gpqa": 0.9646,
+          "tau2": 0.7867,
+          "vgi-bench": 0.1549
+        }
       }
     },
     "scores": {
@@ -7783,19 +11049,83 @@
       "vision": 0,
       "speed": 0
     },
+    "usage": {
+      "source": "openrouter-task-spend",
+      "tasks": [
+        {
+          "tag": "creative.interactive_roleplay",
+          "macroCategory": "creative",
+          "share": 0.0869,
+          "rank": 2
+        },
+        {
+          "tag": "creative.creative_writing",
+          "macroCategory": "creative",
+          "share": 0.0705,
+          "rank": 3
+        },
+        {
+          "tag": "media.speech_transcription",
+          "macroCategory": "media",
+          "share": 0.0786,
+          "rank": 3
+        },
+        {
+          "tag": "writing.rewriting_editing",
+          "macroCategory": "writing",
+          "share": 0.031,
+          "rank": 5
+        },
+        {
+          "tag": "writing.drafting",
+          "macroCategory": "writing",
+          "share": 0.0354,
+          "rank": 7
+        },
+        {
+          "tag": "assistance.advice_coaching",
+          "macroCategory": "assistance",
+          "share": 0.0346,
+          "rank": 7
+        },
+        {
+          "tag": "writing.translation_localization",
+          "macroCategory": "writing",
+          "share": 0.0294,
+          "rank": 8
+        },
+        {
+          "tag": "information.planning_decision_support",
+          "macroCategory": "information",
+          "share": 0.0239,
+          "rank": 10
+        },
+        {
+          "tag": "software.architecture_requirements_planning",
+          "macroCategory": "software",
+          "share": 0.0279,
+          "rank": 10
+        }
+      ],
+      "windowDays": 30
+    },
     "ranking": {
       "status": "measured",
       "composite": 50.8,
-      "low": 20.8,
-      "rank": 55,
-      "uncalibrated": 6,
+      "low": 27.6,
+      "rank": 53,
+      "uncalibrated": 7,
       "dims": {
         "reasoning": {
           "value": 44.7,
           "evidence": 1
         },
         "knowledge": {
-          "value": 60.9,
+          "value": 62.5,
+          "evidence": 1
+        },
+        "agentic": {
+          "value": 49.5,
           "evidence": 1
         },
         "longContext": {
@@ -7808,7 +11138,7 @@
         },
         "overall": {
           "value": 50.8,
-          "evidence": 2
+          "evidence": 3
         }
       }
     }
@@ -7837,8 +11167,8 @@
         "intelligenceIndex": null,
         "priceIn": 0.3,
         "priceOut": 1.2,
-        "ttft": 3.86060701646482,
-        "speed": 41.3576564496439,
+        "ttft": 3.9010659623426,
+        "speed": 43.1356710330412,
         "benchmarks": {
           "gpqa": 84.8,
           "hle": 20.5,
@@ -7850,6 +11180,15 @@
         "contextTokens": 204800,
         "reasoning": true,
         "source": "https://artificialanalysis.ai/leaderboards/models"
+      },
+      "openrouterBenchmarks": {
+        "source": "https://openrouter.ai/benchmarks",
+        "checkedAt": "2026-11-19",
+        "accuracy": {
+          "gpqa": 0.7887,
+          "tau2": 0.6767,
+          "vgi-bench": 0.1549
+        }
       }
     },
     "scores": {
@@ -7877,23 +11216,84 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 241,
-      "tokens": 6968161058,
+      "tokens": 6999496090,
       "share": 0,
-      "percentile": 2.3
+      "percentile": 2.3,
+      "tasks": [
+        {
+          "tag": "creative.interactive_roleplay",
+          "macroCategory": "creative",
+          "share": 0.0869,
+          "rank": 2
+        },
+        {
+          "tag": "creative.creative_writing",
+          "macroCategory": "creative",
+          "share": 0.0705,
+          "rank": 3
+        },
+        {
+          "tag": "media.speech_transcription",
+          "macroCategory": "media",
+          "share": 0.0786,
+          "rank": 3
+        },
+        {
+          "tag": "writing.rewriting_editing",
+          "macroCategory": "writing",
+          "share": 0.031,
+          "rank": 5
+        },
+        {
+          "tag": "writing.drafting",
+          "macroCategory": "writing",
+          "share": 0.0354,
+          "rank": 7
+        },
+        {
+          "tag": "assistance.advice_coaching",
+          "macroCategory": "assistance",
+          "share": 0.0346,
+          "rank": 7
+        },
+        {
+          "tag": "writing.translation_localization",
+          "macroCategory": "writing",
+          "share": 0.0294,
+          "rank": 8
+        },
+        {
+          "tag": "information.planning_decision_support",
+          "macroCategory": "information",
+          "share": 0.0239,
+          "rank": 10
+        },
+        {
+          "tag": "software.architecture_requirements_planning",
+          "macroCategory": "software",
+          "share": 0.0279,
+          "rank": 10
+        }
+      ],
+      "windowDays": 30
     },
     "ranking": {
       "status": "measured",
       "composite": 50.4,
-      "low": 20.4,
-      "rank": 58,
-      "uncalibrated": 4,
+      "low": 27.5,
+      "rank": 55,
+      "uncalibrated": 5,
       "dims": {
         "reasoning": {
           "value": 43.8,
           "evidence": 1
         },
         "knowledge": {
-          "value": 61.5,
+          "value": 62.7,
+          "evidence": 1
+        },
+        "agentic": {
+          "value": 49.3,
           "evidence": 1
         },
         "longContext": {
@@ -7905,12 +11305,12 @@
           "evidence": 0
         },
         "speed": {
-          "value": 42.3,
+          "value": 42.6,
           "evidence": 1
         },
         "overall": {
           "value": 50.4,
-          "evidence": 2
+          "evidence": 3
         }
       }
     }
@@ -7941,8 +11341,8 @@
         "intelligenceIndex": null,
         "priceIn": 0.6,
         "priceOut": 3,
-        "ttft": 2.85895593153333,
-        "speed": 43.8913387497703,
+        "ttft": 2.83361231636665,
+        "speed": 42.9259041696982,
         "benchmarks": {
           "gpqa": 87.9,
           "hle": 30.7,
@@ -7971,6 +11371,14 @@
           "gpqa-diamond-aa": 87.9
         },
         "board": "https://llmleaderboard.com"
+      },
+      "openrouterBenchmarks": {
+        "source": "https://openrouter.ai/benchmarks",
+        "checkedAt": "2026-11-19",
+        "accuracy": {
+          "gpqa": 0.8499,
+          "tau2": 0.7
+        }
       }
     },
     "scores": {
@@ -7998,23 +11406,36 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 173,
-      "tokens": 24820551955,
+      "tokens": 25091799480,
       "share": 0.0001,
-      "percentile": 25.6
+      "percentile": 25.6,
+      "tasks": [
+        {
+          "tag": "assistance.service_issue_resolution",
+          "macroCategory": "assistance",
+          "share": 0.0275,
+          "rank": 9
+        }
+      ],
+      "windowDays": 30
     },
     "ranking": {
       "status": "measured",
-      "composite": 53,
-      "low": 22.9,
-      "rank": 44,
-      "uncalibrated": 6,
+      "composite": 51.9,
+      "low": 29.4,
+      "rank": 46,
+      "uncalibrated": 7,
       "dims": {
         "reasoning": {
           "value": 47.2,
           "evidence": 1
         },
         "knowledge": {
-          "value": 62.6,
+          "value": 63.1,
+          "evidence": 1
+        },
+        "agentic": {
+          "value": 49.4,
           "evidence": 1
         },
         "longContext": {
@@ -8026,12 +11447,12 @@
           "evidence": 0
         },
         "speed": {
-          "value": 47.3,
+          "value": 47.2,
           "evidence": 1
         },
         "overall": {
-          "value": 53,
-          "evidence": 2
+          "value": 51.9,
+          "evidence": 3
         }
       }
     }
@@ -8060,8 +11481,8 @@
         "intelligenceIndex": null,
         "priceIn": 0.28,
         "priceOut": 0.42,
-        "ttft": 2.82387688656037,
-        "speed": 32.3997688027448,
+        "ttft": 2.732206467212505,
+        "speed": 31.91586068462755,
         "benchmarks": {
           "gpqa": 84,
           "hle": 24.6,
@@ -8081,6 +11502,15 @@
         "eci": 146.3,
         "date": "2025-12-01",
         "board": "https://epoch.ai/eci"
+      },
+      "openrouterBenchmarks": {
+        "source": "https://openrouter.ai/benchmarks",
+        "checkedAt": "2026-11-19",
+        "accuracy": {
+          "gpqa": 0.8172,
+          "tau2": 0.7371,
+          "vgi-bench": 0.1139
+        }
       }
     },
     "scores": {
@@ -8107,24 +11537,43 @@
     },
     "usage": {
       "source": "openrouter-top-weekly",
-      "rank": 62,
-      "tokens": 311456445089,
+      "rank": 63,
+      "tokens": 314137934257,
       "share": 0.0012,
-      "percentile": 60.5
+      "percentile": 58.1,
+      "tasks": [
+        {
+          "tag": "information.math_logic",
+          "macroCategory": "information",
+          "share": 0.0459,
+          "rank": 6
+        },
+        {
+          "tag": "software.implementation",
+          "macroCategory": "software",
+          "share": 0.0222,
+          "rank": 10
+        }
+      ],
+      "windowDays": 30
     },
     "ranking": {
       "status": "measured",
-      "composite": 51.2,
-      "low": 21.2,
-      "rank": 54,
-      "uncalibrated": 7,
+      "composite": 50.9,
+      "low": 27.9,
+      "rank": 51,
+      "uncalibrated": 8,
       "dims": {
         "reasoning": {
           "value": 45.2,
           "evidence": 1
         },
         "knowledge": {
-          "value": 61.3,
+          "value": 62.6,
+          "evidence": 1
+        },
+        "agentic": {
+          "value": 49.4,
           "evidence": 1
         },
         "longContext": {
@@ -8136,12 +11585,12 @@
           "evidence": 0
         },
         "speed": {
-          "value": 44.2,
+          "value": 44.6,
           "evidence": 1
         },
         "overall": {
-          "value": 51.2,
-          "evidence": 2
+          "value": 50.9,
+          "evidence": 3
         }
       }
     }
@@ -8189,6 +11638,14 @@
         "contextTokens": 128000,
         "reasoning": true,
         "source": "https://artificialanalysis.ai/leaderboards/models"
+      },
+      "openrouterBenchmarks": {
+        "source": "https://openrouter.ai/benchmarks",
+        "checkedAt": "2026-11-19",
+        "accuracy": {
+          "gpqa": 0.7719,
+          "tau2": 0.73
+        }
       }
     },
     "scores": {
@@ -8216,16 +11673,16 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 260,
-      "tokens": 4994875675,
+      "tokens": 5027959288,
       "share": 0,
       "percentile": 0
     },
     "ranking": {
       "status": "measured",
-      "composite": 47.8,
-      "low": 25.8,
-      "rank": 37,
-      "uncalibrated": 8,
+      "composite": 48.5,
+      "low": 33.4,
+      "rank": 31,
+      "uncalibrated": 9,
       "dims": {
         "coding": {
           "value": 46,
@@ -8236,7 +11693,11 @@
           "evidence": 1
         },
         "knowledge": {
-          "value": 59.7,
+          "value": 61.8,
+          "evidence": 1
+        },
+        "agentic": {
+          "value": 49.4,
           "evidence": 1
         },
         "longContext": {
@@ -8248,8 +11709,8 @@
           "evidence": 0
         },
         "overall": {
-          "value": 47.8,
-          "evidence": 3
+          "value": 48.5,
+          "evidence": 4
         }
       }
     }
@@ -8278,8 +11739,8 @@
         "intelligenceIndex": null,
         "priceIn": 0.24,
         "priceOut": 0.9,
-        "ttft": 0.861193225433341,
-        "speed": 132.749526264244,
+        "ttft": 0.858744357855571,
+        "speed": 131.864841539737,
         "benchmarks": {
           "gpqa": 65.5,
           "hle": 4.7,
@@ -8301,6 +11762,15 @@
         "eci": 135.3,
         "date": "2025-03-24",
         "board": "https://epoch.ai/eci"
+      },
+      "openrouterBenchmarks": {
+        "source": "https://openrouter.ai/benchmarks",
+        "checkedAt": "2026-11-19",
+        "accuracy": {
+          "gpqa": 0.5463,
+          "tau2": 0.3983,
+          "vgi-bench": 0.1549
+        }
       }
     },
     "scores": {
@@ -8325,12 +11795,72 @@
       "vision": 0,
       "speed": 0
     },
+    "usage": {
+      "source": "openrouter-task-spend",
+      "tasks": [
+        {
+          "tag": "creative.interactive_roleplay",
+          "macroCategory": "creative",
+          "share": 0.0869,
+          "rank": 2
+        },
+        {
+          "tag": "creative.creative_writing",
+          "macroCategory": "creative",
+          "share": 0.0705,
+          "rank": 3
+        },
+        {
+          "tag": "media.speech_transcription",
+          "macroCategory": "media",
+          "share": 0.0786,
+          "rank": 3
+        },
+        {
+          "tag": "writing.rewriting_editing",
+          "macroCategory": "writing",
+          "share": 0.031,
+          "rank": 5
+        },
+        {
+          "tag": "writing.drafting",
+          "macroCategory": "writing",
+          "share": 0.0354,
+          "rank": 7
+        },
+        {
+          "tag": "assistance.advice_coaching",
+          "macroCategory": "assistance",
+          "share": 0.0346,
+          "rank": 7
+        },
+        {
+          "tag": "writing.translation_localization",
+          "macroCategory": "writing",
+          "share": 0.0294,
+          "rank": 8
+        },
+        {
+          "tag": "information.planning_decision_support",
+          "macroCategory": "information",
+          "share": 0.0239,
+          "rank": 10
+        },
+        {
+          "tag": "software.architecture_requirements_planning",
+          "macroCategory": "software",
+          "share": 0.0279,
+          "rank": 10
+        }
+      ],
+      "windowDays": 30
+    },
     "ranking": {
       "status": "measured",
-      "composite": 45.3,
-      "low": 23.3,
+      "composite": 46.9,
+      "low": 30.7,
       "rank": 43,
-      "uncalibrated": 7,
+      "uncalibrated": 9,
       "dims": {
         "coding": {
           "value": 46.3,
@@ -8341,7 +11871,11 @@
           "evidence": 1
         },
         "knowledge": {
-          "value": 55.1,
+          "value": 59.3,
+          "evidence": 1
+        },
+        "agentic": {
+          "value": 48.9,
           "evidence": 1
         },
         "longContext": {
@@ -8357,8 +11891,8 @@
           "evidence": 1
         },
         "overall": {
-          "value": 45.3,
-          "evidence": 3
+          "value": 46.9,
+          "evidence": 4
         }
       }
     }
@@ -8429,7 +11963,7 @@
       "status": "measured",
       "composite": 41.7,
       "low": 11.7,
-      "rank": 63,
+      "rank": 67,
       "uncalibrated": 5,
       "dims": {
         "reasoning": {
@@ -8519,7 +12053,7 @@
       "status": "measured",
       "composite": 37.4,
       "low": 7.4,
-      "rank": 64,
+      "rank": 68,
       "uncalibrated": 3,
       "dims": {
         "reasoning": {
