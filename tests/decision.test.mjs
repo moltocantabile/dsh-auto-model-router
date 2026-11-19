@@ -475,3 +475,15 @@ test('injected notices do not spend the transcript window', () => {
   assert.ok(state.text.includes('converting callers'), 'the turn being routed keeps its context')
   assert.ok(!state.text.includes('notice 9'), 'injected notices stay out')
 })
+
+test('a new turn is not labelled as steering, a mid-turn message is', async () => {
+  const { buildState } = await import('../src/decision.js')
+  const user = (text) => ({ role: 'user', content: [{ type: 'text', text }] })
+  const tool = () => ({ role: 'tool', content: [{ type: 'tool-result', toolCallId: 't1', isError: false }] })
+  const config = { decision: { maxMessages: 10, maxStateChars: 12000, maxMessageChars: 2000 } }
+  const claimed = [user('and also rename the helper')]
+  const newTurn = buildState([user('first request'), { role: 'assistant', content: [{ type: 'text', text: 'done' }] }], claimed, config, { steered: false })
+  assert.ok(!newTurn.text.includes('| steered |'), 'a fresh turn is not labelled steering')
+  const midTurn = buildState([user('first request'), tool()], claimed, config, { steered: true })
+  assert.ok(midTurn.text.includes('| steered |'), 'a message injected mid-turn is labelled steering')
+})

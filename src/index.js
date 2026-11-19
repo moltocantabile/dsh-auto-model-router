@@ -88,8 +88,26 @@ const NON_ROUTING_PATTERN = /(audio|tts|video|image|embed|asr|ocr|wan\d|cosyvoic
  * @param {number} [limit]
  * @returns {Array<string>}
  */
-export function offerModelIds(pool, limit = MODEL_CHOICE_LIMIT) {
-  return modelsByQuality(pool, limit)
+export function offerModelIds(pool, routesOrLimit = null, limit = MODEL_CHOICE_LIMIT) {
+  const routes = typeof routesOrLimit === 'number' ? null : routesOrLimit
+  const cap = typeof routesOrLimit === 'number' ? routesOrLimit : limit
+  // A route's pinned model is always on the list: the operator configured it, and
+  // the decision model must be able to name it. Keys carry the provider, because a
+  // bare model id is ambiguous once two catalogs serve the same model.
+  const ids = []
+  const push = (id) => {
+    if (typeof id !== 'string' || id.length === 0 || ids.includes(id)) return false
+    ids.push(id)
+    return ids.length >= cap
+  }
+  for (const route of Object.values(routes ?? {})) {
+    if (typeof route?.model !== 'string' || route.model.length === 0) continue
+    if (push(typeof route.provider === 'string' && route.provider.length > 0 ? `${route.provider}/${route.model}` : route.model)) return ids
+  }
+  for (const id of modelsByQuality(pool)) {
+    if (push(id)) break
+  }
+  return ids
 }
 
 /** Merge deployment config over the defaults without dropping catalog entries. */
@@ -767,10 +785,18 @@ export function apply(ctx, input) {
       ])
     }
 
+    // Was this message injected in the middle of the assistant's work, or is it a
+    // new turn? The claimed batch alone cannot say: on a new turn it is the new
+    // message too, so every turn was labelled "steered".
+    const lastHistory = messages[messages.length - 1]
+    const steered = claimedBatch.length > 0 && lastHistory !== undefined &&
+      (lastHistory.role === 'tool' ||
+        (Array.isArray(lastHistory.content) && lastHistory.content.some((block) => block?.type === 'tool-result' || block?.type === 'tool-call')))
     const state = buildState(messages, claimedBatch, config.decision, {
       agentKind: agent.session.header?.origin === 'subagent' ? 'subagent' : 'main',
       toolNames: toolNamesOf(agent),
       digest,
+      steered,
     })
     const signature = `${state.messageIds}\u0000${state.text.length}\u0000${state.task}\u0000${digest === null ? 0 : digest.length}`
     const previous = pending.get(agent)
@@ -782,6 +808,7 @@ export function apply(ctx, input) {
     let started = Date.now()
     let latencyMs = 0
     let raw = null
+    let parsed = null
     let failure = null
     stats.decisions += 1
     const pool = await candidatePool()
@@ -797,7 +824,7 @@ export function apply(ctx, input) {
         // 200 choices in front of the decision model for a request that names
         // none of them. Best-measured first, so the ids a user is likely to ask
         // for are the ones offered.
-        models: offerModelIds(pool),
+        models: offerModelIds(pool, routes),
         signal,
       })
     } catch (error) {
@@ -823,7 +850,7 @@ export function apply(ctx, input) {
     let tiersAssigned = null
 
     if (failure === null) {
-      const parsed = parseDecision(raw, routes, config.policy)
+      parsed = parseDecision(raw, routes, config.policy)
       profile = parsed.profile
       confidence = parsed.confidence
       source = parsed.source
@@ -901,10 +928,17 @@ export function apply(ctx, input) {
       provider: selected.provider,
       model: selected.model,
       source,
+      steered,
       ...(tierChosen === null ? {} : { tier: tierChosen }),
       ...(envelopeWidened ? { envelopeWidened: true } : {}),
       ...(tiersAssigned === null ? {} : { tiers: tiersAssigned }),
       confidence,
+      ...(raw === null ? {} : { answer: String(JSON.stringify(raw)).slice(0, 1500) }),
+      ...(parsed === null ? {} : {
+        intent: parsed.intent ?? null,
+        acknowledged: parsed.acknowledged === true,
+        requestedModel: parsed.requestedModel ?? null,
+      }),
       profile: failure === null ? profile : undefined,
       ranking: failure === null ? ranking : undefined,
       inputTokens: raw?.inputTokens,
@@ -1243,7 +1277,7 @@ export function apply(ctx, input) {
       timeoutMs: config.decision.timeoutMs,
       // Same ordered shortlist the live decision path offers: the explanation
       // must be produced from the same choices the router would consider.
-      models: offerModelIds(candidates),
+      models: offerModelIds(candidates, routes),
       signal,
     })
     const parsed = parseDecision(raw, routes, config.policy)

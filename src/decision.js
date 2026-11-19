@@ -194,7 +194,13 @@ function stateFromMessages(messages, claimed, config, meta) {
     : windowLines
   const tools = Array.isArray(meta?.toolNames) ? meta.toolNames.slice(0, 12) : []
   const agent = meta?.agentKind ?? 'main'
-  const session = claimedList.length > 0 ? 'steered' : 'no steering'
+  // A claimed batch is not by itself steering: on a new turn the batch is just the
+  // new message, so every turn was labelled steered. The host knows whether the
+  // messages arrived mid-turn; fall back to the batch heuristic only when it does
+  // not say.
+  const session = typeof meta?.steered === 'boolean'
+    ? (meta.steered ? 'steered' : 'no steering')
+    : claimedList.length > 0 ? 'steered' : 'no steering'
 
   // The session digest frames the recent messages: it says which task these
   // steps belong to, so a one-line edit inside a migration is not read as a

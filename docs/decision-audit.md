@@ -418,3 +418,19 @@ and reporting the missing required questions is a small parser addition.
   and intent suites are 55/55 on their own.
 - The 15 new tests were run against the previous sources in a detached worktree
   and all 15 failed there; each name states the invariant it pins.
+
+## Addendum — the three host-side items (§ M6/M7/M8) are closed
+
+- **M6 shortlist.** `offerModelIds(pool, routes)` now emits `provider/model` keys
+  (a bare id is ambiguous when two catalogs serve one model), puts every pinned
+  route model first — the operator configured it, so the decision model must be
+  able to name it — then the measured ranking order, deduplicated and capped.
+  The parser already matches `requestedModel` against the candidate key first.
+- **M7 shadow record.** Each decision record now carries the raw answer
+  (`answer`, clipped to 1500 chars), `intent`, `acknowledged`, `requestedModel`
+  and a `steered` flag beside the profile/ranking it used. Shadow decisions are
+  reviewable without re-running the endpoint.
+- **M8 steering.** The host decides whether the claimed message arrived mid-turn
+  (the last history entry is a tool call/result) instead of inferring "steered"
+  from a non-empty claimed batch — which was true on every new turn. `buildState`
+  accepts the explicit signal and keeps the old behaviour only when it is absent.

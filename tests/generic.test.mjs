@@ -147,3 +147,16 @@ test('a forced tier constrains the selector instead of pinning an absent model',
   assert.ok(source.includes('forcesPin(forceId)'), 'force distinguishes a pinned model from a tier')
   assert.ok(source.includes('defaultRoute: forceTier ?? config.defaultRoute'), 'a tier force reaches the selector')
 })
+
+test('the shadow decision record carries the evidence an audit needs', () => {
+  const source = read('index.js')
+  // A shadow decision is only reviewable if the log holds the answer and what was
+  // parsed from it; the log used to omit both.
+  assert.ok(source.includes('answer: String(JSON.stringify(raw)).slice(0, 1500)'))
+  assert.ok(source.includes('intent: parsed.intent'))
+  assert.ok(source.includes('acknowledged: parsed.acknowledged === true'))
+  assert.ok(source.includes('requestedModel: parsed.requestedModel'))
+  // The shortlist must carry provider identity and include pinned route models.
+  assert.ok(source.includes('offerModelIds(pool, routes)'))
+  assert.ok(source.includes('offerModelIds(candidates, routes)'))
+})
