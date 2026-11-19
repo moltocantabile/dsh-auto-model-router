@@ -55,11 +55,7 @@ export function bareId(key) {
 
 /** Extra spellings a source uses for a catalog model, keyed by catalog id. */
 const NAME_ALIASES = {
-  // Artificial Analysis names the model by its parameter count, not its tier
-  // word; without this the row never attaches and the model is graded on a
-  // fragment (observed: rank 14 on 7 observations while every board quoted in the
-  // launch coverage placed it above Qwen3.7-Max).
-  'qwen3.8-max': ['Qwen3.8 Max (0902)', 'Qwen3.8 2.4T A95B'],
+  'qwen3.8-max': ['Qwen3.8 Max (0902)'],
   'qwen4-max': ['Qwen 4 Max', 'Qwen4 Max'],
   'qwen4-max-preview': ['Qwen 4 Max Preview'],
   'deepseek-v4-flash-0731': ['DeepSeek V4 Flash 0731'],

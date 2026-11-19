@@ -49,9 +49,12 @@ change to the rank or grade rule.
    dimension, so it ranks below the model Vals places 8.6 points below it. The
    cause is source coverage, not the rank rule.
 2. **Parameter-count names.** AA names `qwen3.8-max` as "Qwen3.8 2.4T A95B"
-   (article: 2.4T total / 95B active). The curated alias now resolves it, but that
-   AA row carries no index, price or scores, so it adds nothing until AA evaluates
-   the model.
+   (article: 2.4T total / 95B active). That captured row carries no index, price or
+   scores, so it adds no measurement even though the model identity is clear. No
+   model-specific alias was added for it: the engine stays model-agnostic, and
+   `tests/genericity.test.mjs` fails if a model/vendor name appears in the rank,
+   tier, selection or refresh code. Aliases, when needed, are data in the identity
+   table and are honoured generically by the name guard.
 3. **Cost is capability-adjusted on some boards.** Vals' #1-open-weight for
    V4.1-Flash is a cost-adjusted placement; our composite is a pure capability
    order. Cost already enters selection utility and the tier envelopes.

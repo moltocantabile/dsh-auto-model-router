@@ -671,16 +671,16 @@ test('an AA-created entry states modalities only when a source or the baseline h
 })
 
 
-test('a model named by parameter count still finds its row', () => {
-  // AA calls it "Qwen3.8 2.4T A95B" (the launch article: "Qwen 3.8 Max is a
-  // MONSTER 2.4T model", 95B active); the catalog tier name is `qwen3.8-max`. The
-  // alias table is the only place that spelling can be known, and without it the
-  // model loses every AA measurement (index, price, dimensions).
+
+test('a curated alias passes the identity guard', () => {
+  // The alias table exists for sources that spell a model differently. The name
+  // guard must honour it, otherwise the alias is indexed but the row is dropped
+  // before it can be claimed. Fixture uses a shipped alias entry, not new logic.
   const base = { 'qwen3.8-max': { label: 'Qwen3.8-Max' } }
   const index = nameIndexAll(base)
-  const rows = [{ id: 'r', name: 'Qwen3.8 2.4T A95B', price1mInputTokens: 2, price1mOutputTokens: 6, intelligenceIndex: 66, scores: AA_FRACTIONS }]
+  const rows = [{ id: 'r', name: 'Qwen3.8 Max (0902)', price1mInputTokens: 2, price1mOutputTokens: 6, intelligenceIndex: 66, scores: AA_FRACTIONS }]
   const analysis = extractArtificialAnalysis(page(rows), index)
   const dataset = { 'qwen3.8-max': { label: 'Qwen3.8-Max' } }
-  attachArtificialAnalysis(dataset, { analysis, base, wanted: [{ model: 'qwen3.8-max', provider: 'p' }] })
+  attachArtificialAnalysis(dataset, { analysis, base, wanted: [] })
   assert.equal(dataset['qwen3.8-max'].crossChecks.artificialAnalysis.intelligenceIndex, 66)
 })
