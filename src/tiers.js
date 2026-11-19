@@ -71,6 +71,15 @@ const numOrNull = (value) => (typeof value === 'number' && Number.isFinite(value
  */
 export function boardMetaOf(info) {
   const ranking = info?.ranking ?? null
+  // How many of the five dimensions the composite is built from actually carry a
+  // measurement. A composite over half a profile reads like a full one on screen
+  // unless the card says otherwise.
+  const core = ['coding', 'reasoning', 'math', 'knowledge', 'agentic']
+  const dims = ranking?.dims ?? {}
+  const covered = core.filter((dim) => {
+    const value = dims[dim]
+    return value !== undefined && Number.isFinite(Number(value?.value))
+  }).length
   return {
     rank: Number.isInteger(ranking?.rank) ? ranking.rank : null,
     composite: numOrNull(ranking?.composite),
@@ -79,6 +88,8 @@ export function boardMetaOf(info) {
     status: typeof ranking?.status === 'string' ? ranking.status : null,
     usage: numOrNull(info?.usage?.percentile),
     uncalibrated: numOrNull(ranking?.uncalibrated),
+    dimsCovered: ranking === null ? null : covered,
+    dimsTotal: core.length,
   }
 }
 

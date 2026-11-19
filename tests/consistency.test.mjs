@@ -444,3 +444,14 @@ test('the last-resort widening never selects an unmeasured model', () => {
   const result = selectForTier({ shape: 'edit', depth: 1, breadth: 1, risk: 1, vision: false, tools: true }, [unmeasured('a'), unmeasured('b')], ROUTES, { defaultRoute: 'balanced' })
   assert.equal(result.selected, null)
 })
+
+test('the board card reports how much of the composite is measured', async () => {
+  const { boardMetaOf } = await import('../src/tiers.js')
+  const full = boardMetaOf({ ranking: { status: 'measured', rank: 1, composite: 60, low: 50, dims: { coding: { value: 60 }, reasoning: { value: 60 }, math: { value: 60 }, knowledge: { value: 60 }, agentic: { value: 60 } } } })
+  assert.equal(full.dimsCovered, 5)
+  const partial = boardMetaOf({ ranking: { status: 'measured', rank: 2, composite: 55, low: 45, dims: { coding: { value: 55 }, knowledge: { value: 55 } } } })
+  assert.equal(partial.dimsCovered, 2)
+  assert.equal(partial.dimsTotal, 5)
+  // An unmeasured entry states nothing rather than "0/5 measured".
+  assert.equal(boardMetaOf({}).dimsCovered, null)
+})

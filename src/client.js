@@ -245,6 +245,7 @@ window.__ModuleLoader__.load({
         badgeProvisional: 'provisional',
         badgeUncalibrated: '{count} uncal.',
         rankComposite: 'composite {value}',
+        rankCoverage: '{n}/{m} dims measured',
         rankLow: 'low {value}',
         rankQuality: 'quality {value}',
         rankPosition: 'rank #{rank}',
@@ -422,6 +423,7 @@ window.__ModuleLoader__.load({
         badgeProvisional: '临时',
         badgeUncalibrated: '{count} 项未校准',
         rankComposite: '综合分 {value}',
+        rankCoverage: '{n}/{m} 个维度有测量',
         rankLow: '保守下界 {value}',
         rankQuality: '质量 {value}',
         rankPosition: '排名 #{rank}',
@@ -1090,6 +1092,9 @@ window.__ModuleLoader__.load({
                       : null,
                     metaOf(key).rank === null || metaOf(key).rank === undefined ? null : t('rankPosition').replace('{rank}', String(metaOf(key).rank)),
                     metaOf(key).usage === null || metaOf(key).usage === undefined ? null : t('rankUsage').replace('{pct}', String(metaOf(key).usage)),
+                    metaOf(key).dimsCovered === null || metaOf(key).dimsCovered === undefined
+                      ? null
+                      : t('rankCoverage').replace('{n}', String(metaOf(key).dimsCovered)).replace('{m}', String(metaOf(key).dimsTotal)),
                   ].filter(Boolean).join(' · '),
                 ),
               laneId === 'unmeasured' && h('p', { className: 'amr-note' }, t('unmeasuredModelHint')),

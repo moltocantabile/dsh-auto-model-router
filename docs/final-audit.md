@@ -471,7 +471,7 @@ reconstruction steps above; none of them is a prerequisite for these three.
 | H2 derived ceilings inert | Fixed: the shipped defaults are no longer merged into the operator config; `effectiveEnvelopes(operator, derived, defaults, mode)` fills absent fields from the data (merge), from the defaults (explicit), or from the data with the operator's latency policy (derived). Status now reports how many fields are actually in force. |
 | H3 persisted wrong-model labels | Fixed by the database pass (identity guard on every join + rebuild); the six mislabelled entries are gone. |
 | H4 card basis ≠ lane basis | Fixed by C1: lane and card now read the same basis. |
-| H5 coverage/status integrity | Partly: the refresh report carries coverage, uncalibrated counts and unknown benchmarks; the board still shows only "N unmeasured". Remaining: surface per-dimension evidence coverage on the card. |
+| H5 coverage/status integrity | Fixed for the card: `boardMetaOf` reports `dimsCovered/dimsTotal` (five composite dimensions), shown beside rank/composite/usage, and the uncalibrated count was already a badge. The refresh report carries per-channel coverage. |
 | M1 duplicate tier planners | Not yet: `rank.planTiers` remains test-only. |
 | M2 identity policy fragmentation | Not yet: the suggested `src/identity.js` extraction. |
 
