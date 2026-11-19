@@ -1070,3 +1070,33 @@ test('an auto-off card says why it is off', async () => {
     loaded.restore()
   }
 })
+
+
+test('the tier board exposes the grouping criterion', async () => {
+  const loaded = loadBundle()
+  try {
+    const section = harness(loaded.module)
+    const React = globalThis.__amrReact
+    const { createRoot } = globalThis.__amrReactDomClient
+    const container = loaded.window.document.getElementById('root')
+    const root = createRoot(container)
+    root.render(React.createElement(section.component, { t: (key) => key }))
+    await new Promise((resolve) => setTimeout(resolve, 60))
+
+    const select = [...container.querySelectorAll('select')].find((node) => [...node.options].some((option) => option.value === 'capability'))
+    assert.ok(select !== undefined, 'the criterion is a control on the tier board')
+    assert.equal(select.value, 'capability', 'capability grouping is the default')
+    const before = loaded.requests.length
+    select.value = 'cost'
+    select.dispatchEvent(new loaded.window.Event('change', { bubbles: true }))
+    await new Promise((resolve) => setTimeout(resolve, 40))
+    const request = loaded.requests.slice(before).find((body) => body.action === 'configure')
+    assert.ok(request !== undefined, 'changing the criterion calls configure')
+    assert.equal(request.config.tiers.criterion, 'cost')
+
+    root.unmount()
+    await new Promise((resolve) => setTimeout(resolve, 25))
+  } finally {
+    loaded.restore()
+  }
+})

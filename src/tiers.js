@@ -121,8 +121,39 @@ export function modelKeyOf(candidate) {
   return provider.length > 0 ? `${provider}/${model}` : model
 }
 
+/**
+ * Model capability on the router's basis, for the capability criterion.
+ *
+ * The conservative ranking bound first (the number dominance and derived floors
+ * use), the legacy score only for a catalog with no ranking.
+ */
+const capabilityOf = (info) => {
+  const basis = qualityBasis(info)
+  if (basis !== null) return basis
+  return legacyQuality(info)
+}
+
+/** Interpolated quantile over a sorted numeric list. */
+function quantileOf(values, p) {
+  if (values.length === 0) return null
+  const at = Math.min(values.length - 1, Math.max(0, p * (values.length - 1)))
+  const lo = Math.floor(at)
+  const hi = Math.ceil(at)
+  return values[lo] + (values[hi] - values[lo]) * (at - lo)
+}
+
 export function assignTiers(pool, routes, config = {}) {
   const mode = config.mode === 'manual' ? 'manual' : 'auto'
+  /**
+   * How a model is placed into a tier.
+   *
+   * `capability` (default) groups by measured capability bands first and uses the
+   * envelope as a guardrail (cost/latency ceilings, quality floor) — the tier
+   * says how hard the work is. `cost` is the old rule: the cheapest envelope that
+   * admits the model, which makes a strong-and-cheap model land in `fast` because
+   * it also clears that tier's floor.
+   */
+  const criterion = config.criterion === 'cost' ? 'cost' : 'capability'
   const overrides = config.overrides ?? {}
   const disabled = new Set(Array.isArray(config.disabled) ? config.disabled : [])
   const groups = { fast: [], balanced: [], deep: [], off: [] }
@@ -146,6 +177,29 @@ export function assignTiers(pool, routes, config = {}) {
    */
   const offReasons = {}
   const placed = []
+
+  // Capability bands are derived from the pool being assigned, so the thresholds
+  // follow the catalog instead of a written-in constant. Disabled models are
+  // excluded: an operator switch must not move the band edges for everything else.
+  const capabilityValues = criterion === 'capability'
+    ? (Array.isArray(pool) ? pool : [])
+        .filter((candidate) => candidate !== null && candidate !== undefined && !disabled.has(modelKeyOf(candidate)) && hasMeasuredQuality(candidate.info ?? null))
+        .map((candidate) => capabilityOf(candidate.info ?? null))
+        .filter((value) => value !== null)
+        .sort((a, b) => a - b)
+    : []
+  const canUseCapability = criterion === 'capability' && capabilityValues.length >= 6
+  const bandEdges = canUseCapability
+    ? { fastMax: quantileOf(capabilityValues, 1 / 3), balancedMax: quantileOf(capabilityValues, 2 / 3) }
+    : null
+  /** The criterion actually in force: bands need enough measured models. */
+  const effectiveCriterion = canUseCapability ? 'capability' : 'cost'
+  const bandOf = (capability) => {
+    if (bandEdges === null || capability === null) return 'fast'
+    if (capability <= bandEdges.fastMax) return 'fast'
+    if (capability <= bandEdges.balancedMax) return 'balanced'
+    return 'deep'
+  }
 
   for (const candidate of Array.isArray(pool) ? pool : []) {
     const model = candidate?.model
@@ -180,7 +234,27 @@ export function assignTiers(pool, routes, config = {}) {
     }
     // `manual` means the operator has taken over: an unassigned model is not
     // routed rather than guessed at, which is what makes the mode predictable.
-    const tier = autoTierFor(candidate.info ?? null, routes)
+    let tier = null
+    if (mode === 'manual') {
+      tier = null
+    } else if (canUseCapability) {
+      // Start at the capability band, then walk upward until a tier's guardrails
+      // admit it: a cheap-capability model that is too expensive or too slow for
+      // `fast` belongs one band up, not in `fast` by accident. The guardrail is
+      // cost + latency only — the band is the quality decision, and the envelope's
+      // quality floor belongs to the cost criterion (keeping both made every
+      // fast-band model fall under the fast floor and end up off).
+      const start = TIER_IDS.indexOf(bandOf(capabilityOf(candidate.info ?? null)))
+      for (let position = Math.max(0, start); position < TIER_IDS.length; position += 1) {
+        const envelope = routes?.[TIER_IDS[position]]?.envelope
+        if (withinEnvelope(candidate.info ?? null, envelope === undefined ? envelope : { ...envelope, minQuality: undefined })) {
+          tier = TIER_IDS[position]
+          break
+        }
+      }
+    } else {
+      tier = autoTierFor(candidate.info ?? null, routes)
+    }
     if (tier === null || mode === 'manual') {
       groups.off.push(key)
       tierOf[key] = OFF
@@ -204,8 +278,12 @@ export function assignTiers(pool, routes, config = {}) {
       const winner = placed.find(
         (other) =>
           other.key !== candidate.key &&
-          // Same family only: a cheaper, stronger model from another vendor is a
-          // different product line, not a replacement for this one.
+          // Under the capability criterion a cheaper sibling belongs to a lower
+          // tier by design, so dominance is scoped to the same tier ("paying more
+          // for less inside one budget"). In cost mode the tiers are price bands,
+          // where a cheaper-strength model anywhere makes the dearer one pointless,
+          // so the original cross-tier rule stands.
+          (effectiveCriterion !== 'capability' || other.tier === candidate.tier) &&
           other.family === candidate.family &&
           other.quality > candidate.quality &&
           other.cost <= candidate.cost - DOMINANCE_COST_MARGIN,
@@ -232,6 +310,12 @@ export function assignTiers(pool, routes, config = {}) {
     overridden,
     dominated,
     offReasons,
+    criterion: effectiveCriterion,
+    bands: bandEdges === null ? null : {
+      fastMax: Math.round(bandEdges.fastMax * 10) / 10,
+      balancedMax: Math.round(bandEdges.balancedMax * 10) / 10,
+      sample: capabilityValues.length,
+    },
     disabled: [...disabled],
     unassigned,
     unmeasured,

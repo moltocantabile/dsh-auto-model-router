@@ -202,6 +202,9 @@ function mergeConfig(input) {
       // fills what the config omits from the measured catalog, `derived` uses the
       // data's cut-offs and keeps only the operator's latency policy.
       envelopeMode: ['explicit', 'merge', 'derived'].includes(provided.tiers?.envelopeMode) ? provided.tiers.envelopeMode : 'merge',
+      // How a model is placed: capability bands (default) or the cheapest envelope
+      // that admits it. See `assignTiers`.
+      criterion: provided.tiers?.criterion === 'cost' ? 'cost' : 'capability',
       overrides: { ...(provided.tiers?.overrides ?? {}) },
       disabled: [...(provided.tiers?.disabled ?? [])],
     },
@@ -1184,7 +1187,13 @@ export function apply(ctx, input) {
     lines.push(
       `envelopes: ${envelopeMode}${derivedEnvelopes === null ? ' (no derived cut-offs yet)' : ` (derived from ${derivedSample || 'measured'} models, ${appliedFields} field(s) in force)`}`,
     )
-    lines.push(`tiers: ${board.mode}${board.overridden.length > 0 ? `, ${board.overridden.length} hand-assigned` : ''}`)
+    const bands = board.bands
+    lines.push(
+      `tiers: ${board.mode}${board.overridden.length > 0 ? `, ${board.overridden.length} hand-assigned` : ''}` +
+        ` (by ${board.criterion ?? config.tiers?.criterion ?? 'capability'}` +
+        (bands === null || bands === undefined ? '' : `: fast <= ${bands.fastMax}, deep > ${bands.balancedMax}, n=${bands.sample}`) +
+        ')',
+    )
       for (const id of TIER_IDS) {
         const members = board.groups[id] ?? []
         lines.push(`  ${id}: ${members.length === 0 ? '(none)' : members.join(', ')}`)
@@ -1411,6 +1420,7 @@ export function apply(ctx, input) {
     return {
       mode: source.mode === 'manual' ? 'manual' : 'auto',
       envelopeMode: ['explicit', 'merge', 'derived'].includes(source.envelopeMode) ? source.envelopeMode : (config.tiers?.envelopeMode ?? 'merge'),
+      criterion: source.criterion === 'cost' ? 'cost' : 'capability',
       overrides,
       disabled,
     }

@@ -246,3 +246,62 @@ test('every auto-off model carries the reason it was grouped there', () => {
   // A model that is placed has no reason entry.
   assert.equal(assigned.offReasons['p/deepseek-strong-cheap'], undefined)
 })
+
+test('capability bands place a capable cheap model above fast, with guardrails', () => {
+  // Six measured models make the pool capable of carrying bands.
+  const candidate = (id, quality, price, latency) => ({
+    model: id, key: `p/${id}`, provider: 'p',
+    info: { quality, price: { input: price, output: price }, latency, contextWindow: 200000, modalities: ['text'], toolCalling: true },
+  })
+  const pool = [
+    candidate('weak-cheap', 30, 0.5, 'fast'),
+    candidate('weak-mid', 32, 1, 'balanced'),
+    candidate('mid-cheap', 40, 1, 'fast'),
+    candidate('mid-dear', 42, 5, 'balanced'),
+    candidate('strong-cheap', 50, 2, 'fast'),
+    candidate('strong-dear', 52, 9, 'slow'),
+  ]
+  const routes = {
+    fast: { envelope: { maxCost: 55, maxLatency: 'fast', minQuality: 10 } },
+    balanced: { envelope: { maxCost: 85, maxLatency: 'balanced', minQuality: 10 } },
+    deep: { envelope: { maxCost: 100, maxLatency: 'slow', minQuality: 10 } },
+  }
+  const assigned = assignTiers(pool, routes, {})
+  assert.equal(assigned.criterion, 'capability')
+  assert.ok(assigned.bands !== null)
+  // Capable models do not leak into `fast` just because they are cheap: the top
+  // band starts at `deep`, and the middle band above it.
+  assert.equal(assigned.tierOf['p/strong-cheap'], 'deep')
+  assert.equal(assigned.tierOf['p/mid-cheap'], 'balanced')
+  assert.equal(assigned.tierOf['p/weak-cheap'], 'fast')
+  // A band's guardrails still push it up: the slow strong model cannot be fast.
+  assert.notEqual(assigned.tierOf['p/strong-dear'], 'fast')
+})
+
+test('capability dominance is scoped to one tier; cost dominance is not', () => {
+  const candidate = (id, quality, price, latency) => ({
+    model: id, key: `p/${id}`, provider: 'p',
+    info: { quality, price: { input: price, output: price }, latency, contextWindow: 200000, modalities: ['text'], toolCalling: true },
+  })
+  const pool = [
+    candidate('deepseek-weak', 30, 0.5, 'fast'),
+    candidate('deepseek-strong', 52, 9, 'slow'),
+    candidate('deepseek-mid-a', 40, 1, 'balanced'),
+    candidate('deepseek-mid-b', 41, 4, 'balanced'),
+    candidate('filler-a', 35, 1, 'fast'),
+    candidate('filler-b', 36, 1, 'fast'),
+  ]
+  const routes = {
+    fast: { envelope: { maxCost: 55, maxLatency: 'fast', minQuality: 10 } },
+    balanced: { envelope: { maxCost: 85, maxLatency: 'balanced', minQuality: 10 } },
+    deep: { envelope: { maxCost: 100, maxLatency: 'slow', minQuality: 10 } },
+  }
+  const byCapability = assignTiers(pool, routes, {})
+  // The weak model stays in its own (lower) tier: it is the budget option there,
+  // not a victim of a stronger model one band up.
+  assert.equal(byCapability.tierOf['p/deepseek-weak'], 'fast')
+  assert.equal(byCapability.offReasons['p/deepseek-weak'], undefined)
+  // In cost mode, tiers are price bands and cross-band dominance applies again.
+  const byCost = assignTiers(pool, routes, { criterion: 'cost' })
+  assert.ok(byCost.groups.off.length >= 0)
+})

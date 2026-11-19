@@ -382,6 +382,10 @@ window.__ModuleLoader__.load({
         modelRequestConfidence: 'Model request confidence',
         modelRequestHint: 'How sure it must be that a named model is a request rather than a mention in a log or config.',
         switchConfidence: 'Switch confidence',
+        tierCriterion: 'Tier grouping',
+        criterionCapability: 'measured capability',
+        criterionCost: 'cheapest envelope',
+        tierCriterionHint: 'Capability: a model joins the band its measured capability falls in, with cost and latency as guardrails. Cheapest envelope: the old rule, where a capable cheap model lands in fast.',
         envelopeMode: 'Tier ceilings',
         envelopeExplicit: 'hand-written',
         envelopeMerge: 'data, unless hand-written',
@@ -605,6 +609,10 @@ window.__ModuleLoader__.load({
         modelRequestConfidence: '点名模型置信度',
         modelRequestHint: '判定模型有多确定「点名的模型是请求」而非日志、配置里的提及。',
         switchConfidence: '切换置信度',
+        tierCriterion: '档位分组方式',
+        criterionCapability: '按测量能力',
+        criterionCost: '最便宜可容纳档位',
+        tierCriterionHint: '按测量能力：模型进入其测量能力所在的档位，成本与延迟作为护栏。最便宜可容纳：旧规则，能力强的便宜模型会落入 fast。',
         envelopeMode: '档位上限来源',
         envelopeExplicit: '手写',
         envelopeMerge: '数据（手写优先）',
@@ -1514,6 +1522,20 @@ window.__ModuleLoader__.load({
           ),
           query.trim().length > 0 &&
             h('span', { className: 'amr-note' }, t('searchCount').replace('{shown}', String(shownVisible)).replace('{total}', String(totalVisible))),
+          h(
+            'div',
+            { className: 'amr-field', style: { minWidth: 170 } },
+            h('span', { className: 'amr-label' }, t('tierCriterion')),
+            h(
+              Select,
+              {
+                value: draft.tiers?.criterion ?? 'capability',
+                onChange: (next) => applyTiers({ ...(draft.tiers ?? {}), criterion: next }),
+              },
+              h('option', { value: 'capability' }, t('criterionCapability')),
+              h('option', { value: 'cost' }, t('criterionCost')),
+            ),
+          ),
         ),
         ...lanes.map((lane) => {
           const members = laneMembers(lane.id)
