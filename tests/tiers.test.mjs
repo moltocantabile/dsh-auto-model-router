@@ -213,3 +213,36 @@ test('a model is compared only with its own family members', () => {
   assert.deepEqual(assigned.dominated.map((entry) => entry.key), ['p/deepseek-slow'])
   assert.ok(!assigned.dominated.some((entry) => entry.key === 'p/qwen-strong'))
 })
+
+test('every auto-off model carries the reason it was grouped there', () => {
+  // Two causes: dominated within the family, and no envelope admitting it.
+  const candidate = (id, quality, price, latency) => ({
+    model: id,
+    key: `p/${id}`,
+    provider: 'p',
+    info: { quality, price: { input: price, output: price }, latency },
+  })
+  const pool = [
+    candidate('deepseek-strong-cheap', 70, 1, 'fast'),
+    candidate('deepseek-weak-dear', 60, 8, 'balanced'),
+    // Too weak for every floor: admitted by no envelope at all.
+    candidate('model-too-weak', 30, 1, 'fast'),
+  ]
+  const routes = {
+    fast: { envelope: { maxCost: 60, maxLatency: 'fast', minQuality: 40 } },
+    balanced: { envelope: { maxCost: 80, maxLatency: 'balanced', minQuality: 50 } },
+    deep: { envelope: { maxCost: 100, maxLatency: 'slow', minQuality: 55 } },
+  }
+  const assigned = assignTiers(pool, routes, {})
+  const dominatedReason = assigned.offReasons['p/deepseek-weak-dear']
+  assert.equal(dominatedReason.reason, 'dominated')
+  assert.equal(dominatedReason.by, 'p/deepseek-strong-cheap')
+  assert.ok(dominatedReason.margin >= 10)
+  const noEnvelope = assigned.offReasons['p/model-too-weak']
+  assert.equal(noEnvelope.reason, 'no-envelope')
+  for (const tier of ['fast', 'balanced', 'deep']) {
+    assert.ok(Array.isArray(noEnvelope.failed[tier]) && noEnvelope.failed[tier].includes('quality'), `${tier} rejects it on quality`)
+  }
+  // A model that is placed has no reason entry.
+  assert.equal(assigned.offReasons['p/deepseek-strong-cheap'], undefined)
+})

@@ -1060,6 +1060,38 @@ window.__ModuleLoader__.load({
         { id: 'unmeasured', label: t('tierUnmeasured'), off: true },
       ]
       const metaOf = (key) => board.meta?.[key] ?? {}
+      /**
+       * Why a card sits in `off`, in words.
+       *
+       * The board records the cause per model (operator switch, no envelope with
+       * the failing field per tier, or same-family dominance with the winner and
+       * the margin), so an auto-grouped card can say why instead of showing only
+       * an "off" badge.
+       */
+      const reasonText = (reason) => {
+        if (reason === null || reason === undefined) return null
+        if (reason.reason === 'disabled') return t('offReasonDisabled')
+        if (reason.reason === 'manual') return t('offReasonManual')
+        if (reason.reason === 'dominated') {
+          return t('offReasonDominated')
+            .replace('{by}', String(reason.by ?? '').replace(/^model:/, ''))
+            .replace('{winner}', String(reason.winnerQuality ?? '?'))
+            .replace('{quality}', String(reason.quality ?? '?'))
+            .replace('{margin}', String(reason.margin ?? '?'))
+        }
+        if (reason.reason === 'no-envelope') {
+          const fieldName = (field) => (field === 'cost' ? t('failCost') : field === 'quality' ? t('failQuality') : t('failLatency'))
+          const tiers = Object.entries(reason.failed ?? {})
+          const joined = tiers.map(([, fields]) => (fields ?? []).map(fieldName).join('+'))
+          const detail = joined.length === 0
+            ? null
+            : joined.every((value) => value === joined[0])
+              ? `${joined[0]} (${t('allTiers')})`
+              : tiers.map(([tier, fields], position) => `${tier}: ${joined[position]}`).join(' · ')
+          return t('offReasonNoEnvelope').replace('{detail}', detail ?? '—')
+        }
+        return null
+      }
       const rawLaneMembers = (id) => (id === 'unmeasured' ? board.unmeasured ?? [] : board.groups?.[id] ?? [])
       const laneMembers = (id) => {
         const members = rawLaneMembers(id).filter(visible).filter(matches)
@@ -1231,6 +1263,8 @@ window.__ModuleLoader__.load({
                   `${t('taskUsage')}: ` + metaOf(key).taskUsage
                     .map((entry) => `${entry.rank === null ? '' : `#${entry.rank} `}${String(entry.tag ?? '').replace(/\./g, ' / ')}${entry.share === null ? '' : ` ${entry.share}`}`)
                     .join(' · ')),
+              laneId === 'off' && reasonText(board.offReasons?.[key]) !== null &&
+                h('p', { className: 'amr-note', 'data-tone': 'warn' }, reasonText(board.offReasons[key])),
               laneId === 'unmeasured' && h('p', { className: 'amr-note' }, t('unmeasuredModelHint')),
               dominatedBy.has(key) && h('p', { className: 'amr-note' }, t('dominatedHint').replace('{by}', dominatedBy.get(key))),
               editingKey === key && editDraft !== null

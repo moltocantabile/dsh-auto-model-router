@@ -89,10 +89,14 @@ const BOARD = {
     fast: ['m-fast'],
     balanced: ['m-balanced'],
     deep: [],
-    off: [],
+    off: ['m-off-dominated', 'm-off-no-envelope'],
   },
-  tierOf: { 'm-fast': 'fast', 'm-balanced': 'balanced' },
-  providerOf: { 'm-fast': 'provider-a', 'm-balanced': 'provider-b', 'm-unmeasured': 'provider-c' },
+  offReasons: {
+    'm-off-dominated': { reason: 'dominated', by: 'm-fast', quality: 60, winnerQuality: 68, cost: 60, winnerCost: 18, margin: 42 },
+    'm-off-no-envelope': { reason: 'no-envelope', failed: { fast: ['quality'], balanced: ['quality'], deep: ['quality'] } },
+  },
+  tierOf: { 'm-fast': 'fast', 'm-balanced': 'balanced', 'm-off-dominated': 'off', 'm-off-no-envelope': 'off' },
+  providerOf: { 'm-fast': 'provider-a', 'm-balanced': 'provider-b', 'm-unmeasured': 'provider-c', 'm-off-dominated': 'provider-a', 'm-off-no-envelope': 'provider-a' },
   overridden: [],
   disabled: [],
   unassigned: [],
@@ -342,7 +346,9 @@ test('the page mounts, fetches its snapshot, and renders rows', async () => {
     checkboxes[0].dispatchEvent(new loaded.window.MouseEvent('click', { bubbles: true }))
     await new Promise((resolve) => setTimeout(resolve, 25))
     const afterOne = [...container.querySelectorAll('.amr-capsule[data-measured="true"]')]
-    assert.equal(afterOne.length, 1, 'one provider selected shows its single placed model')
+    // provider-a now contributes its placed model plus the two off cards in the
+    // fixture, so the filter is about provenance, not about tier membership.
+    assert.equal(afterOne.length, 3, 'one provider selected shows its models (placed and off)')
 
     // Tick the second as well: both are shown, so the filter is a set, not a radio.
     const remaining = [...container.querySelectorAll('.amr-pop input[type="checkbox"]')]
@@ -351,7 +357,7 @@ test('the page mounts, fetches its snapshot, and renders rows', async () => {
     second.dispatchEvent(new loaded.window.MouseEvent('click', { bubbles: true }))
     await new Promise((resolve) => setTimeout(resolve, 25))
     const afterTwo = [...container.querySelectorAll('.amr-capsule[data-measured="true"]')]
-    assert.equal(afterTwo.length, 2, 'both selected providers are shown together')
+    assert.equal(afterTwo.length, 4, 'both selected providers are shown together')
 
     // The old catalog table is gone: capsules carry the information now.
     assert.ok(!text.includes('catalogModels'), 'the Provider models card is removed')
@@ -1031,3 +1037,36 @@ test('the search field filters capsules across lanes and restores them', async (
 })
 
 
+
+
+test('an auto-off card says why it is off', async () => {
+  const loaded = loadBundle()
+  try {
+    const section = harness(loaded.module)
+    const React = globalThis.__amrReact
+    const { createRoot } = globalThis.__amrReactDomClient
+    const container = loaded.window.document.getElementById('root')
+    const root = createRoot(container)
+    root.render(React.createElement(section.component, { t: (key) => key }))
+    await new Promise((resolve) => setTimeout(resolve, 60))
+
+    const findCapsule = (name) => [...container.querySelectorAll('.amr-capsule')].find((el) => (el.textContent ?? '').includes(name))
+    const dominated = findCapsule('m-off-dominated')
+    assert.ok(dominated !== undefined, 'the dominated model is in the off lane')
+    dominated.dispatchEvent(new loaded.window.MouseEvent('mouseover', { bubbles: true }))
+    await new Promise((resolve) => setTimeout(resolve, 25))
+    const card = dominated.querySelector('.amr-pop')
+    assert.ok((card?.textContent ?? '').includes('offReasonDominated'), 'the card names the dominance cause')
+
+    const noEnvelope = findCapsule('m-off-no-envelope')
+    noEnvelope.dispatchEvent(new loaded.window.MouseEvent('mouseover', { bubbles: true }))
+    await new Promise((resolve) => setTimeout(resolve, 25))
+    const second = noEnvelope.querySelector('.amr-pop')
+    assert.ok((second?.textContent ?? '').includes('offReasonNoEnvelope'), 'the card names the envelope cause')
+
+    root.unmount()
+    await new Promise((resolve) => setTimeout(resolve, 25))
+  } finally {
+    loaded.restore()
+  }
+})

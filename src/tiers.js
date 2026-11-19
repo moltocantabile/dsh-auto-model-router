@@ -12,7 +12,7 @@
  * The operator still overrules the computation, per model: drag one to another
  * tier, or switch it off. Those overrides are the only hand-made assignments.
  */
-import { boardMetaOf, hasMeasuredQuality, qualityBasis } from './basis.js'
+import { boardMetaOf, hasMeasuredQuality, legacyQuality, qualityBasis } from './basis.js'
 import { familyOf } from './identity.js'
 import { costIndex, withinEnvelope } from './select.js'
 
@@ -26,6 +26,40 @@ const DOMINANCE_COST_MARGIN = 10
 const qualityOf = (info) => {
   const quality = qualityBasis(info)
   return quality === null ? 0 : quality
+}
+
+/**
+ * Which field of each envelope rejected a model, per tier.
+ *
+ * Mirrors `withinEnvelope` exactly, including the provenance rule (a derived
+ * floor is compared with the measured basis, a hand-written one with the legacy
+ * score), so the card's explanation cannot disagree with the assignment.
+ *
+ * @param {object|null} info
+ * @param {{[tier: string]: {envelope?: object}}} routes
+ * @returns {{[tier: string]: string[]}}
+ */
+function failedEnvelopes(info, routes) {
+  const failed = {}
+  const cost = costIndex(info)
+  for (const tier of TIER_IDS) {
+    const envelope = routes?.[tier]?.envelope
+    if (envelope === null || envelope === undefined) continue
+    const fields = []
+    if (typeof envelope.maxCost === 'number' && envelope.maxCost > 0 && cost > envelope.maxCost) fields.push('cost')
+    if (typeof envelope.maxLatency === 'string') {
+      const rank = { fast: 0, balanced: 1, slow: 2 }[String(info?.latency ?? '')]
+      const limit = { fast: 0, balanced: 1, slow: 2 }[envelope.maxLatency]
+      if (rank === undefined || (limit !== undefined && rank > limit)) fields.push('latency')
+    }
+    if (typeof envelope.minQuality === 'number' && envelope.minQuality > 0) {
+      const derivedFloor = envelope.derived === true || envelope.source === 'derived'
+      const quality = derivedFloor ? qualityBasis(info) : legacyQuality(info)
+      if (quality === null || quality < envelope.minQuality) fields.push('quality')
+    }
+    if (fields.length > 0) failed[tier] = fields
+  }
+  return failed
 }
 
 /** Tiers from cheapest to most capable. */
@@ -103,6 +137,14 @@ export function assignTiers(pool, routes, config = {}) {
   const unmeasured = []
   /** Placed models another model beats on both quality and price. */
   const dominated = []
+  /**
+   * Why each model sits in `off`, so its card can say it.
+   *
+   * Three distinct causes: the operator switched it off; the catalog cannot place
+   * it because no envelope admits it (with the failing field per tier); or another
+   * model of its family is stronger and at least `DOMINANCE_COST_MARGIN` cheaper.
+   */
+  const offReasons = {}
   const placed = []
 
   for (const candidate of Array.isArray(pool) ? pool : []) {
@@ -114,6 +156,7 @@ export function assignTiers(pool, routes, config = {}) {
     if (disabled.has(key)) {
       groups.off.push(key)
       tierOf[key] = OFF
+      offReasons[key] = { reason: 'disabled' }
       continue
     }
     const override = overrides[key]
@@ -142,6 +185,9 @@ export function assignTiers(pool, routes, config = {}) {
       groups.off.push(key)
       tierOf[key] = OFF
       unassigned.push(key)
+      offReasons[key] = tier === null
+        ? { reason: 'no-envelope', failed: failedEnvelopes(candidate.info ?? null, routes) }
+        : { reason: 'manual' }
       continue
     }
     groups[tier].push(key)
@@ -171,7 +217,9 @@ export function assignTiers(pool, routes, config = {}) {
       if (position >= 0) members.splice(position, 1)
       groups.off.push(candidate.key)
       tierOf[candidate.key] = OFF
-      dominated.push({ key: candidate.key, by: winner.key, quality: candidate.quality, winnerQuality: winner.quality, cost: candidate.cost, winnerCost: winner.cost })
+      const record = { key: candidate.key, by: winner.key, quality: candidate.quality, winnerQuality: winner.quality, cost: candidate.cost, winnerCost: winner.cost }
+      dominated.push(record)
+      offReasons[candidate.key] = { reason: 'dominated', ...record, margin: Math.round(candidate.cost - winner.cost) }
     }
   }
 
@@ -183,6 +231,7 @@ export function assignTiers(pool, routes, config = {}) {
     modelOf,
     overridden,
     dominated,
+    offReasons,
     disabled: [...disabled],
     unassigned,
     unmeasured,
