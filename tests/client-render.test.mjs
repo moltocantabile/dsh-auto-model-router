@@ -794,6 +794,26 @@ test('the composer control is the slider card: model line, stop dots, arrow keys
     await new Promise((resolve) => setTimeout(resolve, 40))
     assert.ok(loaded.requests.length > requestsBefore, 'ArrowRight changes the mode')
 
+    // Dragging the knob writes the stop under the pointer: the card has a real
+    // pointer drag, not just click and keyboard. jsdom reports no layout, so the
+    // slider rect is stubbed for the drag.
+    const dragSlider = container.querySelector('[role="slider"]')
+    dragSlider.getBoundingClientRect = () => ({ x: 0, y: 0, left: 0, top: 0, right: 240, bottom: 32, width: 240, height: 32, toJSON: () => ({}) })
+    const pointer = (type, clientX) => new loaded.window.MouseEvent(type, { bubbles: true, clientX, clientY: 10 })
+    const chosen = []
+    const beforeDrag = loaded.requests.length
+    dragSlider.dispatchEvent(pointer('pointerdown', 12))
+    await new Promise((resolve) => setTimeout(resolve, 30))
+    dragSlider.dispatchEvent(pointer('pointermove', 120))
+    await new Promise((resolve) => setTimeout(resolve, 30))
+    dragSlider.dispatchEvent(pointer('pointermove', 228))
+    await new Promise((resolve) => setTimeout(resolve, 30))
+    dragSlider.dispatchEvent(pointer('pointerup', 228))
+    await new Promise((resolve) => setTimeout(resolve, 40))
+    const dragActions = loaded.requests.slice(beforeDrag).map((request) => request.action).filter((action) => ['on', 'shadow', 'off'].includes(action))
+    assert.ok(dragActions.includes('off'), `dragging to the last stop writes it (${dragActions.join(',')})`)
+    assert.ok(dragActions.length <= 3, 'one gesture does not spam the host')
+
     // The refresh affordance re-reads the host state.
     const statusCallsBefore = loaded.calls.filter((action) => action === 'status').length
     card.querySelector('.amr-effortRefresh').dispatchEvent(new loaded.window.MouseEvent('click', { bubbles: true }))

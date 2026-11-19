@@ -170,7 +170,9 @@ window.__ModuleLoader__.load({
 .amr-effortHead { display:flex; flex-direction:column; align-items:center; gap:0; padding:0 18px; }
 .amr-effortModel { font-size:12px; color:var(--dsw-alias-label-tertiary); max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .amr-effortValue { font-size:14px; font-weight:500; color:var(--dsw-alias-brand-primary); }
-.amr-effortSlider { position:relative; height:32px; margin-top:4px; padding:0 12px; display:flex; align-items:center; cursor:pointer; }
+.amr-effortSlider { position:relative; height:32px; margin-top:4px; padding:0 12px; display:flex; align-items:center; cursor:pointer; touch-action:none; user-select:none; }
+.amr-effortSlider[data-dragging="true"] { cursor:grabbing; }
+.amr-effortStop { touch-action:none; }
 .amr-effortTrack { position:absolute; left:12px; right:12px; height:8px; border-radius:999px; background:var(--dsw-alias-bg-layer-3); }
 .amr-effortFill { position:absolute; left:12px; height:8px; border-radius:999px; background:var(--dsw-alias-brand-primary); transition:width .18s ease; }
 .amr-effortStop { position:absolute; top:50%; transform:translate(-50%, -50%); display:inline-flex; align-items:center; justify-content:center; width:28px; height:28px; padding:0; border:0; border-radius:50%; background:0 0; cursor:pointer; }
@@ -1548,6 +1550,11 @@ window.__ModuleLoader__.load({
       const [snapshot, setSnapshot] = useState(null)
       const [open, setOpen] = useState(false)
       const [busy, setBusy] = useState(false)
+      /** True while the knob/track is being dragged (pointer captured). */
+      const [dragging, setDragging] = useState(false)
+      const sliderRef = useRef(null)
+      /** Last requested value, so a drag cannot warn the host twice for one stop. */
+      const lastRequest = useRef({ value: null, at: 0 })
       const mounted = useRef(true)
 
       useEffect(() => {
@@ -1615,9 +1622,41 @@ window.__ModuleLoader__.load({
         : typeof decision?.model === 'string' && decision.model.length > 0 ? decision.model : null
       const current = modes[index] ?? null
 
+      /** Write one mode, suppressing the repeats a single gesture produces. */
+      const requestMode = (value) => {
+        if (busy === true || value === mode) return
+        const now = Date.now()
+        if (lastRequest.current.value === value && now - lastRequest.current.at < 400) return
+        lastRequest.current = { value, at: now }
+        choose(value)
+      }
+
       const step = (delta) => {
         const next = modes[Math.min(modes.length - 1, Math.max(0, index + delta))]
-        if (next !== undefined && next[0] !== mode && busy !== true) choose(next[0])
+        if (next !== undefined) requestMode(next[0])
+      }
+
+      /**
+       * The stop a pointer position is over, snapped.
+       *
+       * The track is inset by the slider's horizontal padding, so the pointer is
+       * mapped onto the inner span and rounded to the nearest stop — dragging and
+       * clicking share this one function.
+       */
+      const stopAt = (clientX) => {
+        const element = sliderRef.current
+        if (element === null) return index
+        const rect = element.getBoundingClientRect()
+        const pad = 12
+        const inner = Math.max(1, rect.width - pad * 2)
+        const ratio = Math.min(1, Math.max(0, (clientX - rect.left - pad) / inner))
+        return modes.length <= 1 ? 0 : Math.round(ratio * (modes.length - 1))
+      }
+
+      /** Move to the stop under the pointer, if it is a different one. */
+      const dragTo = (clientX) => {
+        const next = modes[Math.min(modes.length - 1, Math.max(0, stopAt(clientX)))]
+        if (next !== undefined) requestMode(next[0])
       }
 
       const chevron = glyphOf('IconChevronDownOutlineRegular')
@@ -1677,13 +1716,40 @@ window.__ModuleLoader__.load({
               'div',
               {
                 className: 'amr-effortSlider',
+                ref: sliderRef,
                 role: 'slider',
                 tabIndex: 0,
+                'data-dragging': dragging ? 'true' : 'false',
                 'aria-valuemin': 0,
                 'aria-valuemax': modes.length - 1,
                 'aria-valuenow': index,
                 'aria-valuetext': current === null ? '' : current[1],
                 'aria-label': t('toggleTitle'),
+                onPointerDown: (event) => {
+                  if (busy === true) return
+                  event.preventDefault()
+                  // Pointer capture keeps the drag alive outside the 32px row;
+                  // jsdom and older engines simply skip it.
+                  try {
+                    event.currentTarget.setPointerCapture?.(event.pointerId)
+                  } catch {}
+                  setDragging(true)
+                  dragTo(event.clientX)
+                },
+                onPointerMove: (event) => {
+                  if (dragging !== true) return
+                  event.preventDefault()
+                  dragTo(event.clientX)
+                },
+                onPointerUp: (event) => {
+                  if (dragging !== true) return
+                  try {
+                    event.currentTarget.releasePointerCapture?.(event.pointerId)
+                  } catch {}
+                  setDragging(false)
+                  dragTo(event.clientX)
+                },
+                onPointerCancel: () => setDragging(false),
                 onKeyDown: (event) => {
                   if (event.key === 'ArrowLeft' || event.key === 'ArrowDown') {
                     event.preventDefault()
@@ -1709,11 +1775,13 @@ window.__ModuleLoader__.load({
                     key: value,
                     type: 'button',
                     className: 'amr-effortStop',
-                    style: { left: `${modes.length <= 1 ? 0 : (position / (modes.length - 1)) * 100}%` },
+                    style: {
+                      left: `calc(12px + (100% - 24px) * ${modes.length <= 1 ? 0 : position / (modes.length - 1)})`,
+                    },
                     'aria-label': short,
                     'data-active': value === mode ? 'true' : 'false',
                     disabled: busy === true,
-                    onClick: () => choose(value),
+                    onClick: () => requestMode(value),
                   },
                   h('span', { className: 'amr-effortDot' }),
                 ),
