@@ -59,7 +59,7 @@ import { alignedOperatorFloors, effectiveEnvelopes } from './basis.js'
 import { derivedRouteEnvelopes } from './refresh.js'
 import { selectForTier, describeRanking, costIndex, modelsByQuality } from './select.js'
 import { selectRoute as recordSelection } from './route.js'
-import { TIER_IDS, assignTiers, boardMetaOf, membershipOf } from './tiers.js'
+import { TIER_IDS, assignTiers, boardMetaOf, membershipOf, offReasonTotals } from './tiers.js'
 
 export const name = '@dsh-external/dsh-auto-model-router'
 export const inject = ['tools']
@@ -623,7 +623,12 @@ export function apply(ctx, input) {
     const meta = {}
     for (const candidate of pool) {
       const key = candidate.key ?? candidate.model
-      meta[key] = boardMetaOf(candidate.info)
+      const endpoints = assigned.endpointsOf?.[key]
+      // The card shows the model once; `endpoints` keeps how many provider
+      // offerings were collapsed into it instead of losing that detail.
+      meta[key] = endpoints === undefined
+        ? boardMetaOf(candidate.info)
+        : { ...boardMetaOf(candidate.info), endpoints: endpoints.length }
     }
     assigned.meta = meta
     const membership = membershipOf(assigned)
@@ -1202,6 +1207,20 @@ export function apply(ctx, input) {
         const shown = board.groups.off.slice(0, 12)
         const rest = board.groups.off.length - shown.length
         lines.push(`  off: ${shown.join(', ')}${rest > 0 ? ` (+${rest} more)` : ''}`)
+        const totals = offReasonTotals(board.offReasons)
+        const labels = [
+          ['retired', 'withdrawn'],
+          ['superseded', 'superseded'],
+          ['dominated', 'dominated'],
+          ['no-envelope', 'no envelope'],
+          ['disabled', 'switched off'],
+          ['manual', 'not hand-assigned'],
+        ]
+        const parts = labels.filter(([kind]) => (totals[kind] ?? 0) > 0).map(([kind, label]) => `${totals[kind]} ${label}`)
+        if (parts.length > 0) lines.push(`  off reasons: ${parts.join(', ')}`)
+      }
+      if ((board.hidden ?? []).length > 0) {
+        lines.push(`  endpoints: ${board.hidden.length} duplicate provider offering(s) collapsed by model`)
       }
       if ((board.unmeasured ?? []).length > 0) {
         const reasons = board.unmeasuredReasons ?? {}

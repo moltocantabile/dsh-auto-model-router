@@ -572,3 +572,128 @@ export function familyOf(key) {
   const word = /^[a-z]+/.exec(id)
   return word === null ? id : word[0]
 }
+
+/**
+ * The tokens of a model id used for identity comparisons: provider, reseller and
+ * duplicated vendor prefixes removed, lower-cased, separators kept as `-`.
+ *
+ * Kept as a list (not the normalized spelling) because the line/version rules
+ * need to tell a version digit (`3.8`) from a size (`122b`) and a date (`1017`).
+ */
+function identityTokens(key) {
+  let tokens = bareId(String(key ?? '')).toLowerCase().split(/[^a-z0-9.]+/).filter((token) => token.length > 0)
+  for (const prefix of RESELLER_PREFIXES) {
+    if (tokens[0] === prefix) {
+      tokens = tokens.slice(1)
+      break
+    }
+  }
+  // A vendor namespace may be repeated inside the model name
+  // (`vendor/vendor-model`); the provider prefix is already gone, so only a
+  // literal repeat of the first token is collapsed.
+  if (tokens.length > 1 && tokens[0] === tokens[1]) tokens = tokens.slice(1)
+  return tokens
+}
+
+/**
+ * The model behind every endpoint of it: provider, reseller and serving-variant
+ * independent, while a release date stays part of the identity.
+ *
+ * `vendor/model` and `model` are one model; `model-highspeed` is the same model
+ * served faster; `model-1017` is a different snapshot. This is the dedupe key
+ * for the board and the "best evidence across endpoints" key for capability
+ * bands.
+ *
+ * @param {string} key - `provider/model` or a bare model id
+ * @returns {string} normalized model identity
+ */
+export function canonicalModelOf(key) {
+  const tokens = identityTokens(key)
+  while (tokens.length > 1 && EFFORT_VARIANTS.has(tokens[tokens.length - 1])) tokens.pop()
+  return normalizeName(tokens.join(''))
+}
+
+/**
+ * The generation line a model id belongs to, parsed from the id itself.
+ *
+ * Two ids are versions of one model line when their `line` (family, size, and
+ * product tier words -- everything except the version and the release date) and
+ * `date` agree, and both carry a `version`. Dated snapshots are separate models:
+ * `flash` and `flash-1017` share a line but the date differs, so neither
+ * supersedes the other. A tier word differs (`flash` vs `max`), so those are
+ * different products. The version is the first digit group in the id
+ * (`v4.1`, `3.8`, `k3.1`, `m3`, a bare `5`); parameter counts (`122b`) and
+ * release dates stay out of it.
+ *
+ * @param {string} key - `provider/model` or a bare model id
+ * @returns {{line: string, version: number[]|null, date: string|null, base: string, variant: string}}
+ */
+export function modelLineOf(key) {
+  const tokens = identityTokens(key)
+  const dates = []
+  const kept = []
+  for (let index = 0; index < tokens.length; index += 1) {
+    const token = tokens[index]
+    // `YYYY-MM-DD` / `YYYY.MM.DD`: three consecutive numeric tokens.
+    if (
+      /^\d{4}$/.test(token)
+      && /^\d{1,2}$/.test(tokens[index + 1] ?? '')
+      && /^\d{1,2}$/.test(tokens[index + 2] ?? '')
+    ) {
+      dates.push(`${token}-${tokens[index + 1].padStart(2, '0')}-${tokens[index + 2].padStart(2, '0')}`)
+      index += 2
+      continue
+    }
+    // A lone 4-8 digit token is a snapshot date or a parameter count; both are
+    // identity, not version.
+    if (/^\d{4,8}$/.test(token)) {
+      dates.push(token)
+      continue
+    }
+    kept.push(token)
+  }
+  const date = dates.length > 0 ? dates.join('.') : null
+  let version = null
+  let versionAt = -1
+  let prefix = ''
+  for (let index = 0; index < kept.length; index += 1) {
+    const match = /^([a-z]*)(\d+(?:\.\d+)*)$/.exec(kept[index])
+    if (match === null) continue
+    version = match[2].split('.').map((part) => Number(part))
+    prefix = match[1]
+    versionAt = index
+    break
+  }
+  if (version === null) return { line: normalizeName(kept.join('')), version: null, date, base: normalizeName(kept.join('')), variant: '' }
+  const before = kept.slice(0, versionAt).join('') + prefix
+  const after = kept.slice(versionAt + 1)
+  while (after.length > 0 && EFFORT_VARIANTS.has(after[after.length - 1])) after.pop()
+  return {
+    line: normalizeName(before + after.join('')),
+    version,
+    date,
+    // The part before the version (brand and generation letter) and the product
+    // variant words after it (`flash`, `max`, `code`, `27b`, `pro`). Superseding
+    // across variants is a generation decision, not a like-for-like replacement.
+    base: normalizeName(before),
+    variant: normalizeName(after.join('')),
+  }
+}
+
+/**
+ * Compare two parsed versions numerically: `4.1` is newer than `4`, `3.8` newer
+ * than `3.7`. Missing minor parts count as zero.
+ *
+ * @param {number[]|null} a
+ * @param {number[]|null} b
+ * @returns {number} negative when `a` is older, positive when newer, 0 when equal
+ */
+export function compareModelVersions(a, b) {
+  if (!Array.isArray(a) || !Array.isArray(b)) return 0
+  for (let index = 0; index < Math.max(a.length, b.length); index += 1) {
+    const left = a[index] ?? 0
+    const right = b[index] ?? 0
+    if (left !== right) return left - right
+  }
+  return 0
+}

@@ -306,6 +306,21 @@ window.__ModuleLoader__.load({
         unmeasuredThin: 'Measured on too few dimensions to compare: it can be routed only if you assign it to a tier.',
         unmeasuredNoMeasure: 'No measurement from any source: it can be routed only if you assign it to a tier.',
         dominatedHint: 'Off automatically: {by} is cheaper and scores higher. Drag it into a tier to use it anyway.',
+        offReasonDisabled: 'Switched off by the operator.',
+        offReasonManual: 'Not routed in manual mode; assign it to a tier to use it.',
+        offReasonDominated: 'Off automatically: {by} is cheaper by {margin} cost points and scores higher ({winner} vs {quality}). Drag it into a tier to use it anyway.',
+        offReasonNoEnvelope: 'No tier admits it: {detail}.',
+        offReasonRetired: 'Withdrawn: the catalog marks this model retired.',
+        offReasonReplaced: 'Suggested replacement: {by}.',
+        offReasonWithdrawn: 'Withdrawn: the catalog marks this model unavailable.',
+        offReasonSunset: 'Withdrawn: the catalog gives it an end date of {until}.',
+        offReasonRetiring: 'Withdrawn: the catalog schedules it to end on {until}.',
+        offReasonSuperseded: 'Superseded by {by}: version {winnerVersion} replaces {version}.',
+        endpointCount: '{count} provider endpoints · best one shown',
+        failCost: 'cost',
+        failQuality: 'quality',
+        failLatency: 'latency',
+        allTiers: 'all tiers',
         tierOff: 'off',
         laneEmpty: 'No model here yet.',
         modelCount: '{count} models',
@@ -536,6 +551,21 @@ window.__ModuleLoader__.load({
         unmeasuredThin: '测量维度太少，无法与其他模型比较；拖入档位后才能路由。',
         unmeasuredNoMeasure: '任何来源都没有测量；拖入档位后才能路由。',
         dominatedHint: '已自动停用：{by} 更便宜且得分更高。仍可拖入档位强制使用。',
+        offReasonDisabled: '已由操作者停用。',
+        offReasonManual: '手动模式下不自动路由；拖入档位才会使用。',
+        offReasonDominated: '已自动停用：{by} 便宜 {margin} 个成本点且得分更高（{winner} 对 {quality}）。仍可拖入档位强制使用。',
+        offReasonNoEnvelope: '没有档位能容纳它：{detail}。',
+        offReasonRetired: '已下线：目录将该模型标记为 retired。',
+        offReasonReplaced: '建议替代：{by}。',
+        offReasonWithdrawn: '已下线：目录将该模型标记为不可用。',
+        offReasonSunset: '已下线：目录给出的截止日期是 {until}。',
+        offReasonRetiring: '已下线：目录计划于 {until} 结束。',
+        offReasonSuperseded: '已被 {by} 取代：版本 {winnerVersion} 替换 {version}。',
+        endpointCount: '{count} 个提供方端点 · 仅展示最优的一个',
+        failCost: '成本',
+        failQuality: '质量',
+        failLatency: '延迟',
+        allTiers: '所有档位',
         tierOff: '停用',
         laneEmpty: '暂无模型。',
         modelCount: '{count} 个模型',
@@ -1073,6 +1103,17 @@ window.__ModuleLoader__.load({
       ]
       const metaOf = (key) => board.meta?.[key] ?? {}
       /**
+       * Every endpoint of the model a capsule stands for.
+       *
+       * The host collapses a model's provider offerings to one capsule; a switch
+       * on that capsule must therefore remove the whole model from routing, not
+       * just the provider the deterministic choice happened to show.
+       */
+      const endpointKeysOf = (key) => {
+        const keys = board.endpointsOf?.[key]
+        return Array.isArray(keys) && keys.length > 0 ? keys : [key]
+      }
+      /**
        * Why a card sits in `off`, in words.
        *
        * The board records the cause per model (operator switch, no envelope with
@@ -1084,6 +1125,24 @@ window.__ModuleLoader__.load({
         if (reason === null || reason === undefined) return null
         if (reason.reason === 'disabled') return t('offReasonDisabled')
         if (reason.reason === 'manual') return t('offReasonManual')
+        if (reason.reason === 'retired') {
+          const base = reason.kind === 'sunset'
+            ? t('offReasonSunset').replace('{until}', String(reason.until ?? '?'))
+            : reason.kind === 'retiring'
+              ? t('offReasonRetiring').replace('{until}', String(reason.until ?? '?'))
+              : reason.kind === 'withdrawn' ? t('offReasonWithdrawn') : t('offReasonRetired')
+          const replacement = typeof reason.replaces === 'string' && reason.replaces.length > 0
+            ? ` ${t('offReasonReplaced').replace('{by}', reason.replaces.split('/').pop())}`
+            : ''
+          return base + replacement
+        }
+        if (reason.reason === 'superseded') {
+          const winner = String(reason.by ?? '').split('/').pop()
+          return t('offReasonSuperseded')
+            .replace('{by}', winner)
+            .replace('{winnerVersion}', String(reason.winnerVersion ?? '?'))
+            .replace('{version}', String(reason.version ?? '?'))
+        }
         if (reason.reason === 'dominated') {
           return t('offReasonDominated')
             .replace('{by}', String(reason.by ?? '').replace(/^model:/, ''))
@@ -1160,25 +1219,27 @@ window.__ModuleLoader__.load({
 
       function move(model, tier) {
         if (busy === true) return
+        const endpoints = endpointKeysOf(model)
         if (tier === 'off') {
-          applyTiers({ ...(draft.tiers ?? {}), disabled: [...new Set([...disabled, model])] })
+          applyTiers({ ...(draft.tiers ?? {}), disabled: [...new Set([...disabled, ...endpoints])] })
           return
         }
         const nextOverrides = { ...overrides, [model]: tier }
-        applyTiers({ ...(draft.tiers ?? {}), overrides: nextOverrides, disabled: [...disabled].filter((id) => id !== model) })
+        applyTiers({ ...(draft.tiers ?? {}), overrides: nextOverrides, disabled: [...disabled].filter((id) => !endpoints.includes(id)) })
       }
 
       function followAuto(model) {
         if (busy === true) return
+        const endpoints = endpointKeysOf(model)
         const nextOverrides = { ...overrides }
-        delete nextOverrides[model]
-        applyTiers({ ...(draft.tiers ?? {}), overrides: nextOverrides, disabled: [...disabled].filter((id) => id !== model) })
+        for (const endpoint of endpoints) delete nextOverrides[endpoint]
+        applyTiers({ ...(draft.tiers ?? {}), overrides: nextOverrides, disabled: [...disabled].filter((id) => !endpoints.includes(id)) })
       }
 
       function capsule(key, laneId) {
         const model = board.modelOf?.[key] ?? key
         const entry = index.get(key) ?? index.get(`${providerOf[key]}/${model}`) ?? byBareId.get(model) ?? null
-        const off = disabled.has(key)
+        const off = endpointKeysOf(key).some((endpoint) => disabled.has(endpoint))
         const handAssigned = Object.hasOwn(overrides, key)
         const open = hovered === key
         return h(
@@ -1259,6 +1320,8 @@ window.__ModuleLoader__.load({
                       : t('rankCoverage').replace('{n}', String(metaOf(key).dimsCovered)).replace('{m}', String(metaOf(key).dimsTotal)),
                   ].filter(Boolean).join(' · '),
                 ),
+              typeof metaOf(key).endpoints === 'number' && metaOf(key).endpoints > 1 &&
+                h('p', { className: 'amr-note' }, t('endpointCount').replace('{count}', String(metaOf(key).endpoints))),
               (metaOf(key).dims ?? {}) && Object.keys(metaOf(key).dims ?? {}).length > 0 &&
                 h('p', { className: 'amr-note' },
                   `${t('taskDimensions')}: ` + Object.entries(metaOf(key).dims)

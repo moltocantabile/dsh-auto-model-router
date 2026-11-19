@@ -148,11 +148,17 @@ that changes its mind on identical input is untestable.
 A tier is a ceiling on what the router may buy, not a pinned model. Each tier
 declares three things, all optional:
 
-| Field | Meaning | `fast` | `balanced` | `deep` |
-|---|---|---|---|---|
-| `maxCost` | cost index the tier will not exceed (0-100, log-scaled price) | 55 | 85 | 100 |
-| `maxLatency` | slowest latency class tolerated (`fast` < `balanced` < `slow`) | `fast` | `balanced` | `slow` |
-| `minQuality` | measured quality a model must reach | 40 | 55 | 66 |
+| Field | Meaning | Shipped fallback (`fast` / `balanced` / `deep`) |
+|---|---|---|
+| `maxCost` | cost index the tier will not exceed (0-100, log-scaled price) | 55 / 85 / 100 |
+| `maxLatency` | slowest latency class tolerated (`fast` < `balanced` < `slow`) | `fast` / `balanced` / `slow` |
+| `minQuality` | measured quality a model must reach | 40 / 55 / 66 |
+
+Those fallbacks are only what an unconfigured profile starts from. When the
+operator leaves an envelope unset, the plug-in replaces its cut-offs with
+ceilings derived from the measured catalog (`fast` 68, `balanced` 79, `deep` 100
+cost; quality floors 28 / 33 / 35 in the shipped data), so a tier describes the
+pool it is fitted on instead of a catalog that no longer exists.
 
 The profile chooses the tier by demand — `0.35 × depth + 0.15 × breadth +
 0.5 × risk`. An interactive turn is pulled down to `fast` only while the work
@@ -161,8 +167,25 @@ learned the hard way — capping demand for every `latencyCritical` turn sent a
 paused migration to the cheapest model in the pool because "Continue" scores
 shallow risk while being deep work, and a wrong fast answer costs more than a
 slow capable one. Interactive work still prefers faster models, through the
-speed weight in the ranking rather than by collapsing its tier. Against the current catalog that admits 6
-models to `fast`, 9 to `balanced`, and 3 to `deep`.
+speed weight in the ranking rather than by collapsing its tier.
+
+### Capability decides membership; the envelope is the guardrail
+
+A tier also says *how hard the work is*, so membership is not "the cheapest
+envelope that fits": models are ranked by measured composite capability and the
+pool's thirds form the three bands. The envelope then guards that grade — a model
+whose cost index or latency class exceeds its band's ceiling moves one band up,
+because a cheap tier cannot buy an expensive or slow model; one band is the
+coverage the envelope promises, so a model still rejected there (and anything
+above `deep`'s ceiling) is off rather than routed by a budget that cannot pay
+for it. The quality floor still applies to the `cost` criterion and to the
+selector inside a tier.
+
+On the shipped catalog snapshot (64 measured entries, one entry per model) that
+places 2 models in `fast`, 6 in `balanced`, and 9 in `deep`; 7 are unmeasured,
+25 are off with a reason, and 15 duplicate endpoints are collapsed by model into
+the capsule that represents it. Counts move with the catalog, so `status` reports
+the lanes it actually computed.
 
 Two rules keep an envelope from becoming a trap. A model with no quality
 measurement cannot clear a quality floor, because it cannot prove it does. And
@@ -249,11 +272,30 @@ deployment is an instruction, not a limitation of the selector.
 
 ### Tiers assign themselves
 
-Nobody assigns models to tiers by hand. Each model joins the cheapest tier whose
-envelope (cost ceiling, latency ceiling, quality floor) it satisfies, so a strong
-cheap model can serve cheap work and `deep` is left to what cannot be served any
-cheaper. The assignment is computed on the host and shipped in the config
-snapshot, so the page and the router always agree about who is where.
+Nobody assigns models to tiers by hand. The assignment is computed on the host
+and shipped in the config snapshot, so the page and the router always agree about
+who is where. It is **model-level**: the same model advertised by several
+providers (or resellers, or a `-highspeed` serving variant) gets one capsule,
+represented by the best endpoint (fastest latency, then most evidence, then
+cheapest); the other endpoints are in the capsule's endpoint count instead of
+filling a second lane.
+
+Every auto-off model carries the reason the board can show:
+
+| lane | why the model is there |
+|---|---|
+| `off` — withdrawn | the catalog marks it retired/deprecated, or gives it a sunset date; the operator can still drag it back |
+| `off` — superseded | a newer measured generation replaces it: the same line with the same date identity, or a newer generation when either side has no product-variant words (`v3.2` → `v4.1-flash`). A materially weaker or same-generation-much-dearer model is not a replacement; the card names both versions |
+| `off` — no envelope | its capability band's cost/latency guardrail rejects it and no deeper band admits it (the card lists the failing fields) |
+| `off` — dominated | a same-family model in the same budget is measurably stronger and at least ten cost points cheaper |
+| `off` — switched off | the operator clicked it |
+| `unmeasured` | no measurement, or too thin a profile to compare |
+
+Superseding only compares like with like: the line is the family plus its size
+and product tier words, and a release date is part of the model's identity, so
+`-1017` and the undated alias are two models, and `flash` is not a version of
+`max`. The same rule keeps a *newer* generation from being pruned by an older,
+cheaper sibling.
 
 The settings page shows the assignment as a board of **capsules**:
 
@@ -268,7 +310,10 @@ The settings page shows the assignment as a board of **capsules**:
 
 A model is switched off automatically when another model **of the same family**
 (`deepseek*`, `qwen*`, `glm*`, `kimi*`, …) is measurably stronger *and* at least
-ten cost-index points cheaper. The comparison is deliberately inside a family: a
+ten cost-index points cheaper. Under capability bands this is scoped to the same
+tier (a cheaper sibling belongs one band down by design) and compares the
+capability grade the bands use; the `cost` criterion keeps the cross-tier,
+conservative-basis rule. The comparison is deliberately inside a family: a
 cheaper Qwen is not a replacement for a DeepSeek, and disabling one vendor because
 another vendor's model wins would turn a router into a vendor ranking. Reseller
 prefixes (`cmaas-`, `vanchin/`, `siliconflow/`) resolve to the family underneath.

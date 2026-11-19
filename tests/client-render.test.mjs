@@ -82,21 +82,26 @@ const CONFIG = {
 const BOARD = {
   mode: 'auto',
   meta: {
-    'm-fast': { rank: 1, composite: 68.6, low: 52.1, quality: 52.1, status: 'measured', usage: 90 },
+    'm-fast': { rank: 1, composite: 68.6, low: 52.1, quality: 52.1, status: 'measured', usage: 90, endpoints: 3 },
     'm-balanced': { rank: 2, composite: 62, low: 48.3, quality: 48.3, status: 'measured', usage: 40 },
   },
+  // The host collapses a model's provider endpoints to one capsule and ships the
+  // list, so a switch on the capsule can cover all of them.
+  endpointsOf: { 'm-fast': ['m-fast', 'provider-b/m-fast-alt'] },
   groups: {
     fast: ['m-fast'],
     balanced: ['m-balanced'],
     deep: [],
-    off: ['m-off-dominated', 'm-off-no-envelope'],
+    off: ['m-off-dominated', 'm-off-no-envelope', 'm-off-retired', 'm-off-superseded'],
   },
   offReasons: {
     'm-off-dominated': { reason: 'dominated', by: 'm-fast', quality: 60, winnerQuality: 68, cost: 60, winnerCost: 18, margin: 42 },
     'm-off-no-envelope': { reason: 'no-envelope', failed: { fast: ['quality'], balanced: ['quality'], deep: ['quality'] } },
+    'm-off-retired': { reason: 'retired', kind: 'sunset', until: '2026-01-01' },
+    'm-off-superseded': { reason: 'superseded', by: 'provider-b/m-balanced', winnerVersion: '2', version: '1' },
   },
-  tierOf: { 'm-fast': 'fast', 'm-balanced': 'balanced', 'm-off-dominated': 'off', 'm-off-no-envelope': 'off' },
-  providerOf: { 'm-fast': 'provider-a', 'm-balanced': 'provider-b', 'm-unmeasured': 'provider-c', 'm-off-dominated': 'provider-a', 'm-off-no-envelope': 'provider-a' },
+  tierOf: { 'm-fast': 'fast', 'm-balanced': 'balanced', 'm-off-dominated': 'off', 'm-off-no-envelope': 'off', 'm-off-retired': 'off', 'm-off-superseded': 'off' },
+  providerOf: { 'm-fast': 'provider-a', 'm-balanced': 'provider-b', 'm-unmeasured': 'provider-c', 'm-off-dominated': 'provider-a', 'm-off-no-envelope': 'provider-a', 'm-off-retired': 'provider-c', 'm-off-superseded': 'provider-c' },
   overridden: [],
   disabled: [],
   unassigned: [],
@@ -323,7 +328,7 @@ test('the page mounts, fetches its snapshot, and renders rows', async () => {
     assert.ok(names.some((name) => name.includes('provider-b/m-balanced')), names.join(' | '))
     const tiered = capsules.filter((node) => node.getAttribute('data-measured') !== 'false')
     const tones = tiered.map((node) => node.getAttribute('data-tone'))
-    assert.equal(new Set(tones).size, 2, `one tone per provider among placed models (saw ${tones.join(',')})`)
+    assert.equal(new Set(tones).size, 3, `one tone per provider among the cards (saw ${tones.join(',')})`)
 
     // Models nobody measured are visible, dotted, and marked as such rather than
     // hidden: the operator can still drag one into a tier deliberately.
@@ -1039,6 +1044,32 @@ test('the search field filters capsules across lanes and restores them', async (
 
 
 
+test('a capsule switch disables every endpoint of the model', async () => {
+  const loaded = loadBundle()
+  try {
+    const section = harness(loaded.module)
+    const React = globalThis.__amrReact
+    const { createRoot } = globalThis.__amrReactDomClient
+    const container = loaded.window.document.getElementById('root')
+    const root = createRoot(container)
+    root.render(React.createElement(section.component, { t: (key) => key }))
+    await new Promise((resolve) => setTimeout(resolve, 60))
+
+    const capsule = [...container.querySelectorAll('.amr-capsule')].find((el) => (el.textContent ?? '').includes('m-fast'))
+    assert.ok(capsule !== undefined, 'the placed capsule is on the board')
+    capsule.dispatchEvent(new loaded.window.MouseEvent('click', { bubbles: true }))
+    await new Promise((resolve) => setTimeout(resolve, 40))
+    const configure = loaded.requests.filter((body) => body.action === 'configure').pop()
+    assert.ok(configure !== undefined, 'the switch applies a config')
+    assert.deepEqual([...configure.config.tiers.disabled].sort(), ['m-fast', 'provider-b/m-fast-alt'], 'all endpoints leave routing, not just the shown one')
+
+    root.unmount()
+    await new Promise((resolve) => setTimeout(resolve, 25))
+  } finally {
+    loaded.restore()
+  }
+})
+
 test('an auto-off card says why it is off', async () => {
   const loaded = loadBundle()
   try {
@@ -1063,6 +1094,24 @@ test('an auto-off card says why it is off', async () => {
     await new Promise((resolve) => setTimeout(resolve, 25))
     const second = noEnvelope.querySelector('.amr-pop')
     assert.ok((second?.textContent ?? '').includes('offReasonNoEnvelope'), 'the card names the envelope cause')
+
+    const retired = findCapsule('m-off-retired')
+    retired.dispatchEvent(new loaded.window.MouseEvent('mouseover', { bubbles: true }))
+    await new Promise((resolve) => setTimeout(resolve, 25))
+    const third = retired.querySelector('.amr-pop')
+    assert.ok((third?.textContent ?? '').includes('offReasonSunset'), 'the card names the sunset withdrawal')
+
+    const superseded = findCapsule('m-off-superseded')
+    superseded.dispatchEvent(new loaded.window.MouseEvent('mouseover', { bubbles: true }))
+    await new Promise((resolve) => setTimeout(resolve, 25))
+    const fourth = superseded.querySelector('.amr-pop')
+    assert.ok((fourth?.textContent ?? '').includes('offReasonSuperseded'), 'the card names the newer generation')
+
+    const fast = findCapsule('m-fast')
+    fast.dispatchEvent(new loaded.window.MouseEvent('mouseover', { bubbles: true }))
+    await new Promise((resolve) => setTimeout(resolve, 25))
+    const fifth = fast.querySelector('.amr-pop')
+    assert.ok((fifth?.textContent ?? '').includes('endpointCount'), 'the card keeps the collapsed endpoint count')
 
     root.unmount()
     await new Promise((resolve) => setTimeout(resolve, 25))

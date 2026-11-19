@@ -5,15 +5,19 @@
  * Asking the operator to also point every tier at a named model means choosing
  * twice for the same decision, and the named model then wins even when a better
  * one enters the catalog tomorrow. So membership is computed from measurement:
- * a model joins the cheapest tier whose envelope it satisfies, which puts the
- * strong-and-cheap models where the router can actually use them and leaves
- * `deep` for what cannot be served any cheaper.
+ * a model is graded into capability bands, guardrailed by the tier's cost and
+ * latency ceilings, and the board lists one entry per model rather than one per
+ * provider endpoint.
  *
- * The operator still overrules the computation, per model: drag one to another
- * tier, or switch it off. Those overrides are the only hand-made assignments.
+ * The assignment is model-level, not endpoint-level: a model can be advertised
+ * from several providers, and the board shows the deterministic best offering
+ * (`fastest latency, most evidence, cheapest`, then key). The other endpoints
+ * stay in `endpointsOf` for the card, never in a second lane. Withdrawn models,
+ * superseded generations and duplicates are off the lanes with a reason the page
+ * can show; the operator can still override any of it by hand.
  */
 import { boardMetaOf, hasMeasuredQuality, legacyQuality, qualityBasis } from './basis.js'
-import { bareId, familyOf } from './identity.js'
+import { canonicalModelOf, compareModelVersions, familyOf, modelLineOf } from './identity.js'
 import { costIndex, withinEnvelope } from './select.js'
 
 export { boardMetaOf } from './basis.js'
@@ -22,11 +26,69 @@ export { familyOf } from './identity.js'
 /** How much cheaper a model must be to justify a lower quality by "dominance". */
 const DOMINANCE_COST_MARGIN = 10
 
-/** Measured quality of a candidate on the same basis the tiers are fitted on. */
+/** Latency classes, fastest first; an unclassified model is the slowest class. */
+const LATENCY_RANK = { fast: 0, balanced: 1, slow: 2 }
+
+/** Tiers from cheapest to most capable. */
+export const TIER_IDS = ['fast', 'balanced', 'deep']
+
+/** Where a model goes when it is neither assigned nor disabled. */
+export const OFF = 'off'
+
+/** Measured quality of a candidate on the conservative basis (cost criterion). */
 const qualityOf = (info) => {
   const quality = qualityBasis(info)
   return quality === null ? 0 : quality
 }
+
+/** Latency rank of a candidate; an unknown class sorts after every known one. */
+const latencyRankOf = (info) => LATENCY_RANK[String(info?.latency ?? '')] ?? 3
+
+/**
+ * Benchmarks behind an entry, for the endpoint tie-break: a measured endpoint
+ * outranks an unmeasured one even when both claim the same model.
+ */
+function evidenceOf(info) {
+  const overall = info?.ranking?.dims?.overall?.evidence
+  if (Number.isFinite(Number(overall))) return Number(overall)
+  let total = 0
+  for (const value of Object.values(info?.ranking?.dims ?? {})) total += Number(value?.evidence) || 0
+  for (const value of Object.values(info?.evidence ?? {})) total += Number(value) || 0
+  return total
+}
+
+/**
+ * Why a candidate must not be auto-placed, or null when it may be.
+ *
+ * `retired` is the explicit marker; `withdrawn`/`deprecated` are the other
+ * spellings a catalog uses; a `sunsetAt` date means the model is on its way out
+ * (past or announced), and the board should not keep routing to it by default.
+ */
+function withdrawalOf(info, now) {
+  const replacedBy = typeof info?.replaceWith === 'string' && info.replaceWith.length > 0 ? info.replaceWith : undefined
+  const withdrawn = (kind) => ({ reason: 'retired', kind, ...(replacedBy === undefined ? {} : { replaces: replacedBy }) })
+  if (info?.retired === true) return withdrawn('retired')
+  if (info?.deprecated === true || info?.withdrawn === true) return withdrawn('withdrawn')
+  if (typeof info?.sunsetAt === 'string' && info.sunsetAt.length > 0) {
+    const sunset = Date.parse(info.sunsetAt)
+    if (!Number.isFinite(sunset) || sunset <= now) return { reason: 'retired', kind: 'sunset', until: info.sunsetAt, ...(replacedBy === undefined ? {} : { replaces: replacedBy }) }
+    return { reason: 'retired', kind: 'retiring', until: info.sunsetAt, ...(replacedBy === undefined ? {} : { replaces: replacedBy }) }
+  }
+  return null
+}
+
+/** Cost/latency ceilings of one envelope that a candidate breaches. */
+function ceilingBreaches(info, envelope) {
+  const fields = []
+  if (envelope === null || envelope === undefined) return fields
+  if (typeof envelope.maxCost === 'number' && envelope.maxCost > 0 && costIndex(info) > envelope.maxCost) fields.push('cost')
+  if (typeof envelope.maxLatency === 'string' && LATENCY_RANK[envelope.maxLatency] !== undefined) {
+    const rank = latencyRankOf(info)
+    if (rank > LATENCY_RANK[envelope.maxLatency]) fields.push('latency')
+  }
+  return fields
+}
+
 
 /**
  * Which field of each envelope rejected a model, per tier.
@@ -41,17 +103,10 @@ const qualityOf = (info) => {
  */
 function failedEnvelopes(info, routes) {
   const failed = {}
-  const cost = costIndex(info)
   for (const tier of TIER_IDS) {
     const envelope = routes?.[tier]?.envelope
     if (envelope === null || envelope === undefined) continue
-    const fields = []
-    if (typeof envelope.maxCost === 'number' && envelope.maxCost > 0 && cost > envelope.maxCost) fields.push('cost')
-    if (typeof envelope.maxLatency === 'string') {
-      const rank = { fast: 0, balanced: 1, slow: 2 }[String(info?.latency ?? '')]
-      const limit = { fast: 0, balanced: 1, slow: 2 }[envelope.maxLatency]
-      if (rank === undefined || (limit !== undefined && rank > limit)) fields.push('latency')
-    }
+    const fields = ceilingBreaches(info, envelope)
     if (typeof envelope.minQuality === 'number' && envelope.minQuality > 0) {
       const derivedFloor = envelope.derived === true || envelope.source === 'derived'
       const quality = derivedFloor ? qualityBasis(info) : legacyQuality(info)
@@ -61,12 +116,6 @@ function failedEnvelopes(info, routes) {
   }
   return failed
 }
-
-/** Tiers from cheapest to most capable. */
-export const TIER_IDS = ['fast', 'balanced', 'deep']
-
-/** Where a model goes when it is neither assigned nor disabled. */
-export const OFF = 'off'
 
 /**
  * The cheapest tier that admits this model, or null when none does.
@@ -89,27 +138,7 @@ export function autoTierFor(info, routes) {
 }
 
 /**
- * Assign a candidate pool to tiers.
- *
- * @param {Array<{model: string, provider?: string, info?: object|null}>} pool
- * @param {Record<string, {envelope?: object}>} routes
- * @param {{mode?: string, overrides?: Record<string, string>, disabled?: string[]}} [config]
- * @returns {{
- *   mode: 'auto'|'manual',
- *   groups: Record<string, string[]>,
- *   tierOf: Record<string, string>,
- *   overridden: string[],
- *   disabled: string[],
- *   unassigned: string[],
- * }}
- */
-/**
- * Identity of one routable model.
- *
- * A model id alone is not unique across providers: this profile serves
- * `deepseek-v4-pro` from three of them. Everything the operator edits (tier
- * membership, a disabled switch) is keyed by `provider/model`, so two endpoints
- * offering the same id stay two entries.
+ * Identity of one routable endpoint.
  *
  * @param {{key?: string, provider?: string, model?: string}} candidate
  * @returns {string}
@@ -172,97 +201,147 @@ function quantileOf(values, p) {
   return values[lo] + (values[hi] - values[lo]) * (at - lo)
 }
 
+/** Sort position of an endpoint: fastest latency, most evidence, cheapest, key. */
+function endpointRank(entry) {
+  const info = entry.candidate.info ?? null
+  return [latencyRankOf(info), -evidenceOf(info), costIndex(info), entry.key]
+}
+
+function compareEndpointRank(left, right) {
+  for (let index = 0; index < 3; index += 1) {
+    if (left[index] !== right[index]) return left[index] - right[index]
+  }
+  return left[3].localeCompare(right[3])
+}
+
+/** A fixed clock for the withdrawal/sunset rule; tests inject one. */
+function clockOf(value) {
+  if (Number.isFinite(Number(value))) return Number(value)
+  const parsed = Date.parse(value)
+  return Number.isFinite(parsed) ? parsed : Date.now()
+}
+
+/** Version as `4.1` for a card. */
+const versionLabel = (version) => (Array.isArray(version) ? version.join('.') : '')
+
+/**
+ * Off-lane reasons by kind, for `status`.
+ *
+ * @param {Record<string, {reason?: string}>} offReasons
+ * @returns {Record<string, number>}
+ */
+export function offReasonTotals(offReasons) {
+  const totals = {}
+  for (const reason of Object.values(offReasons ?? {})) {
+    const kind = reason?.reason
+    if (typeof kind !== 'string' || kind.length === 0) continue
+    totals[kind] = (totals[kind] ?? 0) + 1
+  }
+  return totals
+}
+
+/**
+ * Assign a candidate pool to tiers.
+ *
+ * Order of precedence: disabled > hand override > withdrawn > unmeasured >
+ * capability band (cost/latency guardrail) > superseded generation > same-family
+ * dominance. Membership is model-level: one endpoint represents the model per
+ * lane, chosen deterministically from the endpoints offered.
+ *
+ * @param {Array<{model: string, provider?: string, info?: object|null}>} pool
+ * @param {Record<string, {envelope?: object}>} routes
+ * @param {{mode?: string, criterion?: 'capability'|'cost', overrides?: Record<string, string>, disabled?: string[], now?: number|string}} [config]
+ * @returns {{
+ *   mode: 'auto'|'manual',
+ *   groups: Record<string, string[]>,
+ *   tierOf: Record<string, string>,
+ *   overridden: string[],
+ *   disabled: string[],
+ *   unassigned: string[],
+ *   unmeasured: string[],
+ *   offReasons: Record<string, object>,
+ *   endpointsOf: Record<string, string[]>,
+ *   hidden: string[],
+ * }}
+ */
 export function assignTiers(pool, routes, config = {}) {
   const mode = config.mode === 'manual' ? 'manual' : 'auto'
-  /**
-   * How a model is placed into a tier.
-   *
-   * `capability` (default) groups by measured capability bands first and uses the
-   * envelope as a guardrail (cost/latency ceilings, quality floor) — the tier
-   * says how hard the work is. `cost` is the old rule: the cheapest envelope that
-   * admits the model, which makes a strong-and-cheap model land in `fast` because
-   * it also clears that tier's floor.
-   */
-  const criterion = config.criterion === 'cost' ? 'cost' : 'capability'
+  const criticalCriterion = config.criterion === 'cost' ? 'cost' : 'capability'
   const overrides = config.overrides ?? {}
   const disabled = new Set(Array.isArray(config.disabled) ? config.disabled : [])
-  const groups = { fast: [], balanced: [], deep: [], off: [] }
-  const tierOf = {}
-  const overridden = []
-  const unassigned = []
-  /** Provider each placed model belongs to, so the UI can label and colour it. */
-  const providerOf = {}
-  /** Model id behind each key, so the UI can show `provider/model` without parsing. */
-  const modelOf = {}
-  /** Models the catalog offers but nothing measured: never routed, never shown as a choice. */
-  const unmeasured = []
-  /** Placed models another model beats on both quality and price. */
-  const dominated = []
-  /**
-   * Why each model sits in `off`, so its card can say it.
-   *
-   * Three distinct causes: the operator switched it off; the catalog cannot place
-   * it because no envelope admits it (with the failing field per tier); or another
-   * model of its family is stronger and at least `DOMINANCE_COST_MARGIN` cheaper.
-   */
-  const offReasons = {}
-  /** Why an entry is in the unmeasured lane: no measurement, or too thin to compare. */
-  const unmeasuredReasons = {}
-  const placed = []
+  const now = clockOf(config.now)
 
-  // Capability bands are derived from the pool being assigned, one entry per
-  // *model*: a model offered by several providers is one capability, and counting
-  // its endpoints separately pulled the band edges around and let two endpoints of
-  // the same model land in different tiers. Disabled models are excluded (an
-  // operator switch must not move the edges for everything else).
-  // The model behind the endpoint key: the provider segment and any vendor
-  // namespace are dropped, so `vanchin/deepseek-v4.1-flash` and
-  // `deepseek-v4.1-flash` are one model while `…-1017` stays its own (bareId keeps
-  // the date, which is part of the identity).
-  const canonicalOf = (candidate) => bareId(modelKeyOf(candidate)).toLowerCase()
-  const latencyRankOf = (info) => ({ fast: 0, balanced: 1, slow: 2 }[String(info?.latency ?? '')] ?? 3)
+  const entries = []
+  const providerOf = {}
+  const modelOf = {}
+  for (const candidate of Array.isArray(pool) ? pool : []) {
+    if (candidate === null || candidate === undefined) continue
+    if (typeof candidate.model !== 'string' || candidate.model.length === 0) continue
+    const key = modelKeyOf(candidate)
+    if (typeof key !== 'string' || key.length === 0) continue
+    entries.push({ candidate, key, canonical: canonicalModelOf(key) })
+    providerOf[key] = typeof candidate.provider === 'string' ? candidate.provider : undefined
+    modelOf[key] = candidate.model
+  }
+
+  // The board is model-level: disabling any endpoint is the operator switching
+  // the model off, so the whole model leaves routing rather than falling through
+  // to another provider's copy of the same id.
+  const disabledCanonicals = new Set(entries.filter((entry) => disabled.has(entry.key)).map((entry) => entry.canonical))
+
+  const groupsByCanonical = new Map()
+  for (const entry of entries) {
+    const group = groupsByCanonical.get(entry.canonical) ?? []
+    group.push(entry)
+    groupsByCanonical.set(entry.canonical, group)
+  }
+
+  // One representative endpoint per model. An override names the endpoint the
+  // operator picked; otherwise the deterministic best offering wins: a live
+  // (non-withdrawn) endpoint first, then fastest latency, most evidence, cheapest.
+  const representativeOf = new Map()
+  for (const [canonical, endpoints] of groupsByCanonical) {
+    const overridden = endpoints.filter((entry) => TIER_IDS.includes(overrides[entry.key]))
+    const candidates = overridden.length > 0
+      ? overridden
+      : endpoints.filter((entry) => withdrawalOf(entry.candidate.info ?? null, now) === null)
+    const poolForChoice = candidates.length > 0 ? candidates : endpoints
+    const best = [...poolForChoice].sort((left, right) => compareEndpointRank(endpointRank(left), endpointRank(right)))[0]
+    representativeOf.set(canonical, best.key)
+  }
+  const endpointsOf = {}
+  const hidden = []
+  for (const entry of entries) {
+    endpointsOf[entry.key] = (groupsByCanonical.get(entry.canonical) ?? []).map((item) => item.key)
+    if (representativeOf.get(entry.canonical) !== entry.key) hidden.push(entry.key)
+  }
+
+  // Capability bands over the live, measured, sufficiently covered models; a
+  // model counts once, at its best endpoint's capability and fastest latency.
   const models = new Map()
-  if (criterion === 'capability') {
-    for (const candidate of Array.isArray(pool) ? pool : []) {
-      if (candidate === null || candidate === undefined) continue
-      if (disabled.has(modelKeyOf(candidate))) continue
-      if (!hasMeasuredQuality(candidate.info ?? null)) continue
-      const coverage = coreCoverage(candidate.info ?? null)
+  if (criticalCriterion === 'capability') {
+    for (const entry of entries) {
+      const info = entry.candidate.info ?? null
+      if (disabledCanonicals.has(entry.canonical)) continue
+      if (withdrawalOf(info, now) !== null) continue
+      if (!hasMeasuredQuality(info)) continue
+      const coverage = coreCoverage(info)
       if (coverage !== null && coverage < 3) continue
-      const capability = capabilityOf(candidate.info ?? null)
+      const capability = capabilityOf(info)
       if (capability === null) continue
-      const canonical = canonicalOf(candidate)
-      const seen = models.get(canonical)
-      if (seen === undefined) {
-        models.set(canonical, { capability, latency: latencyRankOf(candidate.info ?? null) })
-        continue
+      const previous = models.get(entry.canonical)
+      if (previous === undefined) models.set(entry.canonical, { capability, latency: latencyRankOf(info) })
+      else {
+        previous.capability = Math.max(previous.capability, capability)
+        previous.latency = Math.min(previous.latency, latencyRankOf(info))
       }
-      // The best evidence across endpoints describes the model; the fastest
-      // serving class decides whether a tier may serve it at all.
-      seen.capability = Math.max(seen.capability, capability)
-      seen.latency = Math.min(seen.latency, latencyRankOf(candidate.info ?? null))
     }
   }
-  const capabilityValues = [...models.values()].map((model) => model.capability).sort((a, b) => a - b)
-  const canUseCapability = criterion === 'capability' && capabilityValues.length >= 6
-  const bandEdges = canUseCapability
+  const capabilityValues = [...models.values()].map((model) => model.capability).sort((left, right) => left - right)
+  const canUseBands = criticalCriterion === 'capability' && capabilityValues.length >= 6
+  const bandEdges = canUseBands
     ? { fastMax: quantileOf(capabilityValues, 1 / 3), balancedMax: quantileOf(capabilityValues, 2 / 3) }
     : null
-  /** The criterion actually in force: bands need enough measured models. */
-  const effectiveCriterion = canUseCapability ? 'capability' : 'cost'
-
-  /**
-   * Tier for one model: its capability band, decided from the best evidence
-   * across its endpoints, so every endpoint of that model follows.
-   *
-   * Placement uses capability only. Cost and latency are measurements the
-   * selector weighs inside a tier (and the old cost criterion remains available),
-   * but as placement gates they produced the artefact this criterion was meant to
-   * remove: `GLM-5.3-Flash` (capability 34.0) was pushed from `balanced` to `deep`
-   * by its serving class while `deepseek-v4.1-flash` (31.3) stayed `balanced`, so
-   * a faster classification read as a higher grade. A serving class is not a
-   * capability grade.
-   */
   const tierForModel = (canonical) => {
     const model = models.get(canonical)
     if (model === undefined || bandEdges === null) return null
@@ -271,101 +350,286 @@ export function assignTiers(pool, routes, config = {}) {
     return 'deep'
   }
 
-  for (const candidate of Array.isArray(pool) ? pool : []) {
-    const model = candidate?.model
-    if (typeof model !== 'string' || model.length === 0) continue
-    const key = modelKeyOf(candidate)
-    modelOf[key] = model
-    if (typeof candidate.provider === 'string' && candidate.provider.length > 0) providerOf[key] = candidate.provider
-    if (disabled.has(key)) {
+  const effectiveCriterion = canUseBands ? 'capability' : 'cost'
+  const groups = { fast: [], balanced: [], deep: [], off: [] }
+  const tierOf = {}
+  const offReasons = {}
+  const unmeasured = []
+  const unmeasuredReasons = {}
+  const overridden = []
+  const unassigned = []
+  const placed = []
+  /**
+   * Every measured auto-assignable model (placed or not), as model-level entries.
+   * Superseding reads this, not `placed`: a newer generation that no envelope
+   * admits still replaces the older one it descends from.
+   */
+  const assignable = []
+
+  for (const entry of entries) {
+    const { key, canonical } = entry
+    const info = entry.candidate.info ?? null
+
+    // A model with several endpoints gets one lane entry; only the representative
+    // is listed. The others stay in `endpointsOf` for the card.
+    if (representativeOf.get(canonical) !== key) continue
+
+    if (disabledCanonicals.has(canonical)) {
       groups.off.push(key)
       tierOf[key] = OFF
       offReasons[key] = { reason: 'disabled' }
       continue
     }
-    const override = overrides[key]
-    if (TIER_IDS.includes(override)) {
-      groups[override].push(key)
-      tierOf[key] = override
+
+    const overrideTier = overrides[key]
+    if (TIER_IDS.includes(overrideTier)) {
+      groups[overrideTier].push(key)
+      tierOf[key] = overrideTier
       overridden.push(key)
+      placed.push({
+        key,
+        tier: overrideTier,
+        canonical,
+        overridden: true,
+        capability: capabilityOf(info) ?? 0,
+        quality: qualityOf(info),
+        cost: costIndex(info),
+        version: modelLineOf(key).version,
+      })
       continue
     }
-    // Routing is measurement-driven: a model with no measured quality cannot be
-    // ranked, so it is not placed in a tier. The ranking's own status decides
-    // what "measured" means once it exists -- an entry whose legacy compiled
-    // quality the ranking refused to decompose is not routable, even though the
-    // old field is still present. A profile that exposes a provider with hundreds
-    // of unmeasured ids must not turn the tier board into a list of everything
-    // the provider can bill for.
-    const measured = hasMeasuredQuality(candidate.info ?? null)
-    if (mode === 'auto' && !measured) {
+
+    const withdrawal = withdrawalOf(info, now)
+    if (withdrawal !== null) {
+      groups.off.push(key)
+      tierOf[key] = OFF
+      offReasons[key] = withdrawal
+      continue
+    }
+
+    if (mode === 'manual') {
+      groups.off.push(key)
+      tierOf[key] = OFF
+      offReasons[key] = { reason: 'manual' }
+      unassigned.push(key)
+      continue
+    }
+
+    if (mode === 'auto' && !hasMeasuredQuality(info)) {
       unmeasured.push(key)
       unmeasuredReasons[key] = 'no-measurement'
       continue
     }
-    // Capability grouping needs a comparable profile; a thin entry is listed as
-    // unmeasured (with its own reason) instead of entering a band on a fragment.
-    const coverage = coreCoverage(candidate.info ?? null)
-    if (mode === 'auto' && canUseCapability && coverage !== null && coverage < 3) {
+    const coverage = coreCoverage(info)
+    if (mode === 'auto' && canUseBands && coverage !== null && coverage < 3) {
       unmeasured.push(key)
       unmeasuredReasons[key] = 'insufficient-coverage'
       continue
     }
-    // `manual` means the operator has taken over: an unassigned model is not
-    // routed rather than guessed at, which is what makes the mode predictable.
+
+    const lineInfo = modelLineOf(key)
+    assignable.push({
+      key,
+      canonical,
+      overridden: false,
+      capability: capabilityOf(info) ?? 0,
+      quality: qualityOf(info),
+      cost: costIndex(info),
+      version: lineInfo.version,
+      line: lineInfo.line,
+      base: lineInfo.base,
+      variant: lineInfo.variant,
+      date: lineInfo.date,
+      family: familyOf(key),
+    })
+
     let tier = null
-    if (mode === 'manual') {
-      tier = null
-    } else if (canUseCapability) {
-      tier = tierForModel(canonicalOf(candidate))
+    let failed = {}
+    if (canUseBands) {
+      // Capability bands answer "how hard is the work"; the envelope's cost and
+      // latency ceilings are guardrails on what that budget may buy. The quality
+      // floor is the band's job here, so only the ceilings move a model up.
+      const bandTier = tierForModel(canonical)
+      if (bandTier !== null) {
+        const bandIndex = TIER_IDS.indexOf(bandTier)
+        // One band up at most: a price or latency ceiling can move a model to
+        // the next budget, which is what "a tier it cannot be bought on" means.
+        // A model still out of envelope one band up is far below that budget's
+        // grade (a cheap, weak, slow model would otherwise be parked in `deep`)
+        // and is off instead.
+        const lastIndex = Math.min(bandIndex + 1, TIER_IDS.length - 1)
+        let cursor = bandIndex
+        while (cursor <= lastIndex) {
+          const candidateTier = TIER_IDS[cursor]
+          const fields = ceilingBreaches(info, routes?.[candidateTier]?.envelope)
+          if (fields.length === 0) {
+            tier = candidateTier
+            break
+          }
+          failed[candidateTier] = fields
+          cursor += 1
+        }
+      }
     } else {
-      tier = autoTierFor(candidate.info ?? null, routes)
+      tier = autoTierFor(info, routes)
     }
-    if (tier === null || mode === 'manual') {
+    if (tier === null) {
       groups.off.push(key)
       tierOf[key] = OFF
+      offReasons[key] = { reason: 'no-envelope', failed: Object.keys(failed).length > 0 ? failed : failedEnvelopes(info, routes) }
       unassigned.push(key)
-      offReasons[key] = tier === null
-        ? { reason: 'no-envelope', failed: failedEnvelopes(candidate.info ?? null, routes) }
-        : { reason: 'manual' }
       continue
     }
     groups[tier].push(key)
     tierOf[key] = tier
-    placed.push({ key, tier, quality: qualityOf(candidate.info), cost: costIndex(candidate.info), family: familyOf(key) })
+    const line = modelLineOf(key)
+    placed.push({
+      key,
+      tier,
+      canonical,
+      overridden: false,
+      capability: capabilityOf(info) ?? 0,
+      quality: qualityOf(info),
+      cost: costIndex(info),
+      version: line.version,
+      line: line.line,
+      date: line.date,
+      family: familyOf(key),
+    })
   }
 
-  // A model that another one beats on both axes is not worth routing: it pays
-  // more for less. Automatic placement ignores that competition because it only
-  // asks "does this fit an envelope", so the losers are turned off here -- the
-  // operator can still drag one back and take it as a deliberate choice.
+  /**
+   * Supersede older generations.
+   *
+   * A model is superseded by a **measured** newer model of the same base line,
+   * whether that replacement is placed or not (an unplaced newer generation still
+   * retires the one it descends from). Two shapes qualify:
+   *
+   *  - same line and same date identity: a like-for-like version bump
+   *    (`glm-5` -> `glm-5.3`, `kimi-k2.6` -> `kimi-k3`);
+   *  - same base line where either side carries no product-variant words: a
+   *    generation change (`deepseek-v3.2` -> `deepseek-v4.1-flash`, an older
+   *    dated base snapshot -> the new base generation).
+   *
+   * Different product variants (`flash` vs `max`, `pro` vs `flash`) and different
+   * dates (snapshots are their own models) are not replacements.
+   *
+   * A newer model that is materially weaker does not retire a stronger one: the
+   * capability guard keeps the best model routable even when its number is lower
+   * (observed: `qwen4-max` is newer but 6 points below `qwen3.7-max`; version
+   * alone would have removed the rank-1 model). Hand assignments are never
+   * superseded by this rule.
+   */
   if (mode === 'auto') {
-    for (const candidate of placed) {
-      const winner = placed.find(
-        (other) =>
-          other.key !== candidate.key &&
-          // Under the capability criterion a cheaper sibling belongs to a lower
-          // tier by design, so dominance is scoped to the same tier ("paying more
-          // for less inside one budget"). In cost mode the tiers are price bands,
-          // where a cheaper-strength model anywhere makes the dearer one pointless,
-          // so the original cross-tier rule stands.
-          (effectiveCriterion !== 'capability' || other.tier === candidate.tier) &&
-          canonicalOf(other) !== canonicalOf(candidate) &&
-          other.family === candidate.family &&
-          other.quality > candidate.quality &&
-          other.cost <= candidate.cost - DOMINANCE_COST_MARGIN,
-      )
+    const CAPABILITY_TOLERANCE = 2
+    const supersededBy = new Map()
+    const ordered = [...assignable]
+      .filter((entry) => entry.version !== null)
+      .sort((left, right) => compareModelVersions(right.version, left.version) || right.capability - left.capability)
+    for (const member of ordered) {
+      if (member.overridden) continue
+      if (!TIER_IDS.includes(tierOf[member.key])) continue
+      if (supersededBy.has(member.key)) continue
+      const candidates = ordered
+        .filter((other) => {
+          if (other.key === member.key || other.overridden) return false
+          if (other.family !== member.family) return false
+          if (compareModelVersions(other.version, member.version) <= 0) return false
+          if (other.capability < member.capability - CAPABILITY_TOLERANCE) return false
+          // Same major generation, much dearer, barely stronger: not a
+          // replacement inside a budget tier. Dropping the cheapest fast model
+          // for a 4x-pricier successor emptied `fast` of its budget option.
+          const sameMajor = (other.version?.[0] ?? 0) === (member.version?.[0] ?? 0)
+          if (sameMajor && other.cost - member.cost > 20 && other.capability - member.capability < 10) return false
+          const sameLine = other.line === member.line && (other.date ?? '') === (member.date ?? '')
+          const sameBase = other.base === member.base && (other.variant === '' || member.variant === '')
+          return sameLine || sameBase
+        })
+        .sort((left, right) => compareModelVersions(right.version, left.version) || right.capability - left.capability)
+      let winner = candidates[0]
       if (winner === undefined) continue
-      const tier = tierOf[candidate.key]
-      const members = groups[tier]
-      const position = members.indexOf(candidate.key)
-      if (position >= 0) members.splice(position, 1)
-      groups.off.push(candidate.key)
-      tierOf[candidate.key] = OFF
-      const record = { key: candidate.key, by: winner.key, quality: candidate.quality, winnerQuality: winner.quality, cost: candidate.cost, winnerCost: winner.cost }
-      dominated.push(record)
-      offReasons[candidate.key] = { reason: 'dominated', ...record, margin: Math.round(candidate.cost - winner.cost) }
+      // Follow the chain to the current replacement: a middle generation may
+      // itself be superseded (kimi-k2.6 -> k3 -> k3.1-pro), and the card should
+      // name the model that actually replaced it.
+      const seen = new Set([member.key])
+      while (supersededBy.has(winner.key) && !seen.has(winner.key)) {
+        seen.add(winner.key)
+        winner = supersededBy.get(winner.key)
+      }
+      supersededBy.set(member.key, winner)
     }
+    for (const [key, winner] of supersededBy) {
+      const member = assignable.find((entry) => entry.key === key)
+      if (member === undefined) continue
+      // The entry is in whichever group placement put it in (its recorded tier);
+      // removing by the assignable record's absent `tier` left the lane populated.
+      const currentTier = tierOf[key]
+      const group = TIER_IDS.includes(currentTier) ? groups[currentTier] : null
+      const position = group?.indexOf(key) ?? -1
+      if (position >= 0) group.splice(position, 1)
+      if (!groups.off.includes(key)) groups.off.push(key)
+      tierOf[key] = OFF
+      offReasons[key] = {
+        reason: 'superseded',
+        by: winner.key,
+        winnerVersion: versionLabel(winner.version),
+        version: versionLabel(member.version),
+        kind: winner.line === member.line ? 'line' : 'generation',
+      }
+      const at = placed.findIndex((item) => item.key === key)
+      if (at >= 0) placed.splice(at, 1)
+    }
+  }
+
+  /**
+   * Dominance, scoped to one tier and one model family: paying more for a lower
+   * grade is pointless. In capability mode the grade is the capability estimate
+   * the bands use -- comparing it on the conservative bound made a wide-band
+   * frontier model lose to a cheaper, lower-grade one. A newer generation of the
+   * same line is never pruned by an older one; supersede decides that.
+   */
+  const dominanceQuality = (entry) => (effectiveCriterion === 'capability' ? entry.capability : entry.quality)
+  for (const candidate of [...placed]) {
+    if (candidate.overridden) continue
+    if (tierOf[candidate.key] !== candidate.tier) continue
+    const candidateVersion = candidate.version
+    const winner = placed.find((other) => {
+      if (other.key === candidate.key || other.overridden) return false
+      if (other.canonical === candidate.canonical) return false
+      // Under capability bands a cheaper sibling belongs to a lower tier by
+      // design, so dominance is scoped to the same tier. In cost mode the tiers
+      // are price bands and a cheaper-stronger model anywhere makes the dearer
+      // one pointless.
+      if (effectiveCriterion === 'capability' && other.tier !== candidate.tier) return false
+      if (other.family !== candidate.family) return false
+      if (dominanceQuality(other) <= dominanceQuality(candidate)) return false
+      if (other.cost > candidate.cost - DOMINANCE_COST_MARGIN) return false
+      // The same model line: the newer generation outranks the older one, so an
+      // older cheaper sibling cannot switch the newer one off.
+      const otherLine = modelLineOf(other.key)
+      if (
+        candidateVersion !== null && otherLine.version !== null
+        && modelLineOf(candidate.key).line === otherLine.line
+        && (modelLineOf(candidate.key).date ?? '') === (otherLine.date ?? '')
+        && compareModelVersions(candidateVersion, otherLine.version) > 0
+      ) return false
+      return true
+    })
+    if (winner === undefined) continue
+    const position = groups[candidate.tier].indexOf(candidate.key)
+    if (position >= 0) groups[candidate.tier].splice(position, 1)
+    groups.off.push(candidate.key)
+    tierOf[candidate.key] = OFF
+    const record = {
+      reason: 'dominated',
+      key: candidate.key,
+      by: winner.key,
+      quality: dominanceQuality(candidate),
+      winnerQuality: dominanceQuality(winner),
+      cost: candidate.cost,
+      winnerCost: winner.cost,
+    }
+    offReasons[candidate.key] = { ...record, margin: Math.round(candidate.cost - winner.cost) }
   }
 
   return {
@@ -375,7 +639,9 @@ export function assignTiers(pool, routes, config = {}) {
     providerOf,
     modelOf,
     overridden,
-    dominated,
+    dominated: Object.values(offReasons)
+      .filter((reason) => reason.reason === 'dominated')
+      .map(({ reason, ...record }) => record),
     offReasons,
     criterion: effectiveCriterion,
     bands: bandEdges === null ? null : {
@@ -388,6 +654,8 @@ export function assignTiers(pool, routes, config = {}) {
     unassigned,
     unmeasured,
     unmeasuredReasons,
+    endpointsOf,
+    hidden,
   }
 }
 

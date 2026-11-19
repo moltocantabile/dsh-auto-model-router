@@ -5,6 +5,9 @@ import {
   EFFORT_VARIANTS,
   aaSlugCandidates,
   bareId,
+  canonicalModelOf,
+  compareModelVersions,
+  modelLineOf,
   claimAll,
   familyOf,
   idStem,
@@ -154,4 +157,39 @@ test('a stored label that names another model is repaired from the id, idempoten
   // Idempotent: running the repair again is a no-op.
   const once = reconciledLabel('glm-5', 'GLM-5.3 (Max)')
   assert.equal(reconciledLabel('glm-5', once), once)
+})
+
+
+test('canonicalModelOf dedupes provider, reseller and serving variants but keeps dates', () => {
+  const model = canonicalModelOf('acme-v3.1-pro')
+  assert.equal(canonicalModelOf('provider/acme-v3.1-pro'), model, 'the provider is not part of the model identity')
+  assert.equal(canonicalModelOf('acme-v3.1-pro-highspeed'), model, 'a faster endpoint serves the same model')
+  assert.equal(canonicalModelOf('cmaas-acme-v3.1-pro'), model, 'a reseller prefix is the same model')
+  assert.equal(canonicalModelOf('ACME-V3.1-PRO'), model, 'case is not identity')
+  assert.notEqual(canonicalModelOf('acme-v4-flash-1017'), canonicalModelOf('acme-v4-flash'), 'a dated snapshot stays its own model')
+  assert.notEqual(canonicalModelOf('acme-v4-flash'), canonicalModelOf('acme-v4-max'), 'a tier word is a different model')
+  assert.notEqual(canonicalModelOf('acme-v3.1-pro'), canonicalModelOf('acme-v3.2-pro'), 'a version digit is a different model')
+})
+
+test('modelLineOf parses the generation line, version and snapshot date generically', () => {
+  assert.deepEqual(modelLineOf('acme-v3.2'), { line: 'acmev', version: [3, 2], date: null, base: 'acmev', variant: '' })
+  assert.deepEqual(modelLineOf('acme-v4.1-flash'), { line: 'acmevflash', version: [4, 1], date: null, base: 'acmev', variant: 'flash' })
+  assert.deepEqual(modelLineOf('acme-5-preview'), { line: 'acmepreview', version: [5], date: null, base: 'acme', variant: 'preview' })
+  assert.deepEqual(modelLineOf('acme-v4.1-flash-1017'), { line: 'acmevflash', version: [4, 1], date: '1017', base: 'acmev', variant: 'flash' })
+  assert.deepEqual(modelLineOf('acme3.7-plus-2026-05-26'), { line: 'acmeplus', version: [3, 7], date: '2026-05-26', base: 'acme', variant: 'plus' })
+  // A parameter count is size, not version; a size spelling stays in the line.
+  assert.deepEqual(modelLineOf('acme3.5-122b-a10b'), { line: 'acme122ba10b', version: [3, 5], date: null, base: 'acme', variant: '122ba10b' })
+  assert.equal(modelLineOf('acme3.5-27b').line, modelLineOf('acme3.8-27b').line)
+  // Tier words are part of the line: different products, not versions.
+  assert.notEqual(modelLineOf('acme-v4-flash').line, modelLineOf('acme-v4-max').line)
+  assert.equal(modelLineOf('unversioned-model').version, null)
+})
+
+test('compareModelVersions orders numeric versions without a table', () => {
+  assert.ok(compareModelVersions([4, 1], [4]) > 0)
+  assert.ok(compareModelVersions([4], [4, 1]) < 0)
+  assert.ok(compareModelVersions([3, 2], [4]) < 0)
+  assert.ok(compareModelVersions([5], [5, 3]) < 0)
+  assert.equal(compareModelVersions([3, 8], [3, 8]), 0)
+  assert.equal(compareModelVersions(null, [3]), 0)
 })

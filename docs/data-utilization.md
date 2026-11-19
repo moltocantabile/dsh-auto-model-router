@@ -211,7 +211,7 @@ completed by `attachArtificialAnalysis` (refresh:936-953). Consumers:
 | `reasoning`, `structuredOutput`, `parallelTools`, `mcp` | build:326-329; only `reasoning` is displayed (`model-info.js:206`) | **DISPLAY / IGNORED** |
 | `maxOutput` | build:322 | **IGNORED** (never read) |
 | `explicitCache` | build:330 | **IGNORED** (never read) |
-| `retired`, `preview`, `sunsetAt` | `select.js:299`, `index.js:396-398` | **HARD FILTER / DISPLAY** |
+| `retired`, `preview`, `sunsetAt` | `select.js:299`, `index.js:396-398`, `tiers.js` withdrawal gate | **HARD FILTER / DISPLAY** |
 | `bestFor`, `weaknesses`, `distinguishing` | `model-info.js:220-236`, decision prompt | **PROMPT CONTEXT** (never arithmetic) |
 | `sources`, `notes`, `checkedAt` | display/audit | **DISPLAY** |
 | `benchmarks` (BenchGecko leaf map) | build:342 stores it; `select.js`/`tiers.js` never read it | **IGNORED except evidence counting** |
@@ -506,11 +506,16 @@ methodology.
 
 ### 4.1 What a tier is today
 
-A tier is an envelope (`maxCost`, `maxLatency`, `minQuality`) and a model joins
-the cheapest tier that admits it (`tiers.js:72-79`). The names are stable and
-operator-facing; `force <tier>` pins a tier, `defaultRoute` picks the fallback
-tier, hand overrides win before auto placement, and same-family dominance turns
-a clearly beaten model off. None of that needs to change.
+A tier is an envelope (`maxCost`, `maxLatency`, `minQuality`). With
+`tiers.criterion: 'capability'` (the default) membership is the pool's capability
+band, and the envelope's cost/latency ceilings are guardrails that move a model
+up a band (or off when `deep` cannot pay). The `cost` criterion keeps the older
+"cheapest tier that admits it" rule. Membership is model-level: provider/reseller
+and serving-variant endpoints of one model are deduped to one capsule, withdrawn
+ids never auto-place, and a newer generation supersedes its line. The names are
+stable and operator-facing; `force <tier>` pins a tier, `defaultRoute` picks the
+fallback tier, hand overrides win before auto placement, and same-family dominance
+turns a clearly beaten model off.
 
 What is wrong with it:
 

@@ -37,8 +37,41 @@ after:   AA index vs composite 0.88 | vs lower bound 0.37 | vs published rank 0.
 - **Capability bands** (`tiers.criterion: 'capability'`) use the composite for the
   same reason; the coverage gate still keeps <3-core-dimension fragments out.
 - Result: `deepseek-v4.1-flash-1017` deep, `deepseek-v4.1-flash` fast,
-  `GLM-5.3-Flash` balanced, matching the independent ordering above; the
-  dominated V4 Pro 0813 is off.
+  `GLM-5.3` balanced, matching the independent ordering above; the dominated
+  V4 Pro 0813 is off.
+
+## Membership sanity (2026-11-19)
+
+Bands alone left the board with lanes that were defensible per-model and wrong as
+a board: a retired entry in `balanced`, four endpoints of one model in `deep`,
+older generations next to their own replacements, and expensive/slow models on
+cheap tiers. The assignment now enforces four rules, each with a synthetic-pool
+test in `tests/tiers.test.mjs`:
+
+| rule | effect |
+|---|---|
+| withdrawn | `retired`/`deprecated`/`withdrawn`, or any `sunsetAt`, never auto-places; off with the kind and date on the card |
+| superseded | a newer **measured** model of the same base line replaces it — same line and date identity, or a newer generation where either side has no product-variant words (`deepseek-v3.2` → `v4.1-flash`, `kimi-k2.6` → `k3.1-pro`). Guards: the successor must not be materially weaker (composite within 2 points), and within one major generation a 4x-pricier successor does not retire the budget option. Chains resolve to the final replacement, so a card never names a model that is itself off |
+| guardrail | a model above its capability band's cost or latency ceiling moves one band up; if that budget still rejects it, it is off, not parked on a tier that cannot pay |
+| dedupe | one capsule per model: provider/reseller/serving variants collapse to the best endpoint (fastest, then most evidence, then cheapest); the card keeps the endpoint count |
+
+Two consequences worth recording. Supersede runs before dominance, so an older,
+cheaper sibling cannot prune the newer generation; and capability-mode dominance
+now compares the composite (same grade as the bands), scoped to one tier, because
+the conservative lower bound is mostly evidence width. Membership is model-level,
+so `status` and the lane headers count the same deduped board the page renders.
+
+Snapshot against `data/model-info-runtime.json` (host-derived envelopes, 64
+entries, one row per model):
+
+```
+before  fast 13 · balanced 15 · deep 19 · off  9 · unmeasured 8
+after   fast  2 · balanced  6 · deep  9 · off 25 · unmeasured 7
+```
+
+The 15 collapsed entries are duplicate provider/reseller/serving endpoints of
+the same model; the retired entry, the superseded generations and the dominated
+models are in `off` with their reasons.
 
 `node scripts/ranking-eval.mjs` prints the current agreement; run it after any
 change to the rank or grade rule.

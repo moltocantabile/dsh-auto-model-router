@@ -10,6 +10,7 @@ import { effectiveEnvelopes } from '../src/basis.js'
 import { attachRanking, derivedRouteEnvelopes } from '../src/refresh.js'
 import { withinEnvelope } from '../src/select.js'
 import { assignTiers, autoTierFor } from '../src/tiers.js'
+import { canonicalModelOf } from '../src/identity.js'
 
 /**
  * These tests pin the two halves of the prototype:
@@ -809,12 +810,55 @@ test('the shipped catalog: tier planning keeps the stable names and refuses prio
     }
   }
   // The prior-only entries in the runtime catalog must not be silently routed:
-  // they are listed with the unmeasured models.
+  // they are listed as unmeasured, or as withdrawn when the catalog marks them
+  // retired/scheduled to sunset (the 2026-11-25 preview in the shipped data).
   const priorOnly = table.models.filter((row) => row.status === STATUS.UNMEASURED)
   for (const row of priorOnly) {
-    assert.ok(assigned.unmeasured.includes(row.key), `${row.key} is listed as unmeasured`)
-    assert.ok(!Object.values(assigned.groups).some((group) => group.includes(row.key)), row.key)
+    const listed = assigned.unmeasured.includes(row.key) || assigned.offReasons[row.key]?.reason === 'retired'
+    assert.ok(listed, `${row.key} is listed as unmeasured or withdrawn`)
+    assert.ok(!['fast', 'balanced', 'deep'].some((tier) => assigned.groups[tier].includes(row.key)), row.key)
   }
+})
+
+test('the shipped catalog: tier membership is model-level and envelope-sane', () => {
+  const table = shippedTable()
+  const assigned = assignTiers(liveTierPool(table), ROUTES, {})
+  const listed = new Set([...assigned.groups.fast, ...assigned.groups.balanced, ...assigned.groups.deep])
+  const seen = new Set()
+  for (const tier of ['fast', 'balanced', 'deep']) {
+    for (const key of assigned.groups[tier]) {
+      // One entry per model, even when several providers serve it.
+      const canonical = canonicalModelOf(key)
+      assert.ok(!seen.has(canonical), `${key} is listed once (${canonical})`)
+      seen.add(canonical)
+      // Every placed model fits the tier it was put in (the test envelopes carry
+      // no quality floor, so this is the cost/latency guardrail).
+      const row = table.byKey[key]
+      assert.ok(withinEnvelope(tierCandidate(row).info, ROUTES[tier].envelope), `${key} fits ${tier}`)
+      assert.ok(!row.entry?.retired, `${key} is not a retired id`)
+      assert.ok(!row.entry?.sunsetAt, `${key} is not sunsetting`)
+    }
+  }
+  // Withdrawn ids never auto-place: the shipped data has both a retired entry and
+  // a scheduled sunset, and both must be off with the cause recorded.
+  for (const row of table.models) {
+    if (row.entry?.retired !== true && typeof row.entry?.sunsetAt !== 'string') continue
+    assert.equal(listed.has(row.key), false, `${row.key} stays off`)
+    assert.equal(assigned.offReasons[row.key]?.reason, 'retired', `${row.key} carries the withdrawal reason`)
+  }
+  // Collapsed endpoints exist and are detail, not lanes.
+  assert.ok(assigned.hidden.length > 0, 'the shipped catalog serves some models from several endpoints')
+  for (const key of assigned.hidden) {
+    assert.equal(listed.has(key), false, `${key} is not routed separately`)
+    assert.ok((assigned.endpointsOf[key] ?? []).length > 1, `${key} keeps its endpoint group`)
+  }
+  const endpointGroups = new Map()
+  for (const [key, endpointKeys] of Object.entries(assigned.endpointsOf)) {
+    // Every key of one model maps to the same endpoint list; count the group once.
+    endpointGroups.set(canonicalModelOf(key), endpointKeys.length)
+  }
+  const collapsed = [...endpointGroups.values()].reduce((count, size) => count + size - 1, 0)
+  assert.equal(assigned.hidden.length, collapsed, 'every collapsed endpoint is accounted for once')
 })
 
 // ── task-type indexes ───────────────────────────────────────────────────────

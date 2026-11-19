@@ -138,19 +138,27 @@ test('the assignment records which provider each model came from', () => {
   assert.equal(assigned.modelOf['provider-a/shared-id'], 'shared-id')
 })
 
-test('the same model id on two providers is two entries, not one', () => {
-  // deepseek-v4-pro is served by three of this profile's providers; collapsing
-  // them would hide endpoints and mislabel the capsule.
-  const info = { quality: 70, price: { input: 3, output: 9 }, latency: 'balanced' }
+test('one model is one lane entry, with the best endpoint representing it', () => {
+  // The profile serves the same id from several providers. The board is
+  // model-level: one capsule, chosen deterministically, and the other endpoints
+  // stay available in `endpointsOf` for the card instead of filling a second lane.
   const pool = [
-    { model: 'deepseek-v4-pro', key: 'provider-a/deepseek-v4-pro', provider: 'provider-a', info },
-    { model: 'deepseek-v4-pro', key: 'provider-b/deepseek-v4-pro', provider: 'provider-b', info },
+    { model: 'deepseek-v4-pro', key: 'provider-a/deepseek-v4-pro', provider: 'provider-a', info: { quality: 70, price: { input: 5, output: 15 }, latency: 'fast' } },
+    { model: 'deepseek-v4-pro', key: 'provider-b/deepseek-v4-pro', provider: 'provider-b', info: { quality: 70, price: { input: 3, output: 9 }, latency: 'balanced' } },
+    { model: 'deepseek-v4-pro', key: 'provider-c/deepseek-v4-pro', provider: 'provider-c', info: { quality: 70, price: { input: 1, output: 3 }, latency: 'balanced' } },
   ]
   const assigned = assignTiers(pool, ROUTES, {})
   const placed = TIER_IDS.flatMap((id) => assigned.groups[id])
-  assert.equal(placed.length, 2)
-  assert.deepEqual(new Set(placed), new Set(['provider-a/deepseek-v4-pro', 'provider-b/deepseek-v4-pro']))
+  assert.equal(placed.length, 1, 'one model, one lane entry')
+  // Fastest latency wins before evidence and price, so provider-a represents it.
+  assert.deepEqual(placed, ['provider-a/deepseek-v4-pro'])
+  assert.deepEqual(assigned.hidden.sort(), ['provider-b/deepseek-v4-pro', 'provider-c/deepseek-v4-pro'])
+  assert.deepEqual(assigned.endpointsOf['provider-a/deepseek-v4-pro'].sort(), [
+    'provider-a/deepseek-v4-pro', 'provider-b/deepseek-v4-pro', 'provider-c/deepseek-v4-pro',
+  ])
+  assert.equal(assigned.tierOf['provider-b/deepseek-v4-pro'], undefined, 'a hidden endpoint is not routed')
   assert.equal(assigned.modelOf['provider-a/deepseek-v4-pro'], 'deepseek-v4-pro')
+  assert.equal(assigned.providerOf['provider-c/deepseek-v4-pro'], 'provider-c', 'provenance is kept for the card')
 })
 
 const priced = (id, quality, price) => ({
@@ -330,4 +338,264 @@ test('a thin profile does not enter a capability band on a fragment', () => {
   assert.equal(assigned.unmeasuredReasons['p/thin'], 'insufficient-coverage')
   assert.equal(assigned.tierOf['p/thin'], undefined)
   assert.ok(!JSON.stringify(assigned.groups).includes('p/thin'))
+})
+
+// ── membership sanity: retired, superseded, endpoint duplicates ─────────────
+
+const entry = (id, { quality = 70, price = 3, latency = 'balanced', ...info } = {}) => ({
+  model: id,
+  key: `p/${id}`,
+  provider: 'p',
+  info: { quality, price: { input: price, output: price }, latency, ...info },
+})
+
+/** A cost-mode board is enough to test the membership rules deterministically. */
+const cost = (pool, config = {}) => assignTiers(pool, ROUTES, { criterion: 'cost', ...config })
+
+test('an endpoint tie is broken by evidence after latency and price', () => {
+  const pool = [
+    { model: 'twin-model', key: 'a/twin-model', provider: 'a', info: { quality: 70, price: { input: 2, output: 2 }, latency: 'fast', evidence: { overall: 0 } } },
+    { model: 'twin-model', key: 'b/twin-model', provider: 'b', info: { quality: 70, price: { input: 2, output: 2 }, latency: 'fast', evidence: { overall: 4 } } },
+  ]
+  const assigned = cost(pool)
+  assert.deepEqual(TIER_IDS.flatMap((id) => assigned.groups[id]), ['b/twin-model'], 'the measured endpoint represents the model')
+  assert.deepEqual(assigned.hidden, ['a/twin-model'])
+})
+
+test('provider prefixes, reseller prefixes and serving variants dedupe to one model', () => {
+  const pool = [
+    { model: 'acme-v3.1-pro', key: 'acme-v3.1-pro', info: { quality: 70, price: { input: 2, output: 2 }, latency: 'fast' } },
+    { model: 'acme-v3.1-pro-highspeed', key: 'acme/acme-v3.1-pro-highspeed', provider: 'acme', info: { quality: 70, price: { input: 2, output: 2 }, latency: 'fast' } },
+    { model: 'acme-v3.1-pro', key: 'cmaas-acme-v3.1-pro', info: { quality: 70, price: { input: 2, output: 2 }, latency: 'fast' } },
+  ]
+  const assigned = cost(pool)
+  const placed = TIER_IDS.flatMap((id) => assigned.groups[id])
+  assert.equal(placed.length, 1, 'one entry for the model')
+  assert.equal(assigned.endpointsOf[placed[0]].length, 3)
+})
+
+test('the same id under a provider namespace is one model; a dated snapshot is not', () => {
+  const pool = [
+    { model: 'acme-v4-flash', key: 'acme/acme-v4-flash', provider: 'acme', info: { quality: 70, price: { input: 2, output: 2 }, latency: 'fast' } },
+    { model: 'acme-v4-flash-1017', key: 'reseller/acme-v4-flash-1017', provider: 'reseller', info: { quality: 70, price: { input: 2, output: 2 }, latency: 'fast' } },
+  ]
+  const assigned = cost(pool)
+  assert.equal(TIER_IDS.flatMap((id) => assigned.groups[id]).length, 2, 'the dated snapshot is its own model')
+})
+
+test('a retired, deprecated or sunsetting model never auto-places, and says why', () => {
+  const now = Date.UTC(2026, 5, 1)
+  const pool = [
+    entry('retired-id', { retired: true }),
+    entry('deprecated-id', { deprecated: true }),
+    entry('sunset-past', { sunsetAt: '2026-04-01' }),
+    entry('sunset-future', { sunsetAt: '2026-08-01' }),
+    entry('active-id'),
+  ]
+  const assigned = cost(pool, { now })
+  const placed = TIER_IDS.flatMap((id) => assigned.groups[id])
+  assert.deepEqual(placed, ['p/active-id'], 'only the live model is routed')
+  assert.deepEqual(assigned.offReasons['p/retired-id'], { reason: 'retired', kind: 'retired' })
+  assert.equal(assigned.offReasons['p/deprecated-id'].kind, 'withdrawn')
+  assert.equal(assigned.offReasons['p/sunset-past'].kind, 'sunset')
+  assert.equal(assigned.offReasons['p/sunset-future'].kind, 'retiring')
+  assert.equal(assigned.offReasons['p/sunset-future'].until, '2026-08-01')
+})
+
+test('a retired entry keeps the replacement the catalog names for it', () => {
+  const assigned = cost([entry('old-id', { retired: true, replaceWith: 'new-id' })])
+  assert.deepEqual(assigned.offReasons['p/old-id'], { reason: 'retired', kind: 'retired', replaces: 'new-id' })
+})
+
+test('an operator override still places a withdrawn model', () => {
+  const assigned = cost([entry('old-id', { retired: true })], { overrides: { 'p/old-id': 'deep' } })
+  assert.deepEqual(assigned.groups.deep, ['p/old-id'])
+  assert.equal(assigned.overridden.length, 1)
+})
+
+test('a newer generation of the same line supersedes the older one, naming both', () => {
+  const pool = [
+    entry('acme-v3', { price: 1, latency: 'fast' }),
+    entry('acme-v4.1', { price: 1, latency: 'fast' }),
+  ]
+  const assigned = cost(pool)
+  assert.deepEqual(TIER_IDS.flatMap((id) => assigned.groups[id]), ['p/acme-v4.1'])
+  assert.deepEqual(assigned.offReasons['p/acme-v3'], {
+    reason: 'superseded', by: 'p/acme-v4.1', winnerVersion: '4.1', version: '3', kind: 'line',
+  })
+})
+
+test('supersede crosses tiers: the newer model wins wherever it is placed', () => {
+  const pool = [
+    entry('acme-v3', { price: 1, latency: 'fast' }),
+    entry('acme-v4.1', { quality: 80, price: 30, latency: 'slow' }),
+  ]
+  const assigned = cost(pool)
+  assert.equal(assigned.tierOf['p/acme-v3'], 'off')
+  assert.ok(['fast', 'balanced', 'deep'].includes(assigned.tierOf['p/acme-v4.1']))
+  assert.equal(assigned.offReasons['p/acme-v3'].by, 'p/acme-v4.1')
+})
+
+test('different tiers and dated snapshots are different models, not older versions', () => {
+  const pool = [
+    entry('acme-v3-flash', { price: 1, latency: 'fast' }),
+    entry('acme-v4.1-max', { quality: 85, price: 1, latency: 'fast' }),
+    entry('acme-v4-flash-1017', { price: 1, latency: 'fast' }),
+  ]
+  const assigned = cost(pool)
+  const placed = TIER_IDS.flatMap((id) => assigned.groups[id])
+  assert.deepEqual(new Set(placed), new Set(['p/acme-v3-flash', 'p/acme-v4.1-max', 'p/acme-v4-flash-1017']))
+  assert.equal(assigned.offReasons['p/acme-v3-flash'], undefined)
+})
+
+test('a newer but unmeasured model does not supersede a measured one', () => {
+  const pool = [
+    entry('acme-v3', { price: 1, latency: 'fast' }),
+    { model: 'acme-v4', key: 'p/acme-v4', provider: 'p', info: { price: { input: 1, output: 1 }, latency: 'fast' } },
+  ]
+  const assigned = cost(pool)
+  assert.equal(assigned.tierOf['p/acme-v3'], 'fast')
+  assert.ok(assigned.unmeasured.includes('p/acme-v4'))
+  assert.equal(assigned.offReasons['p/acme-v3'], undefined)
+})
+
+test('supersede is family-local: another vendor is not a newer generation', () => {
+  const pool = [
+    entry('acme-v3', { price: 1, latency: 'fast' }),
+    entry('beta-v4', { quality: 90, price: 1, latency: 'fast' }),
+  ]
+  const assigned = cost(pool)
+  const placed = TIER_IDS.flatMap((id) => assigned.groups[id])
+  assert.deepEqual(new Set(placed), new Set(['p/acme-v3', 'p/beta-v4']))
+})
+
+test('an expensive or slow model is pushed up out of fast and balanced', () => {
+  const candidate = (id, quality, price, latency) => entry(id, { quality, price, latency })
+  const pool = [
+    candidate('weak-a', 30, 0.5, 'fast'),
+    candidate('weak-b', 32, 1, 'fast'),
+    candidate('mid-a', 40, 1, 'fast'),
+    candidate('mid-slow', 42, 1, 'slow'),
+    candidate('strong-a', 50, 3, 'fast'),
+    candidate('strong-b', 52, 4, 'slow'),
+    candidate('frontier-dear', 55, 90, 'slow'),
+    candidate('weak-slow', 30, 0.5, 'slow'),
+  ]
+  const routes = {
+    fast: { envelope: { maxCost: 55, maxLatency: 'fast', minQuality: 5 } },
+    balanced: { envelope: { maxCost: 85, maxLatency: 'balanced', minQuality: 25 } },
+    deep: { envelope: { maxCost: 100, maxLatency: 'slow', minQuality: 40 } },
+  }
+  const assigned = assignTiers(pool, routes, {})
+  assert.equal(assigned.criterion, 'capability')
+  assert.equal(assigned.tierOf['p/weak-a'], 'fast', 'cheap and weak stays cheap')
+  // A weak model that is only rejected for being slow would have to move two
+  // bands up to qualify; that is a different budget, not a faster serve, so it
+  // is off rather than parked in `deep`.
+  assert.equal(assigned.tierOf['p/weak-slow'], 'off')
+  assert.equal(assigned.offReasons['p/weak-slow'].reason, 'no-envelope')
+  assert.equal(assigned.tierOf['p/mid-slow'], 'deep', 'the latency class moves it up')
+  assert.equal(assigned.tierOf['p/frontier-dear'], 'deep', 'an expensive model is not bought on a cheap tier')
+  assert.ok(!['fast', 'balanced'].includes(assigned.tierOf['p/frontier-dear']))
+})
+
+test('a model breaching every ceiling is off instead of leaking into a cheap tier', () => {
+  const pool = [
+    entry('weak-a', { quality: 30, price: 0.5, latency: 'fast' }),
+    entry('weak-b', { quality: 32, price: 1, latency: 'fast' }),
+    entry('mid-a', { quality: 40, price: 1, latency: 'fast' }),
+    entry('mid-b', { quality: 42, price: 2, latency: 'balanced' }),
+    entry('strong-a', { quality: 50, price: 3, latency: 'fast' }),
+    entry('strong-b', { quality: 52, price: 4, latency: 'slow' }),
+    entry('too-dear', { quality: 55, price: 90, latency: 'slow' }),
+  ]
+  const routes = {
+    fast: { envelope: { maxCost: 55, maxLatency: 'fast', minQuality: 5 } },
+    balanced: { envelope: { maxCost: 85, maxLatency: 'balanced', minQuality: 5 } },
+    deep: { envelope: { maxCost: 90, maxLatency: 'slow', minQuality: 5 } },
+  }
+  const assigned = assignTiers(pool, routes, {})
+  assert.equal(assigned.tierOf['p/too-dear'], 'off')
+  assert.equal(assigned.offReasons['p/too-dear'].reason, 'no-envelope')
+  assert.deepEqual(assigned.offReasons['p/too-dear'].failed.deep, ['cost'])
+  assert.equal(assigned.offReasons['p/too-dear'].failed.fast, undefined, 'the band admitted it on latency')
+})
+
+test('disabling one endpoint switches the whole model off', () => {
+  const info = { quality: 70, price: { input: 2, output: 2 }, latency: 'fast' }
+  const pool = [
+    { model: 'shared-id', key: 'a/shared-id', provider: 'a', info },
+    { model: 'shared-id', key: 'b/shared-id', provider: 'b', info },
+  ]
+  const assigned = cost(pool, { disabled: ['a/shared-id'] })
+  assert.equal(TIER_IDS.flatMap((id) => assigned.groups[id]).length, 0)
+  assert.equal(assigned.groups.off.length, 1, 'one model-level card, not two endpoint cards')
+  assert.equal(assigned.offReasons[assigned.groups.off[0]].reason, 'disabled')
+})
+
+test('off-lane reasons are countable for status', async () => {
+  const { offReasonTotals } = await import('../src/tiers.js')
+  const pool = [
+    entry('acme-v4', { price: 1, latency: 'fast' }),
+    entry('acme-v3', { price: 1, latency: 'fast' }),
+    entry('withdrawn', { retired: true }),
+  ]
+  const assigned = cost(pool)
+  const totals = offReasonTotals(assigned.offReasons)
+  assert.equal(totals.retired, 1)
+  assert.equal(totals.superseded, 1)
+})
+
+test('a newer generation supersedes an older base model across variant words', () => {
+  // The old base generation has no same-line successor, but the family's new
+  // generation (a different product variant) retires it: "deepseek-v3.x" next to
+  // "deepseek-v4.1-flash" is exactly the case the board showed.
+  const pool = [
+    entry('acme-v3.2', { price: 1, latency: 'fast' }),
+    entry('acme-v4.1-flash', { quality: 70, price: 2, latency: 'fast' }),
+  ]
+  const assigned = cost(pool)
+  assert.equal(assigned.tierOf['p/acme-v3.2'], 'off')
+  assert.equal(assigned.offReasons['p/acme-v3.2'].reason, 'superseded')
+  assert.equal(assigned.offReasons['p/acme-v3.2'].kind, 'generation')
+  assert.equal(assigned.offReasons['p/acme-v3.2'].by, 'p/acme-v4.1-flash')
+})
+
+test('a materially weaker newer model does not supersede a stronger one', () => {
+  // A version bump is not a capability upgrade. Removing the strongest routable
+  // model because a numerically newer but weaker model exists is the failure this
+  // guard prevents (observed with the rank-1 model against a newer release).
+  const pool = [
+    entry('acme-v3.7-max', { quality: 90, price: 10, latency: 'balanced' }),
+    entry('acme-v4-max', { quality: 40, price: 10, latency: 'balanced' }),
+  ]
+  const assigned = cost(pool)
+  assert.equal(assigned.tierOf['p/acme-v3.7-max'], assigned.tierOf['p/acme-v3.7-max'])
+  assert.notEqual(assigned.tierOf['p/acme-v3.7-max'], 'off')
+  assert.equal(assigned.offReasons['p/acme-v3.7-max'], undefined)
+})
+
+test('supersede follows a chain to the final replacement', () => {
+  const pool = [
+    entry('acme-v2.6', { price: 1, latency: 'fast' }),
+    entry('acme-v3', { quality: 60, price: 2, latency: 'fast' }),
+    entry('acme-v3.1-pro', { quality: 70, price: 3, latency: 'balanced' }),
+  ]
+  const assigned = cost(pool)
+  assert.equal(assigned.tierOf['p/acme-v2.6'], 'off')
+  assert.equal(assigned.offReasons['p/acme-v2.6'].by, 'p/acme-v3.1-pro')
+  assert.equal(assigned.offReasons['p/acme-v2.6'].winnerVersion, '3.1')
+})
+
+test('a same-generation successor that is far dearer does not replace the budget option', () => {
+  // Major generation: version bump, materially stronger, similar price.
+  // 3.7 -> 3.8 with a 4x price and little capability gain: keep the cheap model
+  // so the fast tier still has a budget choice.
+  const pool = [
+    entry('acme3.7-flash', { quality: 60, price: 1, latency: 'fast' }),
+    entry('acme3.8-flash', { quality: 64, price: 4, latency: 'fast' }),
+  ]
+  const assigned = cost(pool)
+  assert.notEqual(assigned.tierOf['p/acme3.7-flash'], 'off')
+  assert.equal(assigned.offReasons['p/acme3.7-flash'], undefined)
 })
