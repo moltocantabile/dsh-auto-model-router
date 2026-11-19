@@ -1,6 +1,6 @@
 {
   "name": "@dsh-external/dsh-auto-model-router",
-  "version": "0.0.1-beta",
+  "version": "0.0.1",
   "description": "System One decision model routes every agent request; subagents are routed by their own task instead of inheriting the parent model.",
   "type": "module",
   "main": "./lib/index.js",
