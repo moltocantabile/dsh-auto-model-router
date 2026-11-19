@@ -45,6 +45,9 @@ const basePath = option('base', new URL('../src/model-info-data.json', import.me
 const poolPath = option('pool', new URL('../data/catalog-pool.json', import.meta.url).pathname)
 const reportPath = new URL('../data/refresh-report.json', import.meta.url).pathname
 const dryRun = args.includes('--dry-run')
+const familyJoin = args.includes('--family-join')
+const outPath = option('out', new URL('../data/model-info-runtime.json', import.meta.url).pathname)
+const derivedOutPath = option('derived-out', new URL('../data/routing-derived.json', import.meta.url).pathname)
 const allowErrors = args.includes('--allow-errors')
 
 /** Same filter as `routableModel()` in src/index.js: chat models only. */
@@ -70,7 +73,7 @@ console.log(`base: ${Object.keys(base).length} entries (${basePath})`)
 console.log(`pool: ${wanted.length} advertised chat models (${poolPath})`)
 console.log('fetching the live sources ...')
 const started = Date.now()
-const result = await refreshCatalog({ base, wanted })
+const result = await refreshCatalog({ base, wanted, joinFamilyForAnalysis: familyJoin })
 const { summary } = result
 
 // The diagnostics are recomputed from the written catalog: they are the audit
@@ -131,13 +134,19 @@ if (dryRun) {
   process.exit(0)
 }
 
-const written = saveRuntimeDataset(result.dataset)
+// Custom output paths let the two join policies be built side by side for a
+// comparison without overwriting the catalog in use.
+const toMain = outPath === reportPath || outPath.endsWith('model-info-runtime.json')
+const written = outPath.endsWith('model-info-runtime.json') ? saveRuntimeDataset(result.dataset) : (fs.writeFileSync(outPath, `${JSON.stringify(result.dataset, null, 2)}\n`), outPath)
 if (result.derived !== null && result.derived !== undefined) {
-  saveRuntimeDerived(result.derived, { checkedAt: summary.checkedAt, sample: summary.envelopes.sample })
-  report.envelopePath = 'data/routing-derived.json'
+  if (derivedOutPath.endsWith('routing-derived.json')) {
+    saveRuntimeDerived(result.derived, { checkedAt: summary.checkedAt, sample: summary.envelopes.sample })
+  } else {
+    fs.writeFileSync(derivedOutPath, `${JSON.stringify({ checkedAt: summary.checkedAt, sample: summary.envelopes.sample, envelopes: result.derived }, null, 2)}\n`)
+  }
+  report.envelopePath = derivedOutPath
 }
-report.path = 'data/model-info-runtime.json'
+report.path = outPath
 fs.writeFileSync(reportPath, `${JSON.stringify(report, null, 2)}\n`)
-console.log(`\nwrote data/model-info-runtime.json (${Object.keys(result.dataset).length} entries), ` +
-  'data/routing-derived.json, data/refresh-report.json')
+console.log(`\nwrote ${outPath} (${Object.keys(result.dataset).length} entries), ${derivedOutPath}, ${reportPath}`)
 console.log(`(${written})`)

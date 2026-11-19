@@ -906,7 +906,7 @@ window.__ModuleLoader__.load({
         chunks.push(t('sunsetModel').replace('{date}', entry.sunsetAt))
       }
       const latency = entry.info?.latency
-      if (latency !== undefined) chunks.push(String(latency))
+      if (typeof latency === 'string') chunks.push(latency)
       const extras = (entry.info?.modalities ?? []).filter((modality) => modality !== 'text')
       if (extras.length > 0) chunks.push(extras.join('+'))
       return h(

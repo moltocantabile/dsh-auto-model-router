@@ -520,3 +520,36 @@ hold 52 tests (36 before; 3 rewritten, 16 added) — `tests/refresh.test.mjs` (1
 and `tests/artificialanalysis.test.mjs` (38). The full suite passed at handoff
 (268 tests, including the concurrent decision-log work); the Lead runs the final
 combined suite.
+
+## Addendum — Lead decisions on §11
+
+The three advertised ids this audit removed are kept, as the operator asked:
+
+- `glm-5.3-prime`, `ZHIPU/GLM-5.3-FlashX`, `vanchin/deepseek-v3` are hand-authored
+  stubs in `src/model-info-data.json` with no scores, price, modality or tool
+  claim. They appear on the board as `unmeasured` (not routable) instead of
+  vanishing, and any future source description fills them through the normal
+  pipeline. Catalogue after the rebuild: 69 entries, 65 measured, 4 unmeasured
+  (the three stubs plus `qwen4-max-preview`).
+
+Unknown facts are marked unknown:
+
+- `modalities` and `toolCalling` are now inherited from another entry describing
+  the same model when one exists (baseline or another catalog entry), and read
+  from Artificial Analysis' model-page input-modality flags when that page
+  publishes them. When no source has them, the fields stay absent — 27 entries
+  currently carry unknown modalities — and `contextWindow`/`price`/`reasoning`/
+  `latency` are explicitly `null` so a reader can tell "unknown" from "never
+  existed". The old `modalities: ['text']`, `toolCalling: true` defaults are gone.
+
+The two join policies were built and compared:
+
+- `node scripts/refresh-database.mjs --family-join` enables family spellings for
+  the Artificial Analysis join (`joinFamilyForAnalysis` in `refreshCatalog`).
+- Both builds produced 69 entries / 65 measured / 4 unmeasured and *identical*
+  composites, ranks and sanity checks (Epoch ρ 0.31, Compass ρ 0.64, AA-index
+  ρ 0.55); the family join only added five AA cross-checks without changing an
+  observation. Strict spelling is therefore the default — it moves no number and
+  keeps the identity rule tight — and the option stays for future measurement.
+
+Regeneration after this addendum: `node scripts/refresh-database.mjs`.

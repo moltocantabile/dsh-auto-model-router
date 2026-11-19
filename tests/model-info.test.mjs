@@ -31,10 +31,20 @@ test('provider aliases are operator config, empty by default', () => {
 })
 
 test('every knowledge entry carries the fields the routing prompt and the config page read', () => {
-  const required = ['label', 'contextWindow', 'price', 'modalities', 'toolCalling', 'reasoning', 'latency', 'scores', 'evidence', 'bestFor', 'weaknesses', 'sources']
+  // `modalities`/`toolCalling` are facts only some sources publish: a model nobody
+  // described keeps them unknown (absent) rather than claiming text-only / tools.
+  // Everything the rules read unconditionally is required.
+  const required = ['label', 'contextWindow', 'price', 'reasoning', 'latency', 'scores', 'evidence', 'bestFor', 'weaknesses', 'sources']
+  let unknownModalities = 0
+  let knownModalities = 0
   for (const [id, entry] of Object.entries(MODEL_INFO)) {
     for (const field of required) assert.ok(field in entry, `${id} is missing ${field}`)
-    assert.ok(Array.isArray(entry.sources) && entry.sources.length > 0, `${id} has no source`)
+    assert.ok(Array.isArray(entry.sources), `${id} sources is not an array`)
+    if (entry.modalities !== undefined) {
+      assert.ok(Array.isArray(entry.modalities) && entry.modalities.length > 0, `${id} modalities must be a non-empty list when known`)
+      knownModalities += 1
+    } else unknownModalities += 1
+    if (entry.toolCalling !== undefined) assert.equal(typeof entry.toolCalling, 'boolean', `${id} toolCalling must be boolean when known`)
     for (const source of entry.sources) assert.match(source, /^https:\/\//)
     for (const text of [...(entry.bestFor ?? []), ...(entry.weaknesses ?? [])]) {
       assert.ok(text.length < 160, `${id}: long bullet (${text.length})`)
@@ -45,8 +55,9 @@ test('every knowledge entry carries the fields the routing prompt and the config
       assert.equal(typeof value, 'number', `${id} score ${dim}`)
       assert.ok(value >= 0 && value <= 100, `${id} score ${dim} out of range: ${value}`)
     }
-    if (entry.price.input !== null) assert.equal(typeof entry.price.input, 'number', `${id} price`)
+    if (entry.price !== null && entry.price.input !== null) assert.equal(typeof entry.price.input, 'number', `${id} price`)
   }
+  assert.ok(knownModalities > 0, 'the catalog states modalities where a source does')
   assert.equal(CHECKED_AT, '2026-11-18')
 })
 

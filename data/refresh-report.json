@@ -1,9 +1,9 @@
 {
   "checkedAt": "2026-11-19",
-  "durationMs": 114690,
+  "durationMs": 154717,
   "base": "src/model-info-data.json",
   "pool": "data/catalog-pool.json",
-  "models": 66,
+  "models": 69,
   "sources": [
     "https://cdn.opencompass.org.cn/assets/lm/data-lm-ability_official.json",
     "https://cdn.opencompass.org.cn/assets/lm/data-lm-ability_benchmark.json",
@@ -14,7 +14,7 @@
   ],
   "benchgecko": 12,
   "compass": 7,
-  "epoch": 46,
+  "epoch": 47,
   "llmLeaderboard": 32,
   "artificialAnalysis": {
     "models": 32,
@@ -26,13 +26,13 @@
   },
   "openrouter": {
     "rows": 637,
-    "matched": 56,
-    "uniqueRanks": 42
+    "matched": 58,
+    "uniqueRanks": 44
   },
   "ranking": {
     "measured": 65,
     "provisional": 0,
-    "unmeasured": 1,
+    "unmeasured": 4,
     "calibratedChannels": {
       "benchgecko": {
         "models": 12,
@@ -1207,6 +1207,6 @@
       }
     ]
   },
-  "envelopePath": "data/routing-derived.json",
-  "path": "data/model-info-runtime.json"
+  "envelopePath": "/Users/colin/Desktop/Plugins/dsh-auto-model-router/data/routing-derived.json",
+  "path": "/Users/colin/Desktop/Plugins/dsh-auto-model-router/data/model-info-runtime.json"
 }

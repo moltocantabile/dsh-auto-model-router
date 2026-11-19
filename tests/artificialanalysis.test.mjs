@@ -652,3 +652,22 @@ test('the row naming the id exactly describes it, whatever the payload order', (
   const analysis = extractArtificialAnalysis(page(rows), nameIndexAll({ 'kimi-k3': { label: 'Kimi-K3' } }))
   assert.equal(analysis.byId['kimi-k3'].intelligenceIndex, 55, 'the base row owns the base id')
 })
+
+test('an AA-created entry states modalities only when a source or the baseline has them', () => {
+  const rows = [{ id: 'm', name: 'Mystery Model', price1mInputTokens: 1, price1mOutputTokens: 2, intelligenceIndex: 40 }]
+  const analysis = extractArtificialAnalysis(page(rows), new Map())
+  const unknown = {}
+  attachArtificialAnalysis(unknown, { base: {}, analysis, wanted: [{ model: 'mystery-model', provider: 'p' }] })
+  assert.equal(unknown['mystery-model'].modalities, undefined, 'no source says it, so it is unknown')
+  assert.equal(unknown['mystery-model'].toolCalling, undefined)
+
+  // A baseline entry for the same model is another source: inherit, do not invent.
+  const inherited = {}
+  attachArtificialAnalysis(inherited, {
+    base: { 'mystery-model': { label: 'Mystery Model', modalities: ['text', 'image'], toolCalling: true } },
+    analysis,
+    wanted: [{ model: 'mystery-model', provider: 'p' }],
+  })
+  assert.deepEqual(inherited['mystery-model'].modalities, ['text', 'image'])
+  assert.equal(inherited['mystery-model'].toolCalling, true)
+})

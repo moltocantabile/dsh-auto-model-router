@@ -279,7 +279,20 @@ export function slugOf(entry) {
  * @param {AbortSignal} [input.signal]
  * @param {Date} [input.now]
  */
-export async function refreshCatalog({ base, wanted = [], fetchImpl = fetch, signal, now = new Date() }) {
+export async function refreshCatalog({
+  base,
+  wanted = [],
+  fetchImpl = fetch,
+  signal,
+  now = new Date(),
+  /**
+   * Use the family spellings (release date / effort suffix stripped) for the
+   * Artificial Analysis join too, not only for Epoch/llmleaderboard. Off by
+   * default: measurement joins should name the model the catalog names. Exposed
+   * so the two policies can be built and compared before one is chosen.
+   */
+  joinFamilyForAnalysis = false,
+} = {}) {
   const errors = []
   let ability = null
   let bench = null
@@ -363,7 +376,7 @@ export async function refreshCatalog({ base, wanted = [], fetchImpl = fetch, sig
   let analysis = {}
   try {
     const html = await fetchText(ARTIFICIAL_ANALYSIS_URL, { fetchImpl, signal })
-    analysis = extractArtificialAnalysis(html, index, base)
+    analysis = extractArtificialAnalysis(html, joinFamilyForAnalysis ? sourceIndex : index, base)
   } catch (error) {
     errors.push(`artificialanalysis: ${String(error?.message ?? error)}`)
   }
@@ -392,7 +405,7 @@ export async function refreshCatalog({ base, wanted = [], fetchImpl = fetch, sig
         const html = await fetchText(`${ARTIFICIAL_ANALYSIS_URL.replace('/leaderboards/models', '')}/models/${slug}`, { fetchImpl, signal })
         pageBudget.left -= 1
         pagesFetched += 1
-        const found = extractArtificialAnalysisModelPage(html, index, base)
+        const found = extractArtificialAnalysisModelPage(html, joinFamilyForAnalysis ? sourceIndex : index, base)
         for (const [key, value] of Object.entries(found)) {
           // The leaderboard row is the primary record: a page embeds rows for many
           // models, so an unconditional write replaced a table row that carries the
@@ -934,6 +947,30 @@ function labelAgrees(base, id, name) {
   return stemsAgree(ours, theirs)
 }
 
+/**
+ * One fact a created entry may inherit from another entry describing the same
+ * model, when no source published it for this id.
+ *
+ * The rule is "unknown unless another source has it": modalities and tool support
+ * are not measurements, and defaulting them to `['text']`, `true` claimed facts
+ * about models nobody had described. Returns `{}` when nothing can be inherited.
+ *
+ * @param {Record<string, object>} base
+ * @param {string} id
+ * @param {'modalities'|'toolCalling'} field
+ * @returns {Record<string, unknown>}
+ */
+function inheritFact(base, id, field) {
+  for (const [key, entry] of Object.entries(base ?? {})) {
+    const value = entry?.[field]
+    if (value === undefined || value === null) continue
+    const label = typeof entry.label === 'string' && entry.label.length > 0 ? entry.label : key
+    if (!sameModelName(id, label)) continue
+    return { [field]: value }
+  }
+  return {}
+}
+
 /** Decode every `self.__next_f.push([1, "…"])` string in a Next.js RSC page. */
 export function decodeFlightChunks(html) {
   const marker = 'self.__next_f.push([1,'
@@ -1300,6 +1337,28 @@ export function aaSlugCandidates(id) {
  * @param {Map<string, string>} index
  * @param {Record<string, object>|null} [base] - catalog, for the label check
  */
+/**
+ * Input modalities from an Artificial Analysis model-page row.
+ *
+ * Returns null when the row carries no modality flags: unknown is not "text only".
+ *
+ * @param {object} row
+ * @returns {string[]|null}
+ */
+function modalityFlags(row) {
+  const text = row.inputModalityText
+  const image = row.inputModalityImage
+  const speech = row.inputModalitySpeech
+  const video = row.inputModalityVideo
+  if (text === undefined && image === undefined && speech === undefined && video === undefined) return null
+  const modalities = []
+  if (text === true) modalities.push('text')
+  if (image === true) modalities.push('image')
+  if (speech === true) modalities.push('audio')
+  if (video === true) modalities.push('video')
+  return modalities.length === 0 ? null : modalities
+}
+
 export function extractArtificialAnalysisModelPage(html, index, base = null) {
   const out = {}
   for (const text of decodeFlightChunks(html)) {
@@ -1332,6 +1391,11 @@ export function extractArtificialAnalysisModelPage(html, index, base = null) {
           const cacheHitPrice = Number(row.cacheHitPrice)
           if (Number.isFinite(cacheHitPrice)) value.cacheHitPrice = cacheHitPrice
           if (typeof row.creator === 'string') value.creator = row.creator
+          // AA publishes input modality flags on the model page; they are the one
+          // non-measurement fact it does carry, and a created entry has no baseline
+          // to inherit them from.
+          const modalities = modalityFlags(row)
+          if (modalities !== null) value.modalities = modalities
           for (const idFromIndex of idsAt(index, normalizeName(row.name))) {
             if (!sameModelName(idFromIndex, row.name)) continue
             if (!labelAgrees(base, idFromIndex, row.name)) continue
@@ -1392,7 +1456,9 @@ function labelForId(id, name) {
  * @param {Record<string, object>} dataset
  * @param {{base?: Record<string, object>, analysis: object, wanted?: Array, now?: Date}} input
  */
-export function attachArtificialAnalysis(dataset, { analysis = {}, wanted = [], now = new Date() } = {}) {
+export function attachArtificialAnalysis(dataset, { base = {}, analysis = {}, wanted = [], now = new Date() } = {}) {
+  // `base` is not read for scores any more (the index is fitted against the
+  // ranking in rank.js); it is the source of facts a created entry may inherit.
   const byId = analysis.byId ?? {}
   const byName = analysis.byName ?? new Map()
 
@@ -1499,12 +1565,13 @@ export function attachArtificialAnalysis(dataset, { analysis = {}, wanted = [], 
       ...(provider === undefined ? {} : { provider }),
       contextWindow,
       ...(price === undefined ? {} : { price }),
-      // AA does not publish modalities or tool support. These are stated
-      // assumptions for an entry AA is the only source for; the ranking is what
-      // measures the model, and `bestFor`/`weaknesses` stay empty rather than
-      // inventing a use case.
-      modalities: ['text'],
-      toolCalling: true,
+      // Facts AA does not publish stay unknown unless another entry describes the
+      // same model: `modalities` comes from the AA model page when it lists the
+      // flags, otherwise from the baseline catalog by identity, otherwise it is
+      // absent (unknown is not "text only"). Tool support has no source at all, so
+      // an AA-created entry states nothing about it.
+      ...(Array.isArray(value.modalities) ? { modalities: value.modalities } : inheritFact(base, id, 'modalities')),
+      ...inheritFact(base, id, 'toolCalling'),
       reasoning: value.reasoning === true,
       latency: latencyOf(value) ?? 'balanced',
       bestFor: [],
@@ -1540,6 +1607,11 @@ export function attachArtificialAnalysis(dataset, { analysis = {}, wanted = [], 
     }
     entry.scores = scores
     entry.evidence = evidence
+    // Optional facts are present-but-null when unknown, so a reader can tell
+    // "not known" from "field never existed" without inventing a value.
+    for (const field of ['contextWindow', 'price', 'reasoning', 'latency']) {
+      if (entry[field] === undefined) entry[field] = null
+    }
   }
 
   return {
