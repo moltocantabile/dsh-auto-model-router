@@ -434,3 +434,30 @@ and reporting the missing required questions is a small parser addition.
   (the last history entry is a tool call/result) instead of inferring "steered"
   from a non-empty claimed batch — which was true on every new turn. `buildState`
   accepts the explicit signal and keeps the old behaviour only when it is absent.
+
+## Live validation against bailian-aliyun (deferred §6 checks)
+
+The endpoint was switched from the exhausted token-plan reseller to
+`bailian-aliyun` (`decision-model-preview` at .../compatible-mode/v1/systemone),
+and the deferred checks were run with the plugin's own prompt builder. The
+repeatable harness is `node scripts/decision-smoke.mjs` (key via env; exits
+non-zero on an invariant failure).
+
+Results on 8 representative requests (state 101–143 chars, 10/10 questions
+answered, latency 164–175 ms, ~1.42k input tokens):
+
+| check | result |
+|---|---|
+| §6.1 does the endpoint state confidence/probabilities | **Yes** — every choice carries `confidence` and a full `probabilities` map; `depth`/`breadth`/`risk` carry probability mass over 0–4. The 0.6 acknowledge and 0.5 model-request gates can therefore fire. |
+| §6.2 completeness | 10/10 answers in 8/8 cases, parse confidence 0.18–0.74 (never 0) |
+| §6.3 acknowledge separation | "continue" mid-turn → `intent=resume` (0.80). "ok" mid-turn → `intent=work` (0.18): low-confidence, so the ack gate does not fire and the step routes as work. Left as observed — tightening the prompt for "ok" would trade a rare ambiguity for a false-ack risk. |
+| §6.4 model request | listed model named → `requestedModel` returned with probability 0.99; off-shortlist model → `null` (auto 0.96), so the shortlist constrains the answer |
+| §6.5 Chinese digest | 492 chars, 4 lines, GOAL + RISK present under the 1800-token cap; Chinese input request parsed as `edit` (0.71) |
+| §6.7 real prompt size | ~1,417–1,424 input tokens for a 100–150 char state; the per-question legend dominates the prompt |
+| §6.9 language | Chinese request classified without degradation |
+
+Shape accuracy on the sample: rename → `edit`, trivial lookup → `lookup`, design
+→ `design`, off-list request → `docs`. Both Bailian deployments serve the
+System One protocol for `decision-model-preview`, although bailian-aliyun does not
+advertise that id in its model catalog — the decision picker therefore also lists
+the models of configured decision endpoints, not only catalog rows.

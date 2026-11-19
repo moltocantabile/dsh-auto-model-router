@@ -35,6 +35,9 @@ const primitives = {
   IconInspectOutlineRegular: iconStub('inspect'),
   IconChevronDownOutlineRegular: iconStub('chevron-down'),
   IconChevronRightOutlineRegular: iconStub('chevron-right'),
+  IconEditOutlineRegular: iconStub('edit'),
+  IconCloseOutlineRegular: iconStub('close'),
+  IconSearchOutlineRegular: iconStub('search'),
 }
 
 globalThis.__amrReact = React
@@ -61,7 +64,16 @@ const CONFIG = {
     balanced: { provider: 'p', model: 'm-balanced', description: 'default' },
     deep: { provider: 'p', model: 'm-deep', description: 'hard' },
   },
-  decision: { provider: 'p', model: 'decision-model-preview', timeoutMs: 3500 },
+  decision: {
+    provider: '',
+    model: 'decision-model-preview',
+    timeoutMs: 3500,
+    baseURL: 'http://localhost:1/v1',
+    credentialRef: 'DECISION_KEY',
+    providers: {
+      'provider-a': { baseURL: 'http://provider-a/v1', credentialRef: 'KEY_A', model: 'decision-model-preview' },
+    },
+  },
   policy: { costWeight: 0.5, qualityWeight: 0.5, latencyWeight: 0.5 },
   selection: { costWeight: 0.35 },
   logDecisions: false,
@@ -92,6 +104,12 @@ const SNAPSHOT = {
   mode: 'on',
   defaultRoute: 'balanced',
   board: BOARD,
+  modelTypes: { 'provider-a/decision-model-preview': 'decision', 'provider-b/m-balanced': 'unknown' },
+  decisionOptions: [
+    { provider: 'provider-a', models: ['decision-model-preview'] },
+    { provider: 'provider-b', models: [] },
+  ],
+  modelOverrides: { models: {}, updatedAt: null },
   force: { global: null },
   config: CONFIG,
   stats: { requests: 12, decisions: 12, applied: 11, switches: 3, fallbacks: 1, errors: 0, avgDecisionMs: 900 },
@@ -154,12 +172,14 @@ function loadBundle() {
   globalThis.window = window
   globalThis.document = window.document
   const calls = []
+  const requests = []
   // The host's answer to `refresh` is swappable: the page has to survive a
   // summary that is missing or reshaped, so a test can hand it one.
   const replies = { refresh: { ok: true, data: { summary: REFRESH_SUMMARY } } }
   globalThis.fetch = async (_url, init) => {
     const body = JSON.parse(init.body)
     calls.push(body.action)
+    requests.push(body)
     const data = body.action === 'catalog'
       ? (body.provider === 'provider-a'
         ? { ...CATALOG, provider: 'provider-a', models: CATALOG.models }
@@ -177,7 +197,7 @@ function loadBundle() {
     new Function('window', 'document', 'fetch', CODE)(window, window.document, globalThis.fetch)
     // `window` and `document` stay bound to the newest document: React's
     // scheduler drains after the render returns, and it reads them then.
-    return { dom, window, module, calls, replies, restore: () => { globalThis.fetch = previous.fetch } }
+    return { dom, window, module, calls, requests, replies, restore: () => { globalThis.fetch = previous.fetch } }
   } catch (error) {
     globalThis.fetch = previous.fetch
     throw error
@@ -595,6 +615,134 @@ test('the unmeasured lane counts its models, and every tier folds from an icon',
     assert.equal(unmeasured.querySelectorAll('.amr-capsule').length, 0, 'the capsules are hidden')
     assert.ok((unmeasured.querySelector('.amr-laneCount')?.textContent ?? '').includes(`count:${capsules}`), 'the count stays visible')
     assert.ok(unmeasured.querySelector('button[aria-label="unfoldTier"]') !== null, 'the control now offers unfold')
+
+    root.unmount()
+    await new Promise((resolve) => setTimeout(resolve, 25))
+  } finally {
+    loaded.restore()
+  }
+})
+
+
+test('the decision card picks a provider/model or falls back to a custom endpoint', async () => {
+  const loaded = loadBundle()
+  try {
+    const section = harness(loaded.module)
+    const React = globalThis.__amrReact
+    const { createRoot } = globalThis.__amrReactDomClient
+    const container = loaded.window.document.getElementById('root')
+    const root = createRoot(container)
+    root.render(React.createElement(section.component, { t: (key) => key }))
+    await new Promise((resolve) => setTimeout(resolve, 60))
+
+    // Custom is the default when no provider is selected: the free-text endpoint.
+    assert.ok(container.querySelector('input[value="http://localhost:1/v1"]') !== null, 'custom mode shows the base URL')
+
+    const providerTab = [...container.querySelectorAll('button')].find((button) => (button.textContent ?? '') === 'decisionPickProvider')
+    assert.ok(providerTab !== undefined, 'the provider mode is a control')
+    providerTab.dispatchEvent(new loaded.window.MouseEvent('click', { bubbles: true }))
+    await new Promise((resolve) => setTimeout(resolve, 30))
+
+    const selects = [...container.querySelectorAll('select')]
+    const providerSelect = selects.find((select) => [...select.options].some((option) => option.value === 'provider-a'))
+    assert.ok(providerSelect !== undefined, 'providers are offered grouped from the host snapshot')
+    const models = [...providerSelect.options].map((option) => option.value)
+    assert.ok(models.includes('provider-b'), 'a provider with no decision model is still shown (count 0)')
+
+    // Choosing the provider fills the endpoint from config.decision.providers.
+    providerSelect.value = 'provider-a'
+    providerSelect.dispatchEvent(new loaded.window.Event('change', { bubbles: true }))
+    await new Promise((resolve) => setTimeout(resolve, 30))
+    const resolved = container.textContent ?? ''
+    assert.ok(resolved.includes('decisionResolved'), 'the resolved endpoint is shown')
+    assert.ok(resolved.includes('decisionSelectedType'), 'the model type is shown')
+    assert.ok(resolved.includes('decision'), 'the decision type value is present')
+
+    // Only the provider's decision models are offered in the model select.
+    const modelSelect = [...container.querySelectorAll('select')].find((select) => [...select.options].some((option) => option.value === 'decision-model-preview'))
+    assert.ok(modelSelect !== undefined, 'the provider decision model is listed')
+    assert.equal([...modelSelect.options].filter((option) => option.value === 'm-fast').length, 0, 'a chat model is not offered as a decision model')
+
+    root.unmount()
+    await new Promise((resolve) => setTimeout(resolve, 25))
+  } finally {
+    loaded.restore()
+  }
+})
+
+test('a model card edits its data through the host action', async () => {
+  const loaded = loadBundle()
+  try {
+    const section = harness(loaded.module)
+    const React = globalThis.__amrReact
+    const { createRoot } = globalThis.__amrReactDomClient
+    const container = loaded.window.document.getElementById('root')
+    const root = createRoot(container)
+    root.render(React.createElement(section.component, { t: (key) => key }))
+    await new Promise((resolve) => setTimeout(resolve, 60))
+
+    const capsule = container.querySelector('.amr-capsule')
+    capsule.dispatchEvent(new loaded.window.MouseEvent('mouseover', { bubbles: true }))
+    await new Promise((resolve) => setTimeout(resolve, 25))
+    const card = capsule.querySelector('.amr-pop')
+    const edit = card.querySelector('button[aria-label="editModel"]')
+    assert.ok(edit !== null, 'the card has an icon-only edit action')
+    edit.dispatchEvent(new loaded.window.MouseEvent('click', { bubbles: true }))
+    await new Promise((resolve) => setTimeout(resolve, 25))
+
+    const typeSelect = [...card.querySelectorAll('select')].find((select) => [...select.options].some((option) => option.value === 'decision'))
+    assert.ok(typeSelect !== undefined, 'the edit form can assign a model type')
+    typeSelect.value = 'decision'
+    typeSelect.dispatchEvent(new loaded.window.Event('change', { bubbles: true }))
+    await new Promise((resolve) => setTimeout(resolve, 20))
+
+    const save = [...card.querySelectorAll('button')].find((button) => (button.textContent ?? '') === 'saveEdit')
+    assert.ok(save !== undefined, 'the form saves')
+    save.dispatchEvent(new loaded.window.MouseEvent('click', { bubbles: true }))
+    await new Promise((resolve) => setTimeout(resolve, 40))
+
+    const request = loaded.requests.find((body) => body.action === 'edit-model')
+    assert.ok(request !== undefined, 'saving calls the host edit-model action')
+    assert.ok(String(request.key).includes('/'), 'the key names provider and model')
+    assert.equal(request.patch.type, 'decision')
+    assert.ok(Array.isArray(request.patch.modalities), 'the edited modalities ride along')
+
+    root.unmount()
+    await new Promise((resolve) => setTimeout(resolve, 25))
+  } finally {
+    loaded.restore()
+  }
+})
+
+test('the search field filters capsules across lanes and restores them', async () => {
+  const loaded = loadBundle()
+  try {
+    const section = harness(loaded.module)
+    const React = globalThis.__amrReact
+    const { createRoot } = globalThis.__amrReactDomClient
+    const container = loaded.window.document.getElementById('root')
+    const root = createRoot(container)
+    root.render(React.createElement(section.component, { t: (key) => key }))
+    await new Promise((resolve) => setTimeout(resolve, 60))
+
+    const countCapsules = () => container.querySelectorAll('.amr-capsule').length
+    const before = countCapsules()
+    assert.ok(before >= 2, 'the fixture renders several capsules')
+
+    const input = container.querySelector('input[placeholder="searchModels"]')
+    assert.ok(input !== null, 'the board has a search field above the tiers')
+    const setter = Object.getOwnPropertyDescriptor(loaded.window.HTMLInputElement.prototype, 'value').set
+    input.focus()
+    setter.call(input, 'm-fast')
+    input.dispatchEvent(new loaded.window.Event('input', { bubbles: true }))
+    await new Promise((resolve) => setTimeout(resolve, 40))
+    assert.equal(countCapsules(), 1, 'only the matching capsule is shown')
+    assert.ok((container.textContent ?? '').includes('searchCount'), 'the shown/total count appears')
+
+    setter.call(input, '')
+    input.dispatchEvent(new loaded.window.Event('input', { bubbles: true }))
+    await new Promise((resolve) => setTimeout(resolve, 40))
+    assert.equal(countCapsules(), before, 'clearing the search restores every capsule')
 
     root.unmount()
     await new Promise((resolve) => setTimeout(resolve, 25))

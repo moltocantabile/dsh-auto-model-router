@@ -292,6 +292,14 @@ window.__ModuleLoader__.load({
         noModels: 'No models reported.',
         decision: 'Decision model',
         decisionHint: 'The System One endpoint that classifies each request. It answers typed questions, never prose.',
+        decisionPickProvider: 'From provider',
+        decisionPickCustom: 'Custom endpoint',
+        decisionProvider: 'Provider',
+        decisionProviderHint: 'Only decision models are listed. A model with no known type can be assigned one from its card.',
+        decisionNoModels: 'No decision model known for this provider yet — assign a type in the model card, then pick it here.',
+        decisionNoEndpoint: 'No endpoint configured for this provider. Use Custom endpoint to enter its base URL and credential name.',
+        decisionSelectedType: 'type: {type}',
+        decisionResolved: 'resolves to {baseURL} · {credentialRef} · {model}',
         baseURL: 'Base URL',
         credentialRef: 'Credential',
         timeout: 'Timeout (ms)',
@@ -317,6 +325,26 @@ window.__ModuleLoader__.load({
         envelopeExplicit: 'hand-written',
         envelopeMerge: 'data, unless hand-written',
         envelopeDerived: 'data-derived',
+        editModel: 'Edit model data',
+        saveEdit: 'Save',
+        cancelEdit: 'Cancel',
+        editLabel: 'Label',
+        modelType: 'Model type',
+        typeUnknown: 'unknown',
+        typeDecision: 'decision',
+        typeChat: 'chat',
+        modalities: 'Modalities',
+        toolCalling: 'Tool calling',
+        unknownOption: 'unknown',
+        yesOption: 'yes',
+        noOption: 'no',
+        search: 'Search',
+        searchModels: 'Search models…',
+        contextWindowLabel: 'Context window',
+        priceInputLabel: 'Price in (CNY/1M)',
+        priceOutputLabel: 'Price out (CNY/1M)',
+        searchCount: '{shown} of {total} shown',
+        clearSearch: 'Clear search',
         switchingAuto: 'Re-route every step (auto switch)',
         switchingHint: 'Off by default: a session keeps the model it started on. The decision is still logged, and naming a model or using `force` always moves it.',
         logDecisions: 'Log every decision at info level',
@@ -472,6 +500,14 @@ window.__ModuleLoader__.load({
         noModels: '没有返回模型。',
         decision: '决策模型',
         decisionHint: '对每个请求进行分类的 System One 端点，只返回结构化答案，不返回文本。',
+        decisionPickProvider: '从供应商选择',
+        decisionPickCustom: '自定义端点',
+        decisionProvider: '供应商',
+        decisionProviderHint: '只列出决策模型。类型未知的模型可在其信息卡中指定。',
+        decisionNoModels: '该供应商暂无已知决策模型——请先在模型信息卡中指定类型，再回到这里选择。',
+        decisionNoEndpoint: '该供应商未配置端点。请切换到自定义端点填写 Base URL 与凭据名。',
+        decisionSelectedType: '类型：{type}',
+        decisionResolved: '指向 {baseURL} · {credentialRef} · {model}',
         baseURL: 'Base URL',
         credentialRef: '凭据',
         timeout: '超时（毫秒）',
@@ -496,6 +532,26 @@ window.__ModuleLoader__.load({
         envelopeExplicit: '手写',
         envelopeMerge: '数据（手写优先）',
         envelopeDerived: '数据推导',
+        editModel: '编辑模型数据',
+        saveEdit: '保存',
+        cancelEdit: '取消',
+        editLabel: '名称',
+        modelType: '模型类型',
+        typeUnknown: '未知',
+        typeDecision: '决策',
+        typeChat: '对话',
+        modalities: '输入模态',
+        toolCalling: '工具调用',
+        unknownOption: '未知',
+        yesOption: '是',
+        noOption: '否',
+        search: '搜索',
+        searchModels: '搜索模型…',
+        contextWindowLabel: '上下文窗口',
+        priceInputLabel: '输入价格（元/百万 token）',
+        priceOutputLabel: '输出价格（元/百万 token）',
+        searchCount: '显示 {shown} / {total}',
+        clearSearch: '清除搜索',
         switchingAuto: '每步重新路由（自动切换）',
         switchingHint: '默认关闭：会话沿用开场选定的模型。决策仍会记录；用户点名模型或使用 `force` 时照常切换。',
         logDecisions: '在 info 级别记录每次决策',
@@ -862,7 +918,7 @@ window.__ModuleLoader__.load({
      * override for that model, clicking it switches the model off, and a model
      * with neither follows the automatic assignment again.
      */
-    function TierBoard({ snap, draft, models, t, applyTiers, busy }) {
+    function TierBoard({ snap, draft, models, t, applyTiers, editModel, busy }) {
       const board = snap.board ?? { mode: draft.tiers?.mode ?? 'auto', groups: { fast: [], balanced: [], deep: [], off: [] }, overridden: [], unassigned: [] }
       const overrides = draft.tiers?.overrides ?? {}
       const disabled = new Set(draft.tiers?.disabled ?? [])
@@ -878,6 +934,11 @@ window.__ModuleLoader__.load({
       const [hovered, setHovered] = useState(null)
       // Folded lanes keep their header (label, count, actions) and hide the capsules.
       const [collapsed, setCollapsed] = useState(() => new Set())
+      /** Keyword filter across the board (model id, label, provider). */
+      const [query, setQuery] = useState('')
+      /** Which model's edit form is open, and the draft being edited. */
+      const [editingKey, setEditingKey] = useState(null)
+      const [editDraft, setEditDraft] = useState(null)
       const [dragging, setDragging] = useState(null)
       const [over, setOver] = useState(null)
       // Which provider's models are on screen. Capsules from one provider share a
@@ -904,6 +965,15 @@ window.__ModuleLoader__.load({
       }, [providers])
 
       const visible = (key) => providerFilter.length === 0 || providerFilter.includes(providerOf[key])
+      /** Does a capsule match the search query? Id, label and provider are searched. */
+      const matches = (key) => {
+        const needle = query.trim().toLowerCase()
+        if (needle.length === 0) return true
+        const model = board.modelOf?.[key] ?? key
+        const entry = index.get(key) ?? byBareId.get(model) ?? null
+        const label = entry?.label ?? entry?.info?.label ?? ''
+        return `${model} ${label} ${providerOf[key] ?? ''}`.toLowerCase().includes(needle)
+      }
       const toggleProvider = (id) =>
         setProviderFilter((current) => (current.includes(id) ? current.filter((entry) => entry !== id) : [...current, id]))
 
@@ -913,8 +983,9 @@ window.__ModuleLoader__.load({
         { id: 'unmeasured', label: t('tierUnmeasured'), off: true },
       ]
       const metaOf = (key) => board.meta?.[key] ?? {}
+      const rawLaneMembers = (id) => (id === 'unmeasured' ? board.unmeasured ?? [] : board.groups?.[id] ?? [])
       const laneMembers = (id) => {
-        const members = (id === 'unmeasured' ? board.unmeasured ?? [] : board.groups?.[id] ?? []).filter(visible)
+        const members = rawLaneMembers(id).filter(visible).filter(matches)
         // Measured rank first (best first), then the unranked ones in place.
         return [...members].sort((a, b) => {
           const ra = metaOf(a).rank
@@ -924,6 +995,46 @@ window.__ModuleLoader__.load({
           if (rb === null || rb === undefined) return -1
           return ra - rb
         })
+      }
+
+      /** Open the edit form prefilled from the catalog row and the type map. */
+      function startEdit(key) {
+        const model = board.modelOf?.[key] ?? key
+        const entry = index.get(key) ?? byBareId.get(model) ?? null
+        const info = entry?.info ?? null
+        const provider = providerOf[key]
+        setEditingKey(key)
+        setEditDraft({
+          label: entry?.label ?? info?.label ?? model,
+          type: snap.modelTypes?.[`${provider}/${model}`] ?? 'unknown',
+          modalities: Array.isArray(info?.modalities) ? [...info.modalities] : [],
+          toolCalling: info?.toolCalling === true ? 'true' : info?.toolCalling === false ? 'false' : 'unknown',
+          contextWindow: typeof info?.contextWindow === 'number' ? String(info.contextWindow) : '',
+          priceInput: typeof info?.price?.input === 'number' ? String(info.price.input) : '',
+          priceOutput: typeof info?.price?.output === 'number' ? String(info.price.output) : '',
+        })
+      }
+
+      /** Save the edited facts through the host, then close the form. */
+      async function saveEdit(key) {
+        if (editDraft === null) return
+        const patch = { label: editDraft.label, type: editDraft.type, modalities: editDraft.modalities }
+        if (editDraft.toolCalling !== 'unknown') patch.toolCalling = editDraft.toolCalling === 'true'
+        patch.contextWindow = editDraft.contextWindow === '' ? null : Number(editDraft.contextWindow)
+        const price = {}
+        if (editDraft.priceInput !== '') price.input = Number(editDraft.priceInput)
+        if (editDraft.priceOutput !== '') price.output = Number(editDraft.priceOutput)
+        if (Object.keys(price).length > 0) patch.price = price
+        if (editModel !== undefined) {
+          // The host identifies a model by provider/model; a board key may be bare
+          // when the catalog row carries no provider prefix.
+          const provider = providerOf[key]
+          const model = board.modelOf?.[key] ?? key
+          const hostKey = key.includes('/') ? key : provider !== undefined ? `${provider}/${model}` : key
+          await editModel(hostKey, patch)
+        }
+        setEditingKey(null)
+        setEditDraft(null)
       }
 
       function move(model, tier) {
@@ -1029,30 +1140,99 @@ window.__ModuleLoader__.load({
                 ),
               laneId === 'unmeasured' && h('p', { className: 'amr-note' }, t('unmeasuredModelHint')),
               dominatedBy.has(key) && h('p', { className: 'amr-note' }, t('dominatedHint').replace('{by}', dominatedBy.get(key))),
-              h(ModelFacts, { entry, t }),
-              h(
-                'div',
-                { className: 'amr-popActions' },
-                ...['fast', 'balanced', 'deep'].map((tier) =>
-                  h(
-                    Button,
-                    {
-                      key: tier,
-                      disabled: busy === true || overrides[key] === tier,
-                      onClick: () => move(key, tier),
-                    },
-                    t('moveTo').replace('{tier}', tier),
-                  ),
-                ),
-                h(
-                  Button,
-                  { disabled: busy === true, onClick: () => (off ? followAuto(key) : move(key, 'off')) },
-                  off ? t('enableModel') : t('disableModel'),
-                ),
-                handAssigned &&
-                  h(Button, { disabled: busy === true, onClick: () => followAuto(key) }, t('resetToAuto')),
-              ),
-              h('span', { className: 'amr-popHint' }, t('capsuleHint')),
+              editingKey === key && editDraft !== null
+                ? h(
+                    'div',
+                    { className: 'amr-grid' },
+                    h(Field, { label: t('editLabel') }, h(TextInput, {
+                      value: editDraft.label,
+                      onChange: (next) => setEditDraft((draft) => ({ ...draft, label: next })),
+                    })),
+                    h(Field, { label: t('modelType') }, h(Select, {
+                      value: editDraft.type,
+                      onChange: (next) => setEditDraft((draft) => ({ ...draft, type: next })),
+                    }, [
+                      h('option', { key: 'unknown', value: 'unknown' }, t('typeUnknown')),
+                      h('option', { key: 'chat', value: 'chat' }, t('typeChat')),
+                      h('option', { key: 'decision', value: 'decision' }, t('typeDecision')),
+                    ])),
+                    h(Field, { label: t('toolCalling') }, h(Select, {
+                      value: editDraft.toolCalling,
+                      onChange: (next) => setEditDraft((draft) => ({ ...draft, toolCalling: next })),
+                    }, [
+                      h('option', { key: 'unknown', value: 'unknown' }, t('unknownOption')),
+                      h('option', { key: 'yes', value: 'true' }, t('yesOption')),
+                      h('option', { key: 'no', value: 'false' }, t('noOption')),
+                    ])),
+                    h(Field, { label: t('contextWindowLabel') }, h(TextInput, {
+                      value: editDraft.contextWindow,
+                      onChange: (next) => setEditDraft((draft) => ({ ...draft, contextWindow: next })),
+                    })),
+                    h(Field, { label: t('priceInputLabel') }, h(TextInput, {
+                      value: editDraft.priceInput,
+                      onChange: (next) => setEditDraft((draft) => ({ ...draft, priceInput: next })),
+                    })),
+                    h(Field, { label: t('priceOutputLabel') }, h(TextInput, {
+                      value: editDraft.priceOutput,
+                      onChange: (next) => setEditDraft((draft) => ({ ...draft, priceOutput: next })),
+                    })),
+                    h(Field, { label: t('modalities'), wide: true }, h(
+                      'div',
+                      { className: 'amr-row', style: { gap: 10, flexWrap: 'wrap' } },
+                      ['text', 'image', 'audio', 'video'].map((modality) =>
+                        h('label', { key: modality, className: 'amr-check' },
+                          h('input', {
+                            type: 'checkbox',
+                            checked: editDraft.modalities.includes(modality),
+                            onChange: (event) => setEditDraft((draft) => ({
+                              ...draft,
+                              modalities: event.target.checked
+                                ? [...draft.modalities, modality]
+                                : draft.modalities.filter((value) => value !== modality),
+                            })),
+                          }),
+                          modality,
+                        ),
+                      ),
+                    )),
+                    h(
+                      'div',
+                      { className: 'amr-popActions' },
+                      h(Button, { disabled: busy === true, onClick: () => saveEdit(key) }, t('saveEdit')),
+                      h(Button, { disabled: busy === true, onClick: () => { setEditingKey(null); setEditDraft(null) } }, t('cancelEdit')),
+                    ),
+                  )
+                : [
+                    h(ModelFacts, { entry, t }),
+                    h(
+                      'div',
+                      { className: 'amr-popActions' },
+                      ...['fast', 'balanced', 'deep'].map((tier) =>
+                        h(
+                          Button,
+                          {
+                            key: tier,
+                            disabled: busy === true || overrides[key] === tier,
+                            onClick: () => move(key, tier),
+                          },
+                          t('moveTo').replace('{tier}', tier),
+                        ),
+                      ),
+                      h(
+                        Button,
+                        { disabled: busy === true, onClick: () => (off ? followAuto(key) : move(key, 'off')) },
+                        off ? t('enableModel') : t('disableModel'),
+                      ),
+                      handAssigned &&
+                        h(Button, { disabled: busy === true, onClick: () => followAuto(key) }, t('resetToAuto')),
+                    ),
+                    h('span', { className: 'amr-popHint' }, t('capsuleHint')),
+                  ],
+              h('span', { className: 'amr-laneFold' }, h(IconButton, {
+                name: 'IconEditOutlineRegular',
+                label: t('editModel'),
+                onClick: () => (editingKey === key ? (setEditingKey(null), setEditDraft(null)) : startEdit(key)),
+              })),
             ),
         )
       }
@@ -1092,6 +1272,10 @@ window.__ModuleLoader__.load({
           ),
         )
       }
+
+      const laneIds = lanes.map((lane) => lane.id)
+      const totalVisible = laneIds.reduce((count, id) => count + rawLaneMembers(id).filter(visible).length, 0)
+      const shownVisible = laneIds.reduce((count, id) => count + laneMembers(id).length, 0)
 
       return h(
         'div',
@@ -1161,6 +1345,35 @@ window.__ModuleLoader__.load({
         h('p', { className: 'amr-note' }, t('boardHint')),
         (board.unmeasured ?? []).length > 0 &&
           h('p', { className: 'amr-note' }, t('unmeasuredHint').replace('{count}', String((board.unmeasured ?? []).length))),
+        h(
+          'div',
+          { className: 'amr-row', style: { alignItems: 'center', gap: 8 } },
+          h(
+            'div',
+            { className: 'amr-field', style: { minWidth: 240, flex: 1 } },
+            h('span', { className: 'amr-label' }, t('search')),
+            h(
+              'div',
+              { className: 'amr-row', style: { alignItems: 'center', gap: 6 } },
+              h('input', {
+                className: 'amr-input',
+                type: 'text',
+                value: query,
+                placeholder: t('searchModels'),
+                onInput: (event) => setQuery(event.target.value),
+                spellCheck: false,
+              }),
+              query.trim().length > 0 &&
+                h(IconButton, {
+                  name: 'IconCloseOutlineRegular',
+                  label: t('clearSearch'),
+                  onClick: () => setQuery(''),
+                }),
+            ),
+          ),
+          query.trim().length > 0 &&
+            h('span', { className: 'amr-note' }, t('searchCount').replace('{shown}', String(shownVisible)).replace('{total}', String(totalVisible))),
+        ),
         ...lanes.map((lane) => {
           const members = laneMembers(lane.id)
           return h(
@@ -1337,10 +1550,13 @@ window.__ModuleLoader__.load({
       const [probeBusy, setProbeBusy] = useState(false)
       const [probeResult, setProbeResult] = useState(null)
       const [modelBusy, setModelBusy] = useState(false)
+      /** 'provider' (pick a known decision model) or 'custom' (type the endpoint). */
+      const [decisionMode, setDecisionMode] = useState(null)
       const mounted = useRef(true)
 
       const adopt = useCallback((payload) => {
         setSnap(payload)
+        setDecisionMode((current) => current ?? (payload?.config?.decision?.provider ? 'provider' : 'custom'))
         setDraft((previous) => {
           const next = JSON.parse(JSON.stringify(payload.config))
           next.decision.summarizer = { ...SUMMARIZER_DEFAULTS, ...(next.decision.summarizer ?? {}) }
@@ -1417,6 +1633,26 @@ window.__ModuleLoader__.load({
           if (mounted.current) setModelBusy(false)
         }
       }, [draft, loadCatalogsFor, t])
+
+      /**
+       * Persist one model's editable facts and adopt the snapshot the host sends
+       * back: the board and the type map both changed with it.
+       */
+      const editModel = useCallback(
+        async (key, patch) => {
+          try {
+            const body = await api('edit-model', { key, patch })
+            if (!mounted.current) return body
+            if (body?.data) adopt(body.data)
+            setNotice({ tone: 'ok', text: t('applied') })
+            return body
+          } catch (error) {
+            if (mounted.current) setNotice({ tone: 'error', text: String(error?.message ?? error) })
+            return null
+          }
+        },
+        [adopt, t],
+      )
 
       const run = useCallback(
         async (action, args) => {
@@ -1580,6 +1816,17 @@ window.__ModuleLoader__.load({
         }
       }
 
+      /** Decision-model picker options the host computed from the catalogs and
+       * the provider endpoints configured in `config.decision.providers`. */
+      const decisionProviders = Array.isArray(snap?.decisionOptions) ? snap.decisionOptions : []
+      const activeProvider = String(draft.decision.provider ?? '')
+      const activeProviderModels = decisionProviders.find((entry) => entry.provider === activeProvider)?.models ?? []
+      const providerEndpoint = draft.decision.providers?.[activeProvider] ?? null
+      const activeModelKey = activeProvider.length > 0 && String(draft.decision.model ?? '').length > 0
+        ? `${activeProvider}/${draft.decision.model}`
+        : ''
+      const activeModelType = activeModelKey.length > 0 ? snap?.modelTypes?.[activeModelKey] ?? 'unknown' : null
+
       const routeIds = Object.keys(draft.routes)
       const routeOptions = routeIds.map((id) => h('option', { key: id, value: id }, id))
       const saveGlyph = glyphOf('IconCheckOutlineRegular')
@@ -1706,7 +1953,7 @@ window.__ModuleLoader__.load({
             title: t('tiers'),
             hint: `${t('tiersHint')} ${t('providersSeen').replace('{count}', String((snap.board?.providerOf ? new Set(Object.values(snap.board.providerOf)).size : 0)))}`,
           },
-          h(TierBoard, { snap, draft, models, t, applyTiers, busy: blocked }),
+          h(TierBoard, { snap, draft, models, t, applyTiers, editModel, busy: blocked }),
         ),
 
         h(
@@ -1803,22 +2050,91 @@ window.__ModuleLoader__.load({
           h(
             'div',
             { className: 'amr-grid' },
-            h(Field, { label: t('baseURL'), wide: true }, h(TextInput, {
-              value: draft.decision.baseURL,
-              onChange: (next) => edit((config) => { config.decision.baseURL = next }),
-              mono: true,
-            })),
-            h(Field, { label: t('model') }, h(ModelSelect, {
-              t,
-              value: draft.decision.model,
-              models,
-              onChange: (next) => edit((config) => { config.decision.model = next }),
-            })),
-            h(Field, { label: t('credentialRef') }, h(TextInput, {
-              value: draft.decision.credentialRef,
-              onChange: (next) => edit((config) => { config.decision.credentialRef = next }),
-              mono: true,
-            })),
+            h(Field, { label: t('decisionModel'), wide: true }, h(
+              'div',
+              { className: 'amr-seg' },
+              [
+                ['provider', t('decisionPickProvider')],
+                ['custom', t('decisionPickCustom')],
+              ].map(([mode, label]) =>
+                h(
+                  'button',
+                  {
+                    key: mode,
+                    type: 'button',
+                    className: 'amr-segBtn',
+                    'data-active': (decisionMode ?? 'custom') === mode ? 'true' : 'false',
+                    onClick: () => setDecisionMode(mode),
+                  },
+                  label,
+                ),
+              ),
+            )),
+            (decisionMode ?? 'custom') === 'provider'
+              ? h(
+                  'div',
+                  { className: 'amr-grid' },
+                  h(Field, { label: t('decisionProvider') }, h(Select, {
+                    value: activeProvider,
+                    onChange: (next) => edit((config) => {
+                      config.decision.provider = next
+                      const endpoint = config.decision.providers?.[next]
+                      if (endpoint !== undefined && endpoint !== null) {
+                        if (typeof endpoint.baseURL === 'string') config.decision.baseURL = endpoint.baseURL
+                        if (typeof endpoint.credentialRef === 'string') config.decision.credentialRef = endpoint.credentialRef
+                        if (typeof endpoint.model === 'string') config.decision.model = endpoint.model
+                      }
+                    }),
+                  }, [
+                    activeProvider.length === 0 ? h('option', { key: 'none', value: '' }, '—') : null,
+                    ...decisionProviders.map((entry) =>
+                      h('option', { key: entry.provider, value: entry.provider }, `${entry.provider} (${entry.models.length})`),
+                    ),
+                  ].filter(Boolean))),
+                  h(Field, { label: t('model') }, h(Select, {
+                    value: String(draft.decision.model ?? ''),
+                    onChange: (next) => edit((config) => {
+                      config.decision.model = next
+                      const endpoint = config.decision.providers?.[activeProvider]
+                      if (endpoint !== undefined && endpoint !== null) endpoint.model = next
+                    }),
+                    disabled: activeProviderModels.length === 0,
+                  }, [
+                    ...activeProviderModels.map((id) => h('option', { key: id, value: id }, id)),
+                    !activeProviderModels.includes(String(draft.decision.model ?? '')) && String(draft.decision.model ?? '').length > 0
+                      ? h('option', { key: 'current', value: String(draft.decision.model) }, `${draft.decision.model} (${t('notInCatalog')})`)
+                      : null,
+                  ].filter(Boolean))),
+                  h(Field, { label: t('modelType') }, h('span', { className: 'amr-note' },
+                    activeModelType === null ? '—' : t('decisionSelectedType').replace('{type}', activeModelType))),
+                  activeProviderModels.length === 0 &&
+                    h('p', { className: 'amr-note', 'data-tone': 'warn' }, t('decisionNoModels')),
+                  providerEndpoint === null || providerEndpoint === undefined
+                    ? h('p', { className: 'amr-note', 'data-tone': 'warn' }, t('decisionNoEndpoint'))
+                    : h('p', { className: 'amr-note' },
+                        t('decisionResolved')
+                          .replace('{baseURL}', String(providerEndpoint.baseURL ?? '—'))
+                          .replace('{credentialRef}', String(providerEndpoint.credentialRef ?? '—'))
+                          .replace('{model}', String(providerEndpoint.model ?? draft.decision.model ?? '—'))),
+                )
+              : [
+                  h(Field, { label: t('baseURL'), wide: true }, h(TextInput, {
+                    value: draft.decision.baseURL,
+                    onChange: (next) => edit((config) => { config.decision.baseURL = next }),
+                    mono: true,
+                  })),
+                  h(Field, { label: t('model') }, h(ModelSelect, {
+                    t,
+                    value: draft.decision.model,
+                    models,
+                    onChange: (next) => edit((config) => { config.decision.model = next }),
+                  })),
+                  h(Field, { label: t('credentialRef') }, h(TextInput, {
+                    value: draft.decision.credentialRef,
+                    onChange: (next) => edit((config) => { config.decision.credentialRef = next }),
+                    mono: true,
+                  })),
+                ],
             h(Field, { label: t('timeout') }, h(NumberInput, {
               value: draft.decision.timeoutMs,
               step: 50,

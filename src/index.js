@@ -43,6 +43,17 @@ import {
 } from './decision.js'
 import { infoFor, knowledgeProvider, routingNote, applyDataset, applyProviderAliases, saveRuntimeDataset, saveRuntimeDerived, loadRuntimeDerived, MODEL_INFO, RUNTIME_DATA_URL } from './model-info.js'
 import { refreshCatalog } from './refresh.js'
+import {
+  MODEL_TYPES,
+  applyModelOverrides,
+  decisionOptions,
+  loadModelOverrides,
+  mergeModelOverrides,
+  modelTypeKey,
+  modelTypeOf,
+  saveModelOverrides,
+  sanitizeModelPatch,
+} from './model-types.js'
 import { DEFAULT_SUMMARIZER, buildDigestPrompt, callChatModel, createDigestCache } from './summarize.js'
 import { alignedOperatorFloors, effectiveEnvelopes } from './basis.js'
 import { derivedRouteEnvelopes } from './refresh.js'
@@ -111,6 +122,21 @@ export function offerModelIds(pool, routesOrLimit = null, limit = MODEL_CHOICE_L
   return ids
 }
 
+/** Provider endpoints the decision picker may select: strings only, no ceremony. */
+function sanitizeDecisionProviders(input) {
+  const out = {}
+  if (input === null || typeof input !== 'object') return out
+  for (const [provider, value] of Object.entries(input)) {
+    if (value === null || typeof value !== 'object') continue
+    const entry = {}
+    if (typeof value.baseURL === 'string' && value.baseURL.length > 0) entry.baseURL = value.baseURL
+    if (typeof value.credentialRef === 'string' && value.credentialRef.length > 0) entry.credentialRef = value.credentialRef
+    if (typeof value.model === 'string' && value.model.length > 0) entry.model = value.model
+    if (Object.keys(entry).length > 0) out[provider] = entry
+  }
+  return out
+}
+
 /** Merge deployment config over the defaults without dropping catalog entries. */
 function mergeConfig(input) {
   const provided = input ?? {}
@@ -136,7 +162,18 @@ function mergeConfig(input) {
     mode: provided.mode ?? 'shadow',
     defaultRoute,
     routes,
-    decision: { ...DEFAULT_DECISION, ...(provided.decision ?? {}) },
+    decision: {
+      ...DEFAULT_DECISION,
+      ...(provided.decision ?? {}),
+      // Provider -> endpoint used when the decision model is picked by provider
+      // instead of typed in: the picker cannot know a provider's baseURL/credential
+      // from the model catalog, so these are configured once.
+      providers: sanitizeDecisionProviders(provided.decision?.providers),
+      // Which provider the picker last selected, so the form reopens on it.
+      ...(typeof provided.decision?.provider === 'string' && provided.decision.provider.length > 0
+        ? { provider: provided.decision.provider }
+        : {}),
+    },
     policy: { ...DEFAULT_POLICY, ...(provided.policy ?? {}) },
     selection: {
       costWeight: 0.35,
@@ -180,6 +217,12 @@ export function apply(ctx, input) {
   // they are per-profile config rather than a table of vendor names in here.
   applyProviderAliases(config.knowledgeProviderAliases)
   const routes = config.routes
+
+  /** Per-model operator overrides: types assigned by hand and edited data. */
+  let modelOverrides = loadModelOverrides()
+  applyModelOverrides(MODEL_INFO, modelOverrides)
+  /** Type of one advertised model, user override first, name heuristic second. */
+  const typeOfModel = (provider, modelId) => modelTypeOf(provider, modelId, modelOverrides)
 
   /** Operator-authored envelopes, kept so a merge can be recomputed. */
   const operatorRoutes = JSON.parse(JSON.stringify(routes))
@@ -1430,6 +1473,12 @@ export function apply(ctx, input) {
       }
     }
     if (Object.keys(summarizer).length > 0) decision.summarizer = summarizer
+    // Provider endpoints for the picker: selecting a provider fills the three
+    // required fields above from here, so they persist with the config.
+    const decisionProviders = sanitizeDecisionProviders(source.decision?.providers)
+    if (Object.keys(decisionProviders).length > 0) decision.providers = decisionProviders
+    const decisionProvider = String(source.decision?.provider ?? '').trim()
+    if (decisionProvider.length > 0) decision.provider = decisionProvider
     const selection = {}
     const costWeight = Number(source.selection?.costWeight)
     if (Number.isFinite(costWeight)) selection.costWeight = Math.max(0, Math.min(1, costWeight))
@@ -1478,6 +1527,38 @@ export function apply(ctx, input) {
       // the UI cannot disagree about who is in which tier.
       board,
       force: { global: globalForce ?? null, thisAgent: agent === undefined ? null : forced.get(agent) ?? null },
+      // Which models are decision models, and the picker grouped by provider: the
+      // provider catalog publishes no type, so a type is either assigned by hand
+      // (override) or inferred from the name, never guessed silently. A provider
+      // can serve the decision protocol for a model it does not advertise, so the
+      // configured decision endpoints contribute their
+      // model too -- otherwise a working endpoint would be missing from the picker.
+      ...(() => {
+        const types = {}
+        for (const candidate of SHARED.pool) {
+          if (typeof candidate.provider !== 'string' || typeof candidate.model !== 'string') continue
+          types[modelTypeKey(candidate.provider, candidate.model)] = typeOfModel(candidate.provider, candidate.model)
+        }
+        for (const [provider, endpoint] of Object.entries(config.decision?.providers ?? {})) {
+          if (typeof endpoint?.model !== 'string' || endpoint.model.length === 0) continue
+          types[modelTypeKey(provider, endpoint.model)] = typeOfModel(provider, endpoint.model)
+        }
+        const byProvider = {}
+        for (const [key, type] of Object.entries(types)) {
+          if (type !== 'decision') continue
+          const slash = key.indexOf('/')
+          const provider = slash > 0 ? key.slice(0, slash) : ''
+          if (provider.length === 0) continue
+          ;(byProvider[provider] ??= []).push(key.slice(slash + 1))
+        }
+        return {
+          modelTypes: types,
+          decisionOptions: Object.entries(byProvider)
+            .map(([provider, models]) => ({ provider, models: [...new Set(models)].sort() }))
+            .sort((a, b) => a.provider.localeCompare(b.provider)),
+        }
+      })(),
+      modelOverrides: { models: { ...modelOverrides.models }, updatedAt: modelOverrides.updatedAt },
       config: {
         mode,
         defaultRoute: config.defaultRoute,
@@ -1668,6 +1749,31 @@ export function apply(ctx, input) {
           ? `persisted to ${persist.document ?? 'the profile patch'}`
           : `runtime only (${persist.reason})`
         return { ok: true, text: `config applied; ${note}`, data: { persist, ...snapshotPayload(agent) } }
+      }
+      if (action === 'edit-model') {
+        const key = typeof args?.key === 'string' ? args.key : ''
+        if (key.length === 0) return { ok: false, error: 'edit-model needs a provider/model key' }
+        const patch = sanitizeModelPatch(args?.patch)
+        if (Object.keys(patch).length === 0) return { ok: false, error: 'edit-model has nothing editable in the patch' }
+        modelOverrides = mergeModelOverrides(modelOverrides, key, patch)
+        const saved = saveModelOverrides(modelOverrides)
+        // Apply to the entry this key names: a board key is provider-qualified,
+        // while the knowledge base keys the bare model id.
+        const bare = key.includes('/') ? key.slice(key.indexOf('/') + 1) : key
+        const entry = MODEL_INFO[key] ?? MODEL_INFO[bare]
+        if (entry !== undefined && entry !== null) {
+          const dataPatch = { ...patch }
+          delete dataPatch.type
+          if (Object.keys(dataPatch).length > 0) applyModelOverrides({ [key]: entry, [bare]: entry }, { models: { [key]: dataPatch } })
+        }
+        // The board and the catalog caches were computed from the old facts.
+        catalogs.clear()
+        assignedTiers().catch(() => {})
+        return {
+          ok: true,
+          text: `model ${key} updated (${Object.keys(patch).join(', ')}); saved to ${saved}`,
+          data: snapshotPayload(agent),
+        }
       }
       if (action === 'client-report') {
         // The page reporting on itself: the only way to tell "the bundle never
