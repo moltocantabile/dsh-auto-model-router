@@ -302,3 +302,20 @@ test('a model page does not overwrite the leaderboard row for a model it happens
   })
   assert.equal(result.dataset['kimi-k3'].crossChecks.artificialAnalysis.intelligenceIndex, 55, 'the table row keeps the index')
 })
+
+test('refresh reconciles a stored label that names another model', async () => {
+  // A label written by an old bad join used to survive every rebuild because the
+  // catalog copies entries it does not re-derive. Reconciliation repairs it from
+  // the id during the refresh and reports the repair.
+  const base = {
+    'glm-5': { label: 'GLM-5.3 (Max)', quality: 60, price: { input: 2, output: 8 }, latency: 'fast', contextWindow: 128000, modalities: ['text'], toolCalling: true },
+    'kimi-k3': { label: 'Kimi K3', quality: 70, price: { input: 1, output: 3 }, latency: 'balanced', contextWindow: 200000, modalities: ['text'], toolCalling: true },
+  }
+  const fetchImpl = async () => {
+    throw new Error('offline')
+  }
+  const result = await refreshCatalog({ base, fetchImpl, now: new Date('2026-11-19T00:00:00Z') })
+  assert.equal(result.dataset['glm-5'].label, 'glm-5', 'the label is repaired from the id')
+  assert.equal(result.dataset['kimi-k3'].label, 'Kimi K3', 'a label that agrees with its id is kept')
+  assert.deepEqual(result.summary.reconciled, [{ id: 'glm-5', from: 'GLM-5.3 (Max)', to: 'glm-5' }])
+})

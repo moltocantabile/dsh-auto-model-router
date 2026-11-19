@@ -97,6 +97,7 @@ const report = {
   ranking: summary.ranking,
   envelopes: summary.envelopes,
   errors: summary.errors,
+  reconciled: summary.reconciled ?? [],
   diagnostics: {
     sourceAgreement: table.sourceAgreement,
     quantiles: table.quantiles,

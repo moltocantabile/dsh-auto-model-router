@@ -44,8 +44,9 @@ import {
 import { infoFor, knowledgeProvider, routingNote, applyDataset, applyProviderAliases, saveRuntimeDataset, saveRuntimeDerived, loadRuntimeDerived, MODEL_INFO, RUNTIME_DATA_URL } from './model-info.js'
 import { refreshCatalog } from './refresh.js'
 import { DEFAULT_SUMMARIZER, buildDigestPrompt, callChatModel, createDigestCache } from './summarize.js'
-import { derivedRouteEnvelopes, effectiveEnvelopes } from './refresh.js'
-import { selectForTier, describeRanking, costIndex, modelsByQuality, alignedFloor } from './select.js'
+import { alignedOperatorFloors, effectiveEnvelopes } from './basis.js'
+import { derivedRouteEnvelopes } from './refresh.js'
+import { selectForTier, describeRanking, costIndex, modelsByQuality } from './select.js'
 import { selectRoute as recordSelection } from './route.js'
 import { TIER_IDS, assignTiers, boardMetaOf, membershipOf } from './tiers.js'
 
@@ -195,54 +196,11 @@ export function apply(ctx, input) {
   )
   let derivedEnvelopes = loadRuntimeDerived()
 
-  /**
-   * Translate the operator's hand-written quality floors onto the measured axis.
-   *
-   * The floor was authored against the legacy compiled score. A model whose legacy
-   * value is stale would clear a ceiling the ranking says it misses, so the floor's
-   * *policy* (what share of the catalog it kept out) is moved onto the axis that
-   * now measures the models. The operator's original number is kept beside it.
-   */
-  function alignedOperatorFloors(routes) {
-    const legacy = []
-    const aligned = []
-    for (const entry of Object.values(MODEL_INFO)) {
-      if (Number.isFinite(entry?.quality)) legacy.push(entry.quality)
-      const low = Number.isFinite(entry?.ranking?.low) ? entry.ranking.low : null
-      if (low !== null) aligned.push(low)
-    }
-    const out = {}
-    for (const [id, route] of Object.entries(routes ?? {})) {
-      const envelope = route?.envelope ?? {}
-      if (!Number.isFinite(envelope.minQuality) || envelope.derived === true || envelope.source === 'derived') {
-        out[id] = route
-        continue
-      }
-      const translated = alignedFloor(envelope.minQuality, legacy, aligned)
-      // The translated number lives on the measured axis, so it must say so:
-      // `withinEnvelope` compares a floor against the legacy score unless the floor
-      // carries its provenance, and a measured-axis floor compared to the legacy
-      // score empties or floods the tier (measured: `deep` admitted 60/69 models
-      // that way, against 29 on the measured basis).
-      out[id] = translated === envelope.minQuality
-        ? route
-        : {
-            ...route,
-            envelope: {
-              ...envelope,
-              minQuality: translated,
-              operatorMinQuality: envelope.minQuality,
-              derived: true,
-              source: 'derived',
-            },
-          }
-    }
-    return out
-  }
-
   /** Recompute tier envelopes from the operator config plus the derived cut-offs. */
   function applyEnvelopes() {
-    const operator = alignedOperatorFloors(operatorRoutes)
+    // Floor translation and envelope composition are capability-basis rules; the
+    // host only feeds them the operator config and the catalog.
+    const operator = alignedOperatorFloors(operatorRoutes, Object.values(MODEL_INFO))
     const merged = effectiveEnvelopes(operator, derivedEnvelopes, defaultEnvelopes, config.tiers?.envelopeMode ?? 'merge')
     for (const [id, route] of Object.entries(merged)) {
       if (routingRoutes[id] === undefined) continue
@@ -1610,9 +1568,11 @@ export function apply(ctx, input) {
         summary.file = RUNTIME_DATA_URL.pathname
         const aa = summary.artificialAnalysis ?? {}
         const ranked = summary.ranking ?? {}
+        const repaired = Array.isArray(summary.reconciled) ? summary.reconciled.length : 0
+        const repairedNote = repaired > 0 ? `; reconciled ${repaired} mislabelled entr${repaired === 1 ? 'y' : 'ies'}` : ''
         const text = summary.errors.length === 0
-          ? `model data refreshed: ${summary.models} models (${summary.benchgecko} benchgecko, ${summary.compass} compassrank, ${summary.epoch} epoch, ${summary.llmLeaderboard} llmleaderboard, ${aa.models ?? 0} artificialanalysis → ${aa.created ?? 0} new, ${aa.filledQuality ?? 0} measured, ${aa.filledPrice ?? 0} priced; openrouter usage ${summary.openrouter?.matched ?? 0}/${summary.openrouter?.rows ?? 0} matched; ranking: ${ranked.measured ?? 0} measured / ${ranked.provisional ?? 0} provisional / ${ranked.unmeasured ?? 0} unmeasured) at ${summary.checkedAt}`
-          : `model data refreshed with ${summary.errors.length} source error(s): ${summary.errors.slice(0, 3).join('; ')}`
+          ? `model data refreshed: ${summary.models} models (${summary.benchgecko} benchgecko, ${summary.compass} compassrank, ${summary.epoch} epoch, ${summary.llmLeaderboard} llmleaderboard, ${aa.models ?? 0} artificialanalysis → ${aa.created ?? 0} new, ${aa.filledQuality ?? 0} measured, ${aa.filledPrice ?? 0} priced; openrouter usage ${summary.openrouter?.matched ?? 0}/${summary.openrouter?.rows ?? 0} matched; ranking: ${ranked.measured ?? 0} measured / ${ranked.provisional ?? 0} provisional / ${ranked.unmeasured ?? 0} unmeasured)${repairedNote} at ${summary.checkedAt}`
+          : `model data refreshed with ${summary.errors.length} source error(s): ${summary.errors.slice(0, 3).join('; ')}${repairedNote}`
         return { ok: true, text, data: { summary } }
       }
       if (action === 'catalog') {

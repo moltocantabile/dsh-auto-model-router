@@ -38,12 +38,10 @@
  *   overall estimate for a model that has no per-dimension measurement at all.
  *
  * The output is a plain data table: no I/O, no network, no host imports. It
- * takes the catalog as objects and returns objects. `toCatalogPatch()` turns it
- * back into the `scores`/`evidence` shape the selector reads, and
- * `derivedEnvelopes()` + `planTiers()` answer the other half of the job: instead
- * of fixed price ceilings, tier membership is derived from the pool's own cost
- * and capability distribution, while `fast`/`balanced`/`deep` remain the stable
- * operator-facing names and explicit envelopes still win.
+ * takes the catalog as objects and returns objects. `derivedEnvelopes()` is the
+ * one thing this module still contributes to tier policy -- the data-derived
+ * ceilings `refresh.js` translates onto the cost axis; placement itself has a
+ * single owner in `tiers.js`.
  *
  * Honesty rules enforced by construction:
  *
@@ -54,14 +52,15 @@
  *   llmleaderboard tracks produce evidence — latencies, context windows,
  *   modality flags, prices and the AA/Epoch scales never do;
  * - a model with no per-dimension measurement is `provisional` (AA index only)
- *   or `unmeasured`; `planTiers()` does not place either by default;
+ *   or `unmeasured`, and carries no rank;
  * - dominance-based switching stays *inside a model family*: this module exposes
  *   the cross-vendor Pareto view for display, but never disables a model because
  *   another vendor's model is cheaper and stronger.
  */
 
+import { bareId, familyOf, normalizeName } from './identity.js'
 import { DIMENSIONS, PRICE_CNY_PER_USD, costIndex } from './select.js'
-import { TIER_IDS, familyOf } from './tiers.js'
+import { TIER_IDS } from './tiers.js'
 
 export { PRICE_CNY_PER_USD, TIER_IDS }
 
@@ -113,13 +112,6 @@ export const MIN_INDEX_FIT = 8
 export const MISSING_DIMENSION_PENALTY = 8
 /** An alignment residual above this (points RMS) marks the merged evidence as weakly calibrated. */
 export const WEAK_CALIBRATION_RMS = 15
-/** Cost-index margin a same-family model must clear to switch another one off. */
-export const DOMINANCE_COST_MARGIN = 10
-
-/** Same tier names, same order: operator-facing and intentionally stable. */
-const TIER_COST_FACTOR = Object.freeze({ fast: 1.6, balanced: 1, deep: 0.05 })
-const LATENCY_RANK = Object.freeze({ fast: 0, balanced: 1, slow: 2 })
-
 export const STATUS = Object.freeze({ MEASURED: 'measured', PROVISIONAL: 'provisional', UNMEASURED: 'unmeasured' })
 
 const DEFAULTS = Object.freeze({
@@ -198,14 +190,6 @@ export function spearman(pairs) {
   if (dx === 0 || dy === 0) return null
   return round2(numerator / Math.sqrt(dx * dy))
 }
-
-const normalizeName = (value) => String(value ?? '').toLowerCase().replace(/[^a-z0-9]/g, '')
-
-const bareId = (key) => {
-  const slash = String(key ?? '').lastIndexOf('/')
-  return slash >= 0 ? String(key).slice(slash + 1) : String(key)
-}
-
 
 
 // ── the benchmark registry ──────────────────────────────────────────────────
@@ -1251,7 +1235,7 @@ export function rankTable(dataset, options = {}) {
   // what the provisional fallback needs.
   for (const row of entries) {
     if (row.dims.overall !== undefined) continue
-    const legacyQuality = num(row.entry?.quality)
+    const legacyCompiled = num(row.entry?.quality)
     const index = row.signals.aaIndex ?? row.signals.analysisIndex
     if (index !== null && indexFit !== null) {
       const composite = round1(clamp(indexFit.slope * index + indexFit.offset, 0, 100))
@@ -1270,7 +1254,7 @@ export function rankTable(dataset, options = {}) {
         provisional: true,
       }
     }
-    row.legacyQuality = legacyQuality
+    row.legacyQuality = legacyCompiled
   }
 
   // 4. Cost percentiles are derived from the pool, not from a fixed 0.4-60 CNY
@@ -1560,280 +1544,4 @@ export function derivedEnvelopes(table, options = {}) {
     previousQuality = safeQuality
   }
   return { valid: true, sample: measured.length, envelopes }
-}
-
-/**
- * Model passes one envelope.
- *
- * Unknown cost fails a cost ceiling and unknown latency fails a latency ceiling:
- * an unpriced model cannot prove it is cheap, and the old "treat unpriced as
- * mid-priced" fallback put unknown prices into a tier by assumption.
- *
- * `minQuality` is compared against the conservative lower bound by default
- * (`qualityBasis: 'low'`), matching the "a model that cannot prove it clears
- * the floor does not clear it" rule the router already has. `'point'` restores
- * comparison against the point estimate for operators who prefer it.
- *
- * @param {object} model
- * @param {object} envelope
- * @param {{qualityBasis?: 'low'|'point'}} [options]
- */
-export function fitsEnvelope(model, envelope, options = {}) {
-  if (envelope === null || envelope === undefined) return true
-  const { maxCost, maxLatency, minQuality, costAxis } = envelope
-  if (num(maxCost) !== null && maxCost > 0) {
-    const cost = costAxis === 'percentile' ? model.features?.costPercentile : model.features?.costIndex
-    if (cost === null || cost === undefined || cost > maxCost) return false
-  }
-  if (typeof maxLatency === 'string' && LATENCY_RANK[maxLatency] !== undefined) {
-    const rank = LATENCY_RANK[model.features?.latencyClass]
-    if (rank === undefined || rank > LATENCY_RANK[maxLatency]) return false
-  }
-  if (num(minQuality) !== null && minQuality > 0) {
-    const quality = options.qualityBasis === 'point' ? model.composite : (model.rankValue ?? model.composite)
-    if (num(quality) === null || quality < minQuality) return false
-  }
-  return true
-}
-
-/** Cheapest tier whose envelope admits the model, or null. */
-export function autoTierForModel(model, envelopes, options = {}) {
-  for (const tier of TIER_IDS) {
-    const envelope = envelopes?.[tier]
-    if (envelope === undefined || envelope === null) continue
-    if (fitsEnvelope(model, envelope, options)) return tier
-  }
-  return null
-}
-
-/**
- * Place the table into the three stable tier names.
- *
- * Precedence is unchanged from `tiers.js`, because operators already reason with
- * it: disabled > hand-assigned tier > measured > cheapest admitting envelope >
- * dominated. What changes:
- *
- * - the envelope may be derived from the data (`envelopeMode: 'derived'|'merge'`)
- *   instead of the fixed shipped ceilings, while explicit operator values win
- *   field by field in `merge`;
- * - a provisional (AA-index-only) or unmeasured model is not auto-placed; it is
- *   listed separately, and only `allowProvisional` lets the calibration place it;
- * - dominance is still same-family only, so no vendor is switched off because
- *   another vendor is cheaper. The cross-vendor Pareto ranking lives on the
- *   table for display, not in this function;
- * - each group carries a visible `ranking` (tier-aware score) and `band`, which
- *   is the ranking the operator could not previously see.
- *
- * `force <tier>`, `defaultRoute` and the selector contract are untouched: they
- * pick a *group* by name, and the groups here have the same three names.
- *
- * @param {object} table - result of {@link rankTable}
- * @param {{routes?: object, overrides?: object, disabled?: string[], mode?: 'auto'|'manual', envelopeMode?: 'explicit'|'merge'|'derived', derived?: ReturnType<typeof derivedEnvelopes>, allowProvisional?: boolean, dominance?: boolean}} [options]
- */
-export function planTiers(table, options = {}) {
-  const routes = options.routes ?? {}
-  const mode = options.mode === 'manual' ? 'manual' : 'auto'
-  const overrides = options.overrides ?? {}
-  const disabled = new Set(Array.isArray(options.disabled) ? options.disabled : [])
-  const envelopeMode = options.envelopeMode ?? 'explicit'
-  const derived = options.derived ?? derivedEnvelopes(table)
-  const allowProvisional = options.allowProvisional === true
-  const dominance = options.dominance !== false
-  const qualityBasis = options.qualityBasis === 'point' ? 'point' : 'low'
-
-  const envelopes = {}
-  const envelopeSource = {}
-  for (const tier of TIER_IDS) {
-    const explicit = routes[tier]?.envelope
-    if (envelopeMode === 'derived') {
-      envelopes[tier] = derived.valid ? derived.envelopes[tier] : null
-      envelopeSource[tier] = derived.valid ? 'derived' : 'none'
-    } else if (envelopeMode === 'merge') {
-      const base = derived.valid ? derived.envelopes[tier] : undefined
-      envelopes[tier] = base === undefined ? (explicit ?? null) : { ...base, ...(explicit ?? {}) }
-      envelopeSource[tier] = base === undefined ? (explicit === undefined ? 'none' : 'explicit') : 'merged'
-      if (explicit !== undefined && num(explicit.maxCost) !== null) envelopes[tier].costAxis = 'absolute'
-    } else {
-      envelopes[tier] = explicit ?? null
-      envelopeSource[tier] = explicit === undefined ? 'none' : 'explicit'
-    }
-  }
-
-  const groups = Object.fromEntries(TIER_IDS.map((tier) => [tier, []]))
-  groups.off = []
-  const tierOf = {}
-  const providerOf = {}
-  const modelOf = {}
-  const overridden = []
-  const unassigned = []
-  const unmeasured = []
-  const provisional = []
-  const dominated = []
-  const placed = []
-
-  for (const model of table.models) {
-    const key = model.key
-    modelOf[key] = model.model
-    if (model.provider !== null) providerOf[key] = model.provider
-    if (disabled.has(key)) {
-      groups.off.push(key)
-      tierOf[key] = 'off'
-      continue
-    }
-    const override = overrides[key]
-    if (TIER_IDS.includes(override)) {
-      groups[override].push(key)
-      tierOf[key] = override
-      overridden.push(key)
-      continue
-    }
-    if (mode === 'manual') {
-      groups.off.push(key)
-      tierOf[key] = 'off'
-      unassigned.push(key)
-      continue
-    }
-    if (!model.measured) {
-      if (model.provisional) {
-        provisional.push(key)
-        // A provisional model has one calibrated index, not a measured
-        // dimension; it is listed but not auto-placed unless the operator asks.
-        if (!(allowProvisional && num(model.composite) !== null)) continue
-      } else {
-        unmeasured.push(key)
-        continue
-      }
-    }
-    const tier = autoTierForModel(model, envelopes, { qualityBasis })
-    if (tier === null) {
-      groups.off.push(key)
-      tierOf[key] = 'off'
-      unassigned.push(key)
-      continue
-    }
-    groups[tier].push(key)
-    tierOf[key] = tier
-    placed.push(model)
-  }
-
-  if (mode === 'auto' && dominance) {
-    for (const model of placed) {
-      const winner = placed.find((other) => (
-        other.key !== model.key
-        && other.family === model.family
-        && num(other.rankValue) !== null
-        && num(model.rankValue) !== null
-        && other.rankValue > model.rankValue
-        && num(other.features.costIndex) !== null
-        && num(model.features.costIndex) !== null
-        && other.features.costIndex <= model.features.costIndex - DOMINANCE_COST_MARGIN
-      ))
-      if (winner === undefined) continue
-      const tier = tierOf[model.key]
-      const members = groups[tier]
-      const position = members.indexOf(model.key)
-      if (position >= 0) members.splice(position, 1)
-      groups.off.push(model.key)
-      tierOf[model.key] = 'off'
-      dominated.push({
-        key: model.key,
-        by: winner.key,
-        composite: model.composite,
-        rankValue: model.rankValue,
-        winnerComposite: winner.composite,
-        winnerRankValue: winner.rankValue,
-        cost: model.features.costIndex,
-        winnerCost: winner.features.costIndex,
-      })
-    }
-  }
-
-  // Visible ranking inside each tier: a tier is a budget and the order inside it
-  // answers "which model does this budget actually buy?". The cost factor mirrors
-  // select.js's tier cost weights, but this is a display order; selection still
-  // computes its own utility.
-  const ranking = {}
-  const rankOf = {}
-  for (const tier of TIER_IDS) {
-    const members = groups[tier]
-      .map((key) => table.byKey[key])
-      .filter((model) => model !== undefined)
-      .map((model) => ({
-        key: model.key,
-        // Rank on the conservative lower bound for the same reason as the global
-        // rank: a tier's ordering should not reward missing coverage.
-        score: round2((model.rankValue ?? model.composite ?? 0) - 0.15 * TIER_COST_FACTOR[tier] * (model.features.costIndex ?? 55)),
-      }))
-      .sort((a, b) => b.score - a.score || a.key.localeCompare(b.key))
-    ranking[tier] = members.map((entry, index) => ({ ...entry, rank: index + 1 }))
-    for (const entry of ranking[tier]) rankOf[entry.key] = entry.rank
-  }
-
-  return {
-    mode,
-    groups,
-    tierOf,
-    rankOf,
-    ranking,
-    providerOf,
-    modelOf,
-    overridden,
-    dominated,
-    disabled: [...disabled],
-    unassigned,
-    unmeasured,
-    provisional,
-    envelopes,
-    envelopeSource,
-    derivedSample: derived.valid ? derived.sample : 0,
-  }
-}
-
-// ── catalog patch ───────────────────────────────────────────────────────────
-
-/**
- * Turn the table into the `scores`/`evidence`/`quality` shape `select.js` reads.
- *
- * Every measured or derived dimension is written with its integer evidence
- * count. A dimension the table could not measure keeps the entry's previous
- * score (so the selector's existing behaviour is preserved) but *zeroes its
- * evidence*, which is what tells `select.js`'s uncertainty penalty that the
- * weight is unverified. This is the one place where an old number survives a
- * re-measurement, and it survives as a declared unknown rather than as new
- * evidence.
- *
- * @param {object} table
- * @returns {Record<string, {scores: Record<string, number|null>, evidence: Record<string, number>, quality: number|null, status: string}>}
- */
-export function toCatalogPatch(table) {
-  const patch = {}
-  for (const model of table.models) {
-    const scores = {}
-    const evidence = {}
-    for (const dim of DIMENSIONS) {
-      const dimension = model.dims?.[dim]
-      const estimate = num(dimension?.estimate)
-      if (estimate !== null && dimension.evidence > 0) {
-        scores[dim] = round1(estimate)
-        evidence[dim] = int(dimension.evidence)
-      } else if (estimate !== null) {
-        // Derived fact (context window / modalities) or a calibrated index: a
-        // number the selector may display, but not a measured dimension.
-        scores[dim] = round1(estimate)
-        evidence[dim] = 0
-      } else {
-        const legacy = num(model.entry?.scores?.[dim])
-        scores[dim] = legacy === null ? null : round1(legacy)
-        evidence[dim] = 0
-      }
-    }
-    patch[model.key] = {
-      scores,
-      evidence,
-      quality: model.composite === null ? null : round1(model.composite),
-      qualityLow: model.compositeLow === null ? null : round1(model.compositeLow),
-      status: model.status,
-    }
-  }
-  return patch
 }

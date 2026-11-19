@@ -777,89 +777,12 @@ window.__ModuleLoader__.load({
       )
     }
 
-    /** The four dimensions routing actually scores, with their full names for tooltips. */
     /**
      * Effective digest settings when the stored config predates them. Kept in
      * step with `DEFAULT_SUMMARIZER` in src/summarize.js; the host is the
      * authority, this only keeps the form from rendering blanks.
      */
     const SUMMARIZER_DEFAULTS = { enabled: true, model: '', timeoutMs: 8000, maxChars: 900, minMessages: 6, refreshEvery: 6 }
-
-    const SCORE_DIMS = [
-      ['cod', 'coding'],
-      ['rea', 'reasoning'],
-      ['agt', 'agentic'],
-      ['math', 'math'],
-    ]
-
-    /**
-     * The per-dimension values the router scores, on the same basis it picks:
-     * the ranking's aligned estimates when the entry has a ranking, the legacy
-     * compiled scores only when it has none. Mirrors `dimensionBasis` in
-     * `select.js`; the two must not drift or a card shows a number the rule did
-     * not use.
-     */
-    function basisValues(info) {
-      const dims = info?.ranking?.dims
-      if (dims !== null && typeof dims === 'object' && Object.keys(dims).length > 0) {
-        const values = {}
-        const evidence = {}
-        for (const [dim, entry] of Object.entries(dims)) {
-          if (typeof entry?.value === 'number') values[dim] = entry.value
-          evidence[dim] = typeof entry?.evidence === 'number' ? entry.evidence : 0
-        }
-        return { values, evidence }
-      }
-      return { values: info?.scores ?? {}, evidence: info?.evidence ?? {} }
-    }
-
-    /**
-     * Measured capability line. Each score is the 0-100 capability estimate the
-     * router uses for this model, so the abbreviation is always paired with its
-     * full name in a tooltip and the card hint spells them out.
-     */
-    function scoreLine(info) {
-      const { values: scores, evidence: verify } = basisValues(info)
-      if (Object.keys(scores).length === 0) {
-        return h('span', { className: 'amr-note' }, 'no benchmark data')
-      }
-      const samples = ['coding', 'reasoning', 'math', 'knowledge', 'agentic'].reduce((sum, dim) => sum + (verify[dim] ?? 0), 0)
-      return h(
-        'div',
-        { className: 'amr-row' },
-        h(
-          'span',
-          { className: 'amr-mono', style: { fontSize: 11 } },
-          SCORE_DIMS.filter(([, key]) => typeof scores[key] === 'number').map(([abbr, key], index) =>
-            h(
-              'span',
-              { key, title: `${key} ${Math.round(scores[key])}/100` },
-              index === 0 ? `${abbr} ${Math.round(scores[key])}` : ` · ${abbr} ${Math.round(scores[key])}`,
-            ),
-          ),
-        ),
-        samples === 0 ? h(Chip, { tone: 'warn' }, 'prior only') : h(Chip, null, `${samples} samples`),
-        ...crossCheckChips(info),
-        [contextLabel(info?.contextWindow), info?.latency,
-          ...(info?.modalities ?? []).filter((modality) => modality !== 'text')]
-          .filter((piece) => piece !== null && piece !== undefined && piece !== '')
-          .join(' · '),
-      )
-    }
-
-    /** Tiny inline bars so the strongest dimension is visible at a glance. */
-    function scoreBar(info) {
-      const { values: scores } = basisValues(info)
-      return SCORE_DIMS.slice(0, 3).map(([label, key]) => {
-        const value = scores[key]
-        return h(
-          'span',
-          { key, className: 'amr-bar', title: `${key} ${Math.round(value ?? 0)}/100` },
-          h('span', { className: 'amr-barTrack' }, h('span', { className: 'amr-barFill', style: { width: `${Math.max(2, Math.min(100, value ?? 0))}%` } })),
-          h('span', { className: 'amr-barLabel' }, label),
-        )
-      })
-    }
 
     /**
      * Cross-check chips: one per independent leaderboard that measured this

@@ -5,29 +5,11 @@ const RAW = { evidencePriorWeight: 0 }
 import { readFileSync } from 'node:fs'
 import { test } from 'node:test'
 
-import {
-  CORE_DIMENSIONS,
-  MIN_ALIGN_OVERLAP,
-  MISSING_DIMENSION_PENALTY,
-  PRICE_CNY_PER_USD,
-  STATUS,
-  autoTierForModel,
-  cacheAdjustedPrice,
-  classifyBenchmark,
-  contextScore,
-  derivedEnvelopes,
-  fitAlignment,
-  fitsEnvelope,
-  paretoLayers,
-  planTiers,
-  priceOf,
-  quantile,
-  rankTable,
-  sourceObservations,
-  spearman,
-  speedScore,
-  toCatalogPatch,
-} from '../src/rank.js'
+import { CORE_DIMENSIONS, MIN_ALIGN_OVERLAP, MISSING_DIMENSION_PENALTY, PRICE_CNY_PER_USD, STATUS, cacheAdjustedPrice, classifyBenchmark, contextScore, fitAlignment, paretoLayers, priceOf, quantile, rankTable, sourceObservations, spearman, speedScore } from '../src/rank.js'
+import { effectiveEnvelopes } from '../src/basis.js'
+import { attachRanking, derivedRouteEnvelopes } from '../src/refresh.js'
+import { withinEnvelope } from '../src/select.js'
+import { assignTiers, autoTierFor } from '../src/tiers.js'
 
 /**
  * These tests pin the two halves of the prototype:
@@ -36,9 +18,11 @@ import {
  *    fitted and refuses to guess below the overlap threshold, and the scales
  *    that must never be blended (AA's index, Epoch's ECI, the catalog's
  *    composite) never enter a dimension;
- * 2. the tier behaviour — stable names, explicit envelopes unchanged, derived
- *    envelopes monotone, provisional/unmeasured models not auto-placed, and
- *    cross-vendor Pareto ranking never used to disable a model.
+ * 2. the tier rules, exercised through the live seams: `derivedRouteEnvelopes`
+ *    (the derivation `rank.js` still owns), `effectiveEnvelopes` (the one
+ *    envelope composer) and `tiers.assignTiers` (the one planner) -- stable
+ *    names, provisional/unmeasured models not auto-placed, and cross-vendor
+ *    Pareto ranking never used to disable a model.
  *
  * Fixtures are deliberately small and hand-computable. The shipped runtime
  * catalog is exercised separately at the end for invariants that must hold on
@@ -90,6 +74,23 @@ function measuredModel(key, value, options = {}) {
     ...options,
     benchmarks: options.benchmarks ?? fullBenchmarks({ coding: value, reasoning: value, math: value, knowledge: value, agentic: value }),
   })
+}
+
+/** A candidate for the live tier planner, built from one ranking-table row. */
+function tierCandidate(row) {
+  return {
+    key: row.key,
+    provider: row.provider ?? undefined,
+    model: row.model,
+    info: {
+      ...row.entry,
+      ranking: { status: row.status, composite: row.composite, low: row.compositeLow, rank: row.rank },
+    },
+  }
+}
+
+function liveTierPool(table) {
+  return table.models.map(tierCandidate)
 }
 
 // ── alignment arithmetic ────────────────────────────────────────────────────
@@ -519,11 +520,13 @@ test('an index-only model is provisional: calibrated, marked, and not auto-place
   assert.equal(row.notes.includes('provisional: AA index only'), true)
 
   const routes = { deep: { envelope: { maxLatency: 'slow', minQuality: 0 } } }
-  const blocked = planTiers(table, { routes })
-  assert.ok(blocked.provisional.includes('p/index-only'))
+  const pool = liveTierPool(table)
+  const blocked = assignTiers(pool, routes, {})
+  assert.deepEqual(blocked.unmeasured, ['p/index-only'])
   assert.ok(!Object.values(blocked.groups).some((group) => group.includes('p/index-only')))
 
-  const allowed = planTiers(table, { routes, allowProvisional: true })
+  // The operator can still take it deliberately; that is the live escape hatch.
+  const allowed = assignTiers(pool, routes, { mode: 'manual', overrides: { 'p/index-only': 'deep' } })
   assert.ok(allowed.groups.deep.includes('p/index-only'))
 })
 
@@ -583,17 +586,16 @@ test('explicit envelopes keep the current precedence: disabled > override > meas
     ['beta/beta-prior', model('beta/beta-prior', { quality: 80, scores: { coding: 80 }, evidence: { coding: 0 } })],
   ]
   const table = rankTable(datasetOf(models))
-  const plan = planTiers(table, {
-    routes: ROUTES,
+  const assigned = assignTiers(liveTierPool(table), ROUTES, {
     disabled: ['alpha/alpha-mid'],
     overrides: { 'alpha/alpha-strong': 'fast' },
   })
-  assert.equal(plan.tierOf['alpha/alpha-mid'], 'off')
-  assert.equal(plan.tierOf['alpha/alpha-strong'], 'fast', 'a hand assignment wins over the envelope')
-  assert.deepEqual(plan.overridden, ['alpha/alpha-strong'])
-  assert.equal(plan.tierOf['alpha/alpha-cheap'], 'fast')
-  assert.ok(plan.unmeasured.includes('beta/beta-prior'))
-  assert.equal(plan.tierOf['beta/beta-prior'], undefined)
+  assert.equal(assigned.tierOf['alpha/alpha-mid'], 'off')
+  assert.equal(assigned.tierOf['alpha/alpha-strong'], 'fast', 'a hand assignment wins over the envelope')
+  assert.deepEqual(assigned.overridden, ['alpha/alpha-strong'])
+  assert.equal(assigned.tierOf['alpha/alpha-cheap'], 'fast')
+  assert.ok(assigned.unmeasured.includes('beta/beta-prior'))
+  assert.equal(assigned.tierOf['beta/beta-prior'], undefined)
 })
 
 test('derived envelopes are monotone, data-relative, and keep the stable tier names', () => {
@@ -605,20 +607,25 @@ test('derived envelopes are monotone, data-relative, and keep the stable tier na
     })])
   }
   const table = rankTable(datasetOf(models))
-  const derived = derivedEnvelopes(table)
+  const derived = derivedRouteEnvelopes(table)
   assert.equal(derived.valid, true)
   assert.ok(derived.sample >= 4)
   assert.deepEqual(Object.keys(derived.envelopes), ['fast', 'balanced', 'deep'])
   const { fast, balanced, deep } = derived.envelopes
-  assert.equal(fast.costAxis, 'percentile')
+  // The live derivation translates the percentile cut-off onto the 0-100 cost
+  // axis the selector compares, and keeps the data-derived quality quantiles.
+  for (const envelope of [fast, balanced, deep]) {
+    assert.equal(envelope.derived, true)
+    assert.ok(Number.isFinite(envelope.maxCost) && envelope.maxCost >= 0 && envelope.maxCost <= 100)
+  }
   assert.ok(fast.maxCost <= balanced.maxCost && balanced.maxCost <= deep.maxCost)
   assert.ok(fast.minQuality < balanced.minQuality && balanced.minQuality < deep.minQuality)
   assert.equal(fast.maxLatency, 'fast')
   assert.equal(deep.maxLatency, 'slow')
   // A model joins the cheapest tier that admits it.
-  const plan = planTiers(table, { routes: ROUTES, envelopeMode: 'derived' })
-  assert.deepEqual(Object.keys(plan.groups).sort(), ['balanced', 'deep', 'fast', 'off'])
-  assert.equal(plan.envelopeSource.fast, 'derived')
+  const routes = Object.fromEntries(Object.entries(derived.envelopes).map(([tier, envelope]) => [tier, { envelope }]))
+  const assigned = assignTiers(liveTierPool(table), routes, {})
+  assert.deepEqual(Object.keys(assigned.groups).sort(), ['balanced', 'deep', 'fast', 'off'])
 })
 
 test('merge mode lets each explicit field win over the derived one', () => {
@@ -630,12 +637,13 @@ test('merge mode lets each explicit field win over the derived one', () => {
     })])
   }
   const table = rankTable(datasetOf(models))
-  const routes = { fast: { envelope: { minQuality: 0 } } }
-  const plan = planTiers(table, { routes, envelopeMode: 'merge' })
-  const derived = derivedEnvelopes(table)
-  assert.equal(plan.envelopes.fast.minQuality, 0, 'the explicit floor wins')
-  assert.equal(plan.envelopes.fast.maxCost, derived.envelopes.fast.maxCost, 'the derived cost ceiling fills the gap')
-  assert.equal(plan.envelopeSource.fast, 'merged')
+  const operator = { fast: { envelope: { minQuality: 0 } } }
+  const derived = derivedRouteEnvelopes(table).envelopes
+  const fallback = { fast: { envelope: { maxCost: 55, maxLatency: 'fast', minQuality: 40 } } }
+  const merged = effectiveEnvelopes(operator, derived, fallback, 'merge')
+  assert.equal(merged.fast.envelope.minQuality, 0, 'the explicit floor wins')
+  assert.equal(merged.fast.envelope.maxCost, derived.fast.maxCost, 'the derived cost ceiling fills the gap')
+  assert.equal(merged.fast.envelope.maxLatency, derived.fast.maxLatency, 'latency is filled from the data too')
 })
 
 test('same-family dominance switches a model off; cross-vendor dominance does not', () => {
@@ -645,32 +653,35 @@ test('same-family dominance switches a model off; cross-vendor dominance does no
     ['beta/beta-weak', measuredModel('beta/beta-weak', 52, { price: { input: 15, output: 45 }, latency: 'slow' })],
   ]
   const table = rankTable(datasetOf(models))
-  const plan = planTiers(table, { routes: ROUTES })
-  assert.equal(plan.tierOf['alpha/alpha-weak'], 'off')
-  assert.ok(plan.dominated.some((item) => item.key === 'alpha/alpha-weak' && item.by === 'alpha/alpha-strong'))
-  assert.notEqual(plan.tierOf['beta/beta-weak'], 'off', 'another vendor being cheaper and stronger is not a replacement')
-  assert.ok(!plan.dominated.some((item) => item.key === 'beta/beta-weak'))
+  const assigned = assignTiers(liveTierPool(table), ROUTES, {})
+  assert.equal(assigned.tierOf['alpha/alpha-weak'], 'off')
+  assert.ok(assigned.dominated.some((item) => item.key === 'alpha/alpha-weak' && item.by === 'alpha/alpha-strong'))
+  assert.notEqual(assigned.tierOf['beta/beta-weak'], 'off', 'another vendor being cheaper and stronger is not a replacement')
+  assert.ok(!assigned.dominated.some((item) => item.key === 'beta/beta-weak'))
 })
 
-test('unknown cost or latency fails an envelope rather than being assumed mid-priced', () => {
-  const unknownCost = model('p/no-price', {
-    price: null,
-    benchmarks: fullBenchmarks(),
-  })
-  const table = rankTable(datasetOf([['p/no-price', unknownCost]]))
-  const row = table.byKey['p/no-price']
-  assert.equal(fitsEnvelope(row, ROUTES.fast.envelope), false)
-  assert.equal(fitsEnvelope(row, { maxLatency: 'slow', minQuality: 0 }), true)
+test('the live envelope check uses the documented cost and latency fallbacks', () => {
+  const unknownCost = model('p/no-price', { price: null, benchmarks: fullBenchmarks() })
+  const priced = rankTable(datasetOf([['p/no-price', unknownCost]]))
+  const info = priced.byKey['p/no-price'].entry
+  // An untagged price is mid-priced (cost index 55), not free: it can clear a
+  // ceiling at or above the midpoint and never wins a cost comparison by accident.
+  assert.equal(withinEnvelope(info, { maxCost: 54 }), false)
+  assert.equal(withinEnvelope(info, { maxCost: 55 }), true)
   const noLatency = model('p/no-latency', { latency: 'unknown-class', benchmarks: fullBenchmarks() })
-  const table2 = rankTable(datasetOf([['p/no-latency', noLatency]]))
-  assert.equal(fitsEnvelope(table2.byKey['p/no-latency'], { maxLatency: 'slow' }), false)
-  assert.equal(autoTierForModel(table2.byKey['p/no-latency'], { deep: { maxLatency: 'slow', minQuality: 0 } }), null)
+  const table = rankTable(datasetOf([['p/no-latency', noLatency]]))
+  const unclassified = table.byKey['p/no-latency'].entry
+  assert.equal(withinEnvelope(unclassified, { maxLatency: 'slow' }), false)
+  assert.equal(autoTierFor(unclassified, { deep: { maxLatency: 'slow', minQuality: 0 } }), null)
 })
 
 // ── catalog patch ───────────────────────────────────────────────────────────
 
-test('the catalog patch keeps integer evidence and never promotes a prior', () => {
-  const models = [
+test('the persisted ranking carries integer evidence and never promotes a prior', () => {
+  // The selector reads `entry.ranking.dims`, the compact shape `attachRanking`
+  // writes. Every written dimension must be an integer evidence count with a
+  // 0-100 value, and a prior-only entry must keep status unmeasured.
+  const dataset = datasetOf([
     ['p/measured', measuredModel('p/measured', 64, {
       contextWindow: 200_000,
       modalities: ['text', 'image'],
@@ -681,22 +692,21 @@ test('the catalog patch keeps integer evidence and never promotes a prior', () =
       scores: { overall: 80, coding: 80, reasoning: 80, math: 80, knowledge: 80, agentic: 80, longContext: 90, vision: 0, speed: 80 },
       evidence: { overall: 0, coding: 0, reasoning: 0, math: 0, knowledge: 0, agentic: 0, longContext: 0, vision: 0, speed: 0 },
     })],
-  ]
-  const table = rankTable(datasetOf(models))
-  const patch = toCatalogPatch(table)
-  for (const [key, value] of Object.entries(patch)) {
-    assert.equal(typeof value.scores, 'object', key)
-    for (const evidence of Object.values(value.evidence)) assert.ok(Number.isInteger(evidence) && evidence >= 0)
-    for (const [dim, score] of Object.entries(value.scores)) {
-      if (score !== null) assert.ok(Number.isFinite(score) && score >= 0 && score <= 100, `${key}.${dim}=${score}`)
+  ])
+  const { table } = attachRanking(dataset)
+  assert.equal(table.models.length, 2)
+  for (const [key, entry] of Object.entries(dataset)) {
+    for (const [dim, value] of Object.entries(entry.ranking?.dims ?? {})) {
+      assert.ok(Number.isInteger(value.evidence) && value.evidence >= 0, `${key}.${dim} evidence is an integer`)
+      assert.ok(Number.isFinite(value.value) && value.value >= 0 && value.value <= 100, `${key}.${dim}=${value.value}`)
     }
   }
-  assert.ok(patch['p/measured'].evidence.coding >= 1)
-  assert.ok(patch['p/measured'].evidence.speed >= 1)
-  assert.equal(patch['p/measured'].evidence.longContext, 0, 'context capacity is derived, not measured')
-  assert.equal(patch['p/measured'].evidence.vision, 0)
-  assert.equal(patch['p/prior'].evidence.coding, 0, 'a prior keeps zero evidence even if kept for compatibility')
-  assert.equal(patch['p/prior'].quality, null)
+  assert.ok(dataset['p/measured'].ranking.dims.coding.evidence >= 1)
+  assert.ok(dataset['p/measured'].ranking.dims.speed.evidence >= 1)
+  assert.equal(dataset['p/measured'].ranking.dims.longContext.evidence, 0, 'context capacity is derived, not measured')
+  assert.equal(dataset['p/measured'].ranking.dims.vision.evidence, 0)
+  assert.equal(dataset['p/prior'].ranking.status, STATUS.UNMEASURED)
+  assert.equal(dataset['p/prior'].ranking.composite, null)
 })
 
 // ── Pareto helper ───────────────────────────────────────────────────────────
@@ -790,18 +800,19 @@ test('the shipped catalog: measurable gaps are reported, not hidden', () => {
 
 test('the shipped catalog: tier planning keeps the stable names and refuses priors', () => {
   const table = shippedTable()
-  const plan = planTiers(table, { routes: ROUTES })
-  assert.deepEqual(Object.keys(plan.groups).sort(), ['balanced', 'deep', 'fast', 'off'])
+  const assigned = assignTiers(liveTierPool(table), ROUTES, {})
+  assert.deepEqual(Object.keys(assigned.groups).sort(), ['balanced', 'deep', 'fast', 'off'])
   for (const tier of ['fast', 'balanced', 'deep']) {
-    for (const key of plan.groups[tier]) {
+    for (const key of assigned.groups[tier]) {
       const row = table.byKey[key]
       assert.equal(row.measured, true, `${key} placed in ${tier} is measured`)
     }
   }
-  // The prior-only/legacy-quality entries in the runtime catalog must not be
-  // silently routed: they are listed with the unmeasured models.
-  const priorOnly = table.models.filter((row) => row.status === STATUS.UNMEASURED && row.entry.quality !== null)
+  // The prior-only entries in the runtime catalog must not be silently routed:
+  // they are listed with the unmeasured models.
+  const priorOnly = table.models.filter((row) => row.status === STATUS.UNMEASURED)
   for (const row of priorOnly) {
-    assert.ok(!Object.values(plan.groups).some((group) => group.includes(row.key)), row.key)
+    assert.ok(assigned.unmeasured.includes(row.key), `${row.key} is listed as unmeasured`)
+    assert.ok(!Object.values(assigned.groups).some((group) => group.includes(row.key)), row.key)
   }
 })

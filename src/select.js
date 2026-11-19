@@ -22,12 +22,26 @@
  * the candidate set, not the decision.
  */
 
-/**
- * Capability dimensions carried by every knowledge entry. Scores are 0-100 and
- * comparable across models within a dimension; they are *not* comparable across
- * dimensions (a 70 in coding is not a 70 in speed).
- */
-export const DIMENSIONS = ['overall', 'coding', 'reasoning', 'math', 'knowledge', 'agentic', 'longContext', 'vision', 'speed']
+import {
+  DIMENSIONS,
+  capabilityQuality,
+  dimensionBasis,
+  envelopeQuality,
+  hasMeasuredQuality,
+  qualityBasis,
+} from './basis.js'
+
+// The capability basis has one owner (`basis.js`); these names stay exported
+// here because every existing importer and test reads them from this module.
+export {
+  DIMENSIONS,
+  alignedFloor,
+  capabilityQuality,
+  dimensionBasis,
+  hasMeasuredQuality,
+  legacyQuality,
+  qualityBasis,
+} from './basis.js'
 
 /**
  * What each shape of work cares about, before the profile adjusts it.
@@ -196,126 +210,6 @@ export function blendedPrice(info) {
 }
 
 /**
- * Capability basis used by every tier rule: the cross-source ranking when the
- * catalog has one, the legacy compiled score otherwise.
- *
- * The two are different measures of the same idea and must not be mixed within
- * one comparison -- the board ranks by the composite while dominance read the
- * legacy score, so a model could be switched off by one measure and ranked above
- * its killer by the other.
- *
- * Once an entry has a `ranking`, that ranking is authoritative even when it
- * reports no measurement: falling back to the legacy `quality` there mixed the
- * two scales again (an unmeasured model with a compiled prior read stronger than
- * every measured model). The legacy value is only a basis for entries the
- * ranking has never seen.
- *
- * @param {object|null} [info]
- * @returns {number|null} the conservative value (ranking low bound) or the score
- */
-export function qualityBasis(info) {
-  const ranking = info?.ranking ?? null
-  if (ranking !== null) {
-    const low = num(ranking.low, null)
-    if (low !== null) return low
-    return num(ranking.composite, null)
-  }
-  return num(info?.quality, null)
-}
-
-/**
- * The legacy compiled capability scalar: `quality`, else the `scores.composite`
- * some fixtures carry. This belongs to the hand-written-floor rule only (see
- * `withinEnvelope`); no rule that has a ranking may compare against it.
- *
- * @param {object|null} [info]
- * @returns {number|null}
- */
-export function legacyQuality(info) {
-  const quality = num(info?.quality, null)
-  return quality !== null ? quality : num(info?.scores?.composite, null)
-}
-
-/**
- * The per-dimension measurement basis for one entry, chosen once and used whole.
- *
- * When the catalog has ranked the entry, its aligned per-dimension estimates are
- * the capability numbers -- the same ones the composite, the rank, the tier board
- * and the dominance rule are built from -- and the evidence counts are the
- * ranking's integer benchmark counts. Otherwise the legacy compiled
- * `scores`/`evidence` are the basis. The two are never combined inside one
- * computation: a dimension the chosen basis has no estimate for is a neutral
- * prior (see `scoreCandidate`), not a value borrowed from the other basis.
- *
- * @param {object|null} [info]
- * @returns {{values: Record<string, number>, evidence: Record<string, number>, source: 'ranking'|'legacy'|'ranking-empty'}}
- */
-export function dimensionBasis(info) {
-  const dims = info?.ranking?.dims
-  if (dims !== null && typeof dims === 'object' && Object.keys(dims).length > 0) {
-    const values = {}
-    const evidence = {}
-    for (const dim of DIMENSIONS) {
-      const entry = dims[dim]
-      const value = num(entry?.value, null)
-      if (value !== null) values[dim] = value
-      evidence[dim] = Math.max(0, Math.trunc(num(entry?.evidence, 0)))
-    }
-    return { values, evidence, source: 'ranking' }
-  }
-  if (info?.ranking !== undefined && info?.ranking !== null) {
-    // A ranking with no dimension at all is an unmeasured entry: the legacy
-    // scores it refused to decompose are not a basis (see qualityBasis).
-    return { values: {}, evidence: {}, source: 'ranking-empty' }
-  }
-  return { values: info?.scores ?? {}, evidence: info?.evidence ?? {}, source: 'legacy' }
-}
-
-/**
- * Whether an entry has a measured capability the router may rank, on the same
- * basis the tiers place it with.
- *
- * Once a ranking exists its status is authoritative: `provisional` (an AA index
- * only) and `unmeasured` are listed but not auto-placed, even when the legacy
- * catalog still carries a compiled `quality` for the entry. Before this rule the
- * tier board routed exactly those entries on the prior the ranking had rejected.
- *
- * @param {object|null} [info]
- * @returns {boolean}
- */
-export function hasMeasuredQuality(info) {
-  if (info === null || info === undefined) return false
-  const ranking = info.ranking
-  if (ranking !== undefined && ranking !== null) return ranking.status === 'measured'
-  return legacyQuality(info) !== null
-}
-
-/**
- * Translate a hand-written quality floor onto the measured axis.
- *
- * A floor like `q≥66` was authored against the legacy compiled score. Once the
- * catalog carries a ranking, comparing that number to the ranking's value mixes
- * scales again: a model whose legacy score is stale (a 71.9 for an entry the
- * ranking puts at a 7 low bound) clears a hand-written ceiling it cannot prove it
- * meets. The floor is therefore read as a *share* of the legacy distribution --
- * "this floor kept out 80% of the catalog" -- and resolved at the same share of
- * the measured distribution. Same policy, correct axis.
- *
- * @param {number} floor - the operator's number
- * @param {number[]} legacyValues - legacy scores in the catalog
- * @param {number[]} alignedValues - measured (ranking low) values in the catalog
- * @returns {number} the floor on the measured axis, or the input when either side is thin
- */
-export function alignedFloor(floor, legacyValues, alignedValues) {
-  const legacy = (legacyValues ?? []).filter((value) => typeof value === 'number' && Number.isFinite(value)).sort((a, b) => a - b)
-  const aligned = (alignedValues ?? []).filter((value) => typeof value === 'number' && Number.isFinite(value)).sort((a, b) => a - b)
-  if (!Number.isFinite(floor) || legacy.length < 8 || aligned.length < 8) return floor
-  const below = legacy.filter((value) => value < floor).length / legacy.length
-  const at = Math.min(aligned.length - 1, Math.max(0, Math.round(below * (aligned.length - 1))))
-  return Math.round(aligned[at] * 10) / 10
-}
-
-/**
  * Cost index 0-100, log-scaled over the catalog's actual spread (roughly 0.4 to
  * 60 CNY blended). Cheap models crowd near 0 so that a 2x price difference
  * between two cheap models does not dominate a 5-point capability gap.
@@ -445,33 +339,6 @@ export function qualityFloorPlan(profile, options = {}) {
  */
 export function qualityFloor(profile, options = {}) {
   return qualityFloorPlan(profile, options).floor
-}
-
-/**
- * The profile-weighted capability of one entry on the measurement basis it
- * carries: the number the risk floor is compared against and the one the
- * capability term is built from.
- *
- * A dimension the basis has no estimate for is the neutral prior 50 here, and
- * the weight resting on that guess is charged by `unverified` in
- * `scoreCandidate` -- the two must read the same basis or the floor would
- * describe a different measurement than the score.
- *
- * @param {object|null} info
- * @param {Record<string, number>} weights - normalized profile weights
- * @returns {number} 0-100
- */
-export function capabilityQuality(info, weights) {
-  const basis = dimensionBasis(info)
-  let quality = 0
-  let known = 0
-  for (const dim of DIMENSIONS) {
-    const w = num(weights[dim], 0)
-    if (w === 0) continue
-    quality += w * num(basis.values[dim], 50)
-    known += w
-  }
-  return known === 0 ? 0 : quality / known
 }
 
 /**
@@ -781,12 +648,10 @@ export function withinEnvelope(info, envelope) {
     if (rank === undefined || rank > LATENCY_RANK[maxLatency]) return false
   }
   if (typeof minQuality === 'number' && minQuality > 0) {
-    // A floor means only what its source meant: a hand-written one was authored
-    // against the legacy score, a derived one is a quantile of the ranking's
-    // conservative value. Comparing a floor against the other scale silently
-    // empties the board, so provenance decides the basis.
-    const derivedFloor = envelope.derived === true || envelope.source === 'derived'
-    const quality = derivedFloor ? qualityBasis(info) : legacyQuality(info)
+    // The basis is chosen by the floor's provenance in `basis.js`: a derived
+    // floor is a quantile of the ranking's conservative value, a hand-written one
+    // was authored against the legacy score.
+    const quality = envelopeQuality(info, envelope)
     if (quality === null || quality < minQuality) return false
   }
   return true

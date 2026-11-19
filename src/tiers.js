@@ -12,85 +12,20 @@
  * The operator still overrules the computation, per model: drag one to another
  * tier, or switch it off. Those overrides are the only hand-made assignments.
  */
-import { costIndex, hasMeasuredQuality, qualityBasis, withinEnvelope } from './select.js'
+import { boardMetaOf, hasMeasuredQuality, qualityBasis } from './basis.js'
+import { familyOf } from './identity.js'
+import { costIndex, withinEnvelope } from './select.js'
+
+export { boardMetaOf } from './basis.js'
+export { familyOf } from './identity.js'
 
 /** How much cheaper a model must be to justify a lower quality by "dominance". */
 const DOMINANCE_COST_MARGIN = 10
-
-/** Reseller prefixes a model id may carry in front of its real name. */
-const RESELLER_PREFIXES = ['cmaas', 'vanchin', 'siliconflow']
-
-/**
- * The model family a key belongs to, for comparing like with like.
- *
- * `deepseek-v4-pro` and `deepseek-v4.1-flash` are alternatives to each other;
- * `qwen3.8-flash` is not, even when it happens to be cheaper and stronger. A
- * router that disables DeepSeek because one Qwen beats one DeepSeek is ranking
- * vendors, not models -- and a profile that serves several vendors needs the
- * choice to stay open.
- *
- * @param {string} key - `provider/model` or a bare model id
- * @returns {string}
- */
-export function familyOf(key) {
-  let id = String(key ?? '').toLowerCase()
-  const slash = id.lastIndexOf('/')
-  if (slash >= 0) id = id.slice(slash + 1)
-  for (const prefix of RESELLER_PREFIXES) {
-    if (id.startsWith(`${prefix}-`)) {
-      id = id.slice(prefix.length + 1)
-      break
-    }
-  }
-  const word = /^[a-z]+/.exec(id)
-  return word === null ? id : word[0]
-}
 
 /** Measured quality of a candidate on the same basis the tiers are fitted on. */
 const qualityOf = (info) => {
   const quality = qualityBasis(info)
   return quality === null ? 0 : quality
-}
-
-const numOrNull = (value) => (typeof value === 'number' && Number.isFinite(value) ? value : null)
-
-/**
- * The board-card facts for one model, computed from the same fields the rules
- * that placed it read.
- *
- * `quality` is the capability basis the router ranks and prunes on (ranking low
- * bound, else composite, else the legacy score); `composite` is the point
- * estimate next to it, kept separate so the card can label both instead of
- * showing the point estimate as if it were the number that decided the card's
- * lane. `uncalibrated` is the producer's count of observations no alignment fit
- * covered -- a card that reads a field the refresh never writes is a badge that
- * can never appear.
- *
- * @param {object|null} [info] - knowledge entry for the model
- * @returns {{rank: number|null, composite: number|null, low: number|null, quality: number|null, status: string|null, usage: number|null, uncalibrated: number|null}}
- */
-export function boardMetaOf(info) {
-  const ranking = info?.ranking ?? null
-  // How many of the five dimensions the composite is built from actually carry a
-  // measurement. A composite over half a profile reads like a full one on screen
-  // unless the card says otherwise.
-  const core = ['coding', 'reasoning', 'math', 'knowledge', 'agentic']
-  const dims = ranking?.dims ?? {}
-  const covered = core.filter((dim) => {
-    const value = dims[dim]
-    return value !== undefined && Number.isFinite(Number(value?.value))
-  }).length
-  return {
-    rank: Number.isInteger(ranking?.rank) ? ranking.rank : null,
-    composite: numOrNull(ranking?.composite),
-    low: numOrNull(ranking?.low),
-    quality: qualityBasis(info),
-    status: typeof ranking?.status === 'string' ? ranking.status : null,
-    usage: numOrNull(info?.usage?.percentile),
-    uncalibrated: numOrNull(ranking?.uncalibrated),
-    dimsCovered: ranking === null ? null : covered,
-    dimsTotal: core.length,
-  }
 }
 
 /** Tiers from cheapest to most capable. */
