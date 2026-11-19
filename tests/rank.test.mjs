@@ -1,4 +1,7 @@
 import assert from 'node:assert/strict'
+/** Raw merging: no evidence shrinkage, so these tests assert the merge itself. */
+const RAW = { evidencePriorWeight: 0 }
+
 import { readFileSync } from 'node:fs'
 import { test } from 'node:test'
 
@@ -151,7 +154,7 @@ test('one canonical benchmark is one vote, whichever publishers report it', () =
     },
   })
   models.push(['p/one', entry])
-  const table = rankTable(datasetOf(models))
+  const table = rankTable(datasetOf(models), RAW)
   const row = table.byKey['p/one']
   assert.equal(row.dims.knowledge.evidence, 1, 'GPQA is one unit of evidence, not three')
   assert.equal(row.dims.knowledge.sources.length, 3, 'all three observations are still recorded')
@@ -194,7 +197,7 @@ test('AA scores outside 0-1 are reported as index signals, never multiplied by 1
     scores: { 'gpqa-diamond': 0.8, 'gdpval-aa-normalized': 1045.88, 'aa-3d': 900 },
   }]
   const entry = model('p/fixture-one', { benchmarks: fullBenchmarks({ knowledge: 70 }), crossChecks: {} })
-  const table = rankTable(datasetOf([['p/fixture-one', entry]]), { analysis })
+  const table = rankTable(datasetOf([['p/fixture-one', entry]]), { analysis, ...RAW })
   const row = table.byKey['p/fixture-one']
   assert.equal(row.dims.knowledge.estimate, 70, 'the 0-1 GPQA row is a percentage; the 1e3 rows are not')
   assert.ok(table.indexSignals.some((item) => item.canonical === 'gdpval-aa-normalized'))
@@ -245,7 +248,7 @@ test('measured channels are aligned by the same benchmark when one exists', () =
   models.push(['p/target', model('p/target', {
     crossChecks: { llmLeaderboard: { benchmarks: { 'deepswe-v1-1': 45 } } },
   })])
-  const table = rankTable(datasetOf(models))
+  const table = rankTable(datasetOf(models), RAW)
   const fit = table.calibration.benchmarks.llm.deepswe
   assert.equal(fit.mode, 'offset')
   assert.equal(fit.offset, 20)
@@ -338,7 +341,7 @@ test('missing dimensions are charged as structural uncertainty, not imputed', ()
     },
   })
   const full = measuredModel('p/full', 60)
-  const table = rankTable(datasetOf([['p/thin', thin], ['p/full', full]]))
+  const table = rankTable(datasetOf([['p/thin', thin], ['p/full', full]]), RAW)
   const thinRow = table.byKey['p/thin']
   const fullRow = table.byKey['p/full']
   assert.equal(thinRow.composite, 80)
@@ -359,7 +362,7 @@ test('the composite is renormalized over measured dimensions, never over the leg
       'APEX-Agents': 30,
     },
   })
-  const table = rankTable(datasetOf([['p/composite', entry]]))
+  const table = rankTable(datasetOf([['p/composite', entry]]), RAW)
   const row = table.byKey['p/composite']
   const expected = 0.25 * 50 + 0.25 * 70 + 0.15 * 60 + 0.15 * 40 + 0.2 * 30
   assert.ok(Math.abs(row.composite - expected) < 0.15, `${row.composite} vs ${expected}`)
@@ -411,7 +414,7 @@ test('a measured long-context benchmark supersedes the context-window derivation
     contextWindow: 128_000,
     benchmarks: { ...fullBenchmarks(), 'Artificial Analysis · Long Context Reasoning': 66 },
   })
-  const table = rankTable(datasetOf([['p/long', entry]]))
+  const table = rankTable(datasetOf([['p/long', entry]]), RAW)
   const row = table.byKey['p/long']
   assert.equal(row.dims.longContext.estimate, 66)
   assert.equal(row.dims.longContext.evidence, 1)
@@ -754,7 +757,8 @@ test('the shipped catalog: an AA index of 0 does not become a quality', () => {
     const aa = row.entry?.crossChecks?.artificialAnalysis
     return aa !== undefined && aa.intelligenceIndex === 0
   })
-  assert.ok(zeroIndex.length > 0, 'the runtime catalog contains AA rows with a zero index')
+  // The extractor refuses `intelligenceIndex: 0`, so a refreshed catalog may have
+  // no such row at all; the per-row rule below is what must hold either way.
   for (const row of zeroIndex) {
     assert.equal(row.signals.aaIndex, null)
     // A zero index can still be measured by an actual benchmark; what it must

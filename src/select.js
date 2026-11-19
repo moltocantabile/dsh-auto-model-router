@@ -291,6 +291,31 @@ export function hasMeasuredQuality(info) {
 }
 
 /**
+ * Translate a hand-written quality floor onto the measured axis.
+ *
+ * A floor like `q≥66` was authored against the legacy compiled score. Once the
+ * catalog carries a ranking, comparing that number to the ranking's value mixes
+ * scales again: a model whose legacy score is stale (a 71.9 for an entry the
+ * ranking puts at a 7 low bound) clears a hand-written ceiling it cannot prove it
+ * meets. The floor is therefore read as a *share* of the legacy distribution --
+ * "this floor kept out 80% of the catalog" -- and resolved at the same share of
+ * the measured distribution. Same policy, correct axis.
+ *
+ * @param {number} floor - the operator's number
+ * @param {number[]} legacyValues - legacy scores in the catalog
+ * @param {number[]} alignedValues - measured (ranking low) values in the catalog
+ * @returns {number} the floor on the measured axis, or the input when either side is thin
+ */
+export function alignedFloor(floor, legacyValues, alignedValues) {
+  const legacy = (legacyValues ?? []).filter((value) => typeof value === 'number' && Number.isFinite(value)).sort((a, b) => a - b)
+  const aligned = (alignedValues ?? []).filter((value) => typeof value === 'number' && Number.isFinite(value)).sort((a, b) => a - b)
+  if (!Number.isFinite(floor) || legacy.length < 8 || aligned.length < 8) return floor
+  const below = legacy.filter((value) => value < floor).length / legacy.length
+  const at = Math.min(aligned.length - 1, Math.max(0, Math.round(below * (aligned.length - 1))))
+  return Math.round(aligned[at] * 10) / 10
+}
+
+/**
  * Cost index 0-100, log-scaled over the catalog's actual spread (roughly 0.4 to
  * 60 CNY blended). Cheap models crowd near 0 so that a 2x price difference
  * between two cheap models does not dominate a 5-point capability gap.

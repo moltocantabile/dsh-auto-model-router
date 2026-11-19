@@ -108,8 +108,8 @@
         "intelligenceIndex": 28.6,
         "priceIn": 0.3,
         "priceOut": 1.2,
-        "ttft": 1.24765026077698,
-        "speed": 173.871482738302,
+        "ttft": 1.23725983243458,
+        "speed": 173.509902847005,
         "benchmarks": {
           "omniscience-accuracy": 38.9,
           "omniscience-non-hallucination": 38.8,
@@ -153,36 +153,36 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 1,
-      "tokens": 70064085535913,
-      "share": 0.2419,
+      "tokens": 62575080453834,
+      "share": 0.2359,
       "percentile": 100
     },
     "ranking": {
       "status": "measured",
-      "composite": 58.6,
-      "low": 41.7,
-      "rank": 8,
-      "uncalibrated": 2,
+      "composite": 53,
+      "low": 39.1,
+      "rank": 4,
+      "uncalibrated": 12,
       "dims": {
         "coding": {
-          "value": 43.3,
-          "evidence": 4
+          "value": 40.9,
+          "evidence": 2
         },
         "reasoning": {
-          "value": 53.6,
-          "evidence": 7
+          "value": 52.7,
+          "evidence": 6
         },
         "math": {
-          "value": 80.1,
+          "value": 65,
           "evidence": 2
         },
         "knowledge": {
-          "value": 67.8,
-          "evidence": 6
+          "value": 56.6,
+          "evidence": 4
         },
         "agentic": {
-          "value": 61.1,
-          "evidence": 6
+          "value": 56.7,
+          "evidence": 3
         },
         "longContext": {
           "value": 99,
@@ -193,12 +193,12 @@
           "evidence": 0
         },
         "speed": {
-          "value": 76.2,
+          "value": 76.3,
           "evidence": 2
         },
         "overall": {
-          "value": 58.6,
-          "evidence": 25
+          "value": 53,
+          "evidence": 17
         }
       }
     }
@@ -315,42 +315,42 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 3,
-      "tokens": 18003724716547,
-      "share": 0.0622,
+      "tokens": 16115853208795,
+      "share": 0.0608,
       "percentile": 97.8
     },
     "ranking": {
       "status": "measured",
-      "composite": 44.4,
-      "low": 32.8,
-      "rank": 39,
+      "composite": 46.4,
+      "low": 34.8,
+      "rank": 9,
       "dims": {
         "coding": {
-          "value": 43.3,
+          "value": 45.5,
           "evidence": 4
         },
         "reasoning": {
-          "value": 46.6,
+          "value": 47.5,
           "evidence": 6
         },
         "math": {
-          "value": 67.1,
+          "value": 60.2,
           "evidence": 3
         },
         "knowledge": {
-          "value": 54.6,
+          "value": 53.1,
           "evidence": 4
         },
         "agentic": {
-          "value": 18.4,
+          "value": 31,
           "evidence": 3
         },
         "longContext": {
-          "value": 69.7,
+          "value": 59.8,
           "evidence": 2
         },
         "vision": {
-          "value": 77,
+          "value": 59,
           "evidence": 1
         },
         "speed": {
@@ -358,7 +358,7 @@
           "evidence": 1
         },
         "overall": {
-          "value": 44.4,
+          "value": 46.4,
           "evidence": 20
         }
       }
@@ -453,35 +453,35 @@
     "replaceWith": "deepseek-v4.1-flash-1017",
     "usage": {
       "source": "openrouter-top-weekly",
-      "rank": 15,
-      "tokens": 3451252197209,
-      "share": 0.0119,
+      "rank": 19,
+      "tokens": 2898716978472,
+      "share": 0.0109,
       "percentile": 84.8
     },
     "ranking": {
       "status": "measured",
-      "composite": 51,
-      "low": 39.3,
-      "rank": 14,
+      "composite": 50.6,
+      "low": 38.9,
+      "rank": 5,
       "dims": {
         "coding": {
-          "value": 40.9,
+          "value": 45.5,
           "evidence": 2
         },
         "reasoning": {
-          "value": 46.1,
+          "value": 47.4,
           "evidence": 4
         },
         "math": {
-          "value": 64.3,
+          "value": 58.6,
           "evidence": 3
         },
         "knowledge": {
-          "value": 62.7,
+          "value": 56.3,
           "evidence": 2
         },
         "longContext": {
-          "value": 49.1,
+          "value": 49.7,
           "evidence": 1
         },
         "vision": {
@@ -489,7 +489,7 @@
           "evidence": 0
         },
         "overall": {
-          "value": 51,
+          "value": 50.6,
           "evidence": 11
         }
       }
@@ -515,14 +515,14 @@
     "mcp": false,
     "explicitCache": true,
     "latency": "fast",
-    "quality": 68.5,
+    "quality": 68.4,
     "scores": {
       "coding": 45,
       "reasoning": 62,
       "math": 55,
       "knowledge": 50,
       "agentic": 42,
-      "overall": 68.5,
+      "overall": 68.4,
       "longContext": 100,
       "vision": 100,
       "speed": 75
@@ -569,8 +569,8 @@
         "intelligenceIndex": null,
         "priceIn": 0.44,
         "priceOut": 1.32,
-        "ttft": 1.51269420774034,
-        "speed": 167.085153217638,
+        "ttft": 1.52997192694065,
+        "speed": 166.805487509238,
         "benchmarks": {
           "automationbench-aa": 47.5,
           "hle-diamond": 21.1,
@@ -618,35 +618,31 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 23,
-      "tokens": 2274808283816,
-      "share": 0.0079,
+      "tokens": 2012213354674,
+      "share": 0.0076,
       "percentile": 82.6
     },
     "ranking": {
       "status": "measured",
-      "composite": 55.2,
-      "low": 38.6,
-      "rank": 17,
-      "uncalibrated": 1,
+      "composite": 46.8,
+      "low": 24.8,
+      "rank": 32,
+      "uncalibrated": 9,
       "dims": {
         "coding": {
-          "value": 49.7,
+          "value": 49.9,
           "evidence": 1
         },
         "reasoning": {
-          "value": 38.2,
-          "evidence": 2
+          "value": 46.2,
+          "evidence": 1
         },
         "knowledge": {
-          "value": 70.1,
-          "evidence": 2
-        },
-        "agentic": {
-          "value": 72.3,
-          "evidence": 4
+          "value": 42.8,
+          "evidence": 1
         },
         "longContext": {
-          "value": 100,
+          "value": 66.7,
           "evidence": 1
         },
         "vision": {
@@ -654,12 +650,12 @@
           "evidence": 0
         },
         "speed": {
-          "value": 70.5,
+          "value": 70.3,
           "evidence": 1
         },
         "overall": {
-          "value": 55.2,
-          "evidence": 9
+          "value": 46.8,
+          "evidence": 3
         }
       }
     }
@@ -779,8 +775,8 @@
         "intelligenceIndex": 12.6,
         "priceIn": 1.32,
         "priceOut": 3.96,
-        "ttft": 2.700333632213,
-        "speed": 82.5853047370541,
+        "ttft": 2.6160073912264,
+        "speed": 79.501256603726,
         "benchmarks": {
           "omniscience-accuracy": 38.6,
           "omniscience-non-hallucination": 6.1,
@@ -828,39 +824,40 @@
     "notes": "Not in this provider's advertised catalog; off-peak is half price.",
     "usage": {
       "source": "openrouter-top-weekly",
-      "rank": 42,
-      "tokens": 827129509361,
-      "share": 0.0029,
+      "rank": 43,
+      "tokens": 742534899270,
+      "share": 0.0028,
       "percentile": 69.6
     },
     "ranking": {
       "status": "measured",
-      "composite": 49.8,
-      "low": 39,
-      "rank": 15,
+      "composite": 49.3,
+      "low": 36.9,
+      "rank": 7,
+      "uncalibrated": 7,
       "dims": {
         "coding": {
-          "value": 42,
+          "value": 44.8,
           "evidence": 5
         },
         "reasoning": {
-          "value": 44.7,
-          "evidence": 7
+          "value": 47.2,
+          "evidence": 6
         },
         "math": {
-          "value": 65.3,
+          "value": 59.2,
           "evidence": 3
         },
         "knowledge": {
-          "value": 57.1,
-          "evidence": 7
+          "value": 52.6,
+          "evidence": 5
         },
         "agentic": {
-          "value": 48.8,
-          "evidence": 4
+          "value": 47.4,
+          "evidence": 3
         },
         "longContext": {
-          "value": 60.2,
+          "value": 55.1,
           "evidence": 2
         },
         "vision": {
@@ -872,8 +869,8 @@
           "evidence": 2
         },
         "overall": {
-          "value": 49.8,
-          "evidence": 26
+          "value": 49.3,
+          "evidence": 22
         }
       }
     }
@@ -987,38 +984,38 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 49,
-      "tokens": 630611728724,
-      "share": 0.0022,
+      "tokens": 568493611399,
+      "share": 0.0021,
       "percentile": 65.2
     },
     "ranking": {
       "status": "measured",
-      "composite": 54.9,
-      "low": 34.4,
-      "rank": 34,
+      "composite": 52.9,
+      "low": 32.4,
+      "rank": 13,
       "dims": {
         "coding": {
-          "value": 60.8,
+          "value": 58.1,
           "evidence": 6
         },
         "reasoning": {
-          "value": 39.9,
+          "value": 42.4,
           "evidence": 6
         },
         "math": {
-          "value": 57.1,
+          "value": 54.8,
           "evidence": 4
         },
         "knowledge": {
-          "value": 65.4,
+          "value": 61,
           "evidence": 5
         },
         "agentic": {
-          "value": 56.7,
+          "value": 52.2,
           "evidence": 1
         },
         "longContext": {
-          "value": 64.4,
+          "value": 57.2,
           "evidence": 2
         },
         "vision": {
@@ -1026,7 +1023,7 @@
           "evidence": 0
         },
         "overall": {
-          "value": 54.9,
+          "value": 52.9,
           "evidence": 22
         }
       }
@@ -1110,8 +1107,8 @@
         "intelligenceIndex": 28.6,
         "priceIn": 0.15,
         "priceOut": 0.47,
-        "ttft": 2.46943299577972,
-        "speed": 81.4668188995626,
+        "ttft": 2.48306827957056,
+        "speed": 77.4703154574181,
         "benchmarks": {
           "omniscience-accuracy": 23.5,
           "omniscience-non-hallucination": 53.2,
@@ -1171,36 +1168,36 @@
     "notes": "Thinking mode supports 983K input and 131K output.",
     "usage": {
       "source": "openrouter-top-weekly",
-      "rank": 202,
-      "tokens": 15301762963,
-      "share": 0.0001,
-      "percentile": 21.7
+      "rank": 204,
+      "tokens": 12593478401,
+      "share": 0,
+      "percentile": 19.6
     },
     "ranking": {
       "status": "measured",
-      "composite": 53.5,
-      "low": 38.2,
-      "rank": 18,
-      "uncalibrated": 1,
+      "composite": 49.7,
+      "low": 34.4,
+      "rank": 11,
+      "uncalibrated": 13,
       "dims": {
         "coding": {
-          "value": 42,
-          "evidence": 3
+          "value": 47,
+          "evidence": 2
         },
         "reasoning": {
-          "value": 44.9,
-          "evidence": 4
+          "value": 47,
+          "evidence": 3
         },
         "knowledge": {
-          "value": 75.4,
-          "evidence": 5
+          "value": 55.2,
+          "evidence": 1
         },
         "agentic": {
-          "value": 62.1,
-          "evidence": 5
+          "value": 52.2,
+          "evidence": 2
         },
         "longContext": {
-          "value": 76.4,
+          "value": 58.8,
           "evidence": 1
         },
         "vision": {
@@ -1208,12 +1205,12 @@
           "evidence": 0
         },
         "speed": {
-          "value": 55.9,
+          "value": 55.3,
           "evidence": 1
         },
         "overall": {
-          "value": 53.5,
-          "evidence": 17
+          "value": 49.7,
+          "evidence": 8
         }
       }
     }
@@ -1292,27 +1289,27 @@
     "notes": "Prices are the <=32K tier; 32K-256K is 0.6/2.4 and 256K-1M is 1.2/4.8.",
     "usage": {
       "source": "openrouter-top-weekly",
-      "rank": 54,
-      "tokens": 533792027162,
-      "share": 0.0018,
+      "rank": 53,
+      "tokens": 457997116974,
+      "share": 0.0017,
       "percentile": 63
     },
     "ranking": {
       "status": "measured",
-      "composite": 42.1,
-      "low": 21.4,
-      "rank": 65,
+      "composite": 44.7,
+      "low": 24,
+      "rank": 37,
       "dims": {
         "reasoning": {
-          "value": 12.7,
+          "value": 31.4,
           "evidence": 2
         },
         "math": {
-          "value": 53.5,
+          "value": 51.8,
           "evidence": 2
         },
         "knowledge": {
-          "value": 79.6,
+          "value": 59.9,
           "evidence": 1
         },
         "longContext": {
@@ -1324,7 +1321,7 @@
           "evidence": 0
         },
         "overall": {
-          "value": 42.1,
+          "value": 44.7,
           "evidence": 5
         }
       }
@@ -1418,31 +1415,31 @@
     "notes": "Explicit cache hit bills at 1.0; cache creation at 15.",
     "usage": {
       "source": "openrouter-top-weekly",
-      "rank": 202,
-      "tokens": 15301762963,
-      "share": 0.0001,
-      "percentile": 21.7
+      "rank": 204,
+      "tokens": 12593478401,
+      "share": 0,
+      "percentile": 19.6
     },
     "ranking": {
       "status": "measured",
-      "composite": 54,
-      "low": 41.2,
-      "rank": 10,
+      "composite": 51.5,
+      "low": 38.7,
+      "rank": 6,
       "dims": {
         "coding": {
-          "value": 43.6,
+          "value": 47.9,
           "evidence": 1
         },
         "reasoning": {
-          "value": 50.3,
+          "value": 50.2,
           "evidence": 3
         },
         "knowledge": {
-          "value": 77.5,
+          "value": 59.2,
           "evidence": 1
         },
         "agentic": {
-          "value": 53.9,
+          "value": 51.9,
           "evidence": 2
         },
         "longContext": {
@@ -1454,7 +1451,7 @@
           "evidence": 0
         },
         "overall": {
-          "value": 54,
+          "value": 51.5,
           "evidence": 7
         }
       }
@@ -1547,8 +1544,8 @@
         "intelligenceIndex": 42.9,
         "priceIn": 1.5,
         "priceOut": 4.5,
-        "ttft": 6.74784468594266,
-        "speed": 54.2504358287562,
+        "ttft": 6.25731434623756,
+        "speed": 55.9090660194196,
         "benchmarks": {
           "omniscience-accuracy": 43.7,
           "omniscience-non-hallucination": 71.6,
@@ -1600,35 +1597,32 @@
     "notes": "Cache hit is 5 percent of input; explicit-cache creation bills at 125 percent (5m) or 200 percent (1h).",
     "usage": {
       "source": "openrouter-top-weekly",
-      "rank": 72,
-      "tokens": 222988494300,
-      "share": 0.0008,
-      "percentile": 54.3
+      "rank": 65,
+      "tokens": 285423599656,
+      "share": 0.0011,
+      "percentile": 58.7
     },
     "ranking": {
       "status": "measured",
-      "composite": 57.3,
-      "low": 38.6,
-      "rank": 16,
+      "composite": 51.8,
+      "low": 27.5,
+      "rank": 30,
+      "uncalibrated": 12,
       "dims": {
-        "coding": {
-          "value": 37.5,
-          "evidence": 1
-        },
         "reasoning": {
-          "value": 55.9,
-          "evidence": 4
+          "value": 50.8,
+          "evidence": 3
         },
         "knowledge": {
-          "value": 75.5,
-          "evidence": 4
+          "value": 51.9,
+          "evidence": 2
         },
         "agentic": {
-          "value": 70.1,
-          "evidence": 8
+          "value": 52.9,
+          "evidence": 1
         },
         "longContext": {
-          "value": 51.5,
+          "value": 50.5,
           "evidence": 1
         },
         "vision": {
@@ -1636,12 +1630,12 @@
           "evidence": 0
         },
         "speed": {
-          "value": 42,
+          "value": 42.3,
           "evidence": 1
         },
         "overall": {
-          "value": 57.3,
-          "evidence": 17
+          "value": 51.8,
+          "evidence": 6
         }
       }
     }
@@ -1847,8 +1841,8 @@
         "intelligenceIndex": 23.1,
         "priceIn": 1.4,
         "priceOut": 4.4,
-        "ttft": 2.80661628282221,
-        "speed": 68.3704582721983,
+        "ttft": 3.00031510793091,
+        "speed": 65.5179164879407,
         "benchmarks": {
           "omniscience-accuracy": 31.9,
           "omniscience-non-hallucination": 36.8,
@@ -1901,39 +1895,40 @@
     "notes": "Benchmarks are BenchGecko-normalised scores dated 2026-11-17, not official SWE-bench.",
     "usage": {
       "source": "openrouter-top-weekly",
-      "rank": 10,
-      "tokens": 4124179474923,
-      "share": 0.0142,
-      "percentile": 91.3
+      "rank": 12,
+      "tokens": 3454236822988,
+      "share": 0.013,
+      "percentile": 87
     },
     "ranking": {
       "status": "measured",
-      "composite": 53.4,
-      "low": 47.2,
-      "rank": 3,
+      "composite": 51.4,
+      "low": 44.5,
+      "rank": 2,
+      "uncalibrated": 12,
       "dims": {
         "coding": {
-          "value": 49.6,
+          "value": 51,
           "evidence": 6
         },
         "reasoning": {
-          "value": 42.3,
+          "value": 42.1,
           "evidence": 7
         },
         "math": {
-          "value": 63.7,
+          "value": 58.2,
           "evidence": 3
         },
         "knowledge": {
-          "value": 64.1,
-          "evidence": 7
-        },
-        "agentic": {
-          "value": 56.4,
+          "value": 55.8,
           "evidence": 5
         },
+        "agentic": {
+          "value": 54.9,
+          "evidence": 3
+        },
         "longContext": {
-          "value": 69.8,
+          "value": 59.9,
           "evidence": 2
         },
         "vision": {
@@ -1941,12 +1936,12 @@
           "evidence": 0
         },
         "speed": {
-          "value": 67.8,
+          "value": 67.1,
           "evidence": 2
         },
         "overall": {
-          "value": 53.4,
-          "evidence": 28
+          "value": 51.4,
+          "evidence": 24
         }
       }
     }
@@ -2085,44 +2080,44 @@
     "notes": "Bailian China-Beijing list price; aggregators quote a much lower USD price.",
     "usage": {
       "source": "openrouter-top-weekly",
-      "rank": 32,
-      "tokens": 1349936027308,
-      "share": 0.0047,
+      "rank": 31,
+      "tokens": 1207347484783,
+      "share": 0.0046,
       "percentile": 78.3
     },
     "ranking": {
       "status": "measured",
-      "composite": 52,
-      "low": 43,
-      "rank": 4,
-      "uncalibrated": 1,
+      "composite": 51.1,
+      "low": 42,
+      "rank": 3,
+      "uncalibrated": 4,
       "dims": {
         "coding": {
-          "value": 48.4,
-          "evidence": 8
+          "value": 49.9,
+          "evidence": 7
         },
         "reasoning": {
-          "value": 43.3,
+          "value": 44.6,
           "evidence": 8
         },
         "math": {
-          "value": 80.6,
+          "value": 68.3,
           "evidence": 3
         },
         "knowledge": {
-          "value": 61.1,
+          "value": 57.9,
           "evidence": 5
         },
         "agentic": {
-          "value": 39.3,
-          "evidence": 5
+          "value": 42.6,
+          "evidence": 4
         },
         "longContext": {
-          "value": 75.4,
+          "value": 62.7,
           "evidence": 2
         },
         "vision": {
-          "value": 80.5,
+          "value": 60.2,
           "evidence": 1
         },
         "speed": {
@@ -2130,8 +2125,8 @@
           "evidence": 1
         },
         "overall": {
-          "value": 52,
-          "evidence": 29
+          "value": 51.1,
+          "evidence": 27
         }
       }
     }
@@ -2237,39 +2232,39 @@
     "notes": "Generic id equals snapshot qwen3.7-max-2026-05-20, text only. Beijing list prices. Benchmarks aggregated by BenchGecko, 2026-11-17.",
     "usage": {
       "source": "openrouter-top-weekly",
-      "rank": 231,
-      "tokens": 9457262970,
+      "rank": 229,
+      "tokens": 8541346670,
       "share": 0,
       "percentile": 10.9
     },
     "ranking": {
       "status": "measured",
-      "composite": 63.7,
-      "low": 52,
+      "composite": 58,
+      "low": 46.3,
       "rank": 1,
       "dims": {
         "coding": {
-          "value": 75.8,
+          "value": 62.9,
           "evidence": 2
         },
         "reasoning": {
-          "value": 53.6,
+          "value": 52.6,
           "evidence": 5
         },
         "math": {
-          "value": 64.5,
+          "value": 59.7,
           "evidence": 4
         },
         "knowledge": {
-          "value": 75.3,
+          "value": 66.8,
           "evidence": 4
         },
         "agentic": {
-          "value": 51.7,
+          "value": 50.6,
           "evidence": 1
         },
         "longContext": {
-          "value": 51.8,
+          "value": 50.6,
           "evidence": 1
         },
         "vision": {
@@ -2277,7 +2272,7 @@
           "evidence": 0
         },
         "overall": {
-          "value": 63.7,
+          "value": 58,
           "evidence": 16
         }
       }
@@ -2378,8 +2373,8 @@
         "intelligenceIndex": null,
         "priceIn": 0.4,
         "priceOut": 1.6,
-        "ttft": 2.74709533938604,
-        "speed": 56.1582347797587,
+        "ttft": 2.76913265371203,
+        "speed": 56.3080979609067,
         "benchmarks": {
           "automationbench-aa": 17.4,
           "hle-diamond": 13.9,
@@ -2437,53 +2432,53 @@
     "notes": "Prices are the <=256K Beijing tier; 256K-1M is 6/24. No benchmarks published.",
     "usage": {
       "source": "openrouter-top-weekly",
-      "rank": 130,
-      "tokens": 54380366496,
+      "rank": 133,
+      "tokens": 47086035077,
       "share": 0.0002,
       "percentile": 43.5
     },
     "ranking": {
       "status": "measured",
-      "composite": 42,
-      "low": 25.5,
-      "rank": 59,
-      "uncalibrated": 1,
+      "composite": 43.7,
+      "low": 26.4,
+      "rank": 31,
+      "uncalibrated": 13,
       "dims": {
         "coding": {
-          "value": 28.2,
+          "value": 39.1,
           "evidence": 2
         },
         "reasoning": {
-          "value": 21.7,
+          "value": 28.9,
           "evidence": 4
         },
         "math": {
-          "value": 64.8,
+          "value": 57.4,
           "evidence": 2
         },
         "knowledge": {
-          "value": 61.7,
-          "evidence": 4
+          "value": 56,
+          "evidence": 3
         },
         "agentic": {
-          "value": 52.6,
-          "evidence": 7
+          "value": 48.6,
+          "evidence": 3
         },
         "longContext": {
-          "value": 57.8,
+          "value": 53.9,
           "evidence": 2
         },
         "vision": {
-          "value": 80.5,
+          "value": 60.2,
           "evidence": 1
         },
         "speed": {
-          "value": 50.4,
+          "value": 50.3,
           "evidence": 1
         },
         "overall": {
-          "value": 42,
-          "evidence": 19
+          "value": 43.7,
+          "evidence": 14
         }
       }
     }
@@ -2581,39 +2576,39 @@
     "notes": "Prices are the <=256K Beijing tier. Older flash line, dominated by its successors.",
     "usage": {
       "source": "openrouter-top-weekly",
-      "rank": 218,
-      "tokens": 12345484241,
+      "rank": 219,
+      "tokens": 10956068350,
       "share": 0,
       "percentile": 15.2
     },
     "ranking": {
       "status": "measured",
-      "composite": 50.4,
-      "low": 36.6,
-      "rank": 23,
+      "composite": 49,
+      "low": 35.2,
+      "rank": 8,
       "dims": {
         "coding": {
-          "value": 64.9,
+          "value": 55,
           "evidence": 1
         },
         "reasoning": {
-          "value": 32.2,
+          "value": 37.3,
           "evidence": 5
         },
         "math": {
-          "value": 60.1,
+          "value": 56.1,
           "evidence": 3
         },
         "knowledge": {
-          "value": 51.8,
+          "value": 51.2,
           "evidence": 4
         },
         "agentic": {
-          "value": 46.7,
+          "value": 48.9,
           "evidence": 1
         },
         "longContext": {
-          "value": 36.5,
+          "value": 45.5,
           "evidence": 1
         },
         "vision": {
@@ -2621,7 +2616,7 @@
           "evidence": 0
         },
         "overall": {
-          "value": 50.4,
+          "value": 49,
           "evidence": 14
         }
       }
@@ -2747,38 +2742,38 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 35,
-      "tokens": 1069350510546,
-      "share": 0.0037,
+      "tokens": 960172231451,
+      "share": 0.0036,
       "percentile": 76.1
     },
     "ranking": {
       "status": "measured",
-      "composite": 57.5,
-      "low": 37.1,
-      "rank": 22,
+      "composite": 55,
+      "low": 34.6,
+      "rank": 10,
       "dims": {
         "coding": {
-          "value": 61.9,
+          "value": 59.3,
           "evidence": 7
         },
         "reasoning": {
-          "value": 46.9,
+          "value": 47.7,
           "evidence": 6
         },
         "math": {
-          "value": 64.3,
+          "value": 59.5,
           "evidence": 4
         },
         "knowledge": {
-          "value": 58.4,
+          "value": 56,
           "evidence": 5
         },
         "agentic": {
-          "value": 59.3,
+          "value": 54.6,
           "evidence": 2
         },
         "longContext": {
-          "value": 53.9,
+          "value": 51.3,
           "evidence": 1
         },
         "vision": {
@@ -2790,7 +2785,7 @@
           "evidence": 1
         },
         "overall": {
-          "value": 57.5,
+          "value": 55,
           "evidence": 24
         }
       }
@@ -2847,28 +2842,18 @@
         "ttft": null,
         "speed": null,
         "benchmarks": {
-          "gpqa": 0,
           "hle": 52.5,
-          "terminalbenchHard": 0,
-          "terminalBench21": 0,
           "terminalBench40": 67.2,
           "terminalBenchScience": 34.3,
-          "livecodebench": 0,
           "scicode": 60.8,
-          "tau2": 0,
-          "itBenchSre": 0,
-          "tauBanking": 0,
           "mmmuPro": 83.9,
-          "aime25": 0,
           "critpt": 24.6,
           "analystAgent": 38.8,
           "automationBenchPartialScore": 73.3,
           "frontierCode": 47.1,
           "frontierCode20": 25.5,
-          "ifbench": 0,
           "mkaClimbWsr": 43.9,
           "vialsScore": 45.3,
-          "healthbench": 0,
           "omniscienceAccuracy": 48.9
         },
         "source": "https://artificialanalysis.ai/leaderboards/models"
@@ -2893,26 +2878,22 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 52.9,
-      "low": 37.5,
-      "rank": 19,
-      "uncalibrated": 3,
+      "composite": 53,
+      "low": 31,
+      "rank": 16,
+      "uncalibrated": 12,
       "dims": {
         "coding": {
-          "value": 46.7,
-          "evidence": 4
+          "value": 53.6,
+          "evidence": 1
         },
         "reasoning": {
-          "value": 57.4,
-          "evidence": 2
+          "value": 54.5,
+          "evidence": 1
         },
         "knowledge": {
-          "value": 51.4,
-          "evidence": 5
-        },
-        "agentic": {
-          "value": 56,
-          "evidence": 6
+          "value": 49.7,
+          "evidence": 1
         },
         "longContext": {
           "value": 99,
@@ -2927,16 +2908,16 @@
           "evidence": 1
         },
         "overall": {
-          "value": 52.9,
-          "evidence": 17
+          "value": 53,
+          "evidence": 3
         }
       }
     },
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 11,
-      "tokens": 3957136623170,
-      "share": 0.0137,
+      "tokens": 3576762030037,
+      "share": 0.0135,
       "percentile": 89.1
     }
   },
@@ -2991,28 +2972,17 @@
         "ttft": null,
         "speed": null,
         "benchmarks": {
-          "gpqa": 0,
           "hle": 43.3,
-          "terminalbenchHard": 0,
-          "terminalBench21": 0,
           "terminalBench40": 33.8,
           "terminalBenchScience": 12.9,
-          "livecodebench": 0,
           "scicode": 55.9,
-          "tau2": 0,
-          "itBenchSre": 0,
-          "tauBanking": 0,
           "mmmuPro": 80.6,
-          "aime25": 0,
           "critpt": 24,
-          "analystAgent": 0,
           "automationBenchPartialScore": 66.6,
           "frontierCode": 43.7,
           "frontierCode20": 28.5,
-          "ifbench": 0,
           "mkaClimbWsr": 38.5,
           "vialsScore": 40.4,
-          "healthbench": 0,
           "omniscienceAccuracy": 39.6
         },
         "source": "https://artificialanalysis.ai/leaderboards/models"
@@ -3038,25 +3008,21 @@
     "ranking": {
       "status": "measured",
       "composite": 50.2,
-      "low": 31.2,
-      "rank": 46,
-      "uncalibrated": 3,
+      "low": 28.2,
+      "rank": 28,
+      "uncalibrated": 12,
       "dims": {
         "coding": {
-          "value": 48.9,
-          "evidence": 4
+          "value": 52,
+          "evidence": 1
         },
         "reasoning": {
-          "value": 52.5,
-          "evidence": 2
+          "value": 51.4,
+          "evidence": 1
         },
         "knowledge": {
-          "value": 46.7,
-          "evidence": 5
-        },
-        "agentic": {
-          "value": 51.4,
-          "evidence": 6
+          "value": 45,
+          "evidence": 1
         },
         "longContext": {
           "value": 99,
@@ -3072,15 +3038,15 @@
         },
         "overall": {
           "value": 50.2,
-          "evidence": 17
+          "evidence": 3
         }
       }
     },
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 1,
-      "tokens": 70064085535913,
-      "share": 0.2419,
+      "tokens": 62575080453834,
+      "share": 0.2359,
       "percentile": 100
     }
   },
@@ -3135,28 +3101,18 @@
         "ttft": null,
         "speed": null,
         "benchmarks": {
-          "gpqa": 0,
           "hle": 52.5,
-          "terminalbenchHard": 0,
-          "terminalBench21": 0,
           "terminalBench40": 67.2,
           "terminalBenchScience": 34.3,
-          "livecodebench": 0,
           "scicode": 60.8,
-          "tau2": 0,
-          "itBenchSre": 0,
-          "tauBanking": 0,
           "mmmuPro": 83.9,
-          "aime25": 0,
           "critpt": 24.6,
           "analystAgent": 38.8,
           "automationBenchPartialScore": 73.3,
           "frontierCode": 47.1,
           "frontierCode20": 25.5,
-          "ifbench": 0,
           "mkaClimbWsr": 43.9,
           "vialsScore": 45.3,
-          "healthbench": 0,
           "omniscienceAccuracy": 48.9
         },
         "source": "https://artificialanalysis.ai/leaderboards/models"
@@ -3181,26 +3137,22 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 52.9,
-      "low": 37.5,
-      "rank": 20,
-      "uncalibrated": 3,
+      "composite": 53,
+      "low": 31,
+      "rank": 17,
+      "uncalibrated": 12,
       "dims": {
         "coding": {
-          "value": 46.7,
-          "evidence": 4
+          "value": 53.6,
+          "evidence": 1
         },
         "reasoning": {
-          "value": 57.4,
-          "evidence": 2
+          "value": 54.5,
+          "evidence": 1
         },
         "knowledge": {
-          "value": 51.4,
-          "evidence": 5
-        },
-        "agentic": {
-          "value": 56,
-          "evidence": 6
+          "value": 49.7,
+          "evidence": 1
         },
         "longContext": {
           "value": 99,
@@ -3215,16 +3167,16 @@
           "evidence": 1
         },
         "overall": {
-          "value": 52.9,
-          "evidence": 17
+          "value": 53,
+          "evidence": 3
         }
       }
     },
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 11,
-      "tokens": 3957136623170,
-      "share": 0.0137,
+      "tokens": 3576762030037,
+      "share": 0.0135,
       "percentile": 89.1
     }
   },
@@ -3279,28 +3231,17 @@
         "ttft": null,
         "speed": null,
         "benchmarks": {
-          "gpqa": 0,
           "hle": 48,
-          "terminalbenchHard": 0,
-          "terminalBench21": 0,
           "terminalBench40": 25.8,
           "terminalBenchScience": 3.3,
-          "livecodebench": 0,
           "scicode": 53.4,
-          "tau2": 0,
-          "itBenchSre": 0,
-          "tauBanking": 0,
           "mmmuPro": 79.1,
-          "aime25": 0,
           "critpt": 22.3,
-          "analystAgent": 0,
           "automationBenchPartialScore": 72.5,
           "frontierCode": 38.6,
           "frontierCode20": 20.8,
-          "ifbench": 0,
           "mkaClimbWsr": 33.5,
           "vialsScore": 29.8,
-          "healthbench": 0,
           "omniscienceAccuracy": 45.1
         },
         "source": "https://artificialanalysis.ai/leaderboards/models"
@@ -3320,26 +3261,22 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 48.8,
-      "low": 31.6,
-      "rank": 42,
-      "uncalibrated": 3,
+      "composite": 50.7,
+      "low": 28.7,
+      "rank": 27,
+      "uncalibrated": 12,
       "dims": {
         "coding": {
-          "value": 43.7,
-          "evidence": 4
+          "value": 51.1,
+          "evidence": 1
         },
         "reasoning": {
-          "value": 54,
-          "evidence": 2
+          "value": 53,
+          "evidence": 1
         },
         "knowledge": {
-          "value": 48.6,
-          "evidence": 5
-        },
-        "agentic": {
-          "value": 48.7,
-          "evidence": 6
+          "value": 46.2,
+          "evidence": 1
         },
         "longContext": {
           "value": 99,
@@ -3354,17 +3291,17 @@
           "evidence": 1
         },
         "overall": {
-          "value": 48.8,
-          "evidence": 17
+          "value": 50.7,
+          "evidence": 3
         }
       }
     },
     "usage": {
       "source": "openrouter-top-weekly",
-      "rank": 13,
-      "tokens": 3820131798287,
-      "share": 0.0132,
-      "percentile": 87
+      "rank": 10,
+      "tokens": 3701660669906,
+      "share": 0.014,
+      "percentile": 91.3
     }
   },
   "stepfun/step-5-preview": {
@@ -3418,28 +3355,18 @@
         "ttft": null,
         "speed": null,
         "benchmarks": {
-          "gpqa": 0,
           "hle": 46.5,
-          "terminalbenchHard": 0,
-          "terminalBench21": 0,
           "terminalBench40": 33.3,
           "terminalBenchScience": 2.4,
-          "livecodebench": 0,
           "scicode": 58.9,
-          "tau2": 0,
           "itBenchSre": 55.6,
-          "tauBanking": 0,
           "mmmuPro": 76.4,
-          "aime25": 0,
           "critpt": 20.9,
           "analystAgent": 35,
           "automationBenchPartialScore": 51,
           "frontierCode": 38.4,
           "frontierCode20": 12,
-          "ifbench": 0,
           "mkaClimbWsr": 27.6,
-          "vialsScore": 0,
-          "healthbench": 0,
           "omniscienceAccuracy": 36.4
         },
         "source": "https://artificialanalysis.ai/leaderboards/models"
@@ -3459,26 +3386,22 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 47.9,
-      "low": 28.7,
-      "rank": 52,
-      "uncalibrated": 3,
+      "composite": 50.8,
+      "low": 28.8,
+      "rank": 26,
+      "uncalibrated": 12,
       "dims": {
         "coding": {
-          "value": 44.4,
-          "evidence": 4
+          "value": 53,
+          "evidence": 1
         },
         "reasoning": {
           "value": 52.5,
-          "evidence": 2
+          "evidence": 1
         },
         "knowledge": {
-          "value": 45.6,
-          "evidence": 5
-        },
-        "agentic": {
-          "value": 48.1,
-          "evidence": 6
+          "value": 44.2,
+          "evidence": 1
         },
         "longContext": {
           "value": 99,
@@ -3489,16 +3412,16 @@
           "evidence": 0
         },
         "overall": {
-          "value": 47.9,
-          "evidence": 17
+          "value": 50.8,
+          "evidence": 3
         }
       }
     },
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 8,
-      "tokens": 7347880379107,
-      "share": 0.0254,
+      "tokens": 6413464739196,
+      "share": 0.0242,
       "percentile": 93.5
     }
   },
@@ -3555,26 +3478,19 @@
         "benchmarks": {
           "gpqa": 91.2,
           "hle": 39.9,
-          "terminalbenchHard": 0,
           "terminalBench21": 84.3,
           "terminalBench40": 32.8,
           "terminalBenchScience": 4.8,
-          "livecodebench": 0,
           "scicode": 51.6,
-          "tau2": 0,
           "itBenchSre": 51.2,
           "tauBanking": 47.2,
-          "mmmuPro": 0,
-          "aime25": 0,
           "critpt": 15.4,
           "analystAgent": 25,
           "automationBenchPartialScore": 60.4,
           "frontierCode": 41,
           "frontierCode20": 17.6,
-          "ifbench": 0,
           "mkaClimbWsr": 36.2,
           "vialsScore": 39.8,
-          "healthbench": 0,
           "omniscienceAccuracy": 28.2
         },
         "source": "https://artificialanalysis.ai/leaderboards/models"
@@ -3600,26 +3516,22 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 49.7,
-      "low": 30.9,
-      "rank": 49,
-      "uncalibrated": 3,
+      "composite": 51.7,
+      "low": 30.1,
+      "rank": 20,
+      "uncalibrated": 14,
       "dims": {
         "coding": {
-          "value": 42.3,
-          "evidence": 4
+          "value": 50.5,
+          "evidence": 1
         },
         "reasoning": {
-          "value": 46.5,
-          "evidence": 2
+          "value": 50.3,
+          "evidence": 1
         },
         "knowledge": {
-          "value": 55.3,
-          "evidence": 5
-        },
-        "agentic": {
-          "value": 58.6,
-          "evidence": 6
+          "value": 56.1,
+          "evidence": 2
         },
         "longContext": {
           "value": 99,
@@ -3634,16 +3546,16 @@
           "evidence": 1
         },
         "overall": {
-          "value": 49.7,
-          "evidence": 17
+          "value": 51.7,
+          "evidence": 4
         }
       }
     },
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 5,
-      "tokens": 13195905238823,
-      "share": 0.0456,
+      "tokens": 10951465411789,
+      "share": 0.0413,
       "percentile": 95.7
     }
   },
@@ -3698,28 +3610,13 @@
         "ttft": null,
         "speed": null,
         "benchmarks": {
-          "gpqa": 0,
           "hle": 41.5,
-          "terminalbenchHard": 0,
-          "terminalBench21": 0,
           "terminalBench40": 6.1,
           "terminalBenchScience": 1.9,
-          "livecodebench": 0,
           "scicode": 51.7,
-          "tau2": 0,
-          "itBenchSre": 0,
-          "tauBanking": 0,
-          "mmmuPro": 0,
-          "aime25": 0,
           "critpt": 18.6,
-          "analystAgent": 0,
           "automationBenchPartialScore": 46.2,
-          "frontierCode": 0,
           "frontierCode20": 16.7,
-          "ifbench": 0,
-          "mkaClimbWsr": 0,
-          "vialsScore": 0,
-          "healthbench": 0,
           "omniscienceAccuracy": 45.1
         },
         "source": "https://artificialanalysis.ai/leaderboards/models"
@@ -3742,26 +3639,22 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 40.4,
-      "low": 28.1,
-      "rank": 53,
-      "uncalibrated": 2,
+      "composite": 51.8,
+      "low": 30.2,
+      "rank": 19,
+      "uncalibrated": 6,
       "dims": {
         "coding": {
-          "value": 27.4,
-          "evidence": 3
+          "value": 50.6,
+          "evidence": 1
         },
         "reasoning": {
-          "value": 48.8,
-          "evidence": 2
+          "value": 50.8,
+          "evidence": 1
         },
         "knowledge": {
-          "value": 52,
-          "evidence": 5
-        },
-        "agentic": {
-          "value": 37.4,
-          "evidence": 5
+          "value": 55.5,
+          "evidence": 2
         },
         "longContext": {
           "value": 99,
@@ -3776,16 +3669,16 @@
           "evidence": 1
         },
         "overall": {
-          "value": 40.4,
-          "evidence": 15
+          "value": 51.8,
+          "evidence": 4
         }
       }
     },
     "usage": {
       "source": "openrouter-top-weekly",
-      "rank": 42,
-      "tokens": 827129509361,
-      "share": 0.0029,
+      "rank": 43,
+      "tokens": 742534899270,
+      "share": 0.0028,
       "percentile": 69.6
     }
   },
@@ -3837,8 +3730,8 @@
         "intelligenceIndex": 20.1,
         "priceIn": 0.5,
         "priceOut": 3,
-        "ttft": 5.58076622839206,
-        "speed": 47.3337151793901,
+        "ttft": 5.80754739359993,
+        "speed": 46.7500172229444,
         "benchmarks": {
           "omniscience-accuracy": 17.3,
           "omniscience-non-hallucination": 71.4,
@@ -3913,29 +3806,25 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 52.3,
-      "low": 28.7,
-      "rank": 51,
-      "uncalibrated": 2,
+      "composite": 46.5,
+      "low": 24.5,
+      "rank": 34,
+      "uncalibrated": 18,
       "dims": {
         "coding": {
-          "value": 51.6,
-          "evidence": 3
+          "value": 48.9,
+          "evidence": 1
         },
         "reasoning": {
-          "value": 33.5,
-          "evidence": 2
+          "value": 45.2,
+          "evidence": 1
         },
         "knowledge": {
-          "value": 75.6,
-          "evidence": 4
-        },
-        "agentic": {
-          "value": 59,
-          "evidence": 6
+          "value": 44.7,
+          "evidence": 1
         },
         "longContext": {
-          "value": 77.5,
+          "value": 59.2,
           "evidence": 1
         },
         "vision": {
@@ -3943,20 +3832,20 @@
           "evidence": 0
         },
         "speed": {
-          "value": 40.6,
+          "value": 40.4,
           "evidence": 1
         },
         "overall": {
-          "value": 52.3,
-          "evidence": 15
+          "value": 46.5,
+          "evidence": 3
         }
       }
     },
     "usage": {
       "source": "openrouter-top-weekly",
-      "rank": 37,
-      "tokens": 947909800934,
-      "share": 0.0033,
+      "rank": 41,
+      "tokens": 820084038447,
+      "share": 0.0031,
       "percentile": 71.7
     }
   },
@@ -4013,25 +3902,17 @@
         "benchmarks": {
           "gpqa": 91.7,
           "hle": 42.3,
-          "terminalbenchHard": 0,
           "terminalBench21": 83.9,
           "terminalBench40": 41.9,
           "terminalBenchScience": 9.5,
-          "livecodebench": 0,
           "scicode": 59,
-          "tau2": 0,
           "itBenchSre": 46.1,
           "tauBanking": 50.3,
-          "mmmuPro": 0,
-          "aime25": 0,
           "critpt": 19.1,
           "analystAgent": 38.8,
           "automationBenchPartialScore": 62.2,
           "frontierCode": 40.1,
           "frontierCode20": 21.6,
-          "ifbench": 0,
-          "mkaClimbWsr": 0,
-          "vialsScore": 0,
           "healthbench": 54.5,
           "omniscienceAccuracy": 32.3
         },
@@ -4057,26 +3938,22 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 51.6,
-      "low": 36.5,
-      "rank": 25,
-      "uncalibrated": 2,
+      "composite": 52.8,
+      "low": 31.2,
+      "rank": 15,
+      "uncalibrated": 13,
       "dims": {
         "coding": {
-          "value": 41.7,
-          "evidence": 4
+          "value": 53,
+          "evidence": 1
         },
         "reasoning": {
-          "value": 49.5,
-          "evidence": 2
+          "value": 51.1,
+          "evidence": 1
         },
         "knowledge": {
-          "value": 66.2,
-          "evidence": 5
-        },
-        "agentic": {
-          "value": 55.6,
-          "evidence": 5
+          "value": 55.2,
+          "evidence": 2
         },
         "longContext": {
           "value": 99,
@@ -4091,17 +3968,17 @@
           "evidence": 1
         },
         "overall": {
-          "value": 51.6,
-          "evidence": 16
+          "value": 52.8,
+          "evidence": 4
         }
       }
     },
     "usage": {
       "source": "openrouter-top-weekly",
-      "rank": 10,
-      "tokens": 4124179474923,
-      "share": 0.0142,
-      "percentile": 91.3
+      "rank": 12,
+      "tokens": 3454236822988,
+      "share": 0.013,
+      "percentile": 87
     }
   },
   "qwen3.8-2.4t-a95b": {
@@ -4152,8 +4029,8 @@
         "intelligenceIndex": null,
         "priceIn": 2,
         "priceOut": 6,
-        "ttft": 4.98367772213399,
-        "speed": 40.5322728184043,
+        "ttft": 5.26519997800275,
+        "speed": 40.4989974295656,
         "benchmarks": {
           "omniscience-accuracy": 31.4,
           "omniscience-non-hallucination": 65.5,
@@ -4200,28 +4077,21 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 61.5,
-      "low": 49.3,
-      "rank": 2,
+      "composite": 49.4,
+      "low": 19.4,
+      "rank": 45,
+      "uncalibrated": 10,
       "dims": {
         "coding": {
-          "value": 54.1,
+          "value": 51.4,
           "evidence": 1
         },
         "reasoning": {
-          "value": 44.5,
-          "evidence": 2
-        },
-        "knowledge": {
-          "value": 81.7,
-          "evidence": 4
-        },
-        "agentic": {
-          "value": 76.7,
-          "evidence": 4
+          "value": 47.4,
+          "evidence": 1
         },
         "longContext": {
-          "value": 81.4,
+          "value": 60.5,
           "evidence": 1
         },
         "vision": {
@@ -4233,17 +4103,17 @@
           "evidence": 1
         },
         "overall": {
-          "value": 61.5,
-          "evidence": 11
+          "value": 49.4,
+          "evidence": 2
         }
       }
     },
     "usage": {
       "source": "openrouter-top-weekly",
-      "rank": 167,
-      "tokens": 29331463407,
+      "rank": 170,
+      "tokens": 25000032532,
       "share": 0.0001,
-      "percentile": 34.8
+      "percentile": 30.4
     }
   },
   "MiniMax/MiniMax-M3": {
@@ -4303,22 +4173,16 @@
           "terminalBench21": 65.2,
           "terminalBench40": 2,
           "terminalBenchScience": 0.5,
-          "livecodebench": 0,
           "scicode": 47.1,
           "tau2": 88.9,
-          "itBenchSre": 0,
           "tauBanking": 15.3,
           "mmmuPro": 78.6,
-          "aime25": 0,
           "critpt": 3.7,
           "analystAgent": 10,
           "automationBenchPartialScore": 21.3,
           "frontierCode": 23,
           "frontierCode20": 21.9,
           "ifbench": 82.9,
-          "mkaClimbWsr": 0,
-          "vialsScore": 0,
-          "healthbench": 0,
           "omniscienceAccuracy": 44.9
         },
         "source": "https://artificialanalysis.ai/leaderboards/models"
@@ -4341,26 +4205,22 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 45.3,
-      "low": 32.1,
-      "rank": 40,
-      "uncalibrated": 2,
+      "composite": 50.8,
+      "low": 29.2,
+      "rank": 25,
+      "uncalibrated": 13,
       "dims": {
         "coding": {
-          "value": 30.5,
-          "evidence": 3
+          "value": 49,
+          "evidence": 1
         },
         "reasoning": {
-          "value": 40.2,
-          "evidence": 2
+          "value": 50,
+          "evidence": 1
         },
         "knowledge": {
-          "value": 69.7,
-          "evidence": 5
-        },
-        "agentic": {
-          "value": 52,
-          "evidence": 5
+          "value": 55.2,
+          "evidence": 2
         },
         "longContext": {
           "value": 99,
@@ -4375,16 +4235,16 @@
           "evidence": 1
         },
         "overall": {
-          "value": 45.3,
-          "evidence": 15
+          "value": 50.8,
+          "evidence": 4
         }
       }
     },
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 48,
-      "tokens": 645653550022,
-      "share": 0.0022,
+      "tokens": 569810346466,
+      "share": 0.0021,
       "percentile": 67.4
     }
   },
@@ -4436,8 +4296,8 @@
         "intelligenceIndex": null,
         "priceIn": 0.95,
         "priceOut": 4,
-        "ttft": 6.19827478840369,
-        "speed": 56.0802655468732,
+        "ttft": 6.26718359879146,
+        "speed": 56.2397043659002,
         "benchmarks": {
           "automationbench-aa": 24.5,
           "hle-diamond": 14.8,
@@ -4491,28 +4351,21 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 55.2,
-      "low": 42.9,
-      "rank": 6,
+      "composite": 47.3,
+      "low": 17.3,
+      "rank": 47,
+      "uncalibrated": 11,
       "dims": {
         "coding": {
-          "value": 47.8,
+          "value": 49.3,
           "evidence": 1
         },
         "reasoning": {
-          "value": 36.3,
-          "evidence": 2
-        },
-        "knowledge": {
-          "value": 83.7,
-          "evidence": 3
-        },
-        "agentic": {
-          "value": 66.8,
-          "evidence": 5
+          "value": 45.3,
+          "evidence": 1
         },
         "longContext": {
-          "value": 72.2,
+          "value": 57.4,
           "evidence": 1
         },
         "vision": {
@@ -4524,16 +4377,16 @@
           "evidence": 1
         },
         "overall": {
-          "value": 55.2,
-          "evidence": 11
+          "value": 47.3,
+          "evidence": 2
         }
       }
     },
     "usage": {
       "source": "openrouter-top-weekly",
-      "rank": 119,
-      "tokens": 70124530883,
-      "share": 0.0002,
+      "rank": 116,
+      "tokens": 67542761742,
+      "share": 0.0003,
       "percentile": 47.8
     }
   },
@@ -4585,8 +4438,8 @@
         "intelligenceIndex": null,
         "priceIn": 0.95,
         "priceOut": 4,
-        "ttft": 6.19827478840369,
-        "speed": 56.0802655468732,
+        "ttft": 6.26718359879146,
+        "speed": 56.2397043659002,
         "benchmarks": {
           "automationbench-aa": 24.5,
           "hle-diamond": 14.8,
@@ -4640,28 +4493,21 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 55.2,
-      "low": 42.9,
-      "rank": 5,
+      "composite": 47.3,
+      "low": 17.3,
+      "rank": 46,
+      "uncalibrated": 11,
       "dims": {
         "coding": {
-          "value": 47.8,
+          "value": 49.3,
           "evidence": 1
         },
         "reasoning": {
-          "value": 36.3,
-          "evidence": 2
-        },
-        "knowledge": {
-          "value": 83.7,
-          "evidence": 3
-        },
-        "agentic": {
-          "value": 66.8,
-          "evidence": 5
+          "value": 45.3,
+          "evidence": 1
         },
         "longContext": {
-          "value": 72.2,
+          "value": 57.4,
           "evidence": 1
         },
         "vision": {
@@ -4673,16 +4519,16 @@
           "evidence": 1
         },
         "overall": {
-          "value": 55.2,
-          "evidence": 11
+          "value": 47.3,
+          "evidence": 2
         }
       }
     },
     "usage": {
       "source": "openrouter-top-weekly",
-      "rank": 119,
-      "tokens": 70124530883,
-      "share": 0.0002,
+      "rank": 116,
+      "tokens": 67542761742,
+      "share": 0.0003,
       "percentile": 47.8
     }
   },
@@ -4734,8 +4580,8 @@
         "intelligenceIndex": null,
         "priceIn": 0.4,
         "priceOut": 1.6,
-        "ttft": 2.74709533938604,
-        "speed": 56.1582347797587,
+        "ttft": 2.76913265371203,
+        "speed": 56.3080979609067,
         "benchmarks": {
           "automationbench-aa": 17.4,
           "hle-diamond": 13.9,
@@ -4793,29 +4639,21 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 53.5,
-      "low": 41.3,
-      "rank": 9,
-      "uncalibrated": 1,
+      "composite": 47,
+      "low": 17,
+      "rank": 49,
+      "uncalibrated": 13,
       "dims": {
         "coding": {
-          "value": 46.1,
+          "value": 48.7,
           "evidence": 1
         },
         "reasoning": {
-          "value": 35.8,
-          "evidence": 2
-        },
-        "knowledge": {
-          "value": 84,
-          "evidence": 3
-        },
-        "agentic": {
-          "value": 62.2,
-          "evidence": 6
+          "value": 45.2,
+          "evidence": 1
         },
         "longContext": {
-          "value": 70.5,
+          "value": 56.8,
           "evidence": 1
         },
         "vision": {
@@ -4823,12 +4661,12 @@
           "evidence": 0
         },
         "speed": {
-          "value": 50.4,
+          "value": 50.3,
           "evidence": 1
         },
         "overall": {
-          "value": 53.5,
-          "evidence": 12
+          "value": 47,
+          "evidence": 2
         }
       }
     }
@@ -4881,8 +4719,8 @@
         "intelligenceIndex": null,
         "priceIn": 0.375,
         "priceOut": 2.25,
-        "ttft": 3.25669575863929,
-        "speed": 113.541524460183,
+        "ttft": 3.29773707709478,
+        "speed": 115.551889442761,
         "benchmarks": {
           "automationbench-aa": 5.2,
           "hle-diamond": 6.9,
@@ -4934,29 +4772,21 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 47,
-      "low": 34.7,
-      "rank": 30,
-      "uncalibrated": 1,
+      "composite": 43.7,
+      "low": 13.7,
+      "rank": 55,
+      "uncalibrated": 10,
       "dims": {
         "coding": {
-          "value": 36.6,
+          "value": 45.5,
           "evidence": 1
         },
         "reasoning": {
-          "value": 26.3,
-          "evidence": 2
-        },
-        "knowledge": {
-          "value": 82.1,
-          "evidence": 3
-        },
-        "agentic": {
-          "value": 59.5,
-          "evidence": 4
+          "value": 41.8,
+          "evidence": 1
         },
         "longContext": {
-          "value": 68.6,
+          "value": 56.2,
           "evidence": 1
         },
         "vision": {
@@ -4968,17 +4798,17 @@
           "evidence": 1
         },
         "overall": {
-          "value": 47,
-          "evidence": 10
+          "value": 43.7,
+          "evidence": 2
         }
       }
     },
     "usage": {
       "source": "openrouter-top-weekly",
-      "rank": 68,
-      "tokens": 268541771920,
-      "share": 0.0009,
-      "percentile": 58.7
+      "rank": 67,
+      "tokens": 262795005041,
+      "share": 0.001,
+      "percentile": 56.5
     }
   },
   "qwen3.5-122b-a10b": {
@@ -5029,8 +4859,8 @@
         "intelligenceIndex": null,
         "priceIn": 0.4,
         "priceOut": 3.2,
-        "ttft": 4.45668851561063,
-        "speed": 103.724945560748,
+        "ttft": 4.51325881628331,
+        "speed": 104.375416712176,
         "benchmarks": {
           "automationbench-aa": 5.5,
           "hle-diamond": 7.3,
@@ -5077,29 +4907,21 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 48.3,
-      "low": 36,
-      "rank": 28,
-      "uncalibrated": 1,
+      "composite": 44.5,
+      "low": 14.5,
+      "rank": 52,
+      "uncalibrated": 10,
       "dims": {
         "coding": {
-          "value": 39.7,
+          "value": 46.6,
           "evidence": 1
         },
         "reasoning": {
-          "value": 27.3,
-          "evidence": 2
-        },
-        "knowledge": {
-          "value": 81.1,
-          "evidence": 3
-        },
-        "agentic": {
-          "value": 60.9,
-          "evidence": 4
+          "value": 42.4,
+          "evidence": 1
         },
         "longContext": {
-          "value": 69.9,
+          "value": 56.6,
           "evidence": 1
         },
         "vision": {
@@ -5107,19 +4929,19 @@
           "evidence": 0
         },
         "speed": {
-          "value": 49.9,
+          "value": 49.8,
           "evidence": 1
         },
         "overall": {
-          "value": 48.3,
-          "evidence": 10
+          "value": 44.5,
+          "evidence": 2
         }
       }
     },
     "usage": {
       "source": "openrouter-top-weekly",
-      "rank": 235,
-      "tokens": 8741124787,
+      "rank": 233,
+      "tokens": 7899777935,
       "share": 0,
       "percentile": 6.5
     }
@@ -5172,8 +4994,8 @@
         "intelligenceIndex": null,
         "priceIn": 0.6,
         "priceOut": 3.6,
-        "ttft": 2.44933427999187,
-        "speed": 48.742405637816,
+        "ttft": 2.46138447137113,
+        "speed": 46.8269624198011,
         "benchmarks": {
           "mmmu-pro": 52.7,
           "humanitys-last-exam": 19.8,
@@ -5217,25 +5039,21 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 57.8,
-      "low": 31.1,
-      "rank": 47,
-      "uncalibrated": 1,
+      "composite": 43.5,
+      "low": 13.5,
+      "rank": 56,
+      "uncalibrated": 6,
       "dims": {
         "reasoning": {
-          "value": 29.2,
-          "evidence": 2
+          "value": 43.6,
+          "evidence": 1
         },
         "knowledge": {
-          "value": 73.8,
-          "evidence": 3
-        },
-        "agentic": {
-          "value": 81.7,
-          "evidence": 2
+          "value": 43.3,
+          "evidence": 1
         },
         "longContext": {
-          "value": 96.4,
+          "value": 65.5,
           "evidence": 1
         },
         "vision": {
@@ -5243,21 +5061,21 @@
           "evidence": 0
         },
         "speed": {
-          "value": 50.6,
+          "value": 50.1,
           "evidence": 1
         },
         "overall": {
-          "value": 57.8,
-          "evidence": 7
+          "value": 43.5,
+          "evidence": 2
         }
       }
     },
     "usage": {
       "source": "openrouter-top-weekly",
-      "rank": 171,
-      "tokens": 28556042479,
+      "rank": 165,
+      "tokens": 26856503628,
       "share": 0.0001,
-      "percentile": 32.6
+      "percentile": 34.8
     }
   },
   "antdigital/Ling-3.1-flash": {
@@ -5311,28 +5129,13 @@
         "ttft": null,
         "speed": null,
         "benchmarks": {
-          "gpqa": 0,
           "hle": 43.5,
-          "terminalbenchHard": 0,
-          "terminalBench21": 0,
           "terminalBench40": 32.8,
           "terminalBenchScience": 4.3,
-          "livecodebench": 0,
           "scicode": 56.8,
-          "tau2": 0,
-          "itBenchSre": 0,
-          "tauBanking": 0,
-          "mmmuPro": 0,
-          "aime25": 0,
           "critpt": 26,
-          "analystAgent": 0,
           "automationBenchPartialScore": 67.5,
-          "frontierCode": 0,
           "frontierCode20": 17,
-          "ifbench": 0,
-          "mkaClimbWsr": 0,
-          "vialsScore": 0,
-          "healthbench": 0,
           "omniscienceAccuracy": 26.5
         },
         "source": "https://artificialanalysis.ai/leaderboards/models"
@@ -5340,26 +5143,18 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 42.7,
-      "low": 31.3,
-      "rank": 45,
-      "uncalibrated": 2,
+      "composite": 51.9,
+      "low": 21.9,
+      "rank": 42,
+      "uncalibrated": 6,
       "dims": {
         "coding": {
-          "value": 29.1,
-          "evidence": 3
+          "value": 52.3,
+          "evidence": 1
         },
         "reasoning": {
-          "value": 53.6,
-          "evidence": 2
-        },
-        "knowledge": {
-          "value": 46.4,
-          "evidence": 4
-        },
-        "agentic": {
-          "value": 43.2,
-          "evidence": 5
+          "value": 51.5,
+          "evidence": 1
         },
         "longContext": {
           "value": 100,
@@ -5370,15 +5165,15 @@
           "evidence": 0
         },
         "overall": {
-          "value": 42.7,
-          "evidence": 14
+          "value": 51.9,
+          "evidence": 2
         }
       }
     },
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 120,
-      "tokens": 70064849151,
+      "tokens": 64531100761,
       "share": 0.0002,
       "percentile": 45.7
     }
@@ -5436,25 +5231,17 @@
         "benchmarks": {
           "gpqa": 91.7,
           "hle": 42.3,
-          "terminalbenchHard": 0,
           "terminalBench21": 83.9,
           "terminalBench40": 41.9,
           "terminalBenchScience": 9.5,
-          "livecodebench": 0,
           "scicode": 59,
-          "tau2": 0,
           "itBenchSre": 46.1,
           "tauBanking": 50.3,
-          "mmmuPro": 0,
-          "aime25": 0,
           "critpt": 19.1,
           "analystAgent": 38.8,
           "automationBenchPartialScore": 62.2,
           "frontierCode": 40.1,
           "frontierCode20": 21.6,
-          "ifbench": 0,
-          "mkaClimbWsr": 0,
-          "vialsScore": 0,
           "healthbench": 54.5,
           "omniscienceAccuracy": 32.3
         },
@@ -5480,26 +5267,22 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 51.6,
-      "low": 36.5,
-      "rank": 24,
-      "uncalibrated": 2,
+      "composite": 52.8,
+      "low": 31.2,
+      "rank": 14,
+      "uncalibrated": 13,
       "dims": {
         "coding": {
-          "value": 41.7,
-          "evidence": 4
+          "value": 53,
+          "evidence": 1
         },
         "reasoning": {
-          "value": 49.5,
-          "evidence": 2
+          "value": 51.1,
+          "evidence": 1
         },
         "knowledge": {
-          "value": 66.2,
-          "evidence": 5
-        },
-        "agentic": {
-          "value": 55.6,
-          "evidence": 5
+          "value": 55.2,
+          "evidence": 2
         },
         "longContext": {
           "value": 99,
@@ -5514,8 +5297,8 @@
           "evidence": 1
         },
         "overall": {
-          "value": 51.6,
-          "evidence": 16
+          "value": 52.8,
+          "evidence": 4
         }
       }
     }
@@ -5571,28 +5354,18 @@
         "ttft": null,
         "speed": null,
         "benchmarks": {
-          "gpqa": 0,
           "hle": 52.5,
-          "terminalbenchHard": 0,
-          "terminalBench21": 0,
           "terminalBench40": 67.2,
           "terminalBenchScience": 34.3,
-          "livecodebench": 0,
           "scicode": 60.8,
-          "tau2": 0,
-          "itBenchSre": 0,
-          "tauBanking": 0,
           "mmmuPro": 83.9,
-          "aime25": 0,
           "critpt": 24.6,
           "analystAgent": 38.8,
           "automationBenchPartialScore": 73.3,
           "frontierCode": 47.1,
           "frontierCode20": 25.5,
-          "ifbench": 0,
           "mkaClimbWsr": 43.9,
           "vialsScore": 45.3,
-          "healthbench": 0,
           "omniscienceAccuracy": 48.9
         },
         "source": "https://artificialanalysis.ai/leaderboards/models"
@@ -5617,26 +5390,22 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 52.9,
-      "low": 37.5,
-      "rank": 21,
-      "uncalibrated": 3,
+      "composite": 53,
+      "low": 31,
+      "rank": 18,
+      "uncalibrated": 12,
       "dims": {
         "coding": {
-          "value": 46.7,
-          "evidence": 4
+          "value": 53.6,
+          "evidence": 1
         },
         "reasoning": {
-          "value": 57.4,
-          "evidence": 2
+          "value": 54.5,
+          "evidence": 1
         },
         "knowledge": {
-          "value": 51.4,
-          "evidence": 5
-        },
-        "agentic": {
-          "value": 56,
-          "evidence": 6
+          "value": 49.7,
+          "evidence": 1
         },
         "longContext": {
           "value": 99,
@@ -5651,8 +5420,8 @@
           "evidence": 1
         },
         "overall": {
-          "value": 52.9,
-          "evidence": 17
+          "value": 53,
+          "evidence": 3
         }
       }
     }
@@ -5708,28 +5477,17 @@
         "ttft": null,
         "speed": null,
         "benchmarks": {
-          "gpqa": 0,
           "hle": 49.4,
-          "terminalbenchHard": 0,
-          "terminalBench21": 0,
           "terminalBench40": 34.8,
           "terminalBenchScience": 5.7,
-          "livecodebench": 0,
           "scicode": 60.9,
-          "tau2": 0,
-          "itBenchSre": 0,
-          "tauBanking": 0,
-          "mmmuPro": 0,
-          "aime25": 0,
           "critpt": 26.6,
           "analystAgent": 37.5,
           "automationBenchPartialScore": 58.6,
           "frontierCode": 45.4,
           "frontierCode20": 24,
-          "ifbench": 0,
           "mkaClimbWsr": 37.3,
           "vialsScore": 43.5,
-          "healthbench": 0,
           "omniscienceAccuracy": 34.8
         },
         "source": "https://artificialanalysis.ai/leaderboards/models"
@@ -5749,26 +5507,22 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 50.3,
-      "low": 33.7,
-      "rank": 35,
-      "uncalibrated": 3,
+      "composite": 51.7,
+      "low": 29.7,
+      "rank": 22,
+      "uncalibrated": 11,
       "dims": {
         "coding": {
-          "value": 46.2,
-          "evidence": 4
+          "value": 53.6,
+          "evidence": 1
         },
         "reasoning": {
-          "value": 56.8,
-          "evidence": 2
+          "value": 53.4,
+          "evidence": 1
         },
         "knowledge": {
-          "value": 46.2,
-          "evidence": 5
-        },
-        "agentic": {
-          "value": 50.2,
-          "evidence": 6
+          "value": 45.6,
+          "evidence": 1
         },
         "longContext": {
           "value": 99,
@@ -5779,15 +5533,15 @@
           "evidence": 0
         },
         "overall": {
-          "value": 50.3,
-          "evidence": 17
+          "value": 51.7,
+          "evidence": 3
         }
       }
     },
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 232,
-      "tokens": 9410286595,
+      "tokens": 8219087479,
       "share": 0,
       "percentile": 8.7
     }
@@ -5845,25 +5599,17 @@
         "benchmarks": {
           "gpqa": 91.7,
           "hle": 42.3,
-          "terminalbenchHard": 0,
           "terminalBench21": 83.9,
           "terminalBench40": 41.9,
           "terminalBenchScience": 9.5,
-          "livecodebench": 0,
           "scicode": 59,
-          "tau2": 0,
           "itBenchSre": 46.1,
           "tauBanking": 50.3,
-          "mmmuPro": 0,
-          "aime25": 0,
           "critpt": 19.1,
           "analystAgent": 38.8,
           "automationBenchPartialScore": 62.2,
           "frontierCode": 40.1,
           "frontierCode20": 21.6,
-          "ifbench": 0,
-          "mkaClimbWsr": 0,
-          "vialsScore": 0,
           "healthbench": 54.5,
           "omniscienceAccuracy": 32.3
         },
@@ -5873,25 +5619,17 @@
     "ranking": {
       "status": "measured",
       "composite": 52.1,
-      "low": 40.7,
-      "rank": 12,
-      "uncalibrated": 2,
+      "low": 22.1,
+      "rank": 40,
+      "uncalibrated": 11,
       "dims": {
         "coding": {
-          "value": 37.3,
-          "evidence": 3
+          "value": 53,
+          "evidence": 1
         },
         "reasoning": {
-          "value": 49.5,
-          "evidence": 2
-        },
-        "knowledge": {
-          "value": 76.6,
-          "evidence": 4
-        },
-        "agentic": {
-          "value": 55.6,
-          "evidence": 5
+          "value": 51.1,
+          "evidence": 1
         },
         "longContext": {
           "value": 99,
@@ -5903,16 +5641,16 @@
         },
         "overall": {
           "value": 52.1,
-          "evidence": 14
+          "evidence": 2
         }
       }
     },
     "usage": {
       "source": "openrouter-top-weekly",
-      "rank": 173,
-      "tokens": 27292016459,
+      "rank": 168,
+      "tokens": 25956827856,
       "share": 0.0001,
-      "percentile": 28.3
+      "percentile": 32.6
     }
   },
   "ZHIPU/GLM-5.3-FlashX": {
@@ -5968,25 +5706,17 @@
         "benchmarks": {
           "gpqa": 91.7,
           "hle": 42.3,
-          "terminalbenchHard": 0,
           "terminalBench21": 83.9,
           "terminalBench40": 41.9,
           "terminalBenchScience": 9.5,
-          "livecodebench": 0,
           "scicode": 59,
-          "tau2": 0,
           "itBenchSre": 46.1,
           "tauBanking": 50.3,
-          "mmmuPro": 0,
-          "aime25": 0,
           "critpt": 19.1,
           "analystAgent": 38.8,
           "automationBenchPartialScore": 62.2,
           "frontierCode": 40.1,
           "frontierCode20": 21.6,
-          "ifbench": 0,
-          "mkaClimbWsr": 0,
-          "vialsScore": 0,
           "healthbench": 54.5,
           "omniscienceAccuracy": 32.3
         },
@@ -5996,25 +5726,17 @@
     "ranking": {
       "status": "measured",
       "composite": 52.1,
-      "low": 40.7,
-      "rank": 13,
-      "uncalibrated": 2,
+      "low": 22.1,
+      "rank": 41,
+      "uncalibrated": 11,
       "dims": {
         "coding": {
-          "value": 37.3,
-          "evidence": 3
+          "value": 53,
+          "evidence": 1
         },
         "reasoning": {
-          "value": 49.5,
-          "evidence": 2
-        },
-        "knowledge": {
-          "value": 76.6,
-          "evidence": 4
-        },
-        "agentic": {
-          "value": 55.6,
-          "evidence": 5
+          "value": 51.1,
+          "evidence": 1
         },
         "longContext": {
           "value": 99,
@@ -6026,14 +5748,14 @@
         },
         "overall": {
           "value": 52.1,
-          "evidence": 14
+          "evidence": 2
         }
       }
     },
     "usage": {
       "source": "openrouter-top-weekly",
-      "rank": 87,
-      "tokens": 151649213451,
+      "rank": 84,
+      "tokens": 144124263538,
       "share": 0.0005,
       "percentile": 52.2
     }
@@ -6089,28 +5811,17 @@
         "ttft": null,
         "speed": null,
         "benchmarks": {
-          "gpqa": 0,
           "hle": 43.3,
-          "terminalbenchHard": 0,
-          "terminalBench21": 0,
           "terminalBench40": 33.8,
           "terminalBenchScience": 12.9,
-          "livecodebench": 0,
           "scicode": 55.9,
-          "tau2": 0,
-          "itBenchSre": 0,
-          "tauBanking": 0,
           "mmmuPro": 80.6,
-          "aime25": 0,
           "critpt": 24,
-          "analystAgent": 0,
           "automationBenchPartialScore": 66.6,
           "frontierCode": 43.7,
           "frontierCode20": 28.5,
-          "ifbench": 0,
           "mkaClimbWsr": 38.5,
           "vialsScore": 40.4,
-          "healthbench": 0,
           "omniscienceAccuracy": 39.6
         },
         "source": "https://artificialanalysis.ai/leaderboards/models"
@@ -6132,26 +5843,22 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 46.8,
-      "low": 33.7,
-      "rank": 36,
-      "uncalibrated": 2,
+      "composite": 49.8,
+      "low": 27.8,
+      "rank": 29,
+      "uncalibrated": 9,
       "dims": {
         "coding": {
-          "value": 38,
-          "evidence": 3
+          "value": 52,
+          "evidence": 1
         },
         "reasoning": {
-          "value": 52.5,
-          "evidence": 2
+          "value": 51.4,
+          "evidence": 1
         },
         "knowledge": {
-          "value": 45.9,
-          "evidence": 5
-        },
-        "agentic": {
-          "value": 51.5,
-          "evidence": 5
+          "value": 43.5,
+          "evidence": 1
         },
         "longContext": {
           "value": 99,
@@ -6166,16 +5873,16 @@
           "evidence": 1
         },
         "overall": {
-          "value": 46.8,
-          "evidence": 15
+          "value": 49.8,
+          "evidence": 3
         }
       }
     },
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 3,
-      "tokens": 18003724716547,
-      "share": 0.0622,
+      "tokens": 16115853208795,
+      "share": 0.0608,
       "percentile": 97.8
     }
   },
@@ -6232,26 +5939,15 @@
         "benchmarks": {
           "gpqa": 92.8,
           "hle": 41,
-          "terminalbenchHard": 0,
           "terminalBench21": 78.7,
           "terminalBench40": 14.1,
           "terminalBenchScience": 5.7,
-          "livecodebench": 0,
           "scicode": 51,
-          "tau2": 0,
-          "itBenchSre": 0,
           "tauBanking": 39.6,
-          "mmmuPro": 0,
-          "aime25": 0,
           "critpt": 18,
-          "analystAgent": 0,
           "automationBenchPartialScore": 56.7,
           "frontierCode": 38.8,
           "frontierCode20": 17.1,
-          "ifbench": 0,
-          "mkaClimbWsr": 0,
-          "vialsScore": 0,
-          "healthbench": 0,
           "omniscienceAccuracy": 45.2
         },
         "source": "https://artificialanalysis.ai/leaderboards/models"
@@ -6264,26 +5960,18 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 46.1,
-      "low": 34.7,
-      "rank": 33,
-      "uncalibrated": 2,
+      "composite": 50.5,
+      "low": 20.5,
+      "rank": 44,
+      "uncalibrated": 9,
       "dims": {
         "coding": {
-          "value": 33.7,
-          "evidence": 3
+          "value": 50.3,
+          "evidence": 1
         },
         "reasoning": {
-          "value": 48.3,
-          "evidence": 2
-        },
-        "knowledge": {
-          "value": 66.2,
-          "evidence": 4
-        },
-        "agentic": {
-          "value": 43.7,
-          "evidence": 5
+          "value": 50.6,
+          "evidence": 1
         },
         "longContext": {
           "value": 99,
@@ -6294,16 +5982,16 @@
           "evidence": 0
         },
         "overall": {
-          "value": 46.1,
-          "evidence": 14
+          "value": 50.5,
+          "evidence": 2
         }
       }
     },
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 49,
-      "tokens": 630611728724,
-      "share": 0.0022,
+      "tokens": 568493611399,
+      "share": 0.0021,
       "percentile": 65.2
     }
   },
@@ -6355,8 +6043,8 @@
         "intelligenceIndex": null,
         "priceIn": 0.95,
         "priceOut": 4,
-        "ttft": 6.19827478840369,
-        "speed": 56.0802655468732,
+        "ttft": 6.26718359879146,
+        "speed": 56.2397043659002,
         "benchmarks": {
           "automationbench-aa": 24.5,
           "hle-diamond": 14.8,
@@ -6410,28 +6098,21 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 55.2,
-      "low": 42.9,
-      "rank": 7,
+      "composite": 47.3,
+      "low": 17.3,
+      "rank": 48,
+      "uncalibrated": 11,
       "dims": {
         "coding": {
-          "value": 47.8,
+          "value": 49.3,
           "evidence": 1
         },
         "reasoning": {
-          "value": 36.3,
-          "evidence": 2
-        },
-        "knowledge": {
-          "value": 83.7,
-          "evidence": 3
-        },
-        "agentic": {
-          "value": 66.8,
-          "evidence": 5
+          "value": 45.3,
+          "evidence": 1
         },
         "longContext": {
-          "value": 72.2,
+          "value": 57.4,
           "evidence": 1
         },
         "vision": {
@@ -6443,8 +6124,8 @@
           "evidence": 1
         },
         "overall": {
-          "value": 55.2,
-          "evidence": 11
+          "value": 47.3,
+          "evidence": 2
         }
       }
     }
@@ -6529,8 +6210,8 @@
     },
     "usage": {
       "source": "openrouter-top-weekly",
-      "rank": 293,
-      "tokens": 2874697348,
+      "rank": 294,
+      "tokens": 2761990736,
       "share": 0,
       "percentile": 0
     }
@@ -6621,25 +6302,17 @@
     "ranking": {
       "status": "measured",
       "composite": 52.1,
-      "low": 40.7,
-      "rank": 11,
-      "uncalibrated": 2,
+      "low": 22.1,
+      "rank": 39,
+      "uncalibrated": 11,
       "dims": {
         "coding": {
-          "value": 37.3,
-          "evidence": 3
+          "value": 53,
+          "evidence": 1
         },
         "reasoning": {
-          "value": 49.5,
-          "evidence": 2
-        },
-        "knowledge": {
-          "value": 76.6,
-          "evidence": 4
-        },
-        "agentic": {
-          "value": 55.6,
-          "evidence": 5
+          "value": 51.1,
+          "evidence": 1
         },
         "longContext": {
           "value": 99,
@@ -6651,14 +6324,14 @@
         },
         "overall": {
           "value": 52.1,
-          "evidence": 14
+          "evidence": 2
         }
       }
     },
     "usage": {
       "source": "openrouter-top-weekly",
-      "rank": 293,
-      "tokens": 2874697348,
+      "rank": 294,
+      "tokens": 2761990736,
       "share": 0,
       "percentile": 0
     }
@@ -6743,26 +6416,18 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 47.5,
-      "low": 36.1,
-      "rank": 27,
-      "uncalibrated": 2,
+      "composite": 51.7,
+      "low": 21.7,
+      "rank": 43,
+      "uncalibrated": 9,
       "dims": {
         "coding": {
-          "value": 38,
-          "evidence": 3
+          "value": 52,
+          "evidence": 1
         },
         "reasoning": {
-          "value": 52.5,
-          "evidence": 2
-        },
-        "knowledge": {
-          "value": 49.7,
-          "evidence": 4
-        },
-        "agentic": {
-          "value": 51.5,
-          "evidence": 5
+          "value": 51.4,
+          "evidence": 1
         },
         "longContext": {
           "value": 99,
@@ -6773,8 +6438,8 @@
           "evidence": 0
         },
         "overall": {
-          "value": 47.5,
-          "evidence": 14
+          "value": 51.7,
+          "evidence": 2
         }
       }
     }
@@ -6857,43 +6522,35 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 43.3,
-      "low": 31.7,
-      "rank": 41,
-      "uncalibrated": 2,
+      "composite": 46.1,
+      "low": 16.1,
+      "rank": 51,
+      "uncalibrated": 8,
       "dims": {
         "coding": {
-          "value": 22,
-          "evidence": 3
+          "value": 48,
+          "evidence": 1
         },
         "reasoning": {
-          "value": 30.7,
-          "evidence": 2
-        },
-        "knowledge": {
-          "value": 79.9,
-          "evidence": 3
-        },
-        "agentic": {
-          "value": 58.1,
-          "evidence": 4
+          "value": 44.1,
+          "evidence": 1
         },
         "vision": {
           "value": 0,
           "evidence": 0
         },
         "overall": {
-          "value": 43.3,
-          "evidence": 12
+          "value": 46.1,
+          "evidence": 2
         }
       }
     },
     "usage": {
       "source": "openrouter-top-weekly",
-      "rank": 204,
-      "tokens": 14308811164,
-      "share": 0,
-      "percentile": 19.6
+      "rank": 200,
+      "tokens": 13799117150,
+      "share": 0.0001,
+      "percentile": 23.9
     }
   },
   "kimi/kimi-k3": {
@@ -6994,26 +6651,22 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 51.9,
-      "low": 36.1,
-      "rank": 26,
-      "uncalibrated": 3,
+      "composite": 54.2,
+      "low": 32.6,
+      "rank": 12,
+      "uncalibrated": 14,
       "dims": {
         "coding": {
-          "value": 40.6,
-          "evidence": 5
+          "value": 53.2,
+          "evidence": 1
         },
         "reasoning": {
-          "value": 54,
-          "evidence": 2
+          "value": 52.6,
+          "evidence": 1
         },
         "knowledge": {
-          "value": 67.7,
-          "evidence": 4
-        },
-        "agentic": {
-          "value": 51.6,
-          "evidence": 6
+          "value": 58.4,
+          "evidence": 2
         },
         "vision": {
           "value": 0,
@@ -7024,16 +6677,16 @@
           "evidence": 1
         },
         "overall": {
-          "value": 51.9,
-          "evidence": 17
+          "value": 54.2,
+          "evidence": 4
         }
       }
     },
     "usage": {
       "source": "openrouter-top-weekly",
-      "rank": 32,
-      "tokens": 1349936027308,
-      "share": 0.0047,
+      "rank": 31,
+      "tokens": 1207347484783,
+      "share": 0.0046,
       "percentile": 78.3
     }
   },
@@ -7093,23 +6746,13 @@
           "terminalbenchHard": 50.8,
           "terminalBench21": 77.9,
           "terminalBench40": 1,
-          "terminalBenchScience": 0,
-          "livecodebench": 0,
           "scicode": 51.2,
           "tau2": 99.1,
           "itBenchSre": 42.7,
           "tauBanking": 34.6,
-          "mmmuPro": 0,
-          "aime25": 0,
           "critpt": 20.9,
-          "analystAgent": 0,
           "automationBenchPartialScore": 28.4,
-          "frontierCode": 0,
-          "frontierCode20": 0,
           "ifbench": 73.3,
-          "mkaClimbWsr": 0,
-          "vialsScore": 0,
-          "healthbench": 0,
           "omniscienceAccuracy": 21.1
         },
         "source": "https://artificialanalysis.ai/leaderboards/models"
@@ -7132,26 +6775,22 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 48,
-      "low": 35.2,
-      "rank": 29,
-      "uncalibrated": 2,
+      "composite": 51.5,
+      "low": 29.9,
+      "rank": 21,
+      "uncalibrated": 10,
       "dims": {
         "coding": {
-          "value": 24.4,
-          "evidence": 3
+          "value": 50.4,
+          "evidence": 1
         },
         "reasoning": {
-          "value": 49.8,
-          "evidence": 2
+          "value": 50.7,
+          "evidence": 1
         },
         "knowledge": {
-          "value": 64.7,
-          "evidence": 5
-        },
-        "agentic": {
-          "value": 62.7,
-          "evidence": 5
+          "value": 54.5,
+          "evidence": 2
         },
         "vision": {
           "value": 0,
@@ -7162,16 +6801,16 @@
           "evidence": 1
         },
         "overall": {
-          "value": 48,
-          "evidence": 15
+          "value": 51.5,
+          "evidence": 4
         }
       }
     },
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 35,
-      "tokens": 1069350510546,
-      "share": 0.0037,
+      "tokens": 960172231451,
+      "share": 0.0036,
       "percentile": 76.1
     }
   },
@@ -7231,23 +6870,13 @@
           "terminalbenchHard": 43.2,
           "terminalBench21": 61.8,
           "terminalBench40": 2,
-          "terminalBenchScience": 0,
-          "livecodebench": 0,
           "scicode": 44.8,
           "tau2": 97.7,
           "itBenchSre": 40.3,
           "tauBanking": 13.6,
-          "mmmuPro": 0,
-          "aime25": 0,
           "critpt": 4.6,
-          "analystAgent": 0,
           "automationBenchPartialScore": 20.3,
-          "frontierCode": 0,
-          "frontierCode20": 0,
-          "ifbench": 76.3,
-          "mkaClimbWsr": 0,
-          "vialsScore": 0,
-          "healthbench": 0
+          "ifbench": 76.3
         },
         "source": "https://artificialanalysis.ai/leaderboards/models"
       },
@@ -7268,41 +6897,37 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 43,
-      "low": 26.8,
-      "rank": 57,
-      "uncalibrated": 2,
+      "composite": 46.3,
+      "low": 24.3,
+      "rank": 36,
+      "uncalibrated": 9,
       "dims": {
         "coding": {
-          "value": 22.3,
-          "evidence": 3
+          "value": 48.3,
+          "evidence": 1
         },
         "reasoning": {
-          "value": 36.2,
-          "evidence": 2
+          "value": 47,
+          "evidence": 1
         },
         "knowledge": {
-          "value": 66.5,
-          "evidence": 4
-        },
-        "agentic": {
-          "value": 59.7,
-          "evidence": 5
+          "value": 42,
+          "evidence": 1
         },
         "vision": {
           "value": 0,
           "evidence": 0
         },
         "overall": {
-          "value": 43,
-          "evidence": 14
+          "value": 46.3,
+          "evidence": 3
         }
       }
     },
     "usage": {
       "source": "openrouter-top-weekly",
-      "rank": 184,
-      "tokens": 23162918556,
+      "rank": 178,
+      "tokens": 21872657830,
       "share": 0.0001,
       "percentile": 26.1
     }
@@ -7401,26 +7026,22 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 44.5,
-      "low": 31.4,
-      "rank": 44,
-      "uncalibrated": 2,
+      "composite": 51.3,
+      "low": 29.7,
+      "rank": 24,
+      "uncalibrated": 10,
       "dims": {
         "coding": {
-          "value": 24.5,
-          "evidence": 3
+          "value": 50.5,
+          "evidence": 1
         },
         "reasoning": {
-          "value": 41.6,
-          "evidence": 2
+          "value": 49.5,
+          "evidence": 1
         },
         "knowledge": {
-          "value": 66.6,
-          "evidence": 4
-        },
-        "agentic": {
-          "value": 56.6,
-          "evidence": 5
+          "value": 55.5,
+          "evidence": 2
         },
         "vision": {
           "value": 0,
@@ -7431,15 +7052,15 @@
           "evidence": 1
         },
         "overall": {
-          "value": 44.5,
-          "evidence": 14
+          "value": 51.3,
+          "evidence": 4
         }
       }
     },
     "usage": {
       "source": "openrouter-top-weekly",
-      "rank": 97,
-      "tokens": 110473276390,
+      "rank": 98,
+      "tokens": 98238952714,
       "share": 0.0004,
       "percentile": 50
     }
@@ -7528,41 +7149,33 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 41.1,
-      "low": 29.6,
+      "composite": 46.2,
+      "low": 16.2,
       "rank": 50,
-      "uncalibrated": 2,
+      "uncalibrated": 8,
       "dims": {
         "coding": {
-          "value": 21.6,
-          "evidence": 3
+          "value": 47.6,
+          "evidence": 1
         },
         "reasoning": {
-          "value": 30.9,
-          "evidence": 2
-        },
-        "knowledge": {
-          "value": 79.9,
-          "evidence": 3
-        },
-        "agentic": {
-          "value": 49.2,
-          "evidence": 5
+          "value": 44.7,
+          "evidence": 1
         },
         "vision": {
           "value": 0,
           "evidence": 0
         },
         "overall": {
-          "value": 41.1,
-          "evidence": 13
+          "value": 46.2,
+          "evidence": 2
         }
       }
     },
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 207,
-      "tokens": 13718774178,
+      "tokens": 12189869831,
       "share": 0,
       "percentile": 17.4
     }
@@ -7661,26 +7274,22 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 44.5,
-      "low": 31.4,
-      "rank": 43,
-      "uncalibrated": 2,
+      "composite": 51.3,
+      "low": 29.7,
+      "rank": 23,
+      "uncalibrated": 10,
       "dims": {
         "coding": {
-          "value": 24.5,
-          "evidence": 3
+          "value": 50.5,
+          "evidence": 1
         },
         "reasoning": {
-          "value": 41.6,
-          "evidence": 2
+          "value": 49.5,
+          "evidence": 1
         },
         "knowledge": {
-          "value": 66.6,
-          "evidence": 4
-        },
-        "agentic": {
-          "value": 56.6,
-          "evidence": 5
+          "value": 55.5,
+          "evidence": 2
         },
         "vision": {
           "value": 0,
@@ -7691,15 +7300,15 @@
           "evidence": 1
         },
         "overall": {
-          "value": 44.5,
-          "evidence": 14
+          "value": 51.3,
+          "evidence": 4
         }
       }
     },
     "usage": {
       "source": "openrouter-top-weekly",
-      "rank": 97,
-      "tokens": 110473276390,
+      "rank": 98,
+      "tokens": 98238952714,
       "share": 0.0004,
       "percentile": 50
     }
@@ -7760,23 +7369,13 @@
           "terminalbenchHard": 43.2,
           "terminalBench21": 61.8,
           "terminalBench40": 2,
-          "terminalBenchScience": 0,
-          "livecodebench": 0,
           "scicode": 44.8,
           "tau2": 97.7,
           "itBenchSre": 40.3,
           "tauBanking": 13.6,
-          "mmmuPro": 0,
-          "aime25": 0,
           "critpt": 4.6,
-          "analystAgent": 0,
           "automationBenchPartialScore": 20.3,
-          "frontierCode": 0,
-          "frontierCode20": 0,
-          "ifbench": 76.3,
-          "mkaClimbWsr": 0,
-          "vialsScore": 0,
-          "healthbench": 0
+          "ifbench": 76.3
         },
         "source": "https://artificialanalysis.ai/leaderboards/models"
       },
@@ -7797,41 +7396,37 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 43,
-      "low": 26.8,
-      "rank": 56,
-      "uncalibrated": 2,
+      "composite": 46.3,
+      "low": 24.3,
+      "rank": 35,
+      "uncalibrated": 9,
       "dims": {
         "coding": {
-          "value": 22.3,
-          "evidence": 3
+          "value": 48.3,
+          "evidence": 1
         },
         "reasoning": {
-          "value": 36.2,
-          "evidence": 2
+          "value": 47,
+          "evidence": 1
         },
         "knowledge": {
-          "value": 66.5,
-          "evidence": 4
-        },
-        "agentic": {
-          "value": 59.7,
-          "evidence": 5
+          "value": 42,
+          "evidence": 1
         },
         "vision": {
           "value": 0,
           "evidence": 0
         },
         "overall": {
-          "value": 43,
-          "evidence": 14
+          "value": 46.3,
+          "evidence": 3
         }
       }
     },
     "usage": {
       "source": "openrouter-top-weekly",
-      "rank": 184,
-      "tokens": 23162918556,
+      "rank": 178,
+      "tokens": 21872657830,
       "share": 0.0001,
       "percentile": 26.1
     }
@@ -7915,41 +7510,33 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 45.1,
-      "low": 33.6,
-      "rank": 38,
-      "uncalibrated": 2,
+      "composite": 44.2,
+      "low": 14.2,
+      "rank": 54,
+      "uncalibrated": 9,
       "dims": {
         "coding": {
-          "value": 46.6,
-          "evidence": 3
+          "value": 46,
+          "evidence": 1
         },
         "reasoning": {
-          "value": 27.9,
-          "evidence": 2
-        },
-        "knowledge": {
-          "value": 78.9,
-          "evidence": 3
-        },
-        "agentic": {
-          "value": 39.5,
-          "evidence": 5
+          "value": 42.4,
+          "evidence": 1
         },
         "vision": {
           "value": 0,
           "evidence": 0
         },
         "overall": {
-          "value": 45.1,
-          "evidence": 13
+          "value": 44.2,
+          "evidence": 2
         }
       }
     },
     "usage": {
       "source": "openrouter-top-weekly",
-      "rank": 258,
-      "tokens": 5581746394,
+      "rank": 261,
+      "tokens": 4975958203,
       "share": 0,
       "percentile": 2.2
     }
@@ -8037,34 +7624,22 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 38.6,
-      "low": 27,
-      "rank": 55,
-      "uncalibrated": 2,
+      "composite": 46.2,
+      "low": 8.2,
+      "rank": 58,
+      "uncalibrated": 7,
       "dims": {
-        "coding": {
-          "value": 7.3,
-          "evidence": 3
-        },
         "reasoning": {
-          "value": 34.2,
-          "evidence": 2
-        },
-        "knowledge": {
-          "value": 79.9,
-          "evidence": 3
-        },
-        "agentic": {
-          "value": 52.4,
-          "evidence": 4
+          "value": 46.2,
+          "evidence": 1
         },
         "vision": {
           "value": 0,
           "evidence": 0
         },
         "overall": {
-          "value": 38.6,
-          "evidence": 12
+          "value": 46.2,
+          "evidence": 1
         }
       }
     }
@@ -8152,41 +7727,29 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 38.6,
-      "low": 27,
-      "rank": 54,
-      "uncalibrated": 2,
+      "composite": 46.2,
+      "low": 8.2,
+      "rank": 57,
+      "uncalibrated": 7,
       "dims": {
-        "coding": {
-          "value": 7.3,
-          "evidence": 3
-        },
         "reasoning": {
-          "value": 34.2,
-          "evidence": 2
-        },
-        "knowledge": {
-          "value": 79.9,
-          "evidence": 3
-        },
-        "agentic": {
-          "value": 52.4,
-          "evidence": 4
+          "value": 46.2,
+          "evidence": 1
         },
         "vision": {
           "value": 0,
           "evidence": 0
         },
         "overall": {
-          "value": 38.6,
-          "evidence": 12
+          "value": 46.2,
+          "evidence": 1
         }
       }
     },
     "usage": {
       "source": "openrouter-top-weekly",
-      "rank": 226,
-      "tokens": 10967837799,
+      "rank": 221,
+      "tokens": 10363955145,
       "share": 0,
       "percentile": 13
     }
@@ -8246,24 +7809,14 @@
           "hle": 29.6,
           "terminalbenchHard": 39.4,
           "terminalBench21": 55.4,
-          "terminalBench40": 0,
-          "terminalBenchScience": 0,
-          "livecodebench": 0,
           "scicode": 50.1,
           "tau2": 84.8,
           "itBenchSre": 26.5,
           "tauBanking": 9.9,
-          "mmmuPro": 0,
-          "aime25": 0,
           "critpt": 0.6,
           "analystAgent": 11.3,
           "automationBenchPartialScore": 4.4,
-          "frontierCode": 0,
-          "frontierCode20": 0,
-          "ifbench": 75.7,
-          "mkaClimbWsr": 0,
-          "vialsScore": 0,
-          "healthbench": 0
+          "ifbench": 75.7
         },
         "source": "https://artificialanalysis.ai/leaderboards/models"
       },
@@ -8279,41 +7832,37 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 41.2,
-      "low": 25,
-      "rank": 61,
-      "uncalibrated": 2,
+      "composite": 46.7,
+      "low": 24.7,
+      "rank": 33,
+      "uncalibrated": 8,
       "dims": {
         "coding": {
-          "value": 24,
-          "evidence": 3
+          "value": 50,
+          "evidence": 1
         },
         "reasoning": {
-          "value": 33.9,
-          "evidence": 2
+          "value": 46.8,
+          "evidence": 1
         },
         "knowledge": {
-          "value": 65.9,
-          "evidence": 4
-        },
-        "agentic": {
-          "value": 53.2,
-          "evidence": 5
+          "value": 41.2,
+          "evidence": 1
         },
         "vision": {
           "value": 0,
           "evidence": 0
         },
         "overall": {
-          "value": 41.2,
-          "evidence": 14
+          "value": 46.7,
+          "evidence": 3
         }
       }
     },
     "usage": {
       "source": "openrouter-top-weekly",
-      "rank": 160,
-      "tokens": 32825916769,
+      "rank": 154,
+      "tokens": 31807609234,
       "share": 0.0001,
       "percentile": 37
     }
@@ -8397,41 +7946,33 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 45.1,
-      "low": 33.6,
-      "rank": 37,
-      "uncalibrated": 2,
+      "composite": 44.2,
+      "low": 14.2,
+      "rank": 53,
+      "uncalibrated": 9,
       "dims": {
         "coding": {
-          "value": 46.6,
-          "evidence": 3
+          "value": 46,
+          "evidence": 1
         },
         "reasoning": {
-          "value": 27.9,
-          "evidence": 2
-        },
-        "knowledge": {
-          "value": 78.9,
-          "evidence": 3
-        },
-        "agentic": {
-          "value": 39.5,
-          "evidence": 5
+          "value": 42.4,
+          "evidence": 1
         },
         "vision": {
           "value": 0,
           "evidence": 0
         },
         "overall": {
-          "value": 45.1,
-          "evidence": 13
+          "value": 44.2,
+          "evidence": 2
         }
       }
     },
     "usage": {
       "source": "openrouter-top-weekly",
-      "rank": 258,
-      "tokens": 5581746394,
+      "rank": 261,
+      "tokens": 4975958203,
       "share": 0,
       "percentile": 2.2
     }
@@ -8519,34 +8060,22 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 46.3,
-      "low": 34.7,
-      "rank": 32,
-      "uncalibrated": 2,
+      "composite": 45.2,
+      "low": 7.2,
+      "rank": 60,
+      "uncalibrated": 8,
       "dims": {
-        "coding": {
-          "value": 36.1,
-          "evidence": 3
-        },
         "reasoning": {
-          "value": 32.6,
-          "evidence": 2
-        },
-        "knowledge": {
-          "value": 79.9,
-          "evidence": 3
-        },
-        "agentic": {
-          "value": 51,
-          "evidence": 4
+          "value": 45.2,
+          "evidence": 1
         },
         "vision": {
           "value": 0,
           "evidence": 0
         },
         "overall": {
-          "value": 46.3,
-          "evidence": 12
+          "value": 45.2,
+          "evidence": 1
         }
       }
     }
@@ -8605,59 +8134,31 @@
           "gpqa": 84.8,
           "hle": 20.5,
           "terminalbenchHard": 34.8,
-          "terminalBench21": 0,
-          "terminalBench40": 0,
-          "terminalBenchScience": 0,
-          "livecodebench": 0,
-          "scicode": 0,
           "tau2": 95.3,
-          "itBenchSre": 0,
-          "tauBanking": 0,
-          "mmmuPro": 0,
-          "aime25": 0,
           "critpt": 1.1,
-          "analystAgent": 0,
-          "frontierCode": 0,
-          "frontierCode20": 0,
-          "ifbench": 71.6,
-          "mkaClimbWsr": 0,
-          "vialsScore": 0,
-          "healthbench": 0,
-          "gdpval": 0
+          "ifbench": 71.6
         },
         "source": "https://artificialanalysis.ai/leaderboards/models"
       }
     },
     "ranking": {
       "status": "measured",
-      "composite": 34.5,
-      "low": 23,
-      "rank": 63,
-      "uncalibrated": 2,
+      "composite": 43.8,
+      "low": 5.8,
+      "rank": 64,
+      "uncalibrated": 5,
       "dims": {
-        "coding": {
-          "value": 7.3,
-          "evidence": 3
-        },
         "reasoning": {
-          "value": 29.6,
-          "evidence": 2
-        },
-        "knowledge": {
-          "value": 69.9,
-          "evidence": 4
-        },
-        "agentic": {
-          "value": 48,
-          "evidence": 4
+          "value": 43.8,
+          "evidence": 1
         },
         "vision": {
           "value": 0,
           "evidence": 0
         },
         "overall": {
-          "value": 34.5,
-          "evidence": 13
+          "value": 43.8,
+          "evidence": 1
         }
       }
     }
@@ -8746,41 +8247,29 @@
     },
     "usage": {
       "source": "openrouter-top-weekly",
-      "rank": 148,
-      "tokens": 38205031922,
+      "rank": 146,
+      "tokens": 34780035229,
       "share": 0.0001,
       "percentile": 39.1
     },
     "ranking": {
       "status": "measured",
-      "composite": 35.7,
-      "low": 24.2,
-      "rank": 62,
-      "uncalibrated": 2,
+      "composite": 44,
+      "low": 6,
+      "rank": 63,
+      "uncalibrated": 7,
       "dims": {
-        "coding": {
-          "value": 7.3,
-          "evidence": 3
-        },
         "reasoning": {
-          "value": 29.8,
-          "evidence": 2
-        },
-        "knowledge": {
-          "value": 69.9,
-          "evidence": 4
-        },
-        "agentic": {
-          "value": 52.9,
-          "evidence": 4
+          "value": 44,
+          "evidence": 1
         },
         "vision": {
           "value": 0,
           "evidence": 0
         },
         "overall": {
-          "value": 35.7,
-          "evidence": 13
+          "value": 44,
+          "evidence": 1
         }
       }
     }
@@ -8864,41 +8353,29 @@
     },
     "usage": {
       "source": "openrouter-top-weekly",
-      "rank": 192,
-      "tokens": 19479653599,
+      "rank": 202,
+      "tokens": 13408460224,
       "share": 0.0001,
-      "percentile": 23.9
+      "percentile": 21.7
     },
     "ranking": {
       "status": "measured",
-      "composite": 37,
-      "low": 25.5,
-      "rank": 60,
-      "uncalibrated": 2,
+      "composite": 44.9,
+      "low": 6.9,
+      "rank": 61,
+      "uncalibrated": 7,
       "dims": {
-        "coding": {
-          "value": 7.3,
-          "evidence": 3
-        },
         "reasoning": {
-          "value": 31.2,
-          "evidence": 2
-        },
-        "knowledge": {
-          "value": 69.9,
-          "evidence": 4
-        },
-        "agentic": {
-          "value": 56.8,
-          "evidence": 4
+          "value": 44.9,
+          "evidence": 1
         },
         "vision": {
           "value": 0,
           "evidence": 0
         },
         "overall": {
-          "value": 37,
-          "evidence": 13
+          "value": 44.9,
+          "evidence": 1
         }
       }
     }
@@ -8957,59 +8434,33 @@
           "gpqa": 83,
           "hle": 23.2,
           "terminalbenchHard": 28.8,
-          "terminalBench21": 0,
-          "terminalBench40": 0,
-          "terminalBenchScience": 0,
           "livecodebench": 81,
-          "scicode": 0,
           "tau2": 85.4,
-          "itBenchSre": 0,
-          "tauBanking": 0,
-          "mmmuPro": 0,
           "aime25": 82.7,
           "critpt": 0.3,
-          "analystAgent": 0,
-          "frontierCode": 0,
-          "frontierCode20": 0,
-          "ifbench": 69.9,
-          "mkaClimbWsr": 0,
-          "vialsScore": 0,
-          "healthbench": 0,
-          "gdpval": 0
+          "ifbench": 69.9
         },
         "source": "https://artificialanalysis.ai/leaderboards/models"
       }
     },
     "ranking": {
       "status": "measured",
-      "composite": 42.6,
-      "low": 31.1,
-      "rank": 48,
-      "uncalibrated": 2,
+      "composite": 44.7,
+      "low": 6.7,
+      "rank": 62,
+      "uncalibrated": 7,
       "dims": {
-        "coding": {
-          "value": 34.3,
-          "evidence": 3
-        },
         "reasoning": {
-          "value": 30.6,
-          "evidence": 2
-        },
-        "knowledge": {
-          "value": 69.9,
-          "evidence": 4
-        },
-        "agentic": {
-          "value": 47.7,
-          "evidence": 4
+          "value": 44.7,
+          "evidence": 1
         },
         "vision": {
           "value": 0,
           "evidence": 0
         },
         "overall": {
-          "value": 42.6,
-          "evidence": 13
+          "value": 44.7,
+          "evidence": 1
         }
       }
     }
@@ -9068,66 +8519,38 @@
           "gpqa": 84.8,
           "hle": 20.5,
           "terminalbenchHard": 34.8,
-          "terminalBench21": 0,
-          "terminalBench40": 0,
-          "terminalBenchScience": 0,
-          "livecodebench": 0,
-          "scicode": 0,
           "tau2": 95.3,
-          "itBenchSre": 0,
-          "tauBanking": 0,
-          "mmmuPro": 0,
-          "aime25": 0,
           "critpt": 1.1,
-          "analystAgent": 0,
-          "frontierCode": 0,
-          "frontierCode20": 0,
-          "ifbench": 71.6,
-          "mkaClimbWsr": 0,
-          "vialsScore": 0,
-          "healthbench": 0,
-          "gdpval": 0
+          "ifbench": 71.6
         },
         "source": "https://artificialanalysis.ai/leaderboards/models"
       }
     },
     "usage": {
       "source": "openrouter-top-weekly",
-      "rank": 238,
-      "tokens": 7846508181,
+      "rank": 241,
+      "tokens": 6953129895,
       "share": 0,
       "percentile": 4.3
     },
     "ranking": {
       "status": "measured",
-      "composite": 34.5,
-      "low": 23,
-      "rank": 64,
-      "uncalibrated": 2,
+      "composite": 43.8,
+      "low": 5.8,
+      "rank": 65,
+      "uncalibrated": 5,
       "dims": {
-        "coding": {
-          "value": 7.3,
-          "evidence": 3
-        },
         "reasoning": {
-          "value": 29.6,
-          "evidence": 2
-        },
-        "knowledge": {
-          "value": 69.9,
-          "evidence": 4
-        },
-        "agentic": {
-          "value": 48,
-          "evidence": 4
+          "value": 43.8,
+          "evidence": 1
         },
         "vision": {
           "value": 0,
           "evidence": 0
         },
         "overall": {
-          "value": 34.5,
-          "evidence": 13
+          "value": 43.8,
+          "evidence": 1
         }
       }
     }
@@ -9225,40 +8648,32 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 172,
-      "tokens": 27474773575,
+      "tokens": 24658837955,
       "share": 0.0001,
-      "percentile": 30.4
+      "percentile": 28.3
     },
     "ranking": {
       "status": "measured",
-      "composite": 38.4,
-      "low": 26.1,
-      "rank": 58,
-      "uncalibrated": 2,
+      "composite": 53,
+      "low": 23,
+      "rank": 38,
+      "uncalibrated": 7,
       "dims": {
-        "coding": {
-          "value": 7.3,
-          "evidence": 3
-        },
         "reasoning": {
-          "value": 35.7,
-          "evidence": 2
+          "value": 47.2,
+          "evidence": 1
         },
         "knowledge": {
-          "value": 78,
-          "evidence": 3
-        },
-        "agentic": {
-          "value": 50.9,
-          "evidence": 4
+          "value": 62.7,
+          "evidence": 1
         },
         "vision": {
           "value": 0,
           "evidence": 0
         },
         "overall": {
-          "value": 38.4,
-          "evidence": 12
+          "value": 53,
+          "evidence": 2
         }
       }
     }
@@ -9346,41 +8761,29 @@
     },
     "usage": {
       "source": "openrouter-top-weekly",
-      "rank": 63,
-      "tokens": 341584251389,
+      "rank": 62,
+      "tokens": 309806720860,
       "share": 0.0012,
       "percentile": 60.9
     },
     "ranking": {
       "status": "measured",
-      "composite": 46.3,
-      "low": 34.7,
-      "rank": 31,
-      "uncalibrated": 2,
+      "composite": 45.2,
+      "low": 7.2,
+      "rank": 59,
+      "uncalibrated": 8,
       "dims": {
-        "coding": {
-          "value": 36.1,
-          "evidence": 3
-        },
         "reasoning": {
-          "value": 32.6,
-          "evidence": 2
-        },
-        "knowledge": {
-          "value": 79.9,
-          "evidence": 3
-        },
-        "agentic": {
-          "value": 51,
-          "evidence": 4
+          "value": 45.2,
+          "evidence": 1
         },
         "vision": {
           "value": 0,
           "evidence": 0
         },
         "overall": {
-          "value": 46.3,
-          "evidence": 12
+          "value": 45.2,
+          "evidence": 1
         }
       }
     }
@@ -9464,34 +8867,22 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 28.9,
-      "low": 17.4,
+      "composite": 38.7,
+      "low": 0.7,
       "rank": 66,
-      "uncalibrated": 2,
+      "uncalibrated": 6,
       "dims": {
-        "coding": {
-          "value": 16.2,
-          "evidence": 3
-        },
         "reasoning": {
-          "value": 21.4,
-          "evidence": 2
-        },
-        "knowledge": {
-          "value": 56.8,
-          "evidence": 4
-        },
-        "agentic": {
-          "value": 33.4,
-          "evidence": 4
+          "value": 38.7,
+          "evidence": 1
         },
         "vision": {
           "value": 0,
           "evidence": 0
         },
         "overall": {
-          "value": 28.9,
-          "evidence": 13
+          "value": 38.7,
+          "evidence": 1
         }
       }
     }
@@ -9575,34 +8966,22 @@
     },
     "ranking": {
       "status": "measured",
-      "composite": 23.4,
-      "low": 11.9,
+      "composite": 38,
+      "low": 0,
       "rank": 67,
-      "uncalibrated": 2,
+      "uncalibrated": 4,
       "dims": {
-        "coding": {
-          "value": 9.7,
-          "evidence": 3
-        },
         "reasoning": {
-          "value": 20.4,
-          "evidence": 2
-        },
-        "knowledge": {
-          "value": 45.6,
-          "evidence": 4
-        },
-        "agentic": {
-          "value": 27.8,
-          "evidence": 4
+          "value": 38,
+          "evidence": 1
         },
         "vision": {
           "value": 0,
           "evidence": 0
         },
         "overall": {
-          "value": 23.4,
-          "evidence": 13
+          "value": 38,
+          "evidence": 1
         }
       }
     }

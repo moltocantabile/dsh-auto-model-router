@@ -1085,7 +1085,9 @@ export function extractArtificialAnalysisModelPage(html, index) {
         const scores = {}
         for (const key of MODEL_PAGE_BENCHMARKS) {
           const value = Number(row[key])
-          if (Number.isFinite(value) && value >= 0 && value <= 1) scores[key] = Math.round(value * 1000) / 10
+          // Zero means "not run" on a model page as well; keeping it would let the
+          // ranking engine average a non-test into the dimension.
+          if (Number.isFinite(value) && value > 0 && value <= 1) scores[key] = Math.round(value * 1000) / 10
         }
         if (Object.keys(scores).length >= 4) {
           const value = { source: ARTIFICIAL_ANALYSIS_URL, name: row.name, benchmarks: scores }

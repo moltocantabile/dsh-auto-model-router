@@ -45,7 +45,7 @@ import { infoFor, knowledgeProvider, routingNote, applyDataset, applyProviderAli
 import { refreshCatalog } from './refresh.js'
 import { DEFAULT_SUMMARIZER, buildDigestPrompt, callChatModel, createDigestCache } from './summarize.js'
 import { derivedRouteEnvelopes, mergeEnvelopes } from './refresh.js'
-import { selectForTier, describeRanking, costIndex, modelsByQuality } from './select.js'
+import { selectForTier, describeRanking, costIndex, modelsByQuality, alignedFloor } from './select.js'
 import { selectRoute as recordSelection } from './route.js'
 import { TIER_IDS, assignTiers, boardMetaOf, membershipOf } from './tiers.js'
 
@@ -159,9 +159,41 @@ export function apply(ctx, input) {
   const operatorRoutes = JSON.parse(JSON.stringify(routes))
   let derivedEnvelopes = loadRuntimeDerived()
 
+  /**
+   * Translate the operator's hand-written quality floors onto the measured axis.
+   *
+   * The floor was authored against the legacy compiled score. A model whose legacy
+   * value is stale would clear a ceiling the ranking says it misses, so the floor's
+   * *policy* (what share of the catalog it kept out) is moved onto the axis that
+   * now measures the models. The operator's original number is kept beside it.
+   */
+  function alignedOperatorFloors(routes) {
+    const legacy = []
+    const aligned = []
+    for (const entry of Object.values(MODEL_INFO)) {
+      if (Number.isFinite(entry?.quality)) legacy.push(entry.quality)
+      const low = Number.isFinite(entry?.ranking?.low) ? entry.ranking.low : null
+      if (low !== null) aligned.push(low)
+    }
+    const out = {}
+    for (const [id, route] of Object.entries(routes ?? {})) {
+      const envelope = route?.envelope ?? {}
+      if (!Number.isFinite(envelope.minQuality) || envelope.derived === true || envelope.source === 'derived') {
+        out[id] = route
+        continue
+      }
+      const translated = alignedFloor(envelope.minQuality, legacy, aligned)
+      out[id] = translated === envelope.minQuality
+        ? route
+        : { ...route, envelope: { ...envelope, minQuality: translated, operatorMinQuality: envelope.minQuality } }
+    }
+    return out
+  }
+
   /** Recompute tier envelopes from the operator config plus the derived cut-offs. */
   function applyEnvelopes() {
-    const merged = mergeEnvelopes(operatorRoutes, derivedEnvelopes, config.tiers?.envelopeMode ?? 'merge')
+    const operator = alignedOperatorFloors(operatorRoutes)
+    const merged = mergeEnvelopes(operator, derivedEnvelopes, config.tiers?.envelopeMode ?? 'merge')
     for (const [id, route] of Object.entries(merged)) {
       if (routes[id] === undefined) continue
       routes[id].envelope = route.envelope

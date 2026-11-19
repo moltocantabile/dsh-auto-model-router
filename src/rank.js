@@ -86,6 +86,16 @@ export const COMPOSITE_WEIGHTS = Object.freeze({
 export const MIN_ALIGN_OVERLAP = 3
 /** At or above this many overlaps the alignment fits a slope as well as an offset. */
 export const MIN_SLOPE_OVERLAP = 8
+/**
+ * Overlap floor for the *dimension-level* fallback, which is weaker than equating
+ * the same benchmark: it equates whole-dimension means across models whose
+ * benchmark mix differs, so four overlapping models can shift a dimension by
+ * tens of points (measured residual RMS 16-18). The same-benchmark path keeps the
+ * lower floor because a shared benchmark really is comparable.
+ */
+export const MIN_DIMENSION_OVERLAP = 6
+/** Weight of the neutral prior when a dimension rests on few benchmarks. */
+export const EVIDENCE_PRIOR_WEIGHT = 2
 /** Fraction of a fitted slope's distance from 1 that is kept (shrinkage). */
 export const SLOPE_SHRINK = 0.5
 /** Two independent sources further apart than this are reported as disagreeing. */
@@ -117,6 +127,8 @@ const DEFAULTS = Object.freeze({
   cnyPerUsd: PRICE_CNY_PER_USD,
   minAlignOverlap: MIN_ALIGN_OVERLAP,
   minSlopeOverlap: MIN_SLOPE_OVERLAP,
+  minDimensionOverlap: MIN_DIMENSION_OVERLAP,
+  evidencePriorWeight: EVIDENCE_PRIOR_WEIGHT,
   slopeShrink: SLOPE_SHRINK,
   disagreementPoints: DISAGREEMENT_POINTS,
   minIndexFit: MIN_INDEX_FIT,
@@ -607,8 +619,13 @@ export function sourceObservations(entry, analysisRow = null) {
   if (aaStored !== null && typeof aaStored === 'object') {
     for (const [id, value] of Object.entries(aaStored)) {
       const score = num(value)
-      if (score === null || score < 0 || score > 100) {
-        if (score !== null) indexes.push({ channel: 'aa', family: 'aa', canonical: normalizeLabel(id), raw: score })
+      // A zero is "the benchmark did not run", not "the model scored nothing".
+      // Averaging those zeros into a dimension understated every model AA did not
+      // test in full -- `coding = mean(livecodebench 97.2, scicode 0, ...) = 36`
+      // is an artefact, not a measurement. The extractor keeps them out too; this
+      // is the consumer-side guard for catalogs written before that change.
+      if (score === null || score <= 0 || score > 100) {
+        if (score !== null && score > 100) indexes.push({ channel: 'aa', family: 'aa', canonical: normalizeLabel(id), raw: score })
         continue
       }
       const hit = classifyBenchmark(id, 'aa')
@@ -619,11 +636,11 @@ export function sourceObservations(entry, analysisRow = null) {
   } else if (analysisRow !== null && typeof analysisRow === 'object') {
     for (const [id, value] of Object.entries(analysisRow.scores ?? {})) {
       const raw = num(value)
-      if (raw === null) continue
+      if (raw === null || raw <= 0) continue
       // AA's `scores` mixes 0-1 percentages with index-scaled point values
       // (gdpval-normalized ~1e3, aa-3d ~1e3, sometimes negative). Only in-range
       // fractions are percentages; everything else is an index signal.
-      if (raw < 0 || raw > 1) {
+      if (raw > 1) {
         indexes.push({ channel: 'aa', family: 'aa', canonical: normalizeLabel(id), raw })
         continue
       }
@@ -731,6 +748,22 @@ function axisAnchors(entries) {
   return { byDimension, byBenchmark }
 }
 
+/**
+ * `fitAlignment`'s option names, taken from the ranking settings.
+ *
+ * The settings call these thresholds `minAlignOverlap`/`minSlopeOverlap` while
+ * `fitAlignment` reads `minOverlap`/`minSlopeOverlap`; passing the settings object
+ * straight through left both undefined, so every fit silently used the hard-coded
+ * default. That is why raising the threshold changed nothing.
+ */
+function alignmentOptions(settings, minOverlap = settings.minAlignOverlap) {
+  return {
+    minOverlap,
+    minSlopeOverlap: settings.minSlopeOverlap,
+    slopeShrink: settings.slopeShrink,
+  }
+}
+
 function fitChannels(entries, settings) {
   const anchors = axisAnchors(entries)
   const benchmarkFits = new Map()
@@ -765,7 +798,7 @@ function fitChannels(entries, settings) {
         if (values.length === 0) continue
         pairs.push([axis, mean(values)])
       }
-      const fit = fitAlignment(pairs, settings)
+      const fit = fitAlignment(pairs, alignmentOptions(settings))
       if (fit !== null) {
         benchmarkFits.set(`${channel}:${canonical}`, fit)
         calibration.benchmarks[channel][canonical] = { ...fit }
@@ -789,7 +822,7 @@ function fitChannels(entries, settings) {
         if (values.length === 0) continue
         pairs.push([axis, mean(values)])
       }
-      const fit = fitAlignment(pairs, settings)
+      const fit = fitAlignment(pairs, alignmentOptions(settings, settings.minDimensionOverlap ?? MIN_DIMENSION_OVERLAP))
       if (fit !== null) {
         dimFits.set(`${channel}:${dim}`, fit)
         calibration[channel][dim] = { ...fit, mode: 'dimension' }
@@ -870,8 +903,16 @@ function familyMeans(observations) {
 
 function mergedDimension(dim, canonicalItems, observations, settings) {
   const values = canonicalItems.map((item) => item.value)
-  const estimate = round1(mean(values))
   const evidence = canonicalItems.length
+  // Shrink a thin estimate toward the neutral prior. One benchmark is an opinion
+  // about a dimension, not a measurement of it: without shrinkage a model with a
+  // single high score (say livecodebench 97 aligned) got a whole-dimension value
+  // of 97 and could outrank fully measured models. Weight 2 means one observation
+  // counts a third, ten count five sixths -- and nothing is hidden: the evidence
+  // count and `prior-shrunk` flag travel with the estimate.
+  const observed = mean(values)
+  const priorWeight = num(settings.evidencePriorWeight, EVIDENCE_PRIOR_WEIGHT)
+  const estimate = round1((evidence * observed + priorWeight * 50) / (evidence + priorWeight))
   const families = familyMeans(observations)
   const familyKeys = Object.keys(families)
   const spread = familyKeys.length >= 2 ? round1(Math.max(...Object.values(families)) - Math.min(...Object.values(families))) : 0
@@ -880,6 +921,7 @@ function mergedDimension(dim, canonicalItems, observations, settings) {
   else if (spread > settings.disagreementPoints) flags.push('disagreement')
   const weak = observations.some((observation) => observation.channel !== 'benchgecko' && num(observation.alignmentRms) !== null && observation.alignmentRms > WEAK_CALIBRATION_RMS)
   if (weak) flags.push('weak-calibration')
+  if (evidence <= 2) flags.push('prior-shrunk')
   const band = round1(clamp(6 / Math.sqrt(evidence) + spread / 2, 2, 30))
   const agreementFactor = familyKeys.length >= 2 ? (spread <= settings.disagreementPoints ? 1 : 0.6) : 0.7
   const confidence = round2(clamp((evidence / (evidence + 3)) * agreementFactor * (weak ? 0.85 : 1), 0.05, 1))
