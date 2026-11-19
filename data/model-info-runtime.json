@@ -236,15 +236,15 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 1,
-      "tokens": 65034340674845,
-      "share": 0.2288,
+      "tokens": 65209390054765,
+      "share": 0.2282,
       "percentile": 100
     },
     "ranking": {
       "status": "measured",
       "composite": 53.6,
       "low": 37.4,
-      "rank": 8,
+      "rank": 6,
       "uncalibrated": 16,
       "dims": {
         "coding": {
@@ -406,15 +406,15 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 3,
-      "tokens": 16642963564555,
-      "share": 0.0585,
+      "tokens": 16688407319577,
+      "share": 0.0584,
       "percentile": 97.6
     },
     "ranking": {
       "status": "measured",
       "composite": 47,
       "low": 31.3,
-      "rank": 35,
+      "rank": 56,
       "dims": {
         "coding": {
           "value": 45.5,
@@ -553,7 +553,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 19,
-      "tokens": 3009190414407,
+      "tokens": 3016743704694,
       "share": 0.0106,
       "percentile": 82.9
     },
@@ -561,7 +561,7 @@
       "status": "measured",
       "composite": 50.3,
       "low": 44,
-      "rank": 2,
+      "rank": 34,
       "dims": {
         "coding": {
           "value": 45.5,
@@ -676,7 +676,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 23,
-      "tokens": 2084620026681,
+      "tokens": 2090600954585,
       "share": 0.0073,
       "percentile": 80.5
     },
@@ -684,7 +684,7 @@
       "status": "measured",
       "composite": 42.8,
       "low": 4.8,
-      "rank": 63,
+      "rank": 61,
       "dims": {
         "knowledge": {
           "value": 42.8,
@@ -889,7 +889,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 43,
-      "tokens": 772478685356,
+      "tokens": 774876474102,
       "share": 0.0027,
       "percentile": 68.3
     },
@@ -897,7 +897,7 @@
       "status": "measured",
       "composite": 49.8,
       "low": 40.6,
-      "rank": 5,
+      "rank": 40,
       "uncalibrated": 13,
       "dims": {
         "coding": {
@@ -1048,7 +1048,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 49,
-      "tokens": 590238228005,
+      "tokens": 592088389730,
       "share": 0.0021,
       "percentile": 63.4
     },
@@ -1056,7 +1056,7 @@
       "status": "measured",
       "composite": 52.9,
       "low": 32.4,
-      "rank": 34,
+      "rank": 10,
       "dims": {
         "coding": {
           "value": 58.1,
@@ -1245,7 +1245,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 30,
-      "tokens": 1384098552742,
+      "tokens": 1387101539360,
       "share": 0.0049,
       "percentile": 78
     },
@@ -1253,7 +1253,7 @@
       "status": "measured",
       "composite": 50.6,
       "low": 35,
-      "rank": 16,
+      "rank": 32,
       "uncalibrated": 1,
       "dims": {
         "coding": {
@@ -1429,7 +1429,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 53,
-      "tokens": 473319130597,
+      "tokens": 474516312673,
       "share": 0.0017,
       "percentile": 61
     },
@@ -1437,7 +1437,7 @@
       "status": "measured",
       "composite": 44.7,
       "low": 24,
-      "rank": 58,
+      "rank": 59,
       "uncalibrated": 1,
       "dims": {
         "reasoning": {
@@ -1622,7 +1622,7 @@
       "status": "measured",
       "composite": 51.5,
       "low": 38.7,
-      "rank": 6,
+      "rank": 14,
       "uncalibrated": 1,
       "dims": {
         "coding": {
@@ -1861,8 +1861,8 @@
     "notes": "Cache hit is 5 percent of input; explicit-cache creation bills at 125 percent (5m) or 200 percent (1h).",
     "usage": {
       "source": "openrouter-top-weekly",
-      "rank": 58,
-      "tokens": 402084327003,
+      "rank": 57,
+      "tokens": 412084275790,
       "share": 0.0014,
       "percentile": 58.5
     },
@@ -1870,7 +1870,7 @@
       "status": "measured",
       "composite": 51.8,
       "low": 27.5,
-      "rank": 47,
+      "rank": 13,
       "uncalibrated": 13,
       "dims": {
         "reasoning": {
@@ -2246,15 +2246,15 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 12,
-      "tokens": 3597117161245,
-      "share": 0.0127,
+      "tokens": 3608127074541,
+      "share": 0.0126,
       "percentile": 85.4
     },
     "ranking": {
       "status": "measured",
       "composite": 51.4,
       "low": 41.9,
-      "rank": 3,
+      "rank": 16,
       "uncalibrated": 20,
       "dims": {
         "coding": {
@@ -2440,7 +2440,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 31,
-      "tokens": 1242274627919,
+      "tokens": 1244584141956,
       "share": 0.0044,
       "percentile": 75.6
     },
@@ -2448,7 +2448,7 @@
       "status": "measured",
       "composite": 51.2,
       "low": 40.7,
-      "rank": 4,
+      "rank": 22,
       "uncalibrated": 5,
       "dims": {
         "coding": {
@@ -2659,7 +2659,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 231,
-      "tokens": 8753438081,
+      "tokens": 8775169282,
       "share": 0,
       "percentile": 9.8
     },
@@ -2869,7 +2869,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 136,
-      "tokens": 48459807125,
+      "tokens": 48549378313,
       "share": 0.0002,
       "percentile": 43.9
     },
@@ -2877,7 +2877,7 @@
       "status": "measured",
       "composite": 42.8,
       "low": 25.7,
-      "rank": 54,
+      "rank": 60,
       "uncalibrated": 13,
       "dims": {
         "coding": {
@@ -3077,7 +3077,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 219,
-      "tokens": 11317131133,
+      "tokens": 11360883837,
       "share": 0,
       "percentile": 14.6
     },
@@ -3085,7 +3085,7 @@
       "status": "measured",
       "composite": 49,
       "low": 35.2,
-      "rank": 15,
+      "rank": 50,
       "uncalibrated": 1,
       "dims": {
         "coding": {
@@ -3251,7 +3251,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 35,
-      "tokens": 998269700874,
+      "tokens": 1000624399155,
       "share": 0.0035,
       "percentile": 73.2
     },
@@ -3259,7 +3259,7 @@
       "status": "measured",
       "composite": 54.7,
       "low": 32.8,
-      "rank": 32,
+      "rank": 5,
       "dims": {
         "coding": {
           "value": 59.3,
@@ -3334,8 +3334,8 @@
     "latency": null,
     "usage": {
       "source": "openrouter-top-weekly",
-      "rank": 169,
-      "tokens": 27068309627,
+      "rank": 170,
+      "tokens": 27086669863,
       "share": 0.0001,
       "percentile": 31.7
     },
@@ -3354,7 +3354,7 @@
       "status": "measured",
       "composite": 55.5,
       "low": 25.5,
-      "rank": 55,
+      "rank": 2,
       "uncalibrated": 1,
       "dims": {
         "knowledge": {
@@ -3407,7 +3407,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 85,
-      "tokens": 153900115565,
+      "tokens": 154570865768,
       "share": 0.0005,
       "percentile": 51.2
     },
@@ -3484,7 +3484,7 @@
       "status": "measured",
       "composite": 55.4,
       "low": 25.4,
-      "rank": 56,
+      "rank": 3,
       "uncalibrated": 1,
       "dims": {
         "knowledge": {
@@ -3554,7 +3554,7 @@
       "status": "measured",
       "composite": 55.3,
       "low": 25.3,
-      "rank": 57,
+      "rank": 4,
       "uncalibrated": 1,
       "dims": {
         "knowledge": {
@@ -3730,7 +3730,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 11,
-      "tokens": 3707507547969,
+      "tokens": 3716276174755,
       "share": 0.013,
       "percentile": 87.8
     },
@@ -3738,7 +3738,7 @@
       "status": "measured",
       "composite": 53.2,
       "low": 35.7,
-      "rank": 12,
+      "rank": 7,
       "uncalibrated": 18,
       "dims": {
         "coding": {
@@ -3928,15 +3928,15 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 1,
-      "tokens": 65034340674845,
-      "share": 0.2288,
+      "tokens": 65209390054765,
+      "share": 0.2282,
       "percentile": 100
     },
     "ranking": {
       "status": "measured",
       "composite": 51.1,
       "low": 32.9,
-      "rank": 31,
+      "rank": 23,
       "uncalibrated": 16,
       "dims": {
         "coding": {
@@ -4133,7 +4133,7 @@
       "status": "measured",
       "composite": 50.7,
       "low": 34.2,
-      "rank": 20,
+      "rank": 27,
       "uncalibrated": 20,
       "dims": {
         "coding": {
@@ -4326,7 +4326,7 @@
       "status": "measured",
       "composite": 53.2,
       "low": 35.7,
-      "rank": 14,
+      "rank": 9,
       "uncalibrated": 18,
       "dims": {
         "coding": {
@@ -4518,7 +4518,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 11,
-      "tokens": 3707507547969,
+      "tokens": 3716276174755,
       "share": 0.013,
       "percentile": 87.8
     },
@@ -4526,7 +4526,7 @@
       "status": "measured",
       "composite": 53.2,
       "low": 35.7,
-      "rank": 13,
+      "rank": 8,
       "uncalibrated": 18,
       "dims": {
         "coding": {
@@ -4654,7 +4654,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 10,
-      "tokens": 3868746438096,
+      "tokens": 3882917408357,
       "share": 0.0136,
       "percentile": 90.2
     },
@@ -4662,7 +4662,7 @@
       "status": "measured",
       "composite": 51.4,
       "low": 33.2,
-      "rank": 29,
+      "rank": 17,
       "uncalibrated": 17,
       "dims": {
         "coding": {
@@ -4848,7 +4848,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 232,
-      "tokens": 8452044248,
+      "tokens": 8466156258,
       "share": 0,
       "percentile": 7.3
     },
@@ -4856,7 +4856,7 @@
       "status": "measured",
       "composite": 51.4,
       "low": 33.2,
-      "rank": 30,
+      "rank": 18,
       "uncalibrated": 17,
       "dims": {
         "coding": {
@@ -4978,15 +4978,15 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 8,
-      "tokens": 6707768131882,
-      "share": 0.0236,
+      "tokens": 6707770032556,
+      "share": 0.0235,
       "percentile": 92.7
     },
     "ranking": {
       "status": "measured",
       "composite": 49.4,
       "low": 27.4,
-      "rank": 51,
+      "rank": 43,
       "uncalibrated": 19,
       "dims": {
         "coding": {
@@ -5122,15 +5122,15 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 5,
-      "tokens": 11333739525577,
-      "share": 0.0399,
+      "tokens": 11363150842329,
+      "share": 0.0398,
       "percentile": 95.1
     },
     "ranking": {
       "status": "measured",
       "composite": 50,
       "low": 33.7,
-      "rank": 25,
+      "rank": 39,
       "uncalibrated": 22,
       "dims": {
         "coding": {
@@ -5299,7 +5299,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 200,
-      "tokens": 14325547813,
+      "tokens": 14366989748,
       "share": 0.0001,
       "percentile": 22
     },
@@ -5307,7 +5307,7 @@
       "status": "measured",
       "composite": 49.3,
       "low": 27.3,
-      "rank": 52,
+      "rank": 44,
       "uncalibrated": 9,
       "dims": {
         "coding": {
@@ -5432,7 +5432,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 43,
-      "tokens": 772478685356,
+      "tokens": 774876474102,
       "share": 0.0027,
       "percentile": 68.3
     },
@@ -5440,7 +5440,7 @@
       "status": "measured",
       "composite": 50.1,
       "low": 33.7,
-      "rank": 24,
+      "rank": 37,
       "uncalibrated": 9,
       "dims": {
         "coding": {
@@ -5633,7 +5633,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 41,
-      "tokens": 863595648796,
+      "tokens": 865715479221,
       "share": 0.003,
       "percentile": 70.7
     },
@@ -5641,7 +5641,7 @@
       "status": "measured",
       "composite": 49.2,
       "low": 31,
-      "rank": 37,
+      "rank": 46,
       "uncalibrated": 18,
       "dims": {
         "coding": {
@@ -5837,15 +5837,15 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 12,
-      "tokens": 3597117161245,
-      "share": 0.0127,
+      "tokens": 3608127074541,
+      "share": 0.0126,
       "percentile": 85.4
     },
     "ranking": {
       "status": "measured",
       "composite": 50.7,
       "low": 34.2,
-      "rank": 21,
+      "rank": 28,
       "uncalibrated": 20,
       "dims": {
         "coding": {
@@ -5957,7 +5957,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 171,
-      "tokens": 26378039328,
+      "tokens": 26451740820,
       "share": 0.0001,
       "percentile": 29.3
     },
@@ -5965,7 +5965,7 @@
       "status": "measured",
       "composite": 51.9,
       "low": 37.8,
-      "rank": 7,
+      "rank": 11,
       "uncalibrated": 9,
       "dims": {
         "coding": {
@@ -6099,7 +6099,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 31,
-      "tokens": 1242274627919,
+      "tokens": 1244584141956,
       "share": 0.0044,
       "percentile": 75.6
     },
@@ -6107,7 +6107,7 @@
       "status": "measured",
       "composite": 50,
       "low": 34.1,
-      "rank": 23,
+      "rank": 38,
       "uncalibrated": 15,
       "dims": {
         "coding": {
@@ -6289,7 +6289,7 @@
       "status": "measured",
       "composite": 50.6,
       "low": 36.4,
-      "rank": 11,
+      "rank": 31,
       "uncalibrated": 11,
       "dims": {
         "coding": {
@@ -6484,7 +6484,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 48,
-      "tokens": 591549971327,
+      "tokens": 593251695006,
       "share": 0.0021,
       "percentile": 65.9
     },
@@ -6492,7 +6492,7 @@
       "status": "measured",
       "composite": 49.2,
       "low": 32.7,
-      "rank": 33,
+      "rank": 45,
       "uncalibrated": 19,
       "dims": {
         "coding": {
@@ -6612,7 +6612,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 35,
-      "tokens": 998269700874,
+      "tokens": 1000624399155,
       "share": 0.0035,
       "percentile": 73.2
     },
@@ -6620,7 +6620,7 @@
       "status": "measured",
       "composite": 46.3,
       "low": 20.6,
-      "rank": 60,
+      "rank": 58,
       "uncalibrated": 3,
       "dims": {
         "reasoning": {
@@ -6797,7 +6797,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 115,
-      "tokens": 71276228831,
+      "tokens": 71503921351,
       "share": 0.0003,
       "percentile": 46.3
     },
@@ -6805,7 +6805,7 @@
       "status": "measured",
       "composite": 50.6,
       "low": 36.4,
-      "rank": 10,
+      "rank": 30,
       "uncalibrated": 11,
       "dims": {
         "coding": {
@@ -6982,7 +6982,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 115,
-      "tokens": 71276228831,
+      "tokens": 71503921351,
       "share": 0.0003,
       "percentile": 46.3
     },
@@ -6990,7 +6990,7 @@
       "status": "measured",
       "composite": 50.6,
       "low": 36.4,
-      "rank": 9,
+      "rank": 29,
       "uncalibrated": 11,
       "dims": {
         "coding": {
@@ -7101,7 +7101,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 145,
-      "tokens": 40863131210,
+      "tokens": 40939024223,
       "share": 0.0001,
       "percentile": 41.5
     },
@@ -7109,7 +7109,7 @@
       "status": "measured",
       "composite": 51.4,
       "low": 28.2,
-      "rank": 45,
+      "rank": 20,
       "uncalibrated": 4,
       "dims": {
         "reasoning": {
@@ -7235,7 +7235,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 177,
-      "tokens": 23537938501,
+      "tokens": 23616087881,
       "share": 0.0001,
       "percentile": 24.4
     },
@@ -7243,7 +7243,7 @@
       "status": "measured",
       "composite": 49.1,
       "low": 30.9,
-      "rank": 39,
+      "rank": 49,
       "uncalibrated": 9,
       "dims": {
         "coding": {
@@ -7377,7 +7377,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 99,
-      "tokens": 100791458775,
+      "tokens": 100974049688,
       "share": 0.0004,
       "percentile": 48.8
     },
@@ -7385,7 +7385,7 @@
       "status": "measured",
       "composite": 50.8,
       "low": 34.4,
-      "rank": 19,
+      "rank": 25,
       "uncalibrated": 10,
       "dims": {
         "coding": {
@@ -7566,7 +7566,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 209,
-      "tokens": 12594926327,
+      "tokens": 12623050083,
       "share": 0,
       "percentile": 17.1
     },
@@ -7574,7 +7574,7 @@
       "status": "measured",
       "composite": 49.7,
       "low": 35,
-      "rank": 17,
+      "rank": 41,
       "uncalibrated": 9,
       "dims": {
         "coding": {
@@ -7708,7 +7708,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 99,
-      "tokens": 100791458775,
+      "tokens": 100974049688,
       "share": 0.0004,
       "percentile": 48.8
     },
@@ -7716,7 +7716,7 @@
       "status": "measured",
       "composite": 50.8,
       "low": 34.4,
-      "rank": 18,
+      "rank": 24,
       "uncalibrated": 10,
       "dims": {
         "coding": {
@@ -7838,7 +7838,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 67,
-      "tokens": 272308582921,
+      "tokens": 273151015658,
       "share": 0.001,
       "percentile": 53.7
     },
@@ -7846,7 +7846,7 @@
       "status": "measured",
       "composite": 48.3,
       "low": 33.6,
-      "rank": 26,
+      "rank": 55,
       "uncalibrated": 10,
       "dims": {
         "coding": {
@@ -7972,7 +7972,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 177,
-      "tokens": 23537938501,
+      "tokens": 23616087881,
       "share": 0.0001,
       "percentile": 24.4
     },
@@ -7980,7 +7980,7 @@
       "status": "measured",
       "composite": 49.1,
       "low": 30.9,
-      "rank": 38,
+      "rank": 48,
       "uncalibrated": 9,
       "dims": {
         "coding": {
@@ -8095,8 +8095,8 @@
     },
     "usage": {
       "source": "openrouter-top-weekly",
-      "rank": 264,
-      "tokens": 5123334733,
+      "rank": 265,
+      "tokens": 5129958721,
       "share": 0,
       "percentile": 0
     },
@@ -8104,7 +8104,7 @@
       "status": "measured",
       "composite": 48.4,
       "low": 33.3,
-      "rank": 28,
+      "rank": 53,
       "uncalibrated": 9,
       "dims": {
         "coding": {
@@ -8221,7 +8221,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 223,
-      "tokens": 10625132418,
+      "tokens": 10654053027,
       "share": 0,
       "percentile": 12.2
     },
@@ -8229,7 +8229,7 @@
       "status": "measured",
       "composite": 51.5,
       "low": 29,
-      "rank": 43,
+      "rank": 15,
       "uncalibrated": 8,
       "dims": {
         "reasoning": {
@@ -8351,7 +8351,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 159,
-      "tokens": 32272349994,
+      "tokens": 32300713526,
       "share": 0.0001,
       "percentile": 36.6
     },
@@ -8359,7 +8359,7 @@
       "status": "measured",
       "composite": 49.4,
       "low": 31.2,
-      "rank": 36,
+      "rank": 42,
       "uncalibrated": 10,
       "dims": {
         "coding": {
@@ -8474,7 +8474,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 145,
-      "tokens": 40863131210,
+      "tokens": 40939024223,
       "share": 0.0001,
       "percentile": 41.5
     },
@@ -8482,7 +8482,7 @@
       "status": "measured",
       "composite": 51.4,
       "low": 28.2,
-      "rank": 44,
+      "rank": 19,
       "uncalibrated": 4,
       "dims": {
         "reasoning": {
@@ -8590,7 +8590,7 @@
       "status": "measured",
       "composite": 50.3,
       "low": 27.4,
-      "rank": 49,
+      "rank": 35,
       "uncalibrated": 5,
       "dims": {
         "reasoning": {
@@ -8703,7 +8703,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 233,
-      "tokens": 8222526598,
+      "tokens": 8255624774,
       "share": 0,
       "percentile": 4.9
     },
@@ -8711,7 +8711,7 @@
       "status": "measured",
       "composite": 48.8,
       "low": 34.2,
-      "rank": 22,
+      "rank": 51,
       "uncalibrated": 10,
       "dims": {
         "coding": {
@@ -8827,7 +8827,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 147,
-      "tokens": 35757502276,
+      "tokens": 35803173616,
       "share": 0.0001,
       "percentile": 39
     },
@@ -8835,7 +8835,7 @@
       "status": "measured",
       "composite": 49.2,
       "low": 25.9,
-      "rank": 53,
+      "rank": 47,
       "uncalibrated": 8,
       "dims": {
         "reasoning": {
@@ -9001,7 +9001,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 201,
-      "tokens": 13765046890,
+      "tokens": 13838804641,
       "share": 0,
       "percentile": 19.5
     },
@@ -9009,7 +9009,7 @@
       "status": "measured",
       "composite": 51.3,
       "low": 21.3,
-      "rank": 59,
+      "rank": 21,
       "uncalibrated": 7,
       "dims": {
         "reasoning": {
@@ -9135,7 +9135,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 166,
-      "tokens": 28176615950,
+      "tokens": 28288876639,
       "share": 0.0001,
       "percentile": 34.1
     },
@@ -9143,7 +9143,7 @@
       "status": "measured",
       "composite": 48.4,
       "low": 30.2,
-      "rank": 41,
+      "rank": 54,
       "uncalibrated": 13,
       "dims": {
         "coding": {
@@ -9253,7 +9253,7 @@
       "status": "measured",
       "composite": 50.6,
       "low": 27.4,
-      "rank": 48,
+      "rank": 33,
       "uncalibrated": 7,
       "dims": {
         "reasoning": {
@@ -9356,7 +9356,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 241,
-      "tokens": 7162042051,
+      "tokens": 7175262458,
       "share": 0,
       "percentile": 2.4
     },
@@ -9364,7 +9364,7 @@
       "status": "measured",
       "composite": 50.3,
       "low": 27.4,
-      "rank": 50,
+      "rank": 36,
       "uncalibrated": 5,
       "dims": {
         "reasoning": {
@@ -9489,7 +9489,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 174,
-      "tokens": 25604317004,
+      "tokens": 25641983930,
       "share": 0.0001,
       "percentile": 26.8
     },
@@ -9497,7 +9497,7 @@
       "status": "measured",
       "composite": 51.8,
       "low": 29.3,
-      "rank": 42,
+      "rank": 12,
       "uncalibrated": 7,
       "dims": {
         "reasoning": {
@@ -9670,7 +9670,7 @@
     "usage": {
       "source": "openrouter-top-weekly",
       "rank": 63,
-      "tokens": 322196844144,
+      "tokens": 322984498806,
       "share": 0.0011,
       "percentile": 56.1
     },
@@ -9678,7 +9678,7 @@
       "status": "measured",
       "composite": 50.8,
       "low": 27.8,
-      "rank": 46,
+      "rank": 26,
       "uncalibrated": 8,
       "dims": {
         "reasoning": {
@@ -9789,8 +9789,8 @@
     },
     "usage": {
       "source": "openrouter-top-weekly",
-      "rank": 264,
-      "tokens": 5123334733,
+      "rank": 265,
+      "tokens": 5129958721,
       "share": 0,
       "percentile": 0
     },
@@ -9798,7 +9798,7 @@
       "status": "measured",
       "composite": 48.4,
       "low": 33.3,
-      "rank": 27,
+      "rank": 52,
       "uncalibrated": 9,
       "dims": {
         "coding": {
@@ -9910,7 +9910,7 @@
       "status": "measured",
       "composite": 46.9,
       "low": 30.7,
-      "rank": 40,
+      "rank": 57,
       "uncalibrated": 8,
       "dims": {
         "coding": {
@@ -10014,7 +10014,7 @@
       "status": "measured",
       "composite": 41.7,
       "low": 11.7,
-      "rank": 61,
+      "rank": 62,
       "uncalibrated": 5,
       "dims": {
         "reasoning": {
@@ -10104,7 +10104,7 @@
       "status": "measured",
       "composite": 37.4,
       "low": 7.4,
-      "rank": 62,
+      "rank": 63,
       "uncalibrated": 3,
       "dims": {
         "reasoning": {

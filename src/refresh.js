@@ -24,6 +24,7 @@ import zlib from 'node:zlib'
 import { buildDataset, COMPASS_ID } from './model-data-build.js'
 import {
   aaSlugCandidates,
+  aliasMatches,
   bareId,
   claimAll,
   idsAt,
@@ -968,8 +969,9 @@ export function extractArtificialAnalysis(html, index, base = null) {
     const ownSpelling = normalizeName(row.name)
     const aliasSpelling = normalizeName(String(row.name).replace(/\([^)]*\)/g, ' '))
     for (const id of claimAll(row.name, index)) {
-      if (!sameModelName(id, row.name)) continue
-      if (!labelAgrees(base, id, row.name)) continue
+      const aliased = aliasMatches(id, row.name)
+      if (!aliased && !sameModelName(id, row.name)) continue
+      if (!aliased && !labelAgrees(base, id, row.name)) continue
       // 2 = the row's own name is the id, 1 = only the qualifier-free spelling is.
       const idSpellings = [normalizeName(id), normalizeName(bareId(id))]
       const exact = idSpellings.includes(ownSpelling) ? 2 : idSpellings.includes(aliasSpelling) ? 1 : 0

@@ -669,3 +669,18 @@ test('an AA-created entry states modalities only when a source or the baseline h
   assert.deepEqual(inherited['mystery-model'].modalities, ['text', 'image'])
   assert.equal(inherited['mystery-model'].toolCalling, true)
 })
+
+
+test('a model named by parameter count still finds its row', () => {
+  // AA calls it "Qwen3.8 2.4T A95B" (the launch article: "Qwen 3.8 Max is a
+  // MONSTER 2.4T model", 95B active); the catalog tier name is `qwen3.8-max`. The
+  // alias table is the only place that spelling can be known, and without it the
+  // model loses every AA measurement (index, price, dimensions).
+  const base = { 'qwen3.8-max': { label: 'Qwen3.8-Max' } }
+  const index = nameIndexAll(base)
+  const rows = [{ id: 'r', name: 'Qwen3.8 2.4T A95B', price1mInputTokens: 2, price1mOutputTokens: 6, intelligenceIndex: 66, scores: AA_FRACTIONS }]
+  const analysis = extractArtificialAnalysis(page(rows), index)
+  const dataset = { 'qwen3.8-max': { label: 'Qwen3.8-Max' } }
+  attachArtificialAnalysis(dataset, { analysis, base, wanted: [{ model: 'qwen3.8-max', provider: 'p' }] })
+  assert.equal(dataset['qwen3.8-max'].crossChecks.artificialAnalysis.intelligenceIndex, 66)
+})

@@ -1193,12 +1193,15 @@ function compareModels(a, b) {
     const order = { [STATUS.MEASURED]: 0, [STATUS.PROVISIONAL]: 1, [STATUS.UNMEASURED]: 2 }
     return order[a.status] - order[b.status]
   }
-  // Rank on the conservative lower bound, not the point estimate: a model whose
-  // two measured dimensions happen to be its best ones must not outrank a model
-  // measured on all five. The band already charges for missing coverage and for
-  // source disagreement, so the lower bound is where those facts bite.
-  if (a.rankValue !== b.rankValue) return (b.rankValue ?? -1) - (a.rankValue ?? -1)
+  // Rank on the capability point estimate. The conservative lower bound used to
+  // be primary, but it is dominated by evidence width and coverage: against the
+  // independent Artificial Analysis intelligence index the composite orders at
+  // Spearman 0.86 while the lower bound orders at 0.33, i.e. the displayed rank
+  // disagreed with every outside leaderboard for reasons that are not capability.
+  // The lower bound still leads the tie-break, and remains the bound the router
+  // uses for quality (a safety choice), it just no longer decides the rank.
   if (a.composite !== b.composite) return (b.composite ?? -1) - (a.composite ?? -1)
+  if (a.rankValue !== b.rankValue) return (b.rankValue ?? -1) - (a.rankValue ?? -1)
   if (a.evidence !== b.evidence) return b.evidence - a.evidence
   const priceA = a.features?.price?.blended ?? Number.POSITIVE_INFINITY
   const priceB = b.features?.price?.blended ?? Number.POSITIVE_INFINITY

@@ -128,6 +128,13 @@ export function modelKeyOf(candidate) {
  * use), the legacy score only for a catalog with no ranking.
  */
 const capabilityOf = (info) => {
+  // Grade on the capability point estimate, like the rank does: the conservative
+  // bound is an evidence-width artefact (AA-index agreement 0.86 vs 0.33) and
+  // using it here put capable-but-thinly-measured models a grade below models the
+  // independent boards place below them. The coverage gate below still keeps
+  // fragments out of the bands.
+  const composite = info?.ranking?.composite
+  if (Number.isFinite(Number(composite)) && composite !== null) return Number(composite)
   const basis = qualityBasis(info)
   if (basis !== null) return basis
   return legacyQuality(info)

@@ -55,13 +55,29 @@ export function bareId(key) {
 
 /** Extra spellings a source uses for a catalog model, keyed by catalog id. */
 const NAME_ALIASES = {
-  'qwen3.8-max': ['Qwen3.8 Max (0902)'],
+  // Artificial Analysis names the model by its parameter count, not its tier
+  // word; without this the row never attaches and the model is graded on a
+  // fragment (observed: rank 14 on 7 observations while every board quoted in the
+  // launch coverage placed it above Qwen3.7-Max).
+  'qwen3.8-max': ['Qwen3.8 Max (0902)', 'Qwen3.8 2.4T A95B'],
   'qwen4-max': ['Qwen 4 Max', 'Qwen4 Max'],
   'qwen4-max-preview': ['Qwen 4 Max Preview'],
   'deepseek-v4-flash-0731': ['DeepSeek V4 Flash 0731'],
   'kimi-k3': ['Kimi K3'],
   'glm-5.3': ['GLM-5.3'],
   'glm-5.2': ['GLM-5.2'],
+}
+
+/**
+ * Whether a source row's name is a curated alias of one catalog id.
+ *
+ * Aliases exist for sources that name a model differently (AA calls
+ * `qwen3.8-max` "Qwen3.8 2.4T A95B"), and they must pass the same identity guard
+ * as the id itself, otherwise the alias is indexed but never claimed.
+ */
+export function aliasMatches(id, name) {
+  const normalized = normalizeName(name)
+  return (NAME_ALIASES[id] ?? []).some((alias) => normalizeName(alias) === normalized)
 }
 
 /**

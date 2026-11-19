@@ -1,6 +1,6 @@
 {
   "checkedAt": "2026-11-19",
-  "durationMs": 158796,
+  "durationMs": 122184,
   "base": "src/model-info-data.json",
   "pool": "data/catalog-pool.json",
   "models": 64,
@@ -117,24 +117,24 @@
         "composite": 57.8
       },
       {
-        "key": "deepseek-v4-flash-0731",
+        "key": "glm-5.3-prime",
         "rank": 2,
-        "composite": 50.3
+        "composite": 55.5
       },
       {
-        "key": "glm-5.3",
+        "key": "ZHIPU/GLM-5.3-FlashX",
         "rank": 3,
-        "composite": 51.4
+        "composite": 55.4
       },
       {
-        "key": "kimi-k3",
+        "key": "vanchin/deepseek-v3",
         "rank": 4,
-        "composite": 51.2
+        "composite": 55.3
       },
       {
-        "key": "deepseek-v4-pro-0813",
+        "key": "glm-5.2",
         "rank": 5,
-        "composite": 49.8
+        "composite": 54.7
       }
     ]
   },
