@@ -33,6 +33,8 @@ const primitives = {
   IconPlayOutlineRegular: iconStub('play'),
   IconCheckOutlineRegular: iconStub('check'),
   IconInspectOutlineRegular: iconStub('inspect'),
+  IconChevronDownOutlineRegular: iconStub('chevron-down'),
+  IconChevronRightOutlineRegular: iconStub('chevron-right'),
 }
 
 globalThis.__amrReact = React
@@ -554,6 +556,45 @@ test('capsules show their rank and a lane is ordered by it', async () => {
     assert.ok(ranked.length >= 1, 'at least one capsule shows a rank')
     const lane = container.querySelector('.amr-lane')
     assert.ok((lane?.textContent ?? '').includes('rankComposite') || ranked.length > 0, 'the popover contract is wired')
+
+    root.unmount()
+    await new Promise((resolve) => setTimeout(resolve, 25))
+  } finally {
+    loaded.restore()
+  }
+})
+
+
+test('the unmeasured lane counts its models, and every tier folds from an icon', async () => {
+  const loaded = loadBundle()
+  try {
+    const section = harness(loaded.module)
+    const React = globalThis.__amrReact
+    const { createRoot } = globalThis.__amrReactDomClient
+    const container = loaded.window.document.getElementById('root')
+    const root = createRoot(container)
+    // The shipped count string carries the placeholder; keep it so the rendered
+    // number is testable.
+    const t = (key) => (key === 'modelCount' ? 'count:{count}' : key)
+    root.render(React.createElement(section.component, { t }))
+    await new Promise((resolve) => setTimeout(resolve, 60))
+
+    const lanes = [...container.querySelectorAll('.amr-lane')]
+    const unmeasured = lanes.find((lane) => (lane.querySelector('.amr-laneId')?.textContent ?? '') === 'tierUnmeasured')
+    assert.ok(unmeasured !== undefined, 'the unmeasured lane renders')
+    const capsules = unmeasured.querySelectorAll('.amr-capsule').length
+    assert.ok(capsules > 0, 'the fixture carries an unmeasured model')
+    // The header used to read board.groups.unmeasured (undefined) and always say 0.
+    assert.ok((unmeasured.querySelector('.amr-laneCount')?.textContent ?? '').includes(`count:${capsules}`), `header shows ${capsules}`)
+
+    // Fold it: the icon control hides the capsules, keeps the header and count.
+    const fold = unmeasured.querySelector('button[aria-label="foldTier"]')
+    assert.ok(fold !== null, 'the fold control is an icon button with an accessible label')
+    fold.dispatchEvent(new loaded.window.MouseEvent('click', { bubbles: true }))
+    await new Promise((resolve) => setTimeout(resolve, 30))
+    assert.equal(unmeasured.querySelectorAll('.amr-capsule').length, 0, 'the capsules are hidden')
+    assert.ok((unmeasured.querySelector('.amr-laneCount')?.textContent ?? '').includes(`count:${capsules}`), 'the count stays visible')
+    assert.ok(unmeasured.querySelector('button[aria-label="unfoldTier"]') !== null, 'the control now offers unfold')
 
     root.unmount()
     await new Promise((resolve) => setTimeout(resolve, 25))

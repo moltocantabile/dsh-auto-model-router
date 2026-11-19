@@ -113,6 +113,7 @@ window.__ModuleLoader__.load({
 .amr-lane { display:flex; flex-direction:column; gap:8px; padding:10px 12px; border:.5px solid var(--dsw-alias-settings-card-stroke); border-radius:var(--dsw-radius-lg); background:var(--dsw-alias-bg-layer-1, transparent); }
 .amr-lane[data-over="true"] { border-color:var(--dsw-alias-brand-primary); background:var(--dsw-alias-interactive-bg-hover); }
 .amr-laneHead { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.amr-laneFold { display:inline-flex; align-items:center; }
 .amr-laneId { font-size:13px; font-weight:500; }
 .amr-laneCount { color:var(--dsw-alias-label-tertiary); font-size:12px; }
 .amr-capsules { display:flex; flex-wrap:wrap; gap:6px; min-height:30px; align-items:flex-start; }
@@ -239,6 +240,8 @@ window.__ModuleLoader__.load({
         filterActive: 'Showing {provider} only.',
         unmeasuredHint: '{count} advertised models are not routable: nobody measured their quality, so they cannot be ranked.',
         tierUnmeasured: 'unmeasured',
+        foldTier: 'Fold tier',
+        unfoldTier: 'Unfold tier',
         badgeOff: 'off',
         badgeNoTier: 'no tier',
         badgeSuperseded: 'superseded',
@@ -417,6 +420,8 @@ window.__ModuleLoader__.load({
         filterActive: '仅显示 {provider}。',
         unmeasuredHint: '另有 {count} 个模型未被路由：没有任何质量测量，无法排序。',
         tierUnmeasured: '未测量',
+        foldTier: '折叠档位',
+        unfoldTier: '展开档位',
         badgeOff: '停用',
         badgeNoTier: '无档位',
         badgeSuperseded: '已被超越',
@@ -948,6 +953,8 @@ window.__ModuleLoader__.load({
       const providerOf = board.providerOf ?? {}
       const dominatedBy = new Map((board.dominated ?? []).map((entry) => [entry.key, entry.by]))
       const [hovered, setHovered] = useState(null)
+      // Folded lanes keep their header (label, count, actions) and hide the capsules.
+      const [collapsed, setCollapsed] = useState(() => new Set())
       const [dragging, setDragging] = useState(null)
       const [over, setOver] = useState(null)
       // Which provider's models are on screen. Capsules from one provider share a
@@ -1128,11 +1135,27 @@ window.__ModuleLoader__.load({
       }
 
       function laneMeta(id) {
-        const members = board.groups?.[id] ?? []
-        const count = members.length
+        // The unmeasured lane is a separate array, not a group: reading
+        // `board.groups[id]` counted it as 0 while its body rendered every model.
+        const count = laneMembers(id).length
+        const folded = collapsed.has(id)
         return h(
           'div',
           { className: 'amr-laneHead' },
+          h(
+            'span',
+            { className: 'amr-laneFold' },
+            h(IconButton, {
+              name: folded ? 'IconChevronRightOutlineRegular' : 'IconChevronDownOutlineRegular',
+              label: folded ? t('unfoldTier') : t('foldTier'),
+              onClick: () => setCollapsed((current) => {
+                const next = new Set(current)
+                if (next.has(id)) next.delete(id)
+                else next.add(id)
+                return next
+              }),
+            }),
+          ),
           h('span', { className: 'amr-laneId' }, lanes.find((lane) => lane.id === id)?.label ?? id),
           h('span', { className: 'amr-laneCount' }, t('modelCount').replace('{count}', String(count))),
           id === draft.defaultRoute && h(Chip, { tone: 'ok' }, t('defaultRoute')),
@@ -1242,7 +1265,7 @@ window.__ModuleLoader__.load({
               },
             },
             laneMeta(lane.id),
-            h(
+            !collapsed.has(lane.id) && h(
               'div',
               { className: 'amr-capsules' },
               members.length === 0
