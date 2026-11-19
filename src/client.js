@@ -161,7 +161,24 @@ window.__ModuleLoader__.load({
 .amr-toggleDot { width:6px; height:6px; border-radius:50%; background:var(--dsw-alias-label-tertiary); }
 .amr-toggle[data-on="true"] .amr-toggleDot { background:var(--dsw-alias-brand-primary); }
 .amr-routeIcon { display:inline-flex; align-items:center; justify-content:center; width:14px; height:14px; flex:none; }
-.amr-routeLayers { display:grid; overflow:hidden; transition:width .18s ease; }
+.amr-effortTrigger { display:inline-flex; align-items:center; gap:4px; height:28px; padding:0 8px; border-radius:999px; border:.5px solid transparent; background:var(--dsw-alias-bg-layer-2); color:var(--dsw-alias-label-tertiary); font:inherit; font-size:13px; line-height:18px; cursor:pointer; }
+.amr-effortTrigger:hover, .amr-effortTrigger[data-state="open"] { background:var(--dsw-alias-bg-layer-3); color:var(--dsw-alias-label-secondary); }
+.amr-effortTrigger[data-known="false"] { opacity:.7; }
+.amr-effortCard { position:absolute; z-index:40; bottom:calc(100% + 6px); left:0; width:254px; display:flex; flex-direction:column; gap:2px; padding:12px 10px 8px; border:.5px solid var(--dsw-alias-settings-card-stroke); border-radius:20px; background:var(--dsw-alias-bg-overlay); box-shadow:var(--dsw-shadow-lv3); color:var(--dsw-alias-label-primary); font-size:12px; line-height:18px; }
+.amr-effortRefresh { position:absolute; top:8px; right:8px; display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; padding:0; border:0; border-radius:999px; background:0 0; color:var(--dsw-alias-label-tertiary); cursor:pointer; }
+.amr-effortRefresh:hover { background:var(--dsw-alias-interactive-bg-hover); color:var(--dsw-alias-label-secondary); }
+.amr-effortHead { display:flex; flex-direction:column; align-items:center; gap:0; padding:0 18px; }
+.amr-effortModel { font-size:12px; color:var(--dsw-alias-label-tertiary); max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.amr-effortValue { font-size:14px; font-weight:500; color:var(--dsw-alias-brand-primary); }
+.amr-effortSlider { position:relative; height:32px; margin-top:4px; padding:0 12px; display:flex; align-items:center; cursor:pointer; }
+.amr-effortTrack { position:absolute; left:12px; right:12px; height:8px; border-radius:999px; background:var(--dsw-alias-bg-layer-3); }
+.amr-effortFill { position:absolute; left:12px; height:8px; border-radius:999px; background:var(--dsw-alias-brand-primary); transition:width .18s ease; }
+.amr-effortStop { position:absolute; top:50%; transform:translate(-50%, -50%); display:inline-flex; align-items:center; justify-content:center; width:28px; height:28px; padding:0; border:0; border-radius:50%; background:0 0; cursor:pointer; }
+.amr-effortStop[disabled] { cursor:default; }
+.amr-effortDot { width:6px; height:6px; border-radius:50%; background:var(--dsw-alias-label-tertiary); opacity:.5; transition:all .18s ease; }
+.amr-effortStop[data-active="true"] .amr-effortDot { width:28px; height:28px; background:var(--dsw-alias-bg-base); border:2px solid var(--dsw-alias-brand-primary); opacity:1; }
+.amr-effortSlider:focus-visible { outline:none; }
+.amr-effortSlider:focus-visible .amr-effortTrack { box-shadow:0 0 0 2px var(--dsw-alias-brand-primary); }
 .amr-routeText { grid-area:1 / 1; justify-self:start; opacity:0; filter:blur(4px); transition:opacity .18s ease, filter .18s ease; }
 .amr-routeText[data-active="true"] { opacity:1; filter:blur(0); }
 .amr-routeSep { color:var(--dsw-alias-label-tertiary); opacity:.6; }
@@ -308,6 +325,8 @@ window.__ModuleLoader__.load({
         composerRecent: 'Recent decisions',
         composerNoDecisions: 'No decision yet.',
         composerConfidence: 'confidence {value}',
+        selectMode: 'Select mode',
+        effortKeys: 'Use left and right arrow keys to adjust.',
         toggleDetailNone: 'no decision yet',
         toggleOnTitle: 'Auto routing is deciding the model',
         toggleOffTitle: 'Auto routing is off; the model picker decides',
@@ -530,6 +549,8 @@ window.__ModuleLoader__.load({
         composerRecent: '最近的决策',
         composerNoDecisions: '暂无决策。',
         composerConfidence: '置信度 {value}',
+        selectMode: '选择模式',
+        effortKeys: '使用左右方向键调整。',
         toggleDetailNone: '暂无决策',
         toggleOnTitle: '自动路由正在决定模型',
         toggleOffTitle: '自动路由已关闭，由模型选择器决定',
@@ -1548,6 +1569,17 @@ window.__ModuleLoader__.load({
         }
       }, [])
 
+      /** Re-read the host state; also what a click does while the mode is unknown. */
+      const refreshStatus = useCallback(() => {
+        api('status')
+          .then((body) => {
+            if (!mounted.current) return
+            setMode(body.mode ?? 'off')
+            setSnapshot(body)
+          })
+          .catch(() => {})
+      }, [])
+
       const choose = async (next) => {
         setBusy(true)
         try {
@@ -1560,7 +1592,6 @@ window.__ModuleLoader__.load({
           /* leave the previous state visible rather than guessing */
         } finally {
           if (mounted.current) setBusy(false)
-          setOpen(false)
         }
       }
 
@@ -1568,141 +1599,131 @@ window.__ModuleLoader__.load({
       // indistinguishable from a plugin that never loaded, which is exactly the
       // confusion this cost once. Unknown reads as "off" and clicking re-reads.
       const known = mode !== null
-      const on = mode === 'on'
-      const active = known ? mode : 'unknown'
-      const labels = [
-        ['on', t('toggleAutoShort')],
-        ['shadow', t('toggleObserveShort')],
-        ['off', t('toggleOffShort')],
+      const modes = [
+        ['on', t('toggleAutoShort'), t('toggleOn')],
+        ['shadow', t('toggleObserveShort'), t('toggleShadow')],
+        ['off', t('toggleOffShort'), t('toggleOff')],
       ]
-      // The detail half names the tier the last decision chose, the way the
-      // harness's model control names the effort next to the model.
-      const lastDecision = Array.isArray(snapshot?.decisions) && snapshot.decisions.length > 0
+      const index = Math.max(0, modes.findIndex(([value]) => value === mode))
+      const decision = Array.isArray(snapshot?.decisions) && snapshot.decisions.length > 0
         ? snapshot.decisions[snapshot.decisions.length - 1]
         : null
       const force = snapshot?.force ?? null
       const pin = typeof force?.thisAgent === 'string' ? force.thisAgent : typeof force?.global === 'string' ? force.global : null
-      const detail = (() => {
-        if (pin !== null) return pin.replace(/^model:/, '')
-        if (lastDecision !== null) {
-          if (typeof lastDecision.model === 'string' && lastDecision.model.length > 0) return lastDecision.model
-          if (typeof lastDecision.tier === 'string') return lastDecision.tier
-          if (typeof lastDecision.routeId === 'string') return lastDecision.routeId
-        }
-        return known && mode !== 'off' ? t('toggleDetailNone') : null
-      })()
+      const modelLabel = pin !== null
+        ? pin.replace(/^model:/, '')
+        : typeof decision?.model === 'string' && decision.model.length > 0 ? decision.model : null
+      const current = modes[index] ?? null
 
-      const layersRef = useRef(null)
-      const [labelWidth, setLabelWidth] = useState(null)
-      useEffect(() => {
-        const activeLayer = layersRef.current?.querySelector('[data-active="true"]')
-        if (activeLayer === undefined || activeLayer === null) return
-        const width = activeLayer.getBoundingClientRect().width
-        if (width > 0) setLabelWidth(Math.ceil(width))
-      }, [active])
+      const step = (delta) => {
+        const next = modes[Math.min(modes.length - 1, Math.max(0, index + delta))]
+        if (next !== undefined && next[0] !== mode && busy !== true) choose(next[0])
+      }
 
-      const glyph = glyphOf('IconAutoReviewRegular')
+      const chevron = glyphOf('IconChevronDownOutlineRegular')
+      const refreshGlyph = glyphOf('IconRefreshOutlineRegular')
+      const ratio = modes.length <= 1 ? 0 : index / (modes.length - 1)
+
       return h(
         'div',
         { style: { position: 'relative' } },
+        // The trigger is generic like the harness's "Select effort": it names the
+        // action, not the current value, and the value lives in the card.
         h(
           'button',
           {
             type: 'button',
-            className: 'amr-routeTrigger',
-            'data-on': on ? 'true' : 'false',
+            className: 'amr-effortTrigger',
             'data-known': known ? 'true' : 'false',
             'data-state': open ? 'open' : 'closed',
-            'aria-haspopup': 'menu',
+            'aria-haspopup': 'dialog',
             'aria-expanded': open ? 'true' : 'false',
-            'aria-label': t('toggleMenuOpen'),
-            title: known ? (on ? t('toggleOnTitle') : t('toggleOffTitle')) : t('toggleUnknown'),
+            title: known ? t('toggleTitle') : t('toggleUnknown'),
             onClick: () => {
               if (!known) {
-                api('status')
-                  .then((body) => {
-                    if (mounted.current) {
-                      setMode(body.mode ?? 'off')
-                      setSnapshot(body)
-                    }
-                  })
-                  .catch(() => {})
+                refreshStatus()
                 return
               }
-              setOpen((current) => !current)
+              setOpen((currentOpen) => !currentOpen)
             },
           },
-          h(
-            'span',
-            { className: 'amr-routeIcon', 'aria-hidden': 'true' },
-            glyph === null ? h('span', { className: 'amr-toggleDot' }) : h(glyph, { size: 14 }),
-          ),
-          // Same composition as the harness's model/effort trigger: the model the
-          // router is serving, a separator, then the mode (the effort analogue) as
-          // stacked labels in one cell, so a change cross-fades instead of
-          // reflowing the composer row.
-          detail !== null && h('span', { className: 'amr-routeValue' }, detail),
-          detail !== null && h('span', { className: 'amr-routeSep', 'aria-hidden': 'true' }, '·'),
-          h(
-            'span',
-            { className: 'amr-routeLayers', ref: layersRef, style: labelWidth === null ? undefined : { width: `${labelWidth}px` } },
-            h('span', { className: 'sr-only' }, known ? t(known ? (on ? 'toggleOn' : mode === 'shadow' ? 'toggleShadow' : 'toggleOff') : 'toggleUnknown') : t('toggleUnknown')),
-            ...labels.map(([value, label]) =>
-              h('span', {
-                key: value,
-                className: 'amr-routeText',
-                'data-active': active === value ? 'true' : 'false',
-                'aria-hidden': 'true',
-              }, label),
-            ),
-          ),
+          h('span', null, t('selectMode')),
+          chevron === null ? h('span', { 'aria-hidden': 'true' }, '▾') : h(chevron, { size: 14 }),
         ),
         open &&
           h(
             'div',
             {
-              className: 'amr-routeMenu',
-              role: 'menu',
+              className: 'amr-effortCard',
+              role: 'dialog',
+              'aria-label': t('toggleTitle'),
               onMouseLeave: () => setOpen(false),
             },
-            h('span', { className: 'amr-routeMenuTitle' }, t('toggleTitle')),
-            // Expanded state: what the router is doing right now, the same facts
-            // the trigger summarises, so opening the control answers "which model
-            // is serving this session" without going to Settings.
+            // Reset/re-read, top-right, like the harness's refresh affordance.
+            h(
+              'button',
+              { type: 'button', className: 'amr-effortRefresh', 'aria-label': t('refresh'), onClick: () => refreshStatus() },
+              refreshGlyph === null ? h('span', { 'aria-hidden': 'true' }, '↻') : h(refreshGlyph, { size: 14 }),
+            ),
             h(
               'div',
-              { className: 'amr-routeMenuSection' },
-              h('span', { className: 'amr-routeMenuLabel' }, t('composerCurrent')),
-              h('span', { className: 'amr-routeMenuValue' },
-                lastDecision === null
-                  ? t('composerNoDecisions')
-                  : [lastDecision.model ?? lastDecision.routeId, lastDecision.tier].filter(Boolean).join(' · ')),
-              typeof lastDecision?.confidence === 'number' &&
-                h('span', { className: 'amr-routeMenuNote' }, t('composerConfidence').replace('{value}', String(Math.round(lastDecision.confidence * 100) / 100))),
+              { className: 'amr-effortHead' },
+              modelLabel !== null && h('span', { className: 'amr-effortModel' }, modelLabel),
+              h('span', { className: 'amr-effortValue' }, current === null ? '—' : current[1]),
             ),
-            ...[
-              ['on', t('toggleOn')],
-              ['shadow', t('toggleShadow')],
-              ['off', t('toggleOff')],
-            ].map(([value, label]) =>
-              h(
-                'button',
-                {
-                  key: value,
-                  type: 'button',
-                  className: 'amr-routeMenuItem',
-                  role: 'menuitemradio',
-                  'aria-checked': mode === value ? 'true' : 'false',
-                  'data-active': mode === value ? 'true' : 'false',
-                  disabled: busy,
-                  onClick: () => choose(value),
+            // Stop-dot slider: the level names are the stops, the knob is the
+            // current one, arrow keys move it (role=slider, aria-valuetext).
+            h(
+              'div',
+              {
+                className: 'amr-effortSlider',
+                role: 'slider',
+                tabIndex: 0,
+                'aria-valuemin': 0,
+                'aria-valuemax': modes.length - 1,
+                'aria-valuenow': index,
+                'aria-valuetext': current === null ? '' : current[1],
+                'aria-label': t('toggleTitle'),
+                onKeyDown: (event) => {
+                  if (event.key === 'ArrowLeft' || event.key === 'ArrowDown') {
+                    event.preventDefault()
+                    step(-1)
+                  } else if (event.key === 'ArrowRight' || event.key === 'ArrowUp') {
+                    event.preventDefault()
+                    step(1)
+                  } else if (event.key === 'Home') {
+                    event.preventDefault()
+                    step(-index)
+                  } else if (event.key === 'End') {
+                    event.preventDefault()
+                    step(modes.length - 1 - index)
+                  }
                 },
-                h('span', { className: 'amr-routeMenuCheck', 'aria-hidden': 'true' },
-                  mode === value ? h(glyphOf('IconCheckOutlineRegular') ?? 'span', glyphOf('IconCheckOutlineRegular') === null ? {} : { size: 14 }) : null),
-                h('span', { className: 'amr-routeMenuText' }, label),
+              },
+              h('span', { className: 'amr-effortTrack' }),
+              h('span', { className: 'amr-effortFill', style: { width: `${ratio * 100}%` } }),
+              ...modes.map(([value, short], position) =>
+                h(
+                  'button',
+                  {
+                    key: value,
+                    type: 'button',
+                    className: 'amr-effortStop',
+                    style: { left: `${modes.length <= 1 ? 0 : (position / (modes.length - 1)) * 100}%` },
+                    'aria-label': short,
+                    'data-active': value === mode ? 'true' : 'false',
+                    disabled: busy === true,
+                    onClick: () => choose(value),
+                  },
+                  h('span', { className: 'amr-effortDot' }),
+                ),
               ),
             ),
-            h('span', { className: 'amr-popHint' }, t('toggleHint')),
+            h(
+              'span',
+              { className: 'sr-only' },
+              `${modelLabel ?? ''} ${current === null ? '' : current[2]}, ${index + 1} of ${modes.length}. ${t('effortKeys')}`,
+            ),
           ),
       )
     }

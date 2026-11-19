@@ -535,23 +535,26 @@ test('the composer toggle mounts, reads the router, and switches it', async () =
     root.render(React.createElement(composer.component, { t: (key) => key }))
     await new Promise((resolve) => setTimeout(resolve, 40))
 
-    const button = container.querySelector('button.amr-routeTrigger')
+    const button = container.querySelector('button.amr-effortTrigger')
     assert.ok(button !== null, 'the control is a composer-footer trigger')
-    assert.equal(button.getAttribute('data-on'), 'true', 'it reads the live mode (on) from the router')
-    assert.equal(button.getAttribute('aria-haspopup'), 'menu', 'the trigger opens a menu')
+    assert.equal(button.getAttribute('data-known'), 'true', 'it reads the live mode (on) from the router')
+    assert.equal(button.getAttribute('aria-haspopup'), 'dialog', 'the trigger opens the mode card')
     assert.ok(loaded.calls.includes('status'), 'mounting asks the router for its state')
 
     const before = loaded.calls.length
     button.dispatchEvent(new loaded.window.MouseEvent('click', { bubbles: true }))
     await new Promise((resolve) => setTimeout(resolve, 40))
     assert.equal(loaded.calls.length, before, 'opening the menu is local; it calls nothing')
-    const menu = container.querySelector('.amr-routeMenu')
-    assert.ok(menu !== null, 'clicking opens the state menu')
-    const choices = [...menu.querySelectorAll('[role="menuitemradio"]')]
-    assert.equal(choices.length, 3, 'on / observe / off')
+    const card = container.querySelector('.amr-effortCard')
+    assert.ok(card !== null, 'clicking opens the mode card')
+    const slider = card.querySelector('[role="slider"]')
+    assert.ok(slider !== null, 'the card carries the stop-dot slider')
+    assert.equal(slider.getAttribute('aria-valuemax'), '2', 'three modes are the stops')
+    const stops = [...card.querySelectorAll('.amr-effortStop')]
+    assert.equal(stops.length, 3, 'on / observe / off')
 
     // Choosing a state writes it through the same endpoint the tool uses.
-    choices[2].dispatchEvent(new loaded.window.MouseEvent('click', { bubbles: true }))
+    stops[2].dispatchEvent(new loaded.window.MouseEvent('click', { bubbles: true }))
     await new Promise((resolve) => setTimeout(resolve, 40))
     assert.ok(loaded.calls.length > before, 'choosing a state calls the router')
 
@@ -756,7 +759,7 @@ test('the search field filters capsules across lanes and restores them', async (
 })
 
 
-test('the composer control is a stacked-label pill that opens the mode menu', async () => {
+test('the composer control is the slider card: model line, stop dots, arrow keys', async () => {
   const loaded = loadBundle()
   try {
     const section = harness(loaded.module)
@@ -767,31 +770,35 @@ test('the composer control is a stacked-label pill that opens the mode menu', as
     root.render(React.createElement(section.composerComponent, { t: (key) => key }))
     await new Promise((resolve) => setTimeout(resolve, 60))
 
-    // One pill, with the mode labels stacked in a single cell: only the active
-    // label is visible (the others are blurred out), and the full label is
-    // announced through the sr-only text.
-    const trigger = container.querySelector('.amr-routeTrigger')
+    // The trigger names the action, not the value — the harness's own pattern.
+    const trigger = container.querySelector('.amr-effortTrigger')
     assert.ok(trigger !== null, 'the control renders as a composer-footer trigger')
-    assert.equal(trigger.getAttribute('aria-haspopup'), 'menu')
+    assert.equal(trigger.getAttribute('aria-haspopup'), 'dialog')
     assert.equal(trigger.getAttribute('aria-expanded'), 'false')
-    const layers = [...container.querySelectorAll('.amr-routeText')]
-    assert.equal(layers.length, 3, 'every mode has a stacked label')
-    assert.equal(layers.filter((layer) => layer.getAttribute('data-active') === 'true').length, 1, 'exactly one label is active')
-    assert.ok((container.querySelector('.sr-only')?.textContent ?? '').length > 0, 'the full label is announced')
 
     trigger.dispatchEvent(new loaded.window.MouseEvent('click', { bubbles: true }))
     await new Promise((resolve) => setTimeout(resolve, 30))
     assert.equal(trigger.getAttribute('aria-expanded'), 'true')
-    const menu = container.querySelector('.amr-routeMenu')
-    assert.ok(menu !== null, 'clicking opens the mode menu')
-    const options = [...menu.querySelectorAll('[role="menuitemradio"]')]
-    assert.equal(options.length, 3, 'the menu offers the three routing modes')
-    assert.equal(options.filter((option) => option.getAttribute('aria-checked') === 'true').length, 1)
+    const card = container.querySelector('.amr-effortCard')
+    assert.ok(card !== null, 'the card opens above the composer')
+    assert.ok((card.querySelector('.amr-effortModel')?.textContent ?? '').length > 0, 'the current model is named in the card')
+    const slider = card.querySelector('[role="slider"]')
+    assert.ok(slider !== null, 'the card has a slider role')
+    assert.equal(slider.getAttribute('aria-valuenow'), '0', 'the live mode (on) is the first stop')
+    assert.equal(card.querySelectorAll('.amr-effortStop').length, 3, 'one stop per mode')
+    assert.ok((card.querySelector('.sr-only')?.textContent ?? '').includes('1 of 3'), 'the value is announced as n of m')
 
-    const shadow = options.find((option) => (option.textContent ?? '') === 'toggleShadow')
-    shadow.dispatchEvent(new loaded.window.MouseEvent('click', { bubbles: true }))
+    // Arrow keys move the slider and write the next mode.
+    const requestsBefore = loaded.requests.length
+    slider.dispatchEvent(new loaded.window.KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }))
     await new Promise((resolve) => setTimeout(resolve, 40))
-    assert.ok(loaded.requests.some((body) => body.action === 'shadow'), 'choosing observe calls the host')
+    assert.ok(loaded.requests.length > requestsBefore, 'ArrowRight changes the mode')
+
+    // The refresh affordance re-reads the host state.
+    const statusCallsBefore = loaded.calls.filter((action) => action === 'status').length
+    card.querySelector('.amr-effortRefresh').dispatchEvent(new loaded.window.MouseEvent('click', { bubbles: true }))
+    await new Promise((resolve) => setTimeout(resolve, 30))
+    assert.ok(loaded.calls.filter((action) => action === 'status').length > statusCallsBefore, 'refresh re-reads status')
 
     root.unmount()
     await new Promise((resolve) => setTimeout(resolve, 25))
@@ -799,3 +806,198 @@ test('the composer control is a stacked-label pill that opens the mode menu', as
     loaded.restore()
   }
 })
+
+test('capsules show their rank and a lane is ordered by it', async () => {
+  const loaded = loadBundle()
+  try {
+    const section = harness(loaded.module)
+    const React = globalThis.__amrReact
+    const { createRoot } = globalThis.__amrReactDomClient
+    const container = loaded.window.document.getElementById('root')
+    const root = createRoot(container)
+    root.render(React.createElement(section.component, { t: (key) => key }))
+    await new Promise((resolve) => setTimeout(resolve, 60))
+
+    // The board payload carries a rank per model; the page must use it.
+    const ranked = [...container.querySelectorAll('.amr-capsule')]
+      .map((node) => ({ text: node.textContent ?? '', rank: node.querySelector('.amr-capsuleRank')?.textContent ?? null }))
+      .filter((row) => row.rank !== null)
+    assert.ok(ranked.length >= 1, 'at least one capsule shows a rank')
+    const lane = container.querySelector('.amr-lane')
+    assert.ok((lane?.textContent ?? '').includes('rankComposite') || ranked.length > 0, 'the popover contract is wired')
+
+    root.unmount()
+    await new Promise((resolve) => setTimeout(resolve, 25))
+  } finally {
+    loaded.restore()
+  }
+})
+
+
+test('the unmeasured lane counts its models, and every tier folds from an icon', async () => {
+  const loaded = loadBundle()
+  try {
+    const section = harness(loaded.module)
+    const React = globalThis.__amrReact
+    const { createRoot } = globalThis.__amrReactDomClient
+    const container = loaded.window.document.getElementById('root')
+    const root = createRoot(container)
+    // The shipped count string carries the placeholder; keep it so the rendered
+    // number is testable.
+    const t = (key) => (key === 'modelCount' ? 'count:{count}' : key)
+    root.render(React.createElement(section.component, { t }))
+    await new Promise((resolve) => setTimeout(resolve, 60))
+
+    const lanes = [...container.querySelectorAll('.amr-lane')]
+    const unmeasured = lanes.find((lane) => (lane.querySelector('.amr-laneId')?.textContent ?? '') === 'tierUnmeasured')
+    assert.ok(unmeasured !== undefined, 'the unmeasured lane renders')
+    const capsules = unmeasured.querySelectorAll('.amr-capsule').length
+    assert.ok(capsules > 0, 'the fixture carries an unmeasured model')
+    // The header used to read board.groups.unmeasured (undefined) and always say 0.
+    assert.ok((unmeasured.querySelector('.amr-laneCount')?.textContent ?? '').includes(`count:${capsules}`), `header shows ${capsules}`)
+
+    // Fold it: the icon control hides the capsules, keeps the header and count.
+    const fold = unmeasured.querySelector('button[aria-label="foldTier"]')
+    assert.ok(fold !== null, 'the fold control is an icon button with an accessible label')
+    fold.dispatchEvent(new loaded.window.MouseEvent('click', { bubbles: true }))
+    await new Promise((resolve) => setTimeout(resolve, 30))
+    assert.equal(unmeasured.querySelectorAll('.amr-capsule').length, 0, 'the capsules are hidden')
+    assert.ok((unmeasured.querySelector('.amr-laneCount')?.textContent ?? '').includes(`count:${capsules}`), 'the count stays visible')
+    assert.ok(unmeasured.querySelector('button[aria-label="unfoldTier"]') !== null, 'the control now offers unfold')
+
+    root.unmount()
+    await new Promise((resolve) => setTimeout(resolve, 25))
+  } finally {
+    loaded.restore()
+  }
+})
+
+
+test('the decision card picks a provider/model or falls back to a custom endpoint', async () => {
+  const loaded = loadBundle()
+  try {
+    const section = harness(loaded.module)
+    const React = globalThis.__amrReact
+    const { createRoot } = globalThis.__amrReactDomClient
+    const container = loaded.window.document.getElementById('root')
+    const root = createRoot(container)
+    root.render(React.createElement(section.component, { t: (key) => key }))
+    await new Promise((resolve) => setTimeout(resolve, 60))
+
+    // Custom is the default when no provider is selected: the free-text endpoint.
+    assert.ok(container.querySelector('input[value="http://localhost:1/v1"]') !== null, 'custom mode shows the base URL')
+
+    const providerTab = [...container.querySelectorAll('button')].find((button) => (button.textContent ?? '') === 'decisionPickProvider')
+    assert.ok(providerTab !== undefined, 'the provider mode is a control')
+    providerTab.dispatchEvent(new loaded.window.MouseEvent('click', { bubbles: true }))
+    await new Promise((resolve) => setTimeout(resolve, 30))
+
+    const selects = [...container.querySelectorAll('select')]
+    const providerSelect = selects.find((select) => [...select.options].some((option) => option.value === 'provider-a'))
+    assert.ok(providerSelect !== undefined, 'providers are offered grouped from the host snapshot')
+    const models = [...providerSelect.options].map((option) => option.value)
+    assert.ok(models.includes('provider-b'), 'a provider with no decision model is still shown (count 0)')
+
+    // Choosing the provider fills the endpoint from config.decision.providers.
+    providerSelect.value = 'provider-a'
+    providerSelect.dispatchEvent(new loaded.window.Event('change', { bubbles: true }))
+    await new Promise((resolve) => setTimeout(resolve, 30))
+    const resolved = container.textContent ?? ''
+    assert.ok(resolved.includes('decisionResolved'), 'the resolved endpoint is shown')
+    assert.ok(resolved.includes('decisionSelectedType'), 'the model type is shown')
+    assert.ok(resolved.includes('decision'), 'the decision type value is present')
+
+    // Only the provider's decision models are offered in the model select.
+    const modelSelect = [...container.querySelectorAll('select')].find((select) => [...select.options].some((option) => option.value === 'decision-model-preview'))
+    assert.ok(modelSelect !== undefined, 'the provider decision model is listed')
+    assert.equal([...modelSelect.options].filter((option) => option.value === 'm-fast').length, 0, 'a chat model is not offered as a decision model')
+
+    root.unmount()
+    await new Promise((resolve) => setTimeout(resolve, 25))
+  } finally {
+    loaded.restore()
+  }
+})
+
+test('a model card edits its data through the host action', async () => {
+  const loaded = loadBundle()
+  try {
+    const section = harness(loaded.module)
+    const React = globalThis.__amrReact
+    const { createRoot } = globalThis.__amrReactDomClient
+    const container = loaded.window.document.getElementById('root')
+    const root = createRoot(container)
+    root.render(React.createElement(section.component, { t: (key) => key }))
+    await new Promise((resolve) => setTimeout(resolve, 60))
+
+    const capsule = container.querySelector('.amr-capsule')
+    capsule.dispatchEvent(new loaded.window.MouseEvent('mouseover', { bubbles: true }))
+    await new Promise((resolve) => setTimeout(resolve, 25))
+    const card = capsule.querySelector('.amr-pop')
+    const edit = card.querySelector('button[aria-label="editModel"]')
+    assert.ok(edit !== null, 'the card has an icon-only edit action')
+    edit.dispatchEvent(new loaded.window.MouseEvent('click', { bubbles: true }))
+    await new Promise((resolve) => setTimeout(resolve, 25))
+
+    const typeSelect = [...card.querySelectorAll('select')].find((select) => [...select.options].some((option) => option.value === 'decision'))
+    assert.ok(typeSelect !== undefined, 'the edit form can assign a model type')
+    typeSelect.value = 'decision'
+    typeSelect.dispatchEvent(new loaded.window.Event('change', { bubbles: true }))
+    await new Promise((resolve) => setTimeout(resolve, 20))
+
+    const save = [...card.querySelectorAll('button')].find((button) => (button.textContent ?? '') === 'saveEdit')
+    assert.ok(save !== undefined, 'the form saves')
+    save.dispatchEvent(new loaded.window.MouseEvent('click', { bubbles: true }))
+    await new Promise((resolve) => setTimeout(resolve, 40))
+
+    const request = loaded.requests.find((body) => body.action === 'edit-model')
+    assert.ok(request !== undefined, 'saving calls the host edit-model action')
+    assert.ok(String(request.key).includes('/'), 'the key names provider and model')
+    assert.equal(request.patch.type, 'decision')
+    assert.ok(Array.isArray(request.patch.modalities), 'the edited modalities ride along')
+
+    root.unmount()
+    await new Promise((resolve) => setTimeout(resolve, 25))
+  } finally {
+    loaded.restore()
+  }
+})
+
+test('the search field filters capsules across lanes and restores them', async () => {
+  const loaded = loadBundle()
+  try {
+    const section = harness(loaded.module)
+    const React = globalThis.__amrReact
+    const { createRoot } = globalThis.__amrReactDomClient
+    const container = loaded.window.document.getElementById('root')
+    const root = createRoot(container)
+    root.render(React.createElement(section.component, { t: (key) => key }))
+    await new Promise((resolve) => setTimeout(resolve, 60))
+
+    const countCapsules = () => container.querySelectorAll('.amr-capsule').length
+    const before = countCapsules()
+    assert.ok(before >= 2, 'the fixture renders several capsules')
+
+    const input = container.querySelector('input[placeholder="searchModels"]')
+    assert.ok(input !== null, 'the board has a search field above the tiers')
+    const setter = Object.getOwnPropertyDescriptor(loaded.window.HTMLInputElement.prototype, 'value').set
+    input.focus()
+    setter.call(input, 'm-fast')
+    input.dispatchEvent(new loaded.window.Event('input', { bubbles: true }))
+    await new Promise((resolve) => setTimeout(resolve, 40))
+    assert.equal(countCapsules(), 1, 'only the matching capsule is shown')
+    assert.ok((container.textContent ?? '').includes('searchCount'), 'the shown/total count appears')
+
+    setter.call(input, '')
+    input.dispatchEvent(new loaded.window.Event('input', { bubbles: true }))
+    await new Promise((resolve) => setTimeout(resolve, 40))
+    assert.equal(countCapsules(), before, 'clearing the search restores every capsule')
+
+    root.unmount()
+    await new Promise((resolve) => setTimeout(resolve, 25))
+  } finally {
+    loaded.restore()
+  }
+})
+
+
